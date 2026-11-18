@@ -2,7 +2,7 @@
 id: BRIEF
 title: ExactSize — Product Vision & Brief
 status: Approved
-version: 1.0
+version: 1.1
 updated: 2026-11-18
 links: []
 ---
@@ -31,11 +31,11 @@ Hits the **exact** target (pixel dimensions + KB range + format) in one step —
 ## Platforms & markets
 - Market: **Global** from launch (no single-country focus).
 - Platforms: Android + iOS from one **Flutter** codebase; platform-specific code only where needed. (Product Owner's choice — to be recorded as an ADR in Stage 6.) Store launch order: open.
-- Languages: English + 3–5 more at launch. Which ones: open. [Assumption] Candidates: Bangla, Hindi, Urdu, Arabic, Spanish — RTL layout needed if Arabic/Urdu are included.
+- Languages at launch: **English, Spanish, Portuguese (Brazil), Hindi, Indonesian, Arabic** (Product Owner decision, 2026-11-18). Arabic needs RTL layout.
 - Target input: manual entry (W×H, KB range, format) + **built-in preset library** for popular forms worldwide + **saved custom presets**.
 
 ## Business model
-Free core with ads; paid upgrade removes ads and unlocks extras (e.g. batch processing, future AI features). Price point and one-time vs subscription: open.
+Free core with ads; paid upgrade removes ads and unlocks extras (e.g. batch processing, future AI features). Paid tier is a **yearly subscription** (Product Owner decision, 2026-11-18). Price point: open — set per store region (purchasing power differs widely across target markets).
 
 ## Success metrics
 All targets below are [Assumption] starting points for the Product Owner to adjust.
@@ -76,8 +76,8 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 
 ## Open questions
 - [ ] Store launch order: Android and iOS together, or Android first?
-- [ ] Which 3–5 languages besides English?
-- [ ] Paid tier: one-time unlock or subscription? Price point?
+- [x] Languages: Spanish, Portuguese (BR), Hindi, Indonesian, Arabic + English (decided 2026-11-18).
+- [x] Paid tier model: yearly subscription (decided 2026-11-18). Price point per region still open.
 - [ ] Preset library: who keeps the specs accurate, and how are updates shipped without a backend (app releases vs a static file)?
 - [ ] Is signature cleanup (white background, darker ink, cropping) in the MVP or a later release?
 - [ ] Does the MVP include PDF output? Some forms ask for scanned documents in PDF under a KB limit.
@@ -88,3 +88,4 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 | 0.1 | 2026-11-18 | Skeleton created |
 | 0.2 | 2026-11-18 | Stage 1 rounds 1–2: concept, users, market, model, privacy, constraints |
 | 1.0 | 2026-11-18 | Approved by Product Owner |
+| 1.1 | 2026-11-18 | Paid tier set to yearly subscription; launch languages chosen (Product Owner decisions) |
