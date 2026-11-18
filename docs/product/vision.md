@@ -2,7 +2,7 @@
 id: BRIEF
 title: ExactSize — Product Vision & Brief
 status: Approved
-version: 1.1
+version: 1.3
 updated: 2026-11-18
 links: []
 ---
@@ -30,12 +30,12 @@ Hits the **exact** target (pixel dimensions + KB range + format) in one step —
 
 ## Platforms & markets
 - Market: **Global** from launch (no single-country focus).
-- Platforms: Android + iOS from one **Flutter** codebase; platform-specific code only where needed. (Product Owner's choice — to be recorded as an ADR in Stage 6.) Store launch order: open.
-- Languages at launch: **English, Spanish, Portuguese (Brazil), Hindi, Indonesian, Arabic** (Product Owner decision, 2026-11-18). Arabic needs RTL layout.
+- Platforms: **Android first** (Product Owner decision 2026-11-18), built in **Flutter** with platform-specific code only where needed (to be recorded as an ADR in Stage 6). iOS is later, possibly far future; keep the code iOS-ready but plan no iOS work.
+- Languages: **English, Spanish, Portuguese (Brazil), Hindi, Indonesian, Arabic** (Product Owner decision, 2026-11-18). Arabic needs RTL layout. All 6 ship in the first public release (M1 and M2 merged, 2026-11-18).
 - Target input: manual entry (W×H, KB range, format) + **built-in preset library** for popular forms worldwide + **saved custom presets**.
 
 ## Business model
-Free core with ads; paid upgrade removes ads and unlocks extras (e.g. batch processing, future AI features). Paid tier is a **yearly subscription** (Product Owner decision, 2026-11-18). Price point: open — set per store region (purchasing power differs widely across target markets).
+Free core with ads; paid upgrade removes ads and unlocks extras (e.g. batch processing, future AI features). Paid tier is a **yearly subscription** (Product Owner decision, 2026-11-18). Ads and subscription both ship in the first public release. Price point: deferred, to be decided later — set per store region (purchasing power differs widely across target markets).
 
 ## Success metrics
 All targets below are [Assumption] starting points for the Product Owner to adjust.
@@ -49,7 +49,7 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 | Paid conversion (ad-free) | ≥ 1–2% of monthly active users | Store revenue reports |
 
 ## Constraints
-- **Team / timeline:** solo developer with Claude Code; MVP in ~2–3 months.
+- **Team / timeline:** solo developer with Claude Code. First public release is ~5 months (~20 person-weeks): core and Phase B shipped together (Product Owner decision 2026-11-18, replacing the original 2–3 month MVP target).
 - **Technology:** Flutter; on-device processing only; no backend for MVP. [Assumption]
 - **Budget:** minimal — store developer fees, no paid servers. [Assumption]
 - **Regulation:** ad consent (GDPR/UK, ATT), store privacy disclosures, children's privacy (see Compliance scope).
@@ -57,7 +57,7 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 ## Compliance scope
 - **Processing:** on-device only for now. Photos and signatures (personal data; signatures are identity-sensitive) never leave the device. Future AI features may change this and will need a fresh privacy review and explicit consent.
 - **Payments:** only App Store / Google Play in-app purchase — the stores handle payment data, so no PCI-DSS scope and no Bangladesh Bank payment rules apply to the app itself. [Assumption]
-- **Ads SDK is the main privacy exposure:** it collects device identifiers → needs GDPR/UK consent (CMP) for EU/UK users, Apple App Tracking Transparency, Google Play Data Safety and App Store privacy labels, and care with under-13 users (COPPA) since students are a target segment.
+- **Ads SDK is the main privacy exposure:** it collects device identifiers → needs GDPR/UK consent (CMP) for EU/UK users, Google Play Data Safety (plus Apple ATT and App Store labels only when iOS ships), and care with under-13 users (COPPA) since students are a target segment.
 - No accounts and no server storage planned. [Assumption]
 
 ## Out of scope (MVP) — proposed
@@ -75,12 +75,12 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 - Exact-KB output is technically reliable on-device (adjust compression quality and dimensions until the file falls inside the KB range). To confirm in Stage 6.
 
 ## Open questions
-- [ ] Store launch order: Android and iOS together, or Android first?
+- [x] Store launch order: Android first; iOS later, possibly far future (decided 2026-11-18).
 - [x] Languages: Spanish, Portuguese (BR), Hindi, Indonesian, Arabic + English (decided 2026-11-18).
 - [x] Paid tier model: yearly subscription (decided 2026-11-18). Price point per region still open.
-- [ ] Preset library: who keeps the specs accurate, and how are updates shipped without a backend (app releases vs a static file)?
-- [ ] Is signature cleanup (white background, darker ink, cropping) in the MVP or a later release?
-- [ ] Does the MVP include PDF output? Some forms ask for scanned documents in PDF under a KB limit.
+- [x] Preset updates: specs are kept accurate by the Product Owner and shipped through app releases. Firebase may host presets later (FEAT-013, parked) (decided 2026-11-18).
+- [x] Signature cleanup and auto-crop: in the first release (FEAT-020 Should, FEAT-021 Could; ROADMAP 0.6).
+- [x] PDF output: not planned (FEAT-024 rejected 2026-11-18).
 
 ## Change log
 | Version | Date | Change |
@@ -89,3 +89,5 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 | 0.2 | 2026-11-18 | Stage 1 rounds 1–2: concept, users, market, model, privacy, constraints |
 | 1.0 | 2026-11-18 | Approved by Product Owner |
 | 1.1 | 2026-11-18 | Paid tier set to yearly subscription; launch languages chosen (Product Owner decisions) |
+| 1.2 | 2026-11-18 | First release = M1 + M2 merged: all 6 languages, ads and subscription at launch; timeline ~5 months |
+| 1.3 | 2026-11-18 | Android first, iOS later; presets updated via app releases (Firebase later); regional pricing deferred |
