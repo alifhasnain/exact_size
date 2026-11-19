@@ -27,3 +27,8 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-19 | FEAT-004 OQ-1 | KB rule accepted | 0.2 | min×1024 ≤ size ≤ max×1000; narrow ranges aim at max×1000 with a notice |
 | 2026-11-19 | FEAT-004 OQ-2 | JPEG comment padding allowed | 0.2 | Only after quality levers fail; neutral content, disclosed to user; no trailing bytes; no PNG padding in R1 |
 | 2026-11-19 | FEAT-004 | Approved | 1.0 | PRD: min–max KB compression; 9 non-blocking open questions left for Stage 6 |
+| 2026-11-19 | FEAT-002 | Scope trims | 0.2 | Platform decoder gives 8-bit sRGB (no custom colour engine); no linear-light/PSNR targets; visible nudge/zoom buttons Should (TalkBack actions + Centre/Reset stay Must) |
+| 2026-11-19 | FEAT-002 OQs | Decided | 0.2 | Rotate 90° = Should; upscale notice >1×, confirm >2×; keep read URI (no copy); no crop handles in R1; brightness/contrast never in R1; hide from recents on Android 13+ |
+| 2026-11-19 | FEAT-002 OQ-5 | Revised: corner crop handles in R1 (Should) | 0.3 | Supersedes earlier "no handles in R1"; proportional, ratio locked to W:H; about +0.4 pw [Assumption], to be confirmed in the Stage 6 re-estimate |
+| 2026-11-19 | ROADMAP effort | Deferred to Stage 6 | 1.1 | FEAT-002 (+0.4 pw handles, likely ~3 pw total) and FEAT-004 re-estimates update the roadmap together after /tech-plan |
+| 2026-11-19 | FEAT-002 | Approved | 1.0 | PRD: crop and resize with corner handles (Should) and rotate (Should); 6 non-blocking open questions for Stage 6 |
