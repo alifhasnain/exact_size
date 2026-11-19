@@ -20,3 +20,10 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-18 | BRIEF | Regional subscription pricing deferred | 1.3 | Decide before FEAT-026 PRD |
 | 2026-11-18 | BRIEF | Approved | 1.3 | Android-first, presets via app releases, regional pricing deferred; no open questions left in list |
 | 2026-11-18 | ROADMAP | Approved | 1.0 | R1 = 23 features, 20.2 pw (~5 months solo), Android first; Phase A then Phase B; Later parked |
+| 2026-11-19 | FEAT-003 | Merged into FEAT-002 (Rejected) | — | Crop and resize are one user step; FEAT-002 E = 1.3 |
+| 2026-11-19 | FEAT-017 | Merged into FEAT-016 (Rejected) | — | Offline follows from on-device; FEAT-016 E = 0.5 |
+| 2026-11-19 | ROADMAP | Under Discussion | 1.1 | Merges applied; R1 = 21 features, 20.2 pw unchanged; needs re-approval |
+| 2026-11-19 | ROADMAP | Approved | 1.1 | Merges FEAT-003→002 and FEAT-017→016 accepted; R1 = 21 features, 20.2 pw |
+| 2026-11-19 | FEAT-004 OQ-1 | KB rule accepted | 0.2 | min×1024 ≤ size ≤ max×1000; narrow ranges aim at max×1000 with a notice |
+| 2026-11-19 | FEAT-004 OQ-2 | JPEG comment padding allowed | 0.2 | Only after quality levers fail; neutral content, disclosed to user; no trailing bytes; no PNG padding in R1 |
+| 2026-11-19 | FEAT-004 | Approved | 1.0 | PRD: min–max KB compression; 9 non-blocking open questions left for Stage 6 |
