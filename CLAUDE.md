@@ -42,6 +42,7 @@ The user is the **Product Owner** and makes every product decision.
 ## Implementation (Phase H)
 - Work one task (`FEAT-xxx-Tnn`) at a time, in `tasks.md` order. Tick its checkbox and add a `docs/CHANGELOG.md` line when done.
 - If implementation reveals a requirement gap, stop and propose a PRD change instead of improvising.
+- Before designing or building any real UI screen, stop and tell the Product Owner first: screens are designed with impeccable (https://github.com/pbakaus/impeccable; Product Owner decision 2026-11-20). Non-visual work (engine, providers, strings) may proceed.
 
 ## Security & compliance (SSLWIRELESS policy)
 - Never write real card numbers, tokens, credentials or personal data in docs or code examples — use `[PLACEHOLDER]`.
