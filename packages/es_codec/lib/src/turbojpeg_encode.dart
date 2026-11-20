@@ -7,9 +7,9 @@ import 'package:ffi/ffi.dart';
 
 import 'turbojpeg.g.dart';
 
-/// FEAT-004-T03 spike: encodes tightly packed RGBA8 pixels to JPEG with the
-/// bundled libjpeg-turbo (TurboJPEG v3). T06 replaces this with the real
-/// `TurboJpegEncoder` adapter (settings, metadata, error mapping).
+/// Encodes tightly packed RGBA8 pixels to JPEG with the bundled libjpeg-turbo
+/// (TurboJPEG v3). Low-level building block; the app's `TurboJpegEncoder`
+/// adapter (FEAT-004-T06) adds settings, metadata and error mapping.
 Uint8List encodeRgba8ToJpeg(
   Uint8List rgba,
   int width,

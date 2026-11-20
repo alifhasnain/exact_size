@@ -1,18 +1,13 @@
 // Copyright (c) 2026 ExactSize authors. All rights reserved.
 
-/// Native image codec bindings (ADR-001, ADR-002).
-///
-/// T02 interop proof plus the T03 libjpeg-turbo spike; real adapters come in T05/T06.
+/// Native image codec bindings (ADR-001, ADR-002): bundled libjpeg-turbo via
+/// FFI, plus Android APIs via JNIgen.
 library;
 
-export 'src/jpeg_spike.dart' show encodeRgba8ToJpeg;
-export 'src/turbojpeg.g.dart' show TJSAMP;
-
 import 'src/android/android_build.g.dart';
-import 'src/es_probe.g.dart' as probe;
 
-/// Adds two numbers in C (FFIgen `@Native` binding; T02 proof).
-int esProbeAdd(int a, int b) => probe.es_probe_add(a, b);
+export 'src/turbojpeg.g.dart' show TJSAMP;
+export 'src/turbojpeg_encode.dart' show encodeRgba8ToJpeg;
 
-/// Android `Build.VERSION.SDK_INT` (JNIgen binding; T02 proof).
+/// Android `Build.VERSION.SDK_INT` (JNIgen binding).
 int androidSdkInt() => Build$VERSION.SDK_INT;

@@ -35,8 +35,12 @@ jobs:
       - run: flutter test
       - name: Release APK for arm, arm64, x64
         run: flutter build apk --release --target-platform android-arm,android-arm64,android-x64
+      - name: 16 KB page alignment (main app, 3 ABIs)
+        run: bash tool/check_16kb_alignment.sh build/app/outputs/flutter-apk/app-release.apk
       - name: Native tree shaking (record_use)
         run: bash tool/check_tree_shaking.sh
+      - name: 16 KB page alignment (probe app with libes_codec.so, 3 ABIs)
+        run: bash tool/check_16kb_alignment.sh build/probe-release.apk
 
   emulator:
     name: Integration tests on API 28 emulator

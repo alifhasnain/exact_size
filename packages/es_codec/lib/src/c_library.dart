@@ -1,5 +1,6 @@
 // Copyright (c) 2026 ExactSize authors. All rights reserved.
 
+import 'package:code_assets/code_assets.dart';
 import 'package:native_toolchain_c/native_toolchain_c.dart';
 
 /// Asset id shared by every FFIgen binding file in this package.
@@ -64,15 +65,13 @@ const _jpegSources = [
 ];
 
 /// Build spec shared by hook/build.dart and hook/link.dart (ADR-001, ADR-002).
-final cLibrary = CLibrary(
+///
+/// Every Android ABI (arm64-v8a, armeabi-v7a, x86_64) gets the same flags.
+CLibrary codecLibrary(OS targetOS) => CLibrary(
   name: 'es_codec',
   assetName: 'es_codec_native',
-  sources: [
-    'src/es_probe.c',
-    for (final s in _jpegSources) '$_ljt/$s',
-  ],
+  sources: [for (final s in _jpegSources) '$_ljt/$s'],
   includes: [
-    'src',
     'third_party/libjpeg-turbo-config', // hand-written CMake-generated headers
     _ljt,
     '$_ljt/spng',
@@ -85,5 +84,15 @@ final cLibrary = CLibrary(
     'PPM_SUPPORTED': null,
     'SPNG_STATIC': null,
     'Z_PREFIX': null,
+    // Windows host builds (flutter test): export the TurboJPEG API from the DLL.
+    if (targetOS == OS.windows) 'DLLDEFINE': null,
   },
+  flags: [
+    // Google Play 16 KB page size; NDK r28 does this by default, kept explicit.
+    if (targetOS == OS.android) '-Wl,-z,max-page-size=16384',
+  ],
 );
+
+/// Same 16 KB rule for the release link step (hook/link.dart).
+List<String> linkFlags(OS targetOS) =>
+    [if (targetOS == OS.android) '-z,max-page-size=16384'];

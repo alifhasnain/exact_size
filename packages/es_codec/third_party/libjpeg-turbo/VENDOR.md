@@ -11,7 +11,10 @@
 - Build: not with CMake. `packages/es_codec/hook/build.dart` compiles the source list from the upstream
   `CMakeLists.txt` (`JPEG_SOURCES` + `TURBOJPEG_SOURCES`, bundled spng and zlib) with
   `native_toolchain_c`. The CMake-generated headers are hand-written in `../libjpeg-turbo-config/`.
-- SIMD: off for now (`WITH_SIMD` undefined). Enabling NEON/SSE is a later decision (T04/T05).
+- SIMD: off (`WITH_SIMD` undefined). T04 kept libjpeg-turbo without it; enabling NEON/SSE needs its own decision.
 - Licences: IJG (README.ijg), Modified BSD and zlib (LICENSE.md), plus spng (BSD-2) and zlib for the
   bundled PNG support. All must appear on the in-app licence page (FEAT-004-T07).
-- Upgrading: replace the files, update this note and the SHA-256, rerun the golden tests (ADR-002).
+- Build-time pin: `hook/build.dart` checks a SHA-256 over every file in this directory except this note
+  (`lib/src/vendor_checksum.dart`, `pinnedLibjpegTurboChecksum`) and fails the build on any change.
+- Upgrading: replace the files, run any build (the error prints the new checksum), update the pin,
+  this note and the tarball SHA-256, and rerun the golden tests (ADR-002).

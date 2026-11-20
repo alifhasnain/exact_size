@@ -6,17 +6,10 @@ import 'package:ffigen/ffigen.dart';
 
 /// Regenerate with: dart run tool/ffigen.dart (needs LLVM/libclang).
 ///
-/// Writes two binding files that share one native asset (lib/src/c_library.dart):
-/// the T02 interop probe and the TurboJPEG v3 API (libjpeg-turbo, ADR-002).
+/// Writes the TurboJPEG v3 API bindings (libjpeg-turbo, ADR-002) for the native
+/// asset built by hook/build.dart (lib/src/c_library.dart).
 Future<void> main() async {
   final root = Platform.script.resolve('../');
-  await _generate(
-    root: root,
-    header: 'src/es_probe.h',
-    functions: {'es_probe_add', 'es_probe_unused'},
-    out: 'es_probe',
-    license: '',
-  );
   await _generate(
     root: root,
     header: 'third_party/libjpeg-turbo/src/turbojpeg.h',
