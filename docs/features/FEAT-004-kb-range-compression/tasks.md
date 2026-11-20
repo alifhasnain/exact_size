@@ -201,7 +201,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** run the corpus on the emulator profile at API 28 and the latest API; profile memory there; airplane-mode integration test; decode padded outputs with Android `BitmapFactory` on the emulator (risk R6).
 - **Done when:** search time for ≤ 2 MP targets is recorded (informational, not a gate); peak memory attributable to FEAT-004 at 2 MP is ≤ 150 MB (measured with `dumpsys meminfo` before/after); the airplane-mode test completes with no network error (AC-6.2); no ANR during runs; all padded files decode on both API levels; numbers recorded in the PR and `docs/CHANGELOG.md`. Any miss → gate G3.
 
-### - [ ] FEAT-004-T26 — Quality-floor tuning on a synthetic visual set — gate G4
+### - [x] FEAT-004-T26 — Quality-floor tuning on a synthetic visual set — gate G4
 - **Implements:** FR-7 · **ADRs:** —
 - **Depends on:** T22
 - **Size:** M
