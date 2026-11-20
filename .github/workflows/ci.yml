@@ -45,7 +45,7 @@ jobs:
   emulator:
     name: Integration tests on API 28 emulator
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60 # includes the 780-case corpus (FEAT-004-T24)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4

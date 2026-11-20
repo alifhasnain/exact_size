@@ -17,8 +17,17 @@ void main() {
 
   test('500-export corpus', () async {
     final runs = <CorpusRun>[];
-    for (final c in buildCorpus()) {
-      runs.add(await runCase(c));
+    final cases = buildCorpus();
+    final clock = Stopwatch()..start();
+    // A few cases at a time: each runs the runner and its reference on
+    // separate isolates, so the emulator's cores are used.
+    const parallel = 3;
+    for (var i = 0; i < cases.length; i += parallel) {
+      runs.addAll(await Future.wait([for (final c in cases.skip(i).take(parallel)) runCase(c)]));
+      if (runs.length % 99 < parallel) {
+        // ignore: avoid_print
+        print('CORPUS progress ${runs.length}/${cases.length} after ${clock.elapsed.inSeconds} s');
+      }
     }
 
     final outside = [
@@ -58,6 +67,7 @@ void main() {
         'capBinds=$capped (${(capped * 100 / runs.length).toStringAsFixed(1)}%) '
         'sig140x60_10to20=${sig.length} padded=$sigPadded '
         'paddedDecoded=${runs.where((r) => r.padded).length - undecodable.length}/${runs.where((r) => r.padded).length} '
+        'runS=${runs.fold(0, (t, r) => t + r.runMs) ~/ 1000} referenceS=${runs.fold(0, (t, r) => t + r.referenceMs) ~/ 1000} '
         'outcomes=${(reasons.entries.toList()..sort((a, b) => a.key.compareTo(b.key))).map((e) => '${e.key}:${e.value}').join(',')}');
     for (final m in missed) {
       // ignore: avoid_print

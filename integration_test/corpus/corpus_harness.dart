@@ -1,7 +1,7 @@
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:exact_size/features/compression/data/compression_runner.dart';
-import 'package:exact_size/features/compression/data/dart_png_encoder.dart';
 import 'package:exact_size/features/compression/data/native_pixel_buffer.dart';
 import 'package:exact_size/features/compression/data/turbo_jpeg_encoder.dart';
 import 'package:exact_size/features/compression/domain/byte_window.dart';
@@ -91,17 +91,14 @@ NativePixelBuffer nativeFrom(CorpusCase c) {
 /// Offline reference: is there any valid export at all? JPEG: some config
 /// (A, B, C) at quality ≥ [qFloor] gives a file inside the window, or below
 /// the floor with ≥ 4 bytes of room under the ceiling for padding (FR-8).
-/// PNG: the lossless file is inside the window.
+/// JPEG only; PNG is labelled in [runCase] from its one lossless size.
 bool referenceFeasible(CorpusCase c) {
   final w = c.window;
   final px = nativeFrom(c);
   try {
-    if (c.format == OutputFormat.png) {
-      return w.contains(const DartPngEncoder().encodePng(px).length);
-    }
     flattenForJpeg(px);
     for (final config in JpegConfig.values) {
-      for (var q = 100; q >= qFloor; q--) {
+      for (var q = qFloor; q <= 100; q++) { // low first: a feasible target usually exits on the first encode
         final size = const TurboJpegEncoder()
             .encodeJpeg(px.pointer,
                 width: c.width,
@@ -120,8 +117,9 @@ bool referenceFeasible(CorpusCase c) {
 }
 
 final class CorpusRun {
-  CorpusRun(this.c, this.feasible, this.plan, this.passes);
+  CorpusRun(this.c, this.feasible, this.plan, this.passes, this.runMs, this.referenceMs);
   final CorpusCase c;
+  final int runMs, referenceMs;
   final bool feasible;
   final PlanResult plan;
   final int passes;
@@ -130,10 +128,26 @@ final class CorpusRun {
 }
 
 Future<CorpusRun> runCase(CorpusCase c) async {
-  final feasible = referenceFeasible(c);
+  // The JPEG reference is exhaustive and slow, so it runs on its own isolate
+  // while the runner works (both are pure functions of the case).
+  final refWatch = Stopwatch()..start();
+  final reference = c.format == OutputFormat.jpeg
+      ? Isolate.run(() => referenceFeasible(c)).whenComplete(refWatch.stop)
+      : null;
   var passes = 0;
+  final sw = Stopwatch()..start();
   final plan = await const CompressionRunner().run(
       CompressionRequest(pixels: nativeFrom(c), minKb: c.minKb, maxKb: c.maxKb, format: c.format),
       onProgress: (p, _) => passes = p);
-  return CorpusRun(c, feasible, plan, passes);
+  final runMs = sw.elapsedMilliseconds;
+  // PNG is one deterministic lossless encode (FR-9): feasible exactly when
+  // its size, exported or reported as the closest size, is in the window.
+  // Labelled from the size, not the verdict, so a wrong verdict still fails.
+  final feasible = c.format == OutputFormat.png
+      ? c.window.contains(switch (plan) {
+          ReadyToWrite(:final bytes) => bytes.length,
+          PlanFailed(:final failure) => failure.closestBytes ?? -1,
+        })
+      : await reference!;
+  return CorpusRun(c, feasible, plan, passes, runMs, refWatch.elapsedMilliseconds);
 }
