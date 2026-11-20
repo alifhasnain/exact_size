@@ -10,11 +10,13 @@ import '../fake_encoder.dart';
 void main() {
   final linear = linearCurve(atQ1: 1000, atQ100: 100000); // config A: q → 1000·q roughly
 
-  SearchOutcome run(FakeEncoder enc, ByteWindow w) {
+  SearchOutcome run(FakeEncoder enc, ByteWindow w, {bool mainPathOnly = true}) {
     final out = searchJpeg(enc, w);
     expect(enc.calls.length, lessThanOrEqualTo(maxPasses), reason: 'NFR-1 pass cap');
-    expect(enc.calls.every((c) => c.subsampling == Subsampling.yuv420 && c.optimiseHuffman), isTrue,
-        reason: 'main path uses config A only');
+    if (mainPathOnly) {
+      expect(enc.calls.every((c) => c.subsampling == Subsampling.yuv420 && c.optimiseHuffman), isTrue,
+          reason: 'main path uses config A only');
+    }
     return out;
   }
 
@@ -62,8 +64,9 @@ void main() {
     expect((out.reason, out.closestBytes, out.direction), (Reason.aboveMax, 60000, Direction.tooBig));
   });
 
-  test('A@100 below the floor hands over to the FR-8 levers (T11)', () {
-    final out = run(FakeEncoder(jpegSize: linear), ByteWindow.fromKb(minKb: 200, maxKb: 300));
+  test('A@100 below the floor leaves the main path (levers in size_search_floor_test)', () {
+    final out = run(FakeEncoder(jpegSize: linear), ByteWindow.fromKb(minKb: 200, maxKb: 300),
+        mainPathOnly: false);
     expect(out, isA<SearchBelowWindow>().having((o) => o.jumpCase, 'jumpCase', false));
   });
 

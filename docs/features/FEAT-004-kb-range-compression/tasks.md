@@ -96,7 +96,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/size_search.dart`: A@100, binary search for the largest q in `[qFloor, 99]` with size ≤ hi, neighbour check q+1, q+2, per-(config, q) size cache, `ABOVE_MAX` / `TOO_DEGRADED` via A@1, hard cap of 10 passes; `qFloor = 40` as one constant.
 - **Done when:** `size_search_main_test.dart` with the fake encoder passes: monotonic curve → highest fitting q; non-monotonic curve → the fitting neighbour is chosen; fit only below q 40 → `TOO_DEGRADED`; A@1 > hi → `ABOVE_MAX`; min unset → best q under the ceiling (AC-8.2); pass count ≤ 10 for every scripted curve in the test file.
 
-### - [ ] FEAT-004-T11 — FR-8 levers 1–3 and the narrow-window jump case
+### - [x] FEAT-004-T11 — FR-8 levers 1–3 and the narrow-window jump case
 - **Implements:** FR-4, FR-8 (levers 1–3) · **ADRs:** ADR-002
 - **Depends on:** T10
 - **Size:** M
