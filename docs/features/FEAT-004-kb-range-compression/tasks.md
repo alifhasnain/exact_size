@@ -180,7 +180,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `test/support/synthetic_images.dart`: seeded photo-like images (gradients, noise, shapes, up to 2 MP) and signature-like images (thin strokes on white, for example 140×60), RGB and RGBA; golden SHA-256 hashes of outputs for about 30 fixed (image, target) cases incl. a padded case. No real photos or signatures; any sample asset name is `[PLACEHOLDER]`.
 - **Done when:** `golden_determinism_test.dart` passes twice in a row on the x86_64 emulator in CI and on an arm64 emulator if available (AC-6.1); changing the pinned encoder flags makes it fail.
 
-### - [ ] FEAT-004-T23 — Cross-ABI golden comparison — gate G2
+### - [x] FEAT-004-T23 — Cross-ABI golden comparison — gate G2
 - **Implements:** FR-21, NFR-3 · **ADRs:** ADR-002
 - **Depends on:** T22
 - **Size:** S
