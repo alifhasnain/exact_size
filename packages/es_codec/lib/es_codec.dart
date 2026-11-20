@@ -6,7 +6,25 @@ library;
 
 import 'src/android/android_build.g.dart';
 
-export 'src/android/android_graphics.g.dart' show Bitmap, Bitmap$$Methods, Bitmap$Config, BitmapFactory, BitmapFactory$Options, BitmapFactory$Options$$Methods;
+export 'src/android/android_graphics.g.dart'
+    show
+        Bitmap,
+        Bitmap$$Methods,
+        Bitmap$Config,
+        BitmapFactory,
+        BitmapFactory$Options,
+        BitmapFactory$Options$$Methods,
+        BitmapRegionDecoder,
+        BitmapRegionDecoder$$Methods,
+        ColorSpace,
+        ColorSpace$$Methods,
+        ColorSpace$Named,
+        ExifInterface,
+        ExifInterface$$Methods,
+        ImageDecoder,
+        ImageDecoder$Source,
+        Rect;
+
 export 'src/bitmap_pixels.dart' show BitmapPixelsException, copyBitmapRgba, copyBitmapViaDirectBuffer;
 export 'src/licenses.dart' show registerEsCodecLicenses;
 export 'src/resample.dart' show resizeRgbaCatmullRom;

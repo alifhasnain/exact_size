@@ -68,6 +68,14 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - run: flutter pub get
+      # FEAT-002-T04 decode matrix: 12 and 50 MP synthetic sources, generated offline here.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Generate large decoder fixtures (12, 50 MP)
+        run: |
+          python -m pip install -r tool/crop_fixtures_requirements.txt
+          python -I tool/gen_crop_fixtures.py --large /tmp/large --mp 12,50
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
@@ -77,3 +85,4 @@ jobs:
           script: |
             flutter test integration_test --dart-define=EXPECTED_SDK_INT=28
             bash tool/run_offline_test.sh
+            DEVICE=emulator-5554 LARGE_DIR=/tmp/large flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/decode_matrix.dart -d emulator-5554
