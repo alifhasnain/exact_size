@@ -73,6 +73,7 @@ CLibrary codecLibrary(OS targetOS) => CLibrary(
   sources: [
     for (final s in _jpegSources) '$_ljt/$s',
     'src/es_stb_resize.c', // stb_image_resize2 (ADR-005, FEAT-002-T01)
+    'src/es_bitmap.c', // Bitmap pixels via jnigraphics (FEAT-002-T03)
   ],
   includes: [
     'third_party/libjpeg-turbo-config', // hand-written CMake-generated headers
@@ -80,7 +81,10 @@ CLibrary codecLibrary(OS targetOS) => CLibrary(
     '$_ljt/spng',
     '$_ljt/spng/zlib',
     'third_party/stb',
+    'src',
   ],
+  // AndroidBitmap_* (FEAT-002-T03, ADR-004).
+  libraries: [if (targetOS == OS.android) 'jnigraphics'],
   // Same as upstream COMPILE_FLAGS for the turbojpeg target, plus zlib's prefix.
   defines: {
     'BMP_SUPPORTED': null,

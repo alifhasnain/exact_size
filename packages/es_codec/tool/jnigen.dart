@@ -4,10 +4,24 @@ import 'dart:io';
 
 import 'package:jnigen/jnigen.dart';
 
-/// FEAT-004-T02 JNIgen proof: binding for android.os.Build (VERSION.SDK_INT).
-/// Regenerate with: dart run tool/jnigen.dart (needs a JDK 17-21).
+/// JNIgen bindings. Regenerate with: dart run tool/jnigen.dart (needs a JDK 17-21).
+/// - android.os.Build (VERSION.SDK_INT), FEAT-004-T02 proof;
+/// - android.graphics.Bitmap and BitmapFactory (with Options), FEAT-002-T03
+///   spike, kept for the decoder (FEAT-002-T12).
 Future<void> main() async {
   final root = Platform.script.resolve('../');
+  await JniGenerator(
+    input: Input(
+      classes: ['android.graphics.Bitmap', 'android.graphics.BitmapFactory'],
+      androidSdk: AndroidSdk(versions: [36], sdkRoot: _androidSdkRoot()),
+    ),
+    output: Output(
+      dart: DartOutput(
+        path: root.resolve('lib/src/android/android_graphics.g.dart'),
+        structure: OutputStructure.singleFile,
+      ),
+    ),
+  ).generate();
   await JniGenerator(
     input: Input(
       classes: ['android.os.Build'],

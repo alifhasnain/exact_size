@@ -2,7 +2,8 @@
 
 import 'package:code_assets/code_assets.dart';
 import 'package:es_codec/src/c_library.dart';
-import 'package:es_codec/src/turbojpeg.record_use_mapping.g.dart';
+import 'package:es_codec/src/es_native.record_use_mapping.g.dart' as es_native;
+import 'package:es_codec/src/turbojpeg.record_use_mapping.g.dart' as turbojpeg;
 import 'package:hooks/hooks.dart';
 import 'package:native_toolchain_c/native_toolchain_c.dart';
 import 'package:record_use/record_use.dart';
@@ -17,9 +18,11 @@ void main(List<String> arguments) async {
       linkerOptions: LinkerOptions.treeshake(
         flags: linkFlags(targetOS),
         symbolsToKeep: input.recordedUses?.calls.keys.cast<Method>().map(
-          (e) => recordUseMapping[e.name]!,
+          (e) => _mapping[e.name]!,
         ),
       ),
     );
   });
 }
+
+const _mapping = {...turbojpeg.recordUseMapping, ...es_native.recordUseMapping};
