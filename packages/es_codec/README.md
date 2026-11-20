@@ -18,7 +18,13 @@ encodes. Check at least once per release and whenever a security release is anno
 - https://github.com/libjpeg-turbo/libjpeg-turbo/security/advisories and the project's releases page;
 - the NVD/CVE database, searching for "libjpeg-turbo".
 
-An upgrade follows the steps in `VENDOR.md` and regenerates the golden files (ADR-002 pinning rule).
+stb_image_resize2 (`third_party/stb`, ADR-005) resamples decoded pixels. Check it on the same schedule:
+- https://github.com/nothings/stb_image_resize issues, pull requests and commits (upstream discusses
+  security bugs in public there);
+- the NVD/CVE database, searching for "stb_image_resize".
+
+An upgrade follows the steps in the library's `VENDOR.md` and regenerates the golden files (ADR-002
+and ADR-005 pinning rule).
 
 ## Regenerating bindings
 - FFI: `dart run tool/ffigen.dart` (needs LLVM/libclang).

@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 const _base = 'packages/es_codec/third_party/libjpeg-turbo';
+const _stb = 'packages/es_codec/third_party/stb';
 
 /// Adds the licences of the native code bundled in es_codec (libjpeg-turbo:
-/// IJG, Modified BSD, zlib; its bundled libspng and zlib) to Flutter's licence
+/// IJG, Modified BSD, zlib; its bundled libspng and zlib; stb_image_resize2,
+/// MIT option of its MIT / public-domain licence) to Flutter's licence
 /// registry, so they appear on the app's licence page. Pub packages are added
 /// by Flutter itself. Call once at app start.
 void registerEsCodecLicenses() {
@@ -23,6 +25,10 @@ void registerEsCodecLicenses() {
     yield LicenseEntryWithLineBreaks(
       ['zlib (bundled with libjpeg-turbo)'],
       await load('src/spng/zlib/LICENSE'),
+    );
+    yield LicenseEntryWithLineBreaks(
+      ['stb_image_resize2'],
+      await rootBundle.loadString('$_stb/LICENSE'),
     );
   });
 }

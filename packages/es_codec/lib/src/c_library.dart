@@ -70,12 +70,16 @@ const _jpegSources = [
 CLibrary codecLibrary(OS targetOS) => CLibrary(
   name: 'es_codec',
   assetName: 'es_codec_native',
-  sources: [for (final s in _jpegSources) '$_ljt/$s'],
+  sources: [
+    for (final s in _jpegSources) '$_ljt/$s',
+    'src/es_stb_resize.c', // stb_image_resize2 (ADR-005, FEAT-002-T01)
+  ],
   includes: [
     'third_party/libjpeg-turbo-config', // hand-written CMake-generated headers
     _ljt,
     '$_ljt/spng',
     '$_ljt/spng/zlib',
+    'third_party/stb',
   ],
   // Same as upstream COMPILE_FLAGS for the turbojpeg target, plus zlib's prefix.
   defines: {

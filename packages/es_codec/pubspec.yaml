@@ -29,3 +29,4 @@ flutter:
     - third_party/libjpeg-turbo/src/spng/LICENSE
     - third_party/libjpeg-turbo/src/spng/libpng-LICENSE.txt
     - third_party/libjpeg-turbo/src/spng/zlib/LICENSE
+    - third_party/stb/LICENSE
