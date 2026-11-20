@@ -2,7 +2,7 @@
 id: FEAT-002
 title: Crop and resize to exact target dimensions
 status: Approved
-version: 1.2
+version: 1.3
 updated: 2026-11-20
 links: [ROADMAP, FEAT-001, FEAT-004, FEAT-005, FEAT-006, FEAT-008, FEAT-011, FEAT-016, FEAT-018]
 ---
@@ -197,6 +197,8 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | FR-28 | The system should show four corner handles on the crop frame. Dragging a handle resizes the frame proportionally, anchored at the opposite corner, with the ratio locked to W:H. Handles, drag and pinch-zoom all edit the same `cropRect` and obey the same limits: clamped to the image (no empty area) and to the FR-4 minimum crop. One gesture runs at a time. On release the frame re-centres and re-fits on screen without changing `cropRect`. Touch targets are ≥ 48 dp and may extend outside the frame. Handles keep physical positions in RTL and have TalkBack labels; zoom actions (FR-5) are the non-gesture equivalent. Product Owner decision 2026-11-19 (OQ-5). | US-13 | Should |
 
 ## 7. Non-functional requirements
+
+> **Test environment (Product Owner decision 2026-11-20):** no physical low-end phone is used before release. Wherever this PRD says "low-end device", "R1 low-end device" or "R1 device matrix", read: Android emulators with a 2 GB RAM profile on API 28 and on the latest API. Memory and reliability targets are checked there. Timing targets (the speed rows in section 3 and the timing parts of the NFRs and FR-25 frame rate) are best effort: measured on the emulator for information only and not verified on real low-end hardware. Risk accepted: slowness or low-memory kills on real low-end phones may first appear after release.
 | ID | Category | Requirement |
 |---|---|---|
 | NFR-1 | Performance | On the R1 low-end device (about 2 GB RAM, entry-level CPU [Assumption]): crop screen visible ≤ 1.5 s median after selecting a 12 MP photo; final render ≤ 2 s median and ≤ 5 s p95 for a 12 MP source and a target ≤ 2 MP; a 50 MP source renders in ≤ 8 s p95; crop-screen interaction ≥ 30 fps. All [Assumption], to be measured in Stage 6. |
@@ -301,7 +303,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 - [x] **OQ-6 — decided 2026-11-20: no extra lower bound in FEAT-002 (1–10,000 px per side, ≤ 24 MP); FEAT-005 may show a soft hint.** Maximum target bound. 24 MP [Assumption] follows FEAT-004 OQ-4. Is a lower bound (for example W,H ≥ 16 px) needed, and who owns it (FEAT-005)?
 - [x] **OQ-7 — decided 2026-11-19: never in R1.** Brightness/contrast adjustment. Not in scope or proposed (BRIEF excludes general editing). Listed only so the Product Owner can confirm "never in R1" or ask for a later feature.
 - [x] **OQ-8 — decided 2026-11-19: hide from recents on Android 13+ without blocking screenshots (FR-26).** Hide the crop screen from the Android recent-apps thumbnail (FLAG_SECURE-style).** Privacy gain for identity photos versus tester inconvenience (blocks screenshots). Decide with FEAT-016.
-- [ ] **OQ-9: Effort.** Stage 6 re-estimate 2026-11-20: about 4.7 pw (range 4.0–5.5), of which about 0.7 pw is Should items (handles, rotate, nudge buttons). Whether to keep the Shoulds in R1 is decided in the roadmap update. Roadmap gives 1.3 pw. This scope (EXIF, region decode of large images, colour conversion, accessible crop UI, 6 languages, rotate, corner handles about +0.4 pw [Assumption]) probably exceeds it. Re-estimate in Stage 6; impact on the 20.2 pw plan to be shown to the Product Owner.
+- [x] **OQ-9 — decided 2026-11-20: Should items stay in R1 (ROADMAP v1.2).** Effort. Stage 6 re-estimate 2026-11-20: about 4.7 pw (range 4.0–5.5), of which about 0.7 pw is Should items (handles, rotate, nudge buttons). Whether to keep the Shoulds in R1 is decided in the roadmap update. Roadmap gives 1.3 pw. This scope (EXIF, region decode of large images, colour conversion, accessible crop UI, 6 languages, rotate, corner handles about +0.4 pw [Assumption]) probably exceeds it. Re-estimate in Stage 6; impact on the 20.2 pw plan to be shown to the Product Owner.
 - [x] **OQ-10 — closed 2026-11-20: native in-memory buffer, ADR-003.** Pixel handover format to FEAT-004. In-memory buffer versus app-private raw temp file at 24 MP (about 96 MB at 4 channels). Architecture decision; the contract in section 1 does not change.
 - [x] **OQ-11 — decided 2026-11-20: FEAT-002's source probe is the single implementation; FEAT-001 calls it right after picking.** Who probes the source first. Does FEAT-001 do the header/decodability probe on selection, or FEAT-002 (this PRD)? FEAT-004 AC-5.2 says the message shows "when it is selected".
 - [x] **OQ-12 — decided 2026-11-20 (Product Owner, option A): same-device determinism (Must) means same device and OS build; cross-device stays Should; no bundled decoders.** Cross-device determinism. FR-12 makes this Should, because OS decoders differ; a bundled decoder would make it Must but adds app size.
@@ -319,3 +321,5 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | 1.1 | 2026-11-20 | Re-approved by Product Owner |
 | 1.2 | 2026-11-20 | Clarification after Stage 6: FR-12 same device means same OS build (OQ-12); `rotationApplied` manual only (OQ-13); FR-4 extreme ratios (OQ-14); OQ-4, 6, 10, 11 closed per FEAT-002-TECH; OQ-9 effort noted. Under Discussion until re-approved |
 | 1.2 | 2026-11-20 | Re-approved by Product Owner |
+| 1.3 | 2026-11-20 | Test environment note: emulators only (2 GB RAM profile), timing targets best effort, no physical low-end device (Product Owner). OQ-9 ticked: Shoulds stay in R1 (decided 2026-11-20). Under Discussion until re-approved |
+| 1.3 | 2026-11-20 | Re-approved by Product Owner |

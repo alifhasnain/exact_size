@@ -53,3 +53,17 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-20 | FEAT-002 | Under Discussion | 1.2 | Clarification after Stage 6; needs re-approval |
 | 2026-11-20 | FEAT-002 | Approved | 1.2 | Re-approved; confirms OQ-4, 6, 10, 11, 12, 13, 14; only OQ-9 (Shoulds in R1) open, for the roadmap update |
 | 2026-11-20 | FEAT-002-TECH | Approved | 1.0 | Effort ~4.7 pw (0.7 pw Shoulds); keep-or-defer Shoulds decided in roadmap update |
+| 2026-11-20 | ROADMAP | Under Discussion | 1.2 | Stage 6 effort update drafted: R1 20.2 → 25.8 pw; needs Product Owner decision on options and re-approval |
+| 2026-11-20 | FEAT-002 OQ-9 | Should items (handles, rotate, nudge buttons, 0.7 pw) stay in R1 | 1.2 | R1 stays 25.8 pw; PRD OQ-9 checkbox to be ticked at the next FEAT-002 PRD change |
+| 2026-11-20 | ROADMAP | Approved | 1.2 | Stage 6 effort update: R1 25.8 pw (Phase A 13.8, Phase B 10.5, setup 0.3, store 1.5); FEAT-002 Shoulds kept; spike merge (b) still an option; BRIEF timeline needs update |
+| 2026-11-20 | BRIEF | Under Discussion | 1.4 | Timeline aligned with ROADMAP v1.2 (25.8 pw); stack lines point to ADR-001/002; needs re-approval |
+| 2026-11-20 | BRIEF | Approved | 1.4 | Timeline about 6.5 months / 25.8 pw; stack per ADR-001/002 |
+| 2026-11-20 | FEAT-004-TASKS | CI = GitHub Actions; PNG-to-JPEG switch re-renders via FEAT-002 | 0.2 | No low-end test device on hand; sourcing pending |
+| 2026-11-20 | ADR-001 DI | get_it + injectable for dependency injection; Riverpod keeps state | 1.1 | ADR-001 and BRIEF back to Under Discussion; FEAT-004 tasks T01/T20 updated |
+| 2026-11-20 | Test environment | Emulators only (2 GB RAM profile, API 28 + latest); no physical low-end device | — | Timing targets best effort; risk of real low-end slowness/kills accepted; FEAT-004 PRD 1.2, FEAT-002 PRD 1.3, ROADMAP 1.3 Under Discussion |
+| 2026-11-20 | ADR-001 | Approved | 1.1 | get_it + injectable for DI; Riverpod for state |
+| 2026-11-20 | BRIEF | Approved | 1.5 | Technology line: get_it + injectable for DI (ADR-001 v1.1) |
+| 2026-11-20 | FEAT-004 | Approved | 1.2 | Re-approved with emulator-only test environment; timing targets best effort |
+| 2026-11-20 | FEAT-002 | Approved | 1.3 | Re-approved with emulator-only test environment; OQ-9 ticked; no open questions |
+| 2026-11-20 | ROADMAP | Approved | 1.3 | Phase A exit on emulators (2 GB RAM profile); timing targets best effort |
+| 2026-11-20 | FEAT-004-TASKS | Approved | 1.0 | 27 tasks; T01-T02 shared scaffold; emulator-only testing; T27 blocked until FEAT-002 |

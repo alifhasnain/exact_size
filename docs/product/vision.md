@@ -2,8 +2,8 @@
 id: BRIEF
 title: ExactSize — Product Vision & Brief
 status: Approved
-version: 1.3
-updated: 2026-11-18
+version: 1.5
+updated: 2026-11-20
 links: []
 ---
 
@@ -30,7 +30,7 @@ Hits the **exact** target (pixel dimensions + KB range + format) in one step —
 
 ## Platforms & markets
 - Market: **Global** from launch (no single-country focus).
-- Platforms: **Android first** (Product Owner decision 2026-11-18), built in **Flutter** with platform-specific code only where needed (to be recorded as an ADR in Stage 6). iOS is later, possibly far future; keep the code iOS-ready but plan no iOS work.
+- Platforms: **Android first** (Product Owner decision 2026-11-18), built in **Flutter** with platform-specific code only where needed (ADR-001: Flutter 3.50.x, minimum Android 9 / API 28). iOS is later, possibly far future; keep the code iOS-ready but plan no iOS work.
 - Languages: **English, Spanish, Portuguese (Brazil), Hindi, Indonesian, Arabic** (Product Owner decision, 2026-11-18). Arabic needs RTL layout. All 6 ship in the first public release (M1 and M2 merged, 2026-11-18).
 - Target input: manual entry (W×H, KB range, format) + **built-in preset library** for popular forms worldwide + **saved custom presets**.
 
@@ -49,8 +49,8 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 | Paid conversion (ad-free) | ≥ 1–2% of monthly active users | Store revenue reports |
 
 ## Constraints
-- **Team / timeline:** solo developer with Claude Code. First public release is ~5 months (~20 person-weeks): core and Phase B shipped together (Product Owner decision 2026-11-18, replacing the original 2–3 month MVP target).
-- **Technology:** Flutter; on-device processing only; no backend for MVP. [Assumption]
+- **Team / timeline:** solo developer with Claude Code. First public release is about 6.5 months (25.8 person-weeks, ROADMAP v1.2): core and Phase B shipped together (Product Owner decision 2026-11-18, replacing the original 2–3 month MVP target; re-estimated 2026-11-20 after the Stage 6 tech plans for FEAT-002 and FEAT-004).
+- **Technology:** Flutter 3.50.x with Riverpod (state) and get_it + injectable (dependency injection); native C via Dart FFI for image codecs (ADR-001, ADR-002); on-device processing only; no backend for R1.
 - **Budget:** minimal — store developer fees, no paid servers. [Assumption]
 - **Regulation:** ad consent (GDPR/UK, ATT), store privacy disclosures, children's privacy (see Compliance scope).
 
@@ -91,3 +91,7 @@ All targets below are [Assumption] starting points for the Product Owner to adju
 | 1.1 | 2026-11-18 | Paid tier set to yearly subscription; launch languages chosen (Product Owner decisions) |
 | 1.2 | 2026-11-18 | First release = M1 + M2 merged: all 6 languages, ads and subscription at launch; timeline ~5 months |
 | 1.3 | 2026-11-18 | Android first, iOS later; presets updated via app releases (Firebase later); regional pricing deferred |
+| 1.4 | 2026-11-20 | Timeline updated to about 6.5 months / 25.8 pw (ROADMAP v1.2); stack details point to ADR-001 and ADR-002 (Flutter 3.50.x, Riverpod, minimum Android 9). Under Discussion until re-approved |
+| 1.4 | 2026-11-20 | Approved by Product Owner |
+| 1.5 | 2026-11-20 | Technology line: get_it + injectable for dependency injection (ADR-001 v1.1). Under Discussion until re-approved |
+| 1.5 | 2026-11-20 | Approved by Product Owner |

@@ -2,7 +2,7 @@
 id: FEAT-004
 title: Compress to a min–max KB range with JPEG/PNG choice
 status: Approved
-version: 1.1
+version: 1.2
 updated: 2026-11-20
 links: [ROADMAP, FEAT-002, FEAT-005, FEAT-006, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-010]
 ---
@@ -132,6 +132,8 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | FR-20 | The system shall delete all intermediate and candidate files on success, cancel, failure and at next app start (orphan sweep). | US-6 | Must |
 
 ## 7. Non-functional requirements
+
+> **Test environment (Product Owner decision 2026-11-20):** no physical low-end phone is used before release. Wherever this PRD says "low-end device", "R1 low-end device" or "R1 device matrix", read: Android emulators with a 2 GB RAM profile on API 28 and on the latest API. Memory and reliability targets are checked there. Timing targets (the speed rows in section 3 and the timing parts of the NFRs; cross-device identity, FR-21, is compared only between emulator ABIs) are best effort: measured on the emulator for information only and not verified on real low-end hardware. Risk accepted: slowness or low-memory kills on real low-end phones may first appear after release.
 | ID | Category | Requirement |
 |---|---|---|
 | NFR-1 | Performance | On a low-end Android device (about 2 GB RAM, entry-level CPU [Assumption]) the search for a target of ≤ 2 megapixels completes in ≤ 3 s median and ≤ 8 s p95 [Assumption]. Search is bounded to ≤ 10 encode passes [Assumption]. |
@@ -224,3 +226,5 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | 1.0 | 2026-11-19 | Approved by Product Owner |
 | 1.1 | 2026-11-20 | Clarification after Stage 6: OQ-12 narrow-window case pads (FR-8), `NO_FIT` narrowed; `WRITE_FAILED` added; OQ-3 to OQ-11 decided per FEAT-004-TECH; OQ-13 metadata coupling; FR-7 floor and AC-5.2 example updated. Under Discussion until re-approved |
 | 1.1 | 2026-11-20 | Re-approved by Product Owner |
+| 1.2 | 2026-11-20 | Test environment note: emulators only (2 GB RAM profile), timing targets best effort, no physical low-end device (Product Owner). Under Discussion until re-approved |
+| 1.2 | 2026-11-20 | Re-approved by Product Owner |

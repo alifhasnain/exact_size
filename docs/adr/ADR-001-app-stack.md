@@ -2,7 +2,7 @@
 id: ADR-001
 title: App stack — Flutter (Dart) on Android, native C via Dart FFI only where needed
 status: Approved
-version: 1.0
+version: 1.1
 updated: 2026-11-20
 links: [BRIEF, FEAT-004, FEAT-002, ADR-002, ADR-003]
 ---
@@ -43,7 +43,8 @@ Flutter 3.50.x declares FFIgen and JNIgen production-ready. They let Dart call C
 | Native interop | **FFIgen** for C bindings (`packages/es_codec/`); **JNIgen** for Android API calls; `record_use` enabled for tree shaking | Hand-written `dart:ffi` bindings and a Kotlin platform-channel plugin |
 | minSdk | **28 (Android 9)**, Product Owner decision 2026-11-20. The platform decodes HEIC/HEIF on every supported device [Fact](https://developer.android.com/media/platform/supported-formats). `UNSUPPORTED_INPUT` stays only for corrupt or unusual files, for example some 10-bit or HDR HEIC variants [Hypothesis]. Devices on Android 7.0–8.1 can't install the app [Assumption: a small share of the target market; check Play Console distribution data before release] | minSdk 24: reaches older low-end devices, but HEIC is unsupported below API 28 |
 | targetSdk | Whatever Google Play requires at release time [Fact](https://developer.android.com/google/play/requirements/target-sdk) | — |
-| State management | **Riverpod** (`flutter_riverpod`, version pinned), Product Owner decision 2026-11-20. Providers handle dependency injection and test overrides. Domain logic stays in pure Dart with no Riverpod imports, so it can be unit-tested on its own (FEAT-004 NFR-9). Whether to use `riverpod_generator` is decided at scaffold | Flutter built-ins (`ChangeNotifier`/`ValueNotifier`) |
+| State management | **Riverpod** (`flutter_riverpod`, version pinned), Product Owner decision 2026-11-20. Riverpod holds UI and flow state only; services come from the DI container (next row). Domain logic stays in pure Dart with no Riverpod or DI imports, so it can be unit-tested on its own (FEAT-004 NFR-9). Whether to use `riverpod_generator` is decided at scaffold | Flutter built-ins (`ChangeNotifier`/`ValueNotifier`) |
+| Dependency injection | **get_it + injectable** (`injectable_generator` via `build_runner`, versions pinned), Product Owner decision 2026-11-20. Services and data sources are annotated (`@injectable`, `@lazySingleton`) in the data layer and registered by the generated `configureDependencies()` at app start; Riverpod providers read services from the container. Tests register fakes in the container (`getIt.allowReassignment` or a test environment), never the real native codec | Riverpod providers as the DI mechanism (one system instead of two) |
 | Module layout | `lib/features/<feature>/{domain,data,presentation}`; native codec in a local FFI plugin package `packages/es_codec/` | One flat `lib/` |
 | Localisation | Flutter `gen-l10n` with ARB files and ICU placeholders (6 languages, RTL) | Third-party i18n package |
 
@@ -52,8 +53,8 @@ Recommend **Option A** with the sub-decisions above. It keeps one codebase, give
 
 ## Consequences
 - Easier: one language for UI and domain; pure-Dart domain is unit-testable (FEAT-004 NFR-9); no hand-written bindings or Kotlin plugin; HEIC works on every supported device.
-- Harder: native build (CMake, 3 ABIs: arm64-v8a, armeabi-v7a, x86_64), 16 KB page alignment, third-party licence notices in the app; Riverpod adds a package and its concepts to learn.
-- Follow-up: the project scaffold (Flutter 3.50.x, Riverpod, lints, CI) is a prerequisite task shared by all features. At scaffold, confirm that Flutter 3.50.x's own minimum Android version is ≤ API 28 and that the FFIgen/JNIgen claims match the official release notes. FEAT-002's tech plan decides decoders within this stack.
+- Harder: native build (CMake, 3 ABIs: arm64-v8a, armeabi-v7a, x86_64), 16 KB page alignment, third-party licence notices in the app; Riverpod adds a package and its concepts to learn; get_it + injectable add a second mechanism next to Riverpod and a `build_runner` code-generation step (generated files committed or rebuilt in CI).
+- Follow-up: the project scaffold (Flutter 3.50.x, Riverpod, get_it + injectable, lints, CI) is a prerequisite task shared by all features. At scaffold, confirm that Flutter 3.50.x's own minimum Android version is ≤ API 28 and that the FFIgen/JNIgen claims match the official release notes. FEAT-002's tech plan decides decoders within this stack.
 
 ## Change log
 | Version | Date | Change |
@@ -61,3 +62,5 @@ Recommend **Option A** with the sub-decisions above. It keeps one codebase, give
 | 0.1 | 2026-11-20 | First draft |
 | 0.2 | 2026-11-20 | Flutter 3.50.x pinned; FFIgen and JNIgen replace hand-written bindings and the Kotlin plugin; `record_use` added; minSdk 28 (Product Owner); Riverpod for state management (Product Owner); native Option C reconsidered and still not recommended |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
+| 1.1 | 2026-11-20 | Dependency injection moved from Riverpod providers to get_it + injectable (Product Owner); Riverpod keeps UI and flow state. Under Discussion until re-approved |
+| 1.1 | 2026-11-20 | Approved by Product Owner |
