@@ -6,7 +6,8 @@ import 'dart:typed_data';
 
 /// Photo-like: smooth gradients, fine noise and a few soft shapes. In RGBA the
 /// shapes are partly transparent, so flattening is exercised.
-Uint8List syntheticPhoto(int width, int height, {int seed = 1, int channels = 3}) {
+/// [noise] is the peak-to-peak sensor noise (default 24; lower is smoother).
+Uint8List syntheticPhoto(int width, int height, {int seed = 1, int channels = 3, int noise = 24}) {
   final out = Uint8List(width * height * channels);
   final rnd = _Lcg(seed);
   final shapes = [
@@ -35,7 +36,7 @@ Uint8List syntheticPhoto(int width, int height, {int seed = 1, int channels = 3}
           if (channels == 4) a = math.min(a, s.alpha);
         }
       }
-      final n = rnd.next(24) - 12; // sensor-like noise
+      final n = rnd.next(noise) - noise ~/ 2; // sensor-like noise
       out[i++] = (r + n).clamp(0, 255);
       out[i++] = (g + n).clamp(0, 255);
       out[i++] = (b + n).clamp(0, 255);
