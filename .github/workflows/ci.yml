@@ -28,7 +28,7 @@ jobs:
         run: flutter pub get --directory packages/es_codec
       - name: Generated code is up to date
         run: |
-          dart run build_runner build --delete-conflicting-outputs
+          dart run build_runner build
           flutter gen-l10n
           git diff --exit-code
       - run: flutter analyze

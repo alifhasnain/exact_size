@@ -11,7 +11,7 @@ Product and technical docs live in [`docs/`](docs/): vision, roadmap, PRDs, tech
 ## Common commands
 ```sh
 flutter pub get
-dart run build_runner build --delete-conflicting-outputs   # regenerate DI config (lib/di/injection.config.dart)
+dart run build_runner build   # regenerate DI config (lib/di/injection.config.dart)
 flutter gen-l10n                                           # regenerate localizations (also runs on build)
 flutter analyze
 flutter test
