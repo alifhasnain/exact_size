@@ -24,6 +24,8 @@ jobs:
           flutter-version-file: pubspec.yaml # pinned Flutter (ADR-001)
           cache: true
       - run: flutter pub get
+      - name: Resolve es_codec dev tools (ffigen, jnigen) for analysis
+        run: flutter pub get --directory packages/es_codec
       - name: Generated code is up to date
         run: |
           dart run build_runner build --delete-conflicting-outputs
