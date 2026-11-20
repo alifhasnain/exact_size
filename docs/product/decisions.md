@@ -73,3 +73,4 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-20 | ADR-001 | Approved | 1.2 | Native C built with Dart build/link hooks (native_toolchain_c), not CMake |
 | 2026-11-20 | FEAT-004-TASKS | Approved | 1.1 | Build-hooks note (ADR-001 v1.2); T01-T02 done |
 | 2026-11-20 | FEAT-004 gate G1 | Passed: ADR-002 Option C (libjpeg-turbo) kept | — | Builds and runs on the emulator; informational timings: C 123-334 ms median per 2 MP pass, B (pure Dart) 3.5-6x slower |
+| 2026-11-20 | FEAT-002-TASKS | Approved | 1.0 | 29 tasks (~4.7 pw); design gate G3 before visual tasks; T16/T17/T20 wait for FEAT-004-T16/T18/T21 |
