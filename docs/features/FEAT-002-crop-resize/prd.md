@@ -2,8 +2,8 @@
 id: FEAT-002
 title: Crop and resize to exact target dimensions
 status: Approved
-version: 1.0
-updated: 2026-11-19
+version: 1.2
+updated: 2026-11-20
 links: [ROADMAP, FEAT-001, FEAT-004, FEAT-005, FEAT-006, FEAT-008, FEAT-011, FEAT-016, FEAT-018]
 ---
 
@@ -21,7 +21,7 @@ FEAT-002 takes the image chosen through FEAT-001 (camera or gallery) and the tar
 | Colour form | 8 bits per channel, sRGB, row-major. Opaque source: 3 channels (RGB). Source with transparency: 4 channels, straight (non-premultiplied) alpha. |
 | Colour conversion owner | **FEAT-002 owns conversion** to 8-bit sRGB at decode, using the platform decoder's own sRGB output (no custom colour engine); sources the platform can't decode to 8-bit sRGB are refused as `UNSUPPORTED_INPUT` (FR-10). This matches FEAT-004 section 9 ("converted to 8-bit sRGB before encoding"). FEAT-004 does not convert. Whether the output file embeds an sRGB ICC profile is not decided here: that is FEAT-004 OQ-6 (see OQ-4 below). |
 | Orientation | Already applied to the pixels. No orientation tag is passed on. |
-| Hand-off flags | `hasTransparency` (true only if at least one output pixel has alpha < 255), `upscaleFactor`, `cropRect`, `rotationApplied`. No EXIF, GPS, file name or path is passed on. |
+| Hand-off flags | `hasTransparency` (true only if at least one output pixel has alpha < 255), `upscaleFactor`, `cropRect`, `rotationApplied` (manual rotation only: 0, 90, 180 or 270 degrees clockwise; EXIF orientation is never included, OQ-13). No EXIF, GPS, file name or path is passed on. |
 | Cleanup | Pixel buffers or temp files follow the FEAT-004 FR-20 cleanup rules. |
 
 **Scope boundaries**
@@ -44,7 +44,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | No sideways photos | Share of EXIF orientation test files (all 8 values, JPEG and HEIC where decodable) that render upright | 100% |
 | Crash-free on large inputs | Crashes or ANRs on the large-image test set (12 MP, 50 MP, 24 MP target) on the R1 low-end device | 0 |
 | Speed | Final render from a 12 MP source to a target ≤ 2 MP on low-end (NFR-1) | ≤ 2 s median, ≤ 5 s p95 [Assumption] |
-| Determinism | Same source + crop rectangle + target + app version on the same device → same pixels | 100% of test set |
+| Determinism | Same source + crop rectangle + target + app version on the same device and OS build → same pixels | 100% of test set |
 | Re-crop quality | Re-crop output vs a single direct render from the original | Pixel-identical |
 | Task speed | Median time from crop screen open to "Continue" for a first-time user | ≤ 15 s [Assumption] |
 
@@ -110,7 +110,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 - **US-8** As a user who is not happy with the framing, I want to re-crop without losing quality, so that the second try is as sharp as the first.
   - **AC-8.1** Given I rendered once, when I go back, change the crop and render again, then the second output is computed from the original source, never from the previous output or the preview bitmap.
   - **AC-8.2** Given any sequence of N re-crops ending in the same crop rectangle as a fresh single render, when outputs are compared, then they are pixel-identical.
-  - **AC-8.3** Given the same source, same integer crop rectangle, same target and same app version on the same device, when rendered twice, then the pixel buffers are identical (FR-12).
+  - **AC-8.3** Given the same source, same integer crop rectangle, same target and same app version on the same device and OS build, when rendered twice, then the pixel buffers are identical (FR-12).
   - **AC-8.4** Given I go back to the crop screen after a render, when it opens, then my previous crop (rectangle, zoom and rotation) is restored.
 
 - **US-9** As a TalkBack or switch user, I want to frame the image without gestures, so that I can complete the step.
@@ -134,7 +134,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 - **US-12 (Should; accepted by the Product Owner 2026-11-19, OQ-1)** As a user whose photo is sideways even after automatic correction, I want to rotate it by 90° in the crop screen, so that I don't need another app.
   - **AC-12.1** Given the crop screen, when I tap rotate clockwise or counter-clockwise, then the image rotates 90° around the frame centre, the crop is re-fitted so no empty area shows, and the frame ratio does not change.
   - **AC-12.2** Given I rotated four times in one direction, when the render runs, then the result equals an unrotated render with the same crop (pixel-identical).
-  - **AC-12.3** Given rotation, when rendered, then rotation is applied to pixels once, together with the EXIF correction (a single resample, not chained), and `rotationApplied` records the total.
+  - **AC-12.3** Given rotation, when rendered, then rotation is applied to pixels once, together with the EXIF correction (a single resample, not chained), and `rotationApplied` records the manual rotation only, never the EXIF correction (OQ-13).
 
 - **US-13 (Should; Product Owner decision 2026-11-19, OQ-5)** As a user, I want to drag a corner of the crop frame to make it bigger or smaller, so that I can frame my photo the way most photo apps do.
   - **AC-13.1** Given the crop screen, when I drag any of the four corner handles, then the frame resizes proportionally, anchored at the opposite corner, and its ratio stays exactly W:H.
@@ -170,15 +170,15 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | FR-1 | The system shall accept a source handle from FEAT-001 and target W×H from FEAT-005 or FEAT-011, validate W×H (section 8) and return `INVALID_TARGET_DIMENSIONS` on failure. | US-2 | Must |
 | FR-2 | The system shall read the image header (width, height, format, orientation) without a full decode, and refuse unsupported or corrupt files with `UNSUPPORTED_INPUT` or `CORRUPT_INPUT` before showing the crop screen. | US-7 | Must |
 | FR-3 | The system shall apply EXIF orientation values 1 to 8 (including mirrored), treat missing or invalid values as 1, apply it identically in the preview and in the final render, and pass no orientation value downstream. It reads only the orientation, no other EXIF field is read or stored. | US-3 | Must |
-| FR-4 | The system shall show a crop frame whose ratio is exactly W:H, with image drag and pinch-zoom under a frame whose ratio is fixed at W:H (its on-screen size can also change through corner handles, FR-28). The initial crop is the largest centred area at ratio W:H. Minimum zoom is the "cover" scale (no empty area inside the frame); maximum zoom is the point where the crop region's shorter side is 32 source pixels or 8× the cover scale, whichever comes first [Assumption]. The frame shall be fully visible and at least 48 dp in its shorter dimension, even at ratios of 3.75:1 or more. | US-1 | Must |
+| FR-4 | The system shall show a crop frame whose ratio is exactly W:H, with image drag and pinch-zoom under a frame whose ratio is fixed at W:H (its on-screen size can also change through corner handles, FR-28). The initial crop is the largest centred area at ratio W:H. Minimum zoom is the "cover" scale (no empty area inside the frame); maximum zoom is the point where the crop region's shorter side is 32 source pixels or 8× the cover scale, whichever comes first [Assumption]. The frame shall be fully visible and at least 48 dp in its shorter dimension, even at ratios of 3.75:1 or more. Where the screen cannot show an exact-ratio frame that is fully visible and at least 48 dp (beyond about 6.5:1 in portrait), the frame is drawn at the true ratio at full width with a touch band of at least 48 dp and the "limited on-screen precision" hint pointing to the buttons; the output stays exactly W×H (OQ-14, 2026-11-20). | US-1 | Must |
 | FR-5 | The system shall provide TalkBack custom accessibility actions on the crop area (move up/down/left/right, zoom in/out, centre, reset) and visible "Centre" and "Reset" buttons (≥ 48 dp, labelled). Results are identical to gesture results (same `cropRect` rules). | US-9 | Must |
-| FR-6 | The system shall support sources up to a ceiling of 100 MP [Assumption]; above it, or if memory runs out at any step, it shall return `IMAGE_TOO_LARGE` or `OUT_OF_MEMORY_HANDLED` and never crash. Target pixels (W×H) shall be at most 24 MP [Assumption, FEAT-004 OQ-4]. | US-4 | Must |
+| FR-6 | The system shall support sources up to a ceiling of 200 MP (Product Owner decision 2026-11-20; best effort: a file that must be decoded in full and does not fit in memory gets the too-large message); above it, or if memory runs out at any step, it shall return `IMAGE_TOO_LARGE` or `OUT_OF_MEMORY_HANDLED` and never crash. Target pixels (W×H) shall be at most 24 MP [Assumption, FEAT-004 OQ-4]. | US-4 | Must |
 | FR-7 | **Downsampled decode, single resample.** The preview shall be a reduced decode used only for display. The final render shall decode only what is needed from the original file (region decode where the codec supports it, otherwise a full decode at a reduced sample size) at the largest power-of-two reduction such that the decoded crop region is still at least target W×H in both axes. The decode shall never reduce the crop region below the target size; if the crop region is smaller than the target, no reduction is applied. The preview bitmap shall never be used as a render input. | US-4, US-8 | Must |
 | FR-8 | The system shall define the crop as an integer rectangle `cropRect` (x, y, w, h) in oriented-source pixels with `abs(w/h − W/H)` as small as possible given integers (the rounding error is under 1 source pixel on each side). The resample maps cropRect onto W×H with separate x and y scale factors only to absorb that rounding. | US-2 | Must |
 | FR-9 | The system shall resample once from the decoded region to exactly W×H using one pinned, anti-aliased algorithm chosen in Stage 6 and recorded in an ADR, with alpha handled in premultiplied form. (Linear-light and PSNR targets removed, Product Owner decision 2026-11-19.) | US-2 | Must |
 | FR-10 | The system shall obtain 8-bit sRGB pixels by asking the platform decoder for 8-bit sRGB output (which covers grayscale, 16-bit and ICC-tagged/wide-gamut sources where the platform supports them). It shall not implement its own colour conversion. Sources the platform can't decode to 8-bit sRGB (for example CMYK JPEGs on devices that don't support them) shall return `UNSUPPORTED_INPUT` with the normal message. Scope trimmed by Product Owner decision 2026-11-19. | US-2 | Must |
 | FR-11 | **Upscale warning.** upscaleFactor = `max(W/cropW, H/cropH)` computed on the current cropRect. At > 1.0 up to 2.0 the system shall show a visible information notice; above 2.0 [Assumption] it shall require explicit confirmation ("Continue anyway") before rendering. Upscaling is never blocked. The notice shall not rely on colour alone and updates live while zooming. | US-5 | Must |
-| FR-12 | The system shall be deterministic: the same source bytes, `cropRect`, target, rotation and app version on the same device shall give byte-identical pixel buffers. The gesture-to-cropRect conversion shall also be deterministic (same final gesture state, same cropRect). Cross-device identity is Should (depends on the platform decoder; OS decoders may differ) and is a Stage 6 decision. | US-8 | Must |
+| FR-12 | The system shall be deterministic: the same source bytes, `cropRect`, target, rotation and app version on the same device and the same OS build shall give byte-identical pixel buffers (an OS update may change the platform decoder's output). The gesture-to-cropRect conversion shall also be deterministic (same final gesture state, same cropRect). Cross-device identity is Should (depends on the platform decoder; OS decoders may differ); kept as Should by the Product Owner, 2026-11-20 (OQ-12). | US-8 | Must |
 | FR-13 | Every render shall start from the original source (re-read and re-decoded), never from a prior output, preview or intermediate resize. The crop state (cropRect, zoom, rotation) shall be restored when the user returns to the screen in the same session. | US-8 | Must |
 | FR-14 | The system shall keep alpha through crop and resample (straight alpha, 4 channels) when the source has transparency, set `hasTransparency` accurately, and show a checkerboard under transparent areas. It shall not flatten transparency; this is FEAT-004 FR-12. | US-6 | Must |
 | FR-15 | The system shall use the first frame of animated sources and tell the user. | US-7 | Must |
@@ -206,7 +206,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | NFR-5 | Offline / poor network | Fully offline; the image pipeline makes no network calls and needs no downloadable codec or server. |
 | NFR-6 | Localisation | English, Spanish, Portuguese (Brazil), Hindi, Indonesian, Arabic. Placeholders for numbers and dimensions; Arabic is RTL, with bidi-isolated numbers and units; native-speaker review is part of the R1 Phase B exit criteria (FEAT-019). |
 | NFR-7 | Privacy | See section 10: on-device only, no content logging, original never modified, temp files cleaned. |
-| NFR-8 | Reliability | No crash or ANR on the test set: 8 EXIF orientations, HEIC/WebP (supported and unsupported), 100 MP and corrupt files, 1×1 sources, extreme ratios. |
+| NFR-8 | Reliability | No crash or ANR on the test set: 8 EXIF orientations, HEIC/WebP (supported and unsupported), 100 MP, 200 MP and corrupt files, 1×1 sources, extreme ratios. |
 | NFR-9 | Testability | The render pipeline is a pure function over (source bytes, cropRect, rotation, target), unit-testable with synthetic images and a golden-pixel determinism test; orientation and colour tests use synthetic images only. |
 | NFR-10 | Compatibility | Min Android version and HEIC support follow the minSdk decision (FEAT-004 OQ-10); behaviour is identical for JPEG, PNG, WebP and HEIC wherever decodable. |
 
@@ -215,7 +215,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 |---|---|---|
 | Target W and H | Integers, each ≥ 1 and ≤ 10,000 [Assumption]; UI entry validation belongs to FEAT-005, FEAT-002 re-checks defensively | "Enter a width and height between 1 and 10,000 pixels." |
 | Target pixel count | W×H ≤ 24 MP [Assumption, FEAT-004 OQ-4] | "That size is too large for this app. Choose a smaller size." |
-| Source pixel count | ≤ 100 MP [Assumption] | "This photo is too large to open on this device. Choose another photo." |
+| Source pixel count | ≤ 200 MP (Product Owner, 2026-11-20) | "This photo is too large to open on this device. Choose another photo." |
 | Source format | Decodable JPEG, PNG, WebP; HEIC/HEIF where the device supports it | "This file type isn't supported on this device. Choose a JPEG or PNG photo." |
 | Source integrity | Must decode (header and data) | "We can't read this file. Choose another photo." |
 | Source availability | Source must still be readable at render time | "We can't find this photo anymore. Please choose it again." |
@@ -248,7 +248,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | Photo is sideways even after EXIF (no tag) | Manual rotate (FR-21) fixes it |
 | 16-bit, CMYK, grayscale, Display P3 source | Converted to 8-bit sRGB by the platform decoder where supported; otherwise `UNSUPPORTED_INPUT` (FR-10) |
 | 50 MP source | Reduced preview; region/sample decode; never below target size (FR-7); no crash |
-| Source above 100 MP or out of memory | `IMAGE_TOO_LARGE`/`OUT_OF_MEMORY_HANDLED`, with a message |
+| Source above 200 MP, or out of memory (for example a 200 MP file that cannot be decoded in parts) | `IMAGE_TOO_LARGE`/`OUT_OF_MEMORY_HANDLED`, with a message |
 | Target 24 MP on a low-end device | Either completes or `OUT_OF_MEMORY_HANDLED`, never a crash |
 | Target above 24 MP | Refused up front (section 8) |
 | Re-crop after a render | New render from the original; pixel-identical to a fresh render (AC-8.2) |
@@ -296,15 +296,17 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 - [x] **OQ-1 — decided 2026-11-19: accepted as Should (FR-21).** Manual 90° rotate in the crop screen (Should, FR-21, US-12).** Camera photos are often sideways even after EXIF correction. Pro: avoids leaving the app; small UI cost. Con: more UI and test surface; adds effort. This PRD proposes Should; not decided.
 - [x] **OQ-2 — decided 2026-11-19: keep notice above 1.0 and confirmation above 2.0.** Upscale thresholds. Information notice above 1.0 and confirmation above 2.0 [Assumption]. Should the threshold be different (for example warning only above 1.5, hard limit above 4)? Needs a visual test on real small sources.
 - [x] **OQ-3 — decided 2026-11-19: keep the read URI, no copy.** Source-handle lifetime (FEAT-001). Does FEAT-001 copy the picked image into app-private cache (stable re-crop, but an extra personal-data copy to clean up) or keep a read URI (no copy, but `SOURCE_UNAVAILABLE` risk)? Proposed default: keep the read URI, no copy.
-- [ ] **OQ-4 (for FEAT-004 OQ-6): ICC profile in the output file.** FEAT-002 converts to sRGB (this PRD). Does the output embed an sRGB ICC profile or no profile? Bytes count toward KB (FEAT-004 FR-14), so FEAT-004/FEAT-018 must decide; FEAT-002 proposes no profile (untagged sRGB is the web default) [Assumption].
+- [x] **OQ-4 — closed 2026-11-20: no ICC profile, decided in FEAT-004 (OQ-6).** ICC profile in the output file. FEAT-002 converts to sRGB (this PRD). Does the output embed an sRGB ICC profile or no profile? Bytes count toward KB (FEAT-004 FR-14), so FEAT-004/FEAT-018 must decide; FEAT-002 proposes no profile (untagged sRGB is the web default) [Assumption].
 - [x] **OQ-5 — decided 2026-11-19 (revised the same day): proportional corner handles ARE in R1 as a Should (FR-28, US-13); the ratio stays locked to W:H. An earlier same-day decision of "no handles in R1" is superseded.** Crop handles. BRIEF/UX favours image-moves-under-fixed-frame. Should R1 also have corner handles that resize the frame proportionally? Proposed default: no handles in R1 (the frame is fixed; zoom is the control); if added, it is a Could.
-- [ ] **OQ-6: Maximum target bound.** 24 MP [Assumption] follows FEAT-004 OQ-4. Is a lower bound (for example W,H ≥ 16 px) needed, and who owns it (FEAT-005)?
+- [x] **OQ-6 — decided 2026-11-20: no extra lower bound in FEAT-002 (1–10,000 px per side, ≤ 24 MP); FEAT-005 may show a soft hint.** Maximum target bound. 24 MP [Assumption] follows FEAT-004 OQ-4. Is a lower bound (for example W,H ≥ 16 px) needed, and who owns it (FEAT-005)?
 - [x] **OQ-7 — decided 2026-11-19: never in R1.** Brightness/contrast adjustment. Not in scope or proposed (BRIEF excludes general editing). Listed only so the Product Owner can confirm "never in R1" or ask for a later feature.
 - [x] **OQ-8 — decided 2026-11-19: hide from recents on Android 13+ without blocking screenshots (FR-26).** Hide the crop screen from the Android recent-apps thumbnail (FLAG_SECURE-style).** Privacy gain for identity photos versus tester inconvenience (blocks screenshots). Decide with FEAT-016.
-- [ ] **OQ-9: Effort.** Roadmap gives 1.3 pw. This scope (EXIF, region decode of large images, colour conversion, accessible crop UI, 6 languages, rotate, corner handles about +0.4 pw [Assumption]) probably exceeds it. Re-estimate in Stage 6; impact on the 20.2 pw plan to be shown to the Product Owner.
-- [ ] **OQ-10 (blocking for tech plan, not for PRD approval): pixel handover format to FEAT-004.** In-memory buffer versus app-private raw temp file at 24 MP (about 96 MB at 4 channels). Architecture decision; the contract in section 1 does not change.
-- [ ] **OQ-11: Who probes the source first.** Does FEAT-001 do the header/decodability probe on selection, or FEAT-002 (this PRD)? FEAT-004 AC-5.2 says the message shows "when it is selected".
-- [ ] **OQ-12: Cross-device determinism.** FR-12 makes this Should, because OS decoders differ; a bundled decoder would make it Must but adds app size.
+- [ ] **OQ-9: Effort.** Stage 6 re-estimate 2026-11-20: about 4.7 pw (range 4.0–5.5), of which about 0.7 pw is Should items (handles, rotate, nudge buttons). Whether to keep the Shoulds in R1 is decided in the roadmap update. Roadmap gives 1.3 pw. This scope (EXIF, region decode of large images, colour conversion, accessible crop UI, 6 languages, rotate, corner handles about +0.4 pw [Assumption]) probably exceeds it. Re-estimate in Stage 6; impact on the 20.2 pw plan to be shown to the Product Owner.
+- [x] **OQ-10 — closed 2026-11-20: native in-memory buffer, ADR-003.** Pixel handover format to FEAT-004. In-memory buffer versus app-private raw temp file at 24 MP (about 96 MB at 4 channels). Architecture decision; the contract in section 1 does not change.
+- [x] **OQ-11 — decided 2026-11-20: FEAT-002's source probe is the single implementation; FEAT-001 calls it right after picking.** Who probes the source first. Does FEAT-001 do the header/decodability probe on selection, or FEAT-002 (this PRD)? FEAT-004 AC-5.2 says the message shows "when it is selected".
+- [x] **OQ-12 — decided 2026-11-20 (Product Owner, option A): same-device determinism (Must) means same device and OS build; cross-device stays Should; no bundled decoders.** Cross-device determinism. FR-12 makes this Should, because OS decoders differ; a bundled decoder would make it Must but adds app size.
+- [x] **OQ-13 — decided 2026-11-20: `rotationApplied` means manual rotation only.** EXIF orientation is applied inside FEAT-002 and never passed on (FR-3, FR-19); `cropRect` is in the space after EXIF and manual rotation.
+- [x] **OQ-14 — decided 2026-11-20: extreme ratios use a full-width true-ratio frame with a ≥ 48 dp touch band (FR-4).** Output stays exact.
 
 ## Change log
 | Version | Date | Change |
@@ -313,3 +315,7 @@ Applicants need photo and signature uploads at exact pixel sizes such as 300×30
 | 0.2 | 2026-11-19 | Scope trims (platform sRGB decode, no linear-light/PSNR, nudge buttons Should via FR-27); OQ-1/2/3/5/7/8 decided; FR-26 recents protection; FEAT-004 clarification follow-up noted |
 | 0.3 | 2026-11-19 | OQ-5 revised: proportional corner handles added as Should (US-13, FR-28, edge cases); effort about +0.4 pw [Assumption] |
 | 1.0 | 2026-11-19 | Approved by Product Owner |
+| 1.1 | 2026-11-20 | Source ceiling raised from 100 MP to 200 MP, best effort (FR-6, NFR-8, section 8, edge cases). Under Discussion until re-approved |
+| 1.1 | 2026-11-20 | Re-approved by Product Owner |
+| 1.2 | 2026-11-20 | Clarification after Stage 6: FR-12 same device means same OS build (OQ-12); `rotationApplied` manual only (OQ-13); FR-4 extreme ratios (OQ-14); OQ-4, 6, 10, 11 closed per FEAT-002-TECH; OQ-9 effort noted. Under Discussion until re-approved |
+| 1.2 | 2026-11-20 | Re-approved by Product Owner |

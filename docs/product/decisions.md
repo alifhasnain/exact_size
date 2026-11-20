@@ -43,3 +43,13 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-20 | FEAT-004 | Under Discussion | 1.1 | Clarification after Stage 6; needs re-approval |
 | 2026-11-20 | FEAT-004 | Approved | 1.1 | Re-approved after Stage 6 clarification (OQ-12 padding, OQ-3–13 decided); no open questions |
 | 2026-11-20 | FEAT-004-TECH | Approved | 1.0 | Effort re-estimate ~3.9 pw (vs 2.0) to go into the roadmap update after FEAT-002 tech plan |
+| 2026-11-20 | FEAT-002 FR-6 | Source ceiling 200 MP (was 100 MP) | 1.1 | Best effort; files that need full decode and don't fit in memory get IMAGE_TOO_LARGE; output cap stays 24 MP; ~+0.2 pw |
+| 2026-11-20 | FEAT-002 | Under Discussion | 1.1 | Source ceiling change; needs re-approval |
+| 2026-11-20 | FEAT-002 | Approved | 1.1 | Re-approved with 200 MP source ceiling; OQ-4, 6, 9, 10, 11, 12 still open (non-blocking, proposals in FEAT-002-TECH) |
+| 2026-11-20 | ADR-004 | Approved | 1.0 | Platform region decoder via JNIgen + own EXIF orientation step; spike checks 12–200 MP and HEIC rotation |
+| 2026-11-20 | ADR-005 | Approved | 1.0 | Pinned stb_image_resize2 (Catmull-Rom) in es_codec |
+| 2026-11-20 | FEAT-002 OQ-12 | Option A: same device = same device and OS build; cross-device stays Should | 1.2 | No bundled decoders |
+| 2026-11-20 | FEAT-002 OQ-4, 6, 10, 11, 13, 14 | Tech-plan proposals written into PRD v1.2 | 1.2 | To be confirmed by re-approving FEAT-002 v1.2 |
+| 2026-11-20 | FEAT-002 | Under Discussion | 1.2 | Clarification after Stage 6; needs re-approval |
+| 2026-11-20 | FEAT-002 | Approved | 1.2 | Re-approved; confirms OQ-4, 6, 10, 11, 12, 13, 14; only OQ-9 (Shoulds in R1) open, for the roadmap update |
+| 2026-11-20 | FEAT-002-TECH | Approved | 1.0 | Effort ~4.7 pw (0.7 pw Shoulds); keep-or-defer Shoulds decided in roadmap update |
