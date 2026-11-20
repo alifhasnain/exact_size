@@ -75,7 +75,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** register libjpeg-turbo licences (IJG, BSD, zlib) with `LicenseRegistry`; pin the `image` package to an exact version and confirm its licence; note the libjpeg-turbo CVE watch in `packages/es_codec/README.md`.
 - **Done when:** a widget test finds the libjpeg-turbo licence texts on the licence page; `pubspec.lock` and `pubspec.yaml` show an exact `image` version; the README names the pinned tag and checksum.
 
-### - [ ] FEAT-004-T08 — Result model, reasons, `Encoder` interface, fake encoder
+### - [x] FEAT-004-T08 — Result model, reasons, `Encoder` interface, fake encoder
 - **Implements:** FR-11, FR-13 (relay of `UNSUPPORTED_INPUT`), FR-19, NFR-9 · **ADRs:** ADR-003
 - **Depends on:** T04 (G1 passed)
 - **Size:** S
