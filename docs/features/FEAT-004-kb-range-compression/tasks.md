@@ -47,7 +47,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** spike branch; vendor libjpeg-turbo source at a pinned tag into `packages/es_codec/`; CMake build for the emulator ABI (x86_64, plus arm64-v8a if an arm64 emulator is available); FFIgen bindings for `tj3Init/tj3Set/tj3Compress8/tj3Free/tj3Destroy`.
 - **Done when:** on the emulator profile, a debug build encodes the 2 MP synthetic image at q 85 and the output decodes (with the `image` package) to 1600×1250. This task can be merged with FEAT-002's device spike if the Product Owner decides so; until then it is planned here.
 
-### - [ ] FEAT-004-T04 — Speed spike, part 2: per-pass timing and encoder decision — gate G1
+### - [x] FEAT-004-T04 — Speed spike, part 2: per-pass timing and encoder decision — gate G1
 - **Implements:** NFR-1, NFR-3 (decision) · **ADRs:** ADR-002
 - **Depends on:** T03
 - **Size:** S

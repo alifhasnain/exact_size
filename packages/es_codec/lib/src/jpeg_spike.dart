@@ -16,6 +16,7 @@ Uint8List encodeRgba8ToJpeg(
   int height, {
   required int quality,
   TJSAMP subsampling = TJSAMP.TJSAMP_420,
+  bool optimizeHuffman = false,
 }) {
   if (rgba.length != width * height * 4) {
     throw ArgumentError('rgba must hold width * height * 4 bytes');
@@ -32,6 +33,10 @@ Uint8List encodeRgba8ToJpeg(
     src.cast<Uint8>().asTypedList(rgba.length).setAll(0, rgba);
     _check(handle, tj3Set(handle, TJPARAM.TJPARAM_QUALITY.value, quality));
     _check(handle, tj3Set(handle, TJPARAM.TJPARAM_SUBSAMP.value, subsampling.value));
+    _check(
+      handle,
+      tj3Set(handle, TJPARAM.TJPARAM_OPTIMIZE.value, optimizeHuffman ? 1 : 0),
+    );
     _check(
       handle,
       tj3Compress8(handle, src, width, 0, height, TJPF.TJPF_RGBA.value, jpegBuf, jpegSize),
