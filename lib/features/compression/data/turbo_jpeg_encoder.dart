@@ -13,6 +13,9 @@ enum JpegEncodeErrorKind {
   /// libjpeg-turbo could not create a compressor (usually out of memory).
   initFailed,
 
+  /// libjpeg-turbo ran out of memory while compressing (FR-18).
+  outOfMemory,
+
   /// Compression itself failed.
   encodeFailed,
 }
@@ -83,6 +86,9 @@ class TurboJpegEncoder {
         switch (e.stage) {
           'init' => JpegEncodeErrorKind.initFailed,
           'set' => JpegEncodeErrorKind.invalidParameter,
+          // shortcut: matched on libjpeg-turbo's text ("Memory allocation failure",
+          // "Insufficient memory"); switch to a code if TurboJPEG ever exposes one.
+          _ when e.message.toLowerCase().contains('memory') => JpegEncodeErrorKind.outOfMemory,
           _ => JpegEncodeErrorKind.encodeFailed,
         },
         e.message,

@@ -15,6 +15,7 @@ import '../domain/png_plan.dart';
 import '../domain/size_search.dart';
 import '../domain/subsampling.dart';
 import 'dart_png_encoder.dart';
+import 'memory_preflight.dart';
 import 'native_pixel_buffer.dart';
 import 'turbo_jpeg_encoder.dart';
 
@@ -45,9 +46,19 @@ final class CancelSignal {
 /// reported per encode pass as `(pass, maxPasses)`; cancel is checked before
 /// every pass, so it takes effect within one pass. The request's
 /// [NativePixelBuffer] is freed when the run ends, whatever the outcome.
-/// Writing the result to a temp file is the next step (FEAT-004-T17).
+/// A memory pre-flight runs first (FR-18): too big gives `IMAGE_TOO_LARGE`,
+/// and running out of memory during the search gives `OUT_OF_MEMORY_HANDLED`.
 class CompressionRunner {
-  const CompressionRunner();
+  const CompressionRunner({
+    this.preflight = const MemoryPreflight(),
+    this.wrapEncoder,
+  });
+
+  final MemoryPreflight preflight;
+
+  /// Test hook: wraps the worker's encoder (for example to simulate an
+  /// allocation failure). Must be a top-level or static function.
+  final Encoder Function(Encoder)? wrapEncoder;
 
   Future<PlanResult> run(
     CompressionRequest request, {
@@ -60,6 +71,8 @@ class CompressionRunner {
         throw ArgumentError('pixels must be a NativePixelBuffer (ADR-003)');
       }
       _checkLayout(px); // FR-1: reject before any encode
+      final tooBig = await preflight.check(width: px.width, height: px.height);
+      if (tooBig != null) return PlanFailed(tooBig);
       final ownCancel = cancel == null ? CancelSignal() : null;
       final signal = cancel ?? ownCancel!;
       // One port for progress and the result, so progress can't arrive late.
@@ -88,6 +101,7 @@ class CompressionRunner {
             dpi: request.dpi,
             cancelAddress: signal._flag.address,
             port: port.sendPort,
+            wrapEncoder: wrapEncoder,
           ),
           onExit: port.sendPort, // null if the worker dies without a result
         );
@@ -131,12 +145,14 @@ final class _Job {
     required this.dpi,
     required this.cancelAddress,
     required this.port,
+    required this.wrapEncoder,
   });
   final int address, width, height, channels, byteLength, maxKb, cancelAddress;
   final bool hasTransparency;
   final int? minKb, dpi;
   final OutputFormat format;
   final SendPort port; // progress ints, then the PlanResult (or an error text)
+  final Encoder Function(Encoder)? wrapEncoder;
 }
 
 final class _Cancelled implements Exception {
@@ -149,11 +165,11 @@ void _workerMain(_Job job) {
     result = _compress(job);
   } on _Cancelled {
     result = const PlanFailed(CompressionFailure(reason: Reason.cancelled));
-  } on JpegEncodeException catch (e) {
-    if (e.kind != JpegEncodeErrorKind.initFailed) rethrow;
-    result = const PlanFailed(CompressionFailure(reason: Reason.outOfMemoryHandled));
   } catch (e) {
-    Isolate.exit(job.port, '$e'); // reported as a StateError on the main isolate
+    if (!isAllocationFailure(e)) {
+      Isolate.exit(job.port, '$e'); // reported as a StateError on the main isolate
+    }
+    result = const PlanFailed(CompressionFailure(reason: Reason.outOfMemoryHandled));
   }
   Isolate.exit(job.port, result); // hands the bytes over without a copy
 }
@@ -167,8 +183,9 @@ PlanResult _compress(_Job job) {
     hasTransparency: job.hasTransparency,
     byteLength: job.byteLength,
   );
-  final encoder =
+  final bound =
       _BoundEncoder(px, job.dpi, Pointer<Int32>.fromAddress(job.cancelAddress), job.port);
+  final encoder = job.wrapEncoder?.call(bound) ?? bound;
   final window = ByteWindow.fromKb(minKb: job.minKb, maxKb: job.maxKb);
   if (job.format == OutputFormat.png) {
     return planPng(encoder, window, prepareForJpegProbe: () => flattenForJpeg(px));

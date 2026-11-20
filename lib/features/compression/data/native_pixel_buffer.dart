@@ -14,7 +14,7 @@ final class NativePixelBuffer implements PixelBuffer {
       this.hasTransparency, this.byteLength, this._owner);
 
   /// Allocates width × height × channels bytes (owner). Throws
-  /// [OutOfMemoryError] if the allocation fails (mapped in T18).
+  /// [OutOfMemoryError] if the allocation fails (FR-18).
   factory NativePixelBuffer.allocate({
     required int width,
     required int height,
@@ -22,8 +22,12 @@ final class NativePixelBuffer implements PixelBuffer {
     required bool hasTransparency,
   }) {
     final length = width * height * channels;
-    final p = malloc<Uint8>(length);
-    if (p == nullptr) throw OutOfMemoryError();
+    final Pointer<Uint8> p;
+    try {
+      p = malloc<Uint8>(length);
+    } on ArgumentError {
+      throw OutOfMemoryError(); // package:ffi reports a null malloc as ArgumentError
+    }
     _live++;
     return NativePixelBuffer._(p, width, height, channels, hasTransparency, length, true);
   }

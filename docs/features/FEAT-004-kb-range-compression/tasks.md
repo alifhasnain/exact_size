@@ -145,7 +145,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `data/temp_files.dart`: write only the final file to `<cache>/exactsize_out/<random>.jpg|png`; delete on failure and cancel; sweep at app start (shared with FEAT-002 FR-18).
 - **Done when:** `temp_files_test.dart` passes: success leaves exactly one file with a random name containing no user data; failure and cancel leave the folder empty (AC-6.3); a simulated write error (read-only or full directory) returns `WRITE_FAILED` with no file left; the sweep deletes planted leftovers; nothing is written outside app-private cache.
 
-### - [ ] FEAT-004-T18 — Memory pre-flight and out-of-memory mapping
+### - [x] FEAT-004-T18 — Memory pre-flight and out-of-memory mapping
 - **Implements:** FR-18, NFR-2 · **ADRs:** ADR-003
 - **Depends on:** T16
 - **Size:** S
