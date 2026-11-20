@@ -89,7 +89,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/target_validator.dart`, `domain/byte_window.dart`.
 - **Done when:** `target_validator_test.dart` covers every PRD section 8 row (max 1, 2, 10,240, 10,241; min ≥ max; negative; zero max; blank/NaN; decimals; format other than JPEG/PNG) with the specific message key, and no encoder call happens on `INVALID_TARGET` (fake encoder call count 0); `byte_window_test.dart` shows 20–50 → [20,480, 50,000], 49–50 → [49,000, 50,000] with `narrow = true`, min unset → lo = 0.
 
-### - [ ] FEAT-004-T10 — `SizeSearch` JPEG main path
+### - [x] FEAT-004-T10 — `SizeSearch` JPEG main path
 - **Implements:** FR-5, FR-6, FR-7, NFR-1 (10-pass cap), NFR-9 · **ADRs:** ADR-002
 - **Depends on:** T09
 - **Size:** M
