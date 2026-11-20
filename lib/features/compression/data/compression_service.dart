@@ -2,23 +2,41 @@ import '../domain/compression_request.dart';
 import '../domain/compression_result.dart';
 import '../domain/jpeg_plan.dart';
 import 'compression_runner.dart';
+import 'outcome_log.dart';
 import 'temp_files.dart';
 
 /// Entry point of FEAT-004 (tech.md section 4): runs the search on the worker
 /// isolate, then writes only the final file. Ownership of the request's pixels
 /// moves here (ADR-003). A cancel that lands while the file is written still
-/// wins: the file is deleted and the result is `CANCELLED`.
+/// wins: the file is deleted and the result is `CANCELLED`. Every outcome is
+/// logged as enum names only (NFR-7).
 class CompressionService {
-  const CompressionService(this._runner, this._files);
+  const CompressionService(this._runner, this._files, [this._log = const OutcomeLog()]);
 
   final CompressionRunner _runner;
   final TempFiles _files;
+  final OutcomeLog _log;
 
   Future<CompressionResult> compress(
     CompressionRequest request, {
     CancelSignal? cancel,
     void Function(int pass, int maxPasses)? onProgress,
   }) async {
+    final result = await _compress(request, cancel, onProgress);
+    switch (result) {
+      case CompressionSuccess(:final format, :final notices):
+        _log.success(format, notices);
+      case CompressionFailure(:final reason, :final notices):
+        _log.failure(reason, notices);
+    }
+    return result;
+  }
+
+  Future<CompressionResult> _compress(
+    CompressionRequest request,
+    CancelSignal? cancel,
+    void Function(int pass, int maxPasses)? onProgress,
+  ) async {
     final plan = await _runner.run(request, cancel: cancel, onProgress: onProgress);
     switch (plan) {
       case PlanFailed(:final failure):

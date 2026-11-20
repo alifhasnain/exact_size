@@ -166,7 +166,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `presentation/compression_providers.dart`: provider that reads `CompressionService` from the get_it container (registered with injectable), run state (progress, result) exposed for FEAT-006; one announcement string per state for `SemanticsService.announce` / live region.
 - **Done when:** `compression_providers_test.dart` with a fake `CompressionService` registered in get_it passes: progress, success and every failure produce a non-empty localised announcement; rebuilding the listening widget tree (simulated rotation) does not start a second run; cancel through the provider deletes the temp file.
 
-### - [ ] FEAT-004-T21 — No-network guard and enum-only logging
+### - [x] FEAT-004-T21 — No-network guard and enum-only logging
 - **Implements:** NFR-6, NFR-7 · **ADRs:** ADR-001
 - **Depends on:** T16
 - **Size:** S
