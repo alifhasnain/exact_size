@@ -2,31 +2,9 @@ import 'dart:typed_data';
 
 import 'package:exact_size/features/compression/domain/compression_result.dart';
 import 'package:exact_size/features/compression/domain/flattener.dart';
-import 'package:exact_size/features/compression/domain/pixel_buffer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Dart-heap stand-in for the native buffer; counts pixel allocations.
-class _TestPixels implements PixelBuffer {
-  _TestPixels(this.width, this.height, this.channels, this.bytes, {required this.hasTransparency}) {
-    allocations++;
-  }
-  static int allocations = 0;
-
-  @override
-  final int width, height;
-  @override
-  int channels;
-  @override
-  bool hasTransparency;
-  @override
-  final Uint8List bytes;
-
-  @override
-  void markAlphaRemoved() {
-    channels = 3;
-    hasTransparency = false;
-  }
-}
+import '../../../../test_support/test_pixels.dart';
 
 /// FEAT-004-T14: FR-12 composite onto white, 4 → 3 channels in place.
 void main() {
@@ -36,8 +14,8 @@ void main() {
     const c = [200, 100, 0]; // source R, G, B for every pixel
     final alphas = [0, 1, 128, 254, 255];
     final rgba = Uint8List.fromList([for (final a in alphas) ...[...c, a]]);
-    final px = _TestPixels(alphas.length, 1, 4, rgba, hasTransparency: true);
-    _TestPixels.allocations = 0;
+    final px = TestPixels(alphas.length, 1, 4, rgba, hasTransparency: true);
+    TestPixels.allocations = 0;
 
     final notices = flattenForJpeg(px);
 
@@ -52,19 +30,19 @@ void main() {
     expect(px.hasTransparency, isFalse);
     expect(notices, {Notice.transparencyFlattened});
     expect(identical(px.bytes, rgba), isTrue, reason: 'same buffer, written in place');
-    expect(_TestPixels.allocations, 0, reason: 'no new pixel allocation');
+    expect(TestPixels.allocations, 0, reason: 'no new pixel allocation');
   });
 
   test('opaque 3-channel input is untouched and gets no notice', () {
     final rgb = Uint8List.fromList([1, 2, 3, 4, 5, 6]);
-    final px = _TestPixels(2, 1, 3, rgb, hasTransparency: false);
+    final px = TestPixels(2, 1, 3, rgb, hasTransparency: false);
     expect(flattenForJpeg(px), isEmpty);
     expect(px.channels, 3);
     expect(px.bytes, [1, 2, 3, 4, 5, 6]);
   });
 
   test('4-channel input without transparency is compacted without a notice', () {
-    final px = _TestPixels(2, 1, 4, Uint8List.fromList([9, 8, 7, 255, 6, 5, 4, 255]), hasTransparency: false);
+    final px = TestPixels(2, 1, 4, Uint8List.fromList([9, 8, 7, 255, 6, 5, 4, 255]), hasTransparency: false);
     expect(flattenForJpeg(px), isEmpty);
     expect(px.channels, 3);
     expect(px.bytes.sublist(0, 6), [9, 8, 7, 6, 5, 4]);

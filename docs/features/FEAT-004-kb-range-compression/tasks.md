@@ -124,7 +124,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/flattener.dart`: in-place integer composite onto white, 4 → 3 channels in the same native buffer; sets `transparencyFlattened`.
 - **Done when:** `flattener_test.dart` gives the exact expected RGB for alpha 0, 1, 128, 254, 255 (rounding rule written in the test); channels become 3; the debug allocation counter shows no new pixel allocation; opaque 3-channel input is untouched and has no notice.
 
-### - [ ] FEAT-004-T15 — PNG path and JPEG probe
+### - [x] FEAT-004-T15 — PNG path and JPEG probe
 - **Implements:** FR-9, FR-10, FR-14 · **ADRs:** ADR-002
 - **Depends on:** T13, T14
 - **Size:** M
