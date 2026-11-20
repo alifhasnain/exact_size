@@ -138,7 +138,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `data/compression_runner.dart` and `CompressionService.compress`: worker isolate gets the `PixelBuffer` address; dimension/stride assert at entry (FR-1); progress `(pass, maxPasses)`; cancel flag checked between passes; buffer freed on success, failure and cancel; debug leak counter. Tests use synthetic `PixelBuffer`s that follow the ADR-003 contract (3 and 4 channels, tight stride), since FEAT-002 is not built.
 - **Done when:** `compression_runner_test.dart` (integration, emulator) passes: progress events are monotonic and end at the pass count used; cancel during a search returns `CANCELLED` within one pass; leak counter is 0 after 100 mixed runs (success, failure, cancel); a stride or size mismatch is rejected before any encode; the UI isolate frame time stays under 16 ms during a run (no jank test via `IntegrationTestWidgetsFlutterBinding` timeline).
 
-### - [ ] FEAT-004-T17 — `TempFiles`, `WRITE_FAILED` and start-up sweep
+### - [x] FEAT-004-T17 — `TempFiles`, `WRITE_FAILED` and start-up sweep
 - **Implements:** FR-20, FR-6, FR-11 (`WRITE_FAILED`) · **ADRs:** ADR-003
 - **Depends on:** T16
 - **Size:** S

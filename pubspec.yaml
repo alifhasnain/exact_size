@@ -22,6 +22,7 @@ dependencies:
   material_ui: 1.11.1
   es_codec:
     path: packages/es_codec
+  path_provider: 2.1.6 # app cache dir for temp output (FEAT-004-T17)
 
 dev_dependencies:
   flutter_test:
