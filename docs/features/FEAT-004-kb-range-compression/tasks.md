@@ -131,7 +131,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `data/dart_png_encoder.dart` (level 9, 3 or 4 channels, `pHYs` only when DPI is set, no `iCCP`/`eXIf`/text chunks); PNG branch in `SizeSearch`; one probe A@qFloor on `PNG_ABOVE_MAX` setting `jpegWouldFit`.
 - **Done when:** `png_path_test.dart` passes: in range → `Success`, and the decoded PNG equals the input pixels for RGB and RGBA (AC-3.1); above max → `PNG_ABOVE_MAX` with `jpegWouldFit` true in one case and false in another; below min → `PNG_BELOW_MIN` with no padding; `pHYs` adds exactly 21 bytes when DPI is set; the result format is always PNG (no automatic switch).
 
-### - [ ] FEAT-004-T16 — `CompressionRunner`: isolate, progress, cancel, buffer ownership
+### - [x] FEAT-004-T16 — `CompressionRunner`: isolate, progress, cancel, buffer ownership
 - **Implements:** FR-1, FR-17, NFR-2 (single buffer) · **ADRs:** ADR-001, ADR-003
 - **Depends on:** T06, T15
 - **Size:** M

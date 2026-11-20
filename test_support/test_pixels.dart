@@ -19,6 +19,9 @@ class TestPixels implements PixelBuffer {
   final Uint8List bytes;
 
   @override
+  int get stride => width * channels;
+
+  @override
   void markAlphaRemoved() {
     channels = 3;
     hasTransparency = false;

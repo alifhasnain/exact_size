@@ -7,8 +7,11 @@ abstract interface class PixelBuffer {
   int get width;
   int get height;
 
-  /// 3 (RGB) or 4 (RGBA); tightly packed, stride = width × channels.
+  /// 3 (RGB) or 4 (RGBA).
   int get channels;
+
+  /// Bytes per row; must equal width × channels (tightly packed, ADR-003).
+  int get stride;
   bool get hasTransparency;
 
   /// View of the pixel memory itself (native memory for the real buffer), so
@@ -16,6 +19,7 @@ abstract interface class PixelBuffer {
   Uint8List get bytes;
 
   /// Called after the alpha channel was composited away in place: from now on
-  /// the buffer holds width × height × 3 bytes of RGB and no transparency.
+  /// the buffer holds width × height × 3 bytes of RGB (stride width × 3) and
+  /// no transparency.
   void markAlphaRemoved();
 }
