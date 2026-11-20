@@ -2,8 +2,8 @@
 id: FEAT-004
 title: Compress to a min–max KB range with JPEG/PNG choice
 status: Approved
-version: 1.0
-updated: 2026-11-19
+version: 1.1
+updated: 2026-11-20
 links: [ROADMAP, FEAT-002, FEAT-005, FEAT-006, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-010]
 ---
 
@@ -72,7 +72,7 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 
 - **US-5** As a user with a modern phone, I want to start from any common photo format, so that I do not convert files first.
   - **AC-5.1** Given a source in JPEG, PNG, HEIC/HEIF or WebP, when the image reaches FEAT-004 as pixels at target W×H, then the target-format output is produced with the same behaviour for all four sources.
-  - **AC-5.2** Given a source format the device cannot decode (for example HEIC on an unsupported Android version), when it is selected, then the user gets a clear "this file type isn't supported on this device" message and no crash.
+  - **AC-5.2** Given a source format the device cannot decode (for example a corrupt file or an unusual HEIC variant), when it is selected, then the user gets a clear "this file type isn't supported on this device" message and no crash.
   - **AC-5.3** Given a very large camera image (for example 50 MP), when it is processed, then the app does not crash from memory pressure: it either completes or shows a clear "image too large" error.
 
 - **US-6** As a user, I want the same result every time and no data leaving my phone, so that I can trust the app with my signature.
@@ -104,7 +104,7 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 - **PNG:** best lossless compression; success only if in range, otherwise `PNG_ABOVE_MAX` or `PNG_BELOW_MIN`.
 - **Cancel / app backgrounded:** the search stops, temp files are deleted.
 
-**Error flows:** `ABOVE_MAX` (too large even at JPEG quality 1), `TOO_DEGRADED` (fits only at a quality below the FR-7 floor), `NO_FIT` (no quality lands inside a narrow window because size jumps over it), `BELOW_MIN`, `PNG_ABOVE_MAX`, `PNG_BELOW_MIN`, `INVALID_TARGET`, `UNSUPPORTED_INPUT`, `IMAGE_TOO_LARGE`, `OUT_OF_MEMORY_HANDLED`, `CANCELLED`. In all of them no out-of-range file is exported.
+**Error flows:** `ABOVE_MAX` (too large even at JPEG quality 1), `TOO_DEGRADED` (fits only at a quality below the FR-7 floor), `NO_FIT` (no quality lands inside a narrow window and padding has fewer than 4 bytes of room; otherwise FR-8 pads, OQ-12), `BELOW_MIN`, `PNG_ABOVE_MAX`, `PNG_BELOW_MIN`, `INVALID_TARGET`, `UNSUPPORTED_INPUT`, `IMAGE_TOO_LARGE`, `OUT_OF_MEMORY_HANDLED`, `WRITE_FAILED` (saving the file failed, for example low storage), `CANCELLED`. In all of them no out-of-range file is exported.
 
 ## 6. Functional requirements
 | ID | Requirement | Story | Priority (MoSCoW) |
@@ -115,8 +115,8 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | FR-4 | **Narrow-range fallback.** When `min×1024 > max×1000` (ratio max/min below 1.024, for example 49–50 KB), the system shall target the ceiling `max×1000`, aim for the highest size at or below it, and require at least `min×1000`; it shall return success with a "range very narrow, portals that count KB differently may differ" notice. (min < max is guaranteed by validation, so `min×1000 < max×1000` always holds.) Decided by the Product Owner, 2026-11-19 (OQ-1). | US-1 | Must |
 | FR-5 | **JPEG search.** The system shall search integer quality 1–100 with a deterministic search (binary search, then verify the chosen quality and its neighbours, since size is not guaranteed monotonic), and select the highest quality whose final size is ≤ the ceiling and ≥ the floor. | US-1 | Must |
 | FR-6 | The system shall never return success, and never hand a file to export, unless the final file's size is inside the window (or FR-4 applies). This check shall run on the final file bytes, not on an estimate. | US-1, US-4 | Must |
-| FR-7 | **Quality floor.** The system shall define a minimum acceptable JPEG quality (proposed default 40 [Assumption], tuned on a visual test set in Stage 6). If fitting the ceiling needs quality below it, the system shall return `TOO_DEGRADED` and not export. Handing the case to richer guidance is FEAT-015. | US-4 | Must |
-| FR-8 | **Minimum-KB floor.** If the file is below the floor at the best quality found, the system shall raise size in this order, stopping at the first success: (1) higher JPEG quality up to 100; (2) 4:4:4 chroma subsampling; (3) disable optimised Huffman tables and progressive mode; (4) **only if still below the floor**, add padding inside standard JPEG comment (COM) segments, with neutral fixed content (no user data, no timestamps, deterministic), split across segments as needed (≤ 65,533 bytes each), up to the floor plus a small margin and never above the ceiling. The user is told that padding was added. The system shall never append bytes after the end-of-image marker, add noise, or alter pixels to gain size. If padding is not possible (PNG, or a write failure), return `BELOW_MIN`. Decided by the Product Owner, 2026-11-19 (OQ-2). | US-2 | Must |
+| FR-7 | **Quality floor.** The system shall define a minimum acceptable JPEG quality (default 40, decided 2026-11-20 (OQ-8); tuned on a synthetic visual test set during implementation). If fitting the ceiling needs quality below it, the system shall return `TOO_DEGRADED` and not export. Handing the case to richer guidance is FEAT-015. | US-4 | Must |
+| FR-8 | **Minimum-KB floor.** If the file is below the floor at the best quality found (including the narrow-window case, where no quality lands inside the window and the best file at or below the ceiling is below the floor), the system shall raise size in this order, stopping at the first success: (1) higher JPEG quality up to 100; (2) 4:4:4 chroma subsampling; (3) disable optimised Huffman tables and progressive mode; (4) **only if still below the floor**, add padding inside standard JPEG comment (COM) segments, with neutral fixed content (no user data, no timestamps, deterministic), split across segments as needed (≤ 65,533 bytes each), up to the floor plus a small margin and never above the ceiling. The user is told that padding was added. The system shall never append bytes after the end-of-image marker, add noise, or alter pixels to gain size. If padding is not possible, return `PNG_BELOW_MIN` for PNG, or `BELOW_MIN` (`NO_FIT` in the narrow-window case) when there are fewer than 4 bytes of room below the ceiling; a storage write failure returns `WRITE_FAILED`. Narrow-window case clarified by the Product Owner, 2026-11-20 (OQ-12). Decided by the Product Owner, 2026-11-19 (OQ-2). | US-2 | Must |
 | FR-9 | **PNG.** The system shall encode PNG losslessly at the highest compression setting, and return success only if the size is in the window. It shall not apply lossy colour reduction in R1 (see OQ-3). | US-3 | Must |
 | FR-10 | When a PNG cannot fit, the system shall return `PNG_ABOVE_MAX` or `PNG_BELOW_MIN`. For `PNG_ABOVE_MAX` it shall run one JPEG probe and flag whether JPEG would fit; the basic message may offer a one-tap switch to JPEG only when the flag is true. The switch is a user action; the system shall never change the format on its own. | US-3 | Must |
 | FR-11 | **Failure outcome.** On any failure the system shall return a result object with: status, reason code (section 5), closest achievable size in bytes, direction (too big / too small), and no exportable file. It shall produce a plain-language message (NFR-4) stating the target and the closest size. | US-4 | Must |
@@ -162,7 +162,7 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | Image compresses below min even at quality 100 | FR-8 levers 1–3, then JPEG comment padding (lever 4) with a user note; `BELOW_MIN` only if padding is impossible |
 | Ceiling needs quality below the floor | `TOO_DEGRADED`; no export; hand to FEAT-015 |
 | Range where KB interpretations conflict (for example 49–50) | FR-4 fallback with notice |
-| Very narrow range with no JPEG quality inside (size jumps over it) | Neighbour verification (FR-5); if none lands in the window, `NO_FIT`, reported as failure with the closest size |
+| Very narrow range with no JPEG quality inside (size jumps over it) | Neighbour verification (FR-5); if none lands in the window, FR-8 levers 2–4 from the best file under the ceiling, with padding disclosed; `NO_FIT` only if fewer than 4 bytes of room (OQ-12) |
 | Non-monotonic size vs quality | Verified by neighbour search; the final check is on actual bytes |
 | min unset (max-only form) | Floor = 0; best quality under the ceiling |
 | Tiny max (for example 2 KB) at normal dimensions | `ABOVE_MAX` if even quality 1 is too large, otherwise `TOO_DEGRADED`; clear message |
@@ -197,22 +197,24 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 
 ## 11. Dependencies
 - **FEAT-002** supplies pixels at target W×H (hard dependency).
-- **FEAT-005 / FEAT-011** supply the target; **FEAT-006** consumes the result; **FEAT-015** consumes failure reasons; **FEAT-010 / FEAT-018** add metadata bytes (FR-14); **FEAT-016** verifies no network and the privacy copy; **FEAT-007** exports; **FEAT-019** supplies the 6-language message translations.
+- **FEAT-005 / FEAT-011** supply the target; **FEAT-006** consumes the result; **FEAT-015** consumes failure reasons; **FEAT-010 / FEAT-018** supply metadata settings to FEAT-004's encoder, which writes them inside the size search; they never edit the file afterwards (FR-14, OQ-13); **FEAT-016** verifies no network and the privacy copy; **FEAT-007** exports; **FEAT-019** supplies the 6-language message translations.
 - **Stage 6:** on-device KB search validated (roadmap dependency); a hands-on test of whether clean signatures (for example 140×60 px, 10–20 KB) fall below the floor without padding [Hypothesis]; re-estimate effort, since this scope probably exceeds the roadmap's 2.0 pw; encoder library choice and pinning (ADR); minSdk and HEIC decode support; plugin versus native-code split.
 - **Content / legal:** native-speaker review of the failure messages (Phase B exit).
 
 ## 12. Open questions
 - [x] **OQ-1 — decided 2026-11-19: accept FR-3 and FR-4 as written.** (Was blocking.) Is `min×1024 ≤ size ≤ max×1000` (valid under both conventions) the right default? For ranges where it is impossible (max/min < 1.024, such as 49–50 KB), FR-4 proposes aiming at the ceiling `max×1000` with a warning. Alternative: fail with "range too narrow". Trade-off: fallback helps more users, but the file may be rejected by a portal using 1024.
 - [x] **OQ-2 — decided 2026-11-19: allow padding only via JPEG comment segments, only when quality levers fail, always disclosed to the user (FR-8 lever 4). PNG: no padding in R1.** Original question: Should the app ever add filler bytes (for example a JPEG comment segment or trailing data) when an image cannot reach the minimum by quality? Pro: meets floor on very simple images, such as clean signatures. Con: it is deceptive filler, some portals or validators may reject trailing or odd data, it changes the file for no visual benefit, and it adds privacy-review burden. Default in this PRD: no padding. A decision is needed because `BELOW_MIN` on clean signatures is plausible (signature floors of 10 KB are in the research [Fact]).
-- [ ] **OQ-3: PNG lossy colour reduction.** Allow an opt-in "reduce colours" for PNGs above the maximum? Pro: PNG could fit more targets. Con: no longer lossless, new UI and tuning. Default: not in R1.
-- [ ] **OQ-4: Maximum target W×H and output formats.** Confirm the upper pixel bound (24 MP [Assumption]) and that output is JPEG/PNG only.
-- [ ] **OQ-5: Decimal KB.** Are targets like 7.5 KB required? Default: whole KB.
-- [ ] **OQ-6: ICC profile and colour policy.** Convert to sRGB and drop the profile, or keep it? Bytes count toward size. Who owns it: FEAT-004, FEAT-018 or FEAT-010?
-- [ ] **OQ-7: Export-anyway override.** Should the user be able to export an out-of-range or too-degraded candidate after an explicit warning? The roadmap says never silently, so this PRD says no; if yes, it belongs in FEAT-015.
-- [ ] **OQ-8: Quality floor value** (40 [Assumption]) and whether signatures use a different floor from photos. Needs a visual test set (Stage 6).
-- [ ] **OQ-9: Order of metadata and size search** (inside the loop versus overhead estimate). Architecture decision for Stage 6; the requirement (FR-14) is the same.
-- [ ] **OQ-10: Minimum Android version and HEIC support.** Needs the minSdk decision.
-- [ ] **OQ-11: Accuracy measurement.** Does the first-try metric count a safe-rule success or the portal's own measurement? The brief measures it via an on-device counter, which conflicts with a no-telemetry stance (FEAT-027).
+- [x] **OQ-3 — decided 2026-11-20: no lossy colour reduction in R1; lossless colour-type reduction is a later candidate.** PNG lossy colour reduction. Allow an opt-in "reduce colours" for PNGs above the maximum? Pro: PNG could fit more targets. Con: no longer lossless, new UI and tuning. Default: not in R1.
+- [x] **OQ-4 — decided 2026-11-20: keep the 24 MP cap with a memory pre-check (`IMAGE_TOO_LARGE`); output JPEG/PNG only.** Maximum target W×H and output formats. Confirm the upper pixel bound (24 MP [Assumption]) and that output is JPEG/PNG only.
+- [x] **OQ-5 — decided 2026-11-20: whole KB only in R1.** Decimal KB. Are targets like 7.5 KB required? Default: whole KB.
+- [x] **OQ-6 — decided 2026-11-20: write no ICC profile (untagged sRGB); owned by FEAT-004's encoder.** ICC profile and colour policy. Convert to sRGB and drop the profile, or keep it? Bytes count toward size. Who owns it: FEAT-004, FEAT-018 or FEAT-010?
+- [x] **OQ-7 — decided 2026-11-20: no export-anyway in R1; if ever, it belongs in FEAT-015.** Export-anyway override. Should the user be able to export an out-of-range or too-degraded candidate after an explicit warning? The roadmap says never silently, so this PRD says no; if yes, it belongs in FEAT-015.
+- [x] **OQ-8 — decided 2026-11-20: one floor of 40 for photos and signatures, tuned on a synthetic visual test set during implementation.** Quality floor value (40 [Assumption]) and whether signatures use a different floor from photos. Needs a visual test set (Stage 6).
+- [x] **OQ-9 — decided 2026-11-20: metadata is written inside the size search on every pass.** Order of metadata and size search (inside the loop versus overhead estimate). Architecture decision for Stage 6; the requirement (FR-14) is the same.
+- [x] **OQ-10 — decided 2026-11-20: minSdk 28 (Android 9); HEIC decodes on every supported device (ADR-001).** Minimum Android version and HEIC support. Needs the minSdk decision.
+- [x] **OQ-11 — decided 2026-11-20: success counts against the FR-3 safe window, measured in pre-release device tests, not production telemetry.** Accuracy measurement. Does the first-try metric count a safe-rule success or the portal's own measurement? The brief measures it via an on-device counter, which conflicts with a no-telemetry stance (FEAT-027).
+- [x] **OQ-12 — decided 2026-11-20: pad.** When size jumps over a narrow window, FR-8 levers 2–4 apply from the best file under the ceiling; `NO_FIT` only when fewer than 4 bytes of room remain. New reason code `WRITE_FAILED` accepted.
+- [x] **OQ-13 — decided 2026-11-20: FEAT-010 and FEAT-018 supply settings to FEAT-004's encoder instead of editing the file afterwards.** Their PRDs must state this.
 
 ## Change log
 | Version | Date | Change |
@@ -220,3 +222,5 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | 0.1 | 2026-11-19 | First draft |
 | 0.2 | 2026-11-19 | Review fixes: ABOVE_MAX/TOO_DEGRADED split, NO_FIT added, determinism split (FR-15 Must same-device, new FR-21 Should cross-device); OQ-1 accepted; OQ-2 JPEG comment padding allowed; effort re-estimate flagged |
 | 1.0 | 2026-11-19 | Approved by Product Owner |
+| 1.1 | 2026-11-20 | Clarification after Stage 6: OQ-12 narrow-window case pads (FR-8), `NO_FIT` narrowed; `WRITE_FAILED` added; OQ-3 to OQ-11 decided per FEAT-004-TECH; OQ-13 metadata coupling; FR-7 floor and AC-5.2 example updated. Under Discussion until re-approved |
+| 1.1 | 2026-11-20 | Re-approved by Product Owner |

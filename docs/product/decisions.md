@@ -32,3 +32,14 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-19 | FEAT-002 OQ-5 | Revised: corner crop handles in R1 (Should) | 0.3 | Supersedes earlier "no handles in R1"; proportional, ratio locked to W:H; about +0.4 pw [Assumption], to be confirmed in the Stage 6 re-estimate |
 | 2026-11-19 | ROADMAP effort | Deferred to Stage 6 | 1.1 | FEAT-002 (+0.4 pw handles, likely ~3 pw total) and FEAT-004 re-estimates update the roadmap together after /tech-plan |
 | 2026-11-19 | FEAT-002 | Approved | 1.0 | PRD: crop and resize with corner handles (Should) and rotate (Should); 6 non-blocking open questions for Stage 6 |
+| 2026-11-20 | ADR-001 minSdk | Android 9 (API 28) | 0.2 | HEIC decodes on all supported devices; Android 7.0–8.1 dropped |
+| 2026-11-20 | ADR-001 state management | Riverpod | 0.2 | Replaces built-in ChangeNotifier proposal |
+| 2026-11-20 | ADR-001 Flutter version | Flutter 3.50.x, pinned | 0.2 | FFIgen/JNIgen for native calls; release-note claims to verify at scaffold |
+| 2026-11-20 | ADR-001 | Approved | 1.0 | Flutter 3.50.x + FFIgen/JNIgen, minSdk 28, Riverpod |
+| 2026-11-20 | ADR-002 | Approved | 1.0 | Pinned libjpeg-turbo via FFI for JPEG, `image` package for PNG; spike may fall back to Option B |
+| 2026-11-20 | ADR-003 | Approved | 1.0 | Native in-memory pixel buffer, ownership moves to FEAT-004; answers FEAT-002 OQ-10 |
+| 2026-11-20 | FEAT-004 OQ-12 | Pad in narrow-window jump case | 1.1 | FR-8 applies; `NO_FIT` only with < 4 bytes of room; `WRITE_FAILED` added |
+| 2026-11-20 | FEAT-004 OQ-3–11, OQ-13 | Tech-plan proposals accepted unchanged | 1.1 | See FEAT-004-TECH section 12 |
+| 2026-11-20 | FEAT-004 | Under Discussion | 1.1 | Clarification after Stage 6; needs re-approval |
+| 2026-11-20 | FEAT-004 | Approved | 1.1 | Re-approved after Stage 6 clarification (OQ-12 padding, OQ-3–13 decided); no open questions |
+| 2026-11-20 | FEAT-004-TECH | Approved | 1.0 | Effort re-estimate ~3.9 pw (vs 2.0) to go into the roadmap update after FEAT-002 tech plan |
