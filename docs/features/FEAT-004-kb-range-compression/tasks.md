@@ -187,7 +187,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** run the T22 cases on the emulator ABIs available (x86_64, and arm64-v8a if an arm64 emulator is available) and compare hashes; armeabi-v7a is not tested (no device).
 - **Done when:** a comparison table is in the PR: all identical → FR-21 met; any difference → ADR-002 rule applied (SIMD off for the differing step, re-measured against the T04 timing) or the case is reported to the Product Owner as "both in window" (AC-6.4), with every differing output still inside its window.
 
-### - [ ] FEAT-004-T24 — 500-export corpus harness
+### - [x] FEAT-004-T24 — 500-export corpus harness
 - **Implements:** FR-6, FR-8, NFR-8, NFR-1 (pass cap) · **ADRs:** ADR-002
 - **Depends on:** T22
 - **Size:** M
