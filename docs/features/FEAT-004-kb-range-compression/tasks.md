@@ -2,7 +2,7 @@
 id: FEAT-004-TASKS
 title: Compress to a min–max KB range with JPEG/PNG choice — Implementation Tasks
 status: Approved
-version: 1.0
+version: 1.1
 updated: 2026-11-20
 links: [FEAT-004, FEAT-004-TECH, ADR-001, ADR-002, ADR-003]
 ---
@@ -256,6 +256,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **CI provider:** decided 2026-11-20 by the Product Owner: GitHub Actions (T02).
 
 ## Instructions for Claude Code
+- Native build: where a task, tech plan or ADR says "CMake", use Dart build/link hooks with `native_toolchain_c` in `packages/es_codec/` instead (ADR-001 v1.2, gate G0 finding 2026-11-20).
 - Read `prd.md`, `tech.md` and the linked ADRs before starting a task.
 - Implement only the current task; tick its checkbox and add a line to `docs/CHANGELOG.md` when done.
 - Do not start any task after T04 until gate G1 is passed and recorded; stop at every gate that fails and report to the Product Owner.
@@ -270,3 +271,5 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 | 0.3 | 2026-11-20 | DI with get_it + injectable (ADR-001 v1.1): T01 scaffold and T20 updated |
 | 0.4 | 2026-11-20 | Emulator-only testing (Product Owner): T03/T04/T22/T23/T25/T27 moved to the 2 GB emulator profile; G1 keeps Option C by default; G3 covers memory and reliability, timings informational; T04 M→S |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
+| 1.1 | 2026-11-20 | Clarification: native build uses Dart build hooks, not CMake (ADR-001 v1.2). Under Discussion until re-approved |
+| 1.1 | 2026-11-20 | Re-approved by Product Owner |

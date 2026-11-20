@@ -68,3 +68,7 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-20 | ROADMAP | Approved | 1.3 | Phase A exit on emulators (2 GB RAM profile); timing targets best effort |
 | 2026-11-20 | FEAT-004-TASKS | Approved | 1.0 | 27 tasks; T01-T02 shared scaffold; emulator-only testing; T27 blocked until FEAT-002 |
 | 2026-11-20 | FEAT-004 gate G0 | Passed | — | minSdk 28 allowed; FFIgen, JNIgen, record_use work (CI run 44748990934); native build uses Dart hooks instead of CMake (ADR-001 wording clarification proposed) |
+| 2026-11-20 | ADR-001 | Under Discussion | 1.2 | Wording: native build via Dart build hooks, not CMake; needs re-approval |
+| 2026-11-20 | FEAT-004-TASKS | Under Discussion | 1.1 | Note: CMake mentions mean Dart build hooks (ADR-001 v1.2); needs re-approval |
+| 2026-11-20 | ADR-001 | Approved | 1.2 | Native C built with Dart build/link hooks (native_toolchain_c), not CMake |
+| 2026-11-20 | FEAT-004-TASKS | Approved | 1.1 | Build-hooks note (ADR-001 v1.2); T01-T02 done |
