@@ -33,14 +33,14 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 
 ## Tasks
 
-### - [ ] FEAT-002-T01 — Vendor `stb_image_resize2.h` (pinned, checksummed, licensed)
+### - [x] FEAT-002-T01 — Vendor `stb_image_resize2.h` (pinned, checksummed, licensed)
 - **Implements:** FR-9 (prerequisite) · **ADRs:** ADR-001, ADR-005
 - **Depends on:** — (es_codec from FEAT-004-T05)
 - **Size:** S
 - **Scope:** `packages/es_codec/third_party/stb/stb_image_resize2.h` at a pinned upstream commit; `third_party/stb/VENDOR.md` (version, commit, source URL, SHA-256, licence, update procedure) following `third_party/libjpeg-turbo/VENDOR.md`; extend `lib/src/vendor_checksum.dart` and the check in `hook/build.dart` to cover the stb file; register the stb licence (MIT option of its dual licence) with `LicenseRegistry`, using the same place as FEAT-004-T07 (or creating it, if T07 has not landed); add stb to the CVE-watch note in `packages/es_codec/README.md`.
 - **Done when:** the build fails when one byte of `stb_image_resize2.h` is changed locally and passes again when it is restored; CI builds arm64-v8a, armeabi-v7a and x86_64; `tool/check_16kb_alignment.sh` passes; a widget test finds the stb licence text on the licence page; `VENDOR.md` names the commit and SHA-256.
 
-### - [ ] FEAT-002-T02 — Synthetic crop fixture generator
+### - [x] FEAT-002-T02 — Synthetic crop fixture generator
 - **Implements:** NFR-8, NFR-9 (test data), AC-3.2 (fixtures) · **ADRs:** ADR-004
 - **Depends on:** —
 - **Size:** M
