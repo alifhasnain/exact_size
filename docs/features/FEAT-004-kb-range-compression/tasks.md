@@ -61,7 +61,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `packages/es_codec/` CMake for arm64-v8a, armeabi-v7a, x86_64 with identical flags; source tarball SHA-256 checked at build time; 16 KB page alignment linker flags; spike code cleaned up or replaced.
 - **Done when:** CI builds all 3 ABIs; the build fails if the vendored source checksum differs from the pinned value (test by altering one byte locally); the 16 KB alignment check from the Android page-size guide (`zipalign -c -P 16` and ELF LOAD alignment 2**14) passes for every `.so` in the APK.
 
-### - [ ] FEAT-004-T06 — `TurboJpegEncoder` data adapter
+### - [x] FEAT-004-T06 — `TurboJpegEncoder` data adapter
 - **Implements:** FR-2, FR-14, FR-15, NFR-3 · **ADRs:** ADR-002, ADR-003
 - **Depends on:** T05
 - **Size:** M

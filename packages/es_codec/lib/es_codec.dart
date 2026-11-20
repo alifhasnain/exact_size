@@ -7,7 +7,8 @@ library;
 import 'src/android/android_build.g.dart';
 
 export 'src/turbojpeg.g.dart' show TJSAMP;
-export 'src/turbojpeg_encode.dart' show encodeRgba8ToJpeg;
+export 'src/turbojpeg_encode.dart'
+    show TurboJpegException, encodeJpeg, encodeRgba8ToJpeg;
 
 /// Android `Build.VERSION.SDK_INT` (JNIgen binding).
 int androidSdkInt() => Build$VERSION.SDK_INT;

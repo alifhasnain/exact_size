@@ -30,6 +30,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   image: 4.13.1
+  ffi: 2.2.0
 
 flutter:
   uses-material-design: true
