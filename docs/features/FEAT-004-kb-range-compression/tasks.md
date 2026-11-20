@@ -82,7 +82,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/`: `CompressionRequest`, `CompressionResult` (`Success`, `Failure`), `Reason` (all 12 codes incl. `NO_FIT`, `WRITE_FAILED`), `Notice` (`narrowRange`, `paddingAdded`, `transparencyFlattened`), `Direction`, `Encoder` interface; `test/.../fake_encoder.dart` returning scripted size curves per (config, q).
 - **Done when:** `result_model_test.dart` passes and shows `Failure` has no file path field and `Success` carries size, quality, format, subsampling, Huffman flag, padding bytes and notices; `Reason.values` matches the PRD section 5 list exactly; the domain folder has no Flutter or Riverpod imports (test scans imports).
 
-### - [ ] FEAT-004-T09 — `TargetValidator` and `ByteWindow`
+### - [x] FEAT-004-T09 — `TargetValidator` and `ByteWindow`
 - **Implements:** FR-3, FR-4, FR-16 · **ADRs:** —
 - **Depends on:** T08
 - **Size:** S
