@@ -1,0 +1,36 @@
+/// Recorded outcomes of the FEAT-004-T22 golden cases. Recorded on the host
+/// (Windows x64) and checked equal on the x86_64 emulator, the CI reference.
+/// Update only for a deliberate encoder or search change, from the
+/// GOLDEN-ACTUAL block the test prints, and say why in docs/CHANGELOG.md.
+const goldenOutcomes = <String, String>{
+  'photo_640x480_20-50': 'jpeg 48679 q80 pad0 214b06f7f75d29cf768d40722aa877ea3dafc7a356b3e83a84ca6bf70b273ce4',
+  'photo_640x480_max100': 'jpeg 97184 q91 pad0 2a043b1ffe85fcb682a687a04ddd0790ca5e4e2bba835925b995b93873c10b47',
+  'photo_640x480_49-50_narrow': 'jpeg 49500 q80 pad821 ef6c06393d6890e052eca609600d8bfd438af3563781fa7c9c7f734680a45761',
+  'photo_1200x900_100-200': 'jpeg 198676 q83 pad0 20955d200590395f6ab0800c4dce93bb779e94b0339210e9061deacaa7a3e7ec',
+  'photo_1600x1250_200-500': 'jpeg 463983 q87 pad0 ae3a895475c839a3a0fddd65e9df4160af86896ffdaa742169c21565d747a0ea',
+  'photo_1600x1250_max300': 'jpeg 299954 q80 pad0 749514aaae94310506b4fa7e162feb534847cb592d37005a0fd74fc7bf264799',
+  'photo_300x300_max3_fail': 'FAIL TOO_DEGRADED 4901',
+  'photo_300x300_10-20': 'jpeg 19876 q84 pad0 8afcdc29cb280fb2bc3f0e2c298c719e41698fe4452fffa06a18eafbd2ceea07',
+  'photo_640x480_20-50_dpi300': 'jpeg 48679 q80 pad0 b545a0fa752648d3788adc028df54276c3e8c6a7a6f6c9c1e1433876d257519c',
+  'photo_800x600_png_max2000': 'png 615706 q- pad0 62b0f004c18efe8968769748716d0dc4808f4cd605da475c5289d6a9cdb1c9dc',
+  'photo_640x480_png_20-50_fail': 'FAIL PNG_ABOVE_MAX 406464',
+  'photo_200x200_png_max200': 'png 64480 q- pad0 5b03bc9cc8b1d1c0840c76776c7171cbfef723ee7d57fe32a7362506ca678836',
+  'photo_rgba_640x480_20-50': 'jpeg 48247 q82 pad0 a0529e15995a0ede9221fdb1b73861f180724a8b7cb673004a3e4105cc6e0e45',
+  'photo_rgba_400x300_png_max600': 'png 184836 q- pad0 3624f54dc6e4ad91f41c6f93ddb3b82f95621877603464eeef079a97afd798a3',
+  'photo_rgba_1200x900_max150': 'jpeg 148814 q82 pad0 fce5820a8f47649caba5befa2630c017cbbf65abb3e9e69fc17305146bc4f3cf',
+  'sig_140x60_10-20_padded': 'jpeg 11264 q100 pad2406 7a0f5a4eb8566963b820da26a66aa80351079ab6a4636d627f6cc9d13315eae5',
+  'sig_140x60_max10': 'jpeg 4649 q100 pad0 dada5570daa7b87207023b5b84eee89b012fde99a1da98e10e9d01aeef7895bc',
+  'sig_300x100_20-50': 'jpeg 21504 q100 pad2275 004ad152dab5b4d4cb4a662579e94279ac05769259220f9b329d00113c6e68a7',
+  'sig_rgba_140x60_10-20': 'jpeg 11264 q100 pad2406 7a0f5a4eb8566963b820da26a66aa80351079ab6a4636d627f6cc9d13315eae5',
+  'sig_140x60_png_max20': 'png 687 q- pad0 4fc844a98d47c7216c59b4b4bb519a6491c90bc4fee9c154b1916c066fc57291',
+  'sig_140x60_png_10-20_fail': 'FAIL PNG_BELOW_MIN 687',
+  'sig_600x200_5-10': 'FAIL TOO_DEGRADED 10901',
+  'sig_rgba_600x200_png_max50': 'png 5013 q- pad0 e9efc6c1489cd0b129bdcd3f678df5a4924a89cb54bf998eb270b8ae660e68d2',
+  'sig_300x100_49-50_narrow': 'jpeg 49500 q100 pad20327 dab08d7adff7338947972b3e20bbf67217d77a7fdbc57711ad227a516631c88b',
+  'photo_1024x768_80-100': 'jpeg 96899 q76 pad0 10427a4c2cd48590ba7079cfdf4f979de4ece53aec6b678cdd6fd293f1f8471f',
+  'photo_1024x768_30-35': 'jpeg 33477 q43 pad0 88cef75b67e2139b1f5f74fc21c3ef119b8648a0c83a1d8f14cf327e9099a9bc',
+  'photo_480x640_max25': 'jpeg 24796 q62 pad0 f77eed6e106dad5997eee00c41addb4a7b4b167b9d0a1a5c5d69c66fdc42d7f4',
+  'photo_2000x1000_150-250': 'jpeg 241789 q76 pad0 520b3714273547f439e35b18be092eddefb1aa48b6bc4ae54b823c3492771293',
+  'photo_640x480_60-62': 'jpeg 61720 q83 pad1305 9e8b80295a3c7e3962338631bde7070ede8e02673542a97a931ed02899d55d86',
+  'photo_320x240_max2_fail': 'FAIL TOO_DEGRADED 4174',
+};

@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 /// Deterministic synthetic 8-bit test image (gradients, noise, hard edges),
 /// RGBA by default or RGB with [channels] = 3.
-/// Never a real photo (tasks.md: synthetic test data only). T22 replaces this
-/// with the full generator.
+/// Never a real photo (tasks.md: synthetic test data only). Kept for the
+/// earlier tests; new tests use synthetic_images.dart (FEAT-004-T22).
 Uint8List syntheticRgba(int width, int height, {int seed = 1, int channels = 4}) {
   final out = Uint8List(width * height * channels);
   var s = seed;

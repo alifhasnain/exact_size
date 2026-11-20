@@ -173,7 +173,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `test/.../no_network_imports_test.dart` scanning `lib/features/compression/` and `packages/es_codec/`; `data/outcome_log.dart` whose only input type is `Reason`/outcome enum.
 - **Done when:** the import-ban test fails on a planted `package:http`, `HttpClient`, `Socket` or `WebSocket` import and passes on the real code; a full logged run (success, failure, cancel) produces log lines containing only enum names, checked by a test that rejects any path separator, file extension or byte value in the captured output.
 
-### - [ ] FEAT-004-T22 — Synthetic image generator and same-device golden tests
+### - [x] FEAT-004-T22 — Synthetic image generator and same-device golden tests
 - **Implements:** FR-15, NFR-3, NFR-9, FR-8 (AC-2.3) · **ADRs:** ADR-002
 - **Depends on:** T17, T21
 - **Size:** M
