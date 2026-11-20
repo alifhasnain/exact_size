@@ -1,0 +1,3 @@
+# Dev-only tools for tool/gen_crop_fixtures.py (FEAT-002-T02). Never shipped in the app.
+Pillow==11.3.0
+pillow-heif==1.1.1

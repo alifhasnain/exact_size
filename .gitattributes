@@ -29,3 +29,7 @@ gradlew text eol=lf
 *.so    binary
 *.a     binary
 *.zip   binary
+
+# Generated binary fixtures (FEAT-002-T02): never touch line endings.
+test_support/crop_fixtures/** binary
+test_support/crop_fixtures/MANIFEST.md text eol=lf
