@@ -194,7 +194,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `integration_test/corpus/`: ≥ 500 synthetic exports (photo and signature, JPEG and PNG, normal, narrow such as 49–50, max-only, tiny max, transparent); offline reference search (all q 1–100 × configs A/B/C + padding) to label each target feasible or infeasible.
 - **Done when:** the harness runs in CI and asserts: 100% of exported files inside their window; ≥ 99% success on feasible targets; 100% of infeasible targets end in a failure, not an export; it reports how often the 10-pass cap binds and the share of 140×60 signature targets of 10–20 KB that needed padding (answers the PRD section 11 hypothesis). A threshold miss stops work and goes to the Product Owner.
 
-### - [ ] FEAT-004-T25 — Emulator run: memory, offline, speed (informational) — gate G3
+### - [x] FEAT-004-T25 — Emulator run: memory, offline, speed (informational) — gate G3
 - **Implements:** NFR-1, NFR-2, NFR-6, NFR-8, FR-17 · **ADRs:** ADR-001, ADR-002
 - **Depends on:** T18, T20, T24
 - **Size:** M
