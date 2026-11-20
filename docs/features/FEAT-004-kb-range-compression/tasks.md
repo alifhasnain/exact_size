@@ -117,7 +117,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/size_search.dart` result assembly: `lo ≤ finalBytes.length ≤ hi` on the exact bytes; `narrowRange` and `paddingAdded` notices; `closestBytes` and `direction` on every failure.
 - **Done when:** `size_gate_property_test.dart` runs 1,000 seeded random targets and size curves and finds every `Success` inside its window, every `Failure` with `closestBytes` and `direction` set (except `INVALID_TARGET` / `CANCELLED`, where they are null), and every padded success carrying `paddingAdded`.
 
-### - [ ] FEAT-004-T14 — `Flattener`
+### - [x] FEAT-004-T14 — `Flattener`
 - **Implements:** FR-12 · **ADRs:** ADR-003
 - **Depends on:** T08
 - **Size:** S

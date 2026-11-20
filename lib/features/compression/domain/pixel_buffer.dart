@@ -1,6 +1,8 @@
+import 'dart:typed_data';
+
 /// Pixels handed from FEAT-002 to FEAT-004 (ADR-003), as the domain sees them.
 /// The native-memory implementation and its ownership rules live in the data
-/// layer (FEAT-004-T16); the domain never touches the bytes.
+/// layer (FEAT-004-T16).
 abstract interface class PixelBuffer {
   int get width;
   int get height;
@@ -8,4 +10,12 @@ abstract interface class PixelBuffer {
   /// 3 (RGB) or 4 (RGBA); tightly packed, stride = width × channels.
   int get channels;
   bool get hasTransparency;
+
+  /// View of the pixel memory itself (native memory for the real buffer), so
+  /// writes change the buffer in place. Holds at least width × height × channels bytes.
+  Uint8List get bytes;
+
+  /// Called after the alpha channel was composited away in place: from now on
+  /// the buffer holds width × height × 3 bytes of RGB and no transparency.
+  void markAlphaRemoved();
 }
