@@ -112,6 +112,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ExactSize'**
   String get appTitle;
+
+  /// A file size in kilobytes, for example '50 KB'. amount is an already formatted number. Keep the unit after or before the number as your language writes it.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} KB'**
+  String kbAmount(String amount);
+
+  /// A size range in kilobytes, for example '20–50 KB'. min and max are already formatted numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'{min}–{max} KB'**
+  String kbRange(String min, String max);
+
+  /// FEAT-004 PRD section 8. The target size range can't be reached. range is a size range like '20–50 KB'; achieved is the closest size, like '61.3 KB'. Both are already formatted and wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'We can\'t reach {range} for this image at this size. Closest: {achieved}.'**
+  String outcomeCantReachRange(String range, String achieved);
+
+  /// Same as outcomeCantReachRange, for a target with only a maximum size. max is a size like '50 KB'.
+  ///
+  /// In en, this message translates to:
+  /// **'We can\'t get this image down to {max} at this size. Closest: {achieved}.'**
+  String outcomeCantReachMax(String max, String achieved);
+
+  /// Shown under outcomeCantReachRange for a PNG that is too large, only when a JPEG would fit (FR-10). The screen adds a 'switch to JPEG' button.
+  ///
+  /// In en, this message translates to:
+  /// **'A JPEG of this image would fit.'**
+  String get outcomeHintJpegWouldFit;
+
+  /// Shown under outcomeCantReachRange for a PNG that is below the minimum size (PRD section 9).
+  ///
+  /// In en, this message translates to:
+  /// **'PNG can\'t be made bigger. If the form accepts JPEG, try JPEG.'**
+  String get outcomeHintTryJpeg;
+
+  /// FEAT-004 AC-5.2: the device can't decode the chosen file.
+  ///
+  /// In en, this message translates to:
+  /// **'This file type isn\'t supported on this device.'**
+  String get outcomeUnsupportedInput;
+
+  /// FEAT-004 FR-18 / AC-5.3: the target is above 24 megapixels or there isn't enough free memory.
+  ///
+  /// In en, this message translates to:
+  /// **'This image is too large to process at this size. Try smaller dimensions.'**
+  String get outcomeImageTooLarge;
+
+  /// FEAT-004 FR-18: memory ran out during compression; nothing was saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone ran out of memory. Close other apps and try again.'**
+  String get outcomeOutOfMemory;
+
+  /// FEAT-004 WRITE_FAILED: writing the output file failed, for example low storage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save the file. Free up some storage and try again.'**
+  String get outcomeWriteFailed;
+
+  /// FEAT-004 CANCELLED: the user stopped the compression.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression cancelled.'**
+  String get outcomeCancelled;
+
+  /// FEAT-004 PRD section 8: the pixels did not match the target (a programming error).
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong preparing your image. Please try again.'**
+  String get outcomeInternalError;
+
+  /// FEAT-004 FR-4 / PRD section 8: shown with a success when max/min is below 1.024.
+  ///
+  /// In en, this message translates to:
+  /// **'This range is very narrow. Some portals count KB differently, so the file may still be rejected.'**
+  String get noticeNarrowRange;
+
+  /// FEAT-004 FR-8 / AC-2.2: neutral filler was added inside the JPEG to reach the minimum size.
+  ///
+  /// In en, this message translates to:
+  /// **'Padding was added to reach the minimum size. The picture itself is unchanged.'**
+  String get noticePaddingAdded;
+
+  /// FEAT-004 FR-12 / AC-3.4: shown before export when a transparent image becomes a JPEG.
+  ///
+  /// In en, this message translates to:
+  /// **'JPEG has no transparency, so transparent areas are now white.'**
+  String get noticeTransparencyFlattened;
+
+  /// FEAT-004 PRD section 8. min is a plain number like '2'; max is a size like '10,240 KB'. Both are already formatted and wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a maximum size between {min} and {max}.'**
+  String targetMaxOutOfRange(String min, String max);
+
+  /// FEAT-004 PRD section 8.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum must be smaller than maximum.'**
+  String get targetMinNotBelowMax;
+
+  /// FEAT-004 PRD section 8. Decimals are not allowed in R1.
+  ///
+  /// In en, this message translates to:
+  /// **'Use whole numbers of KB.'**
+  String get targetWholeNumbersOnly;
+
+  /// FEAT-004 PRD section 8: blank, negative, zero or not a number.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid size in KB.'**
+  String get targetInvalidNumber;
+
+  /// FEAT-004 PRD section 8: no output format chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose JPEG or PNG.'**
+  String get targetChooseJpegOrPng;
 }
 
 class _AppLocalizationsDelegate

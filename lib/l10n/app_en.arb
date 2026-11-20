@@ -3,5 +3,98 @@
   "appTitle": "ExactSize",
   "@appTitle": {
     "description": "App name. Brand name, not translated."
-  }
+  },
+
+  "kbAmount": "{amount} KB",
+  "@kbAmount": {
+    "description": "A file size in kilobytes, for example '50 KB'. amount is an already formatted number. Keep the unit after or before the number as your language writes it.",
+    "placeholders": { "amount": { "type": "String", "example": "50" } }
+  },
+  "kbRange": "{min}–{max} KB",
+  "@kbRange": {
+    "description": "A size range in kilobytes, for example '20–50 KB'. min and max are already formatted numbers.",
+    "placeholders": {
+      "min": { "type": "String", "example": "20" },
+      "max": { "type": "String", "example": "50" }
+    }
+  },
+
+  "outcomeCantReachRange": "We can't reach {range} for this image at this size. Closest: {achieved}.",
+  "@outcomeCantReachRange": {
+    "description": "FEAT-004 PRD section 8. The target size range can't be reached. range is a size range like '20–50 KB'; achieved is the closest size, like '61.3 KB'. Both are already formatted and wrapped in bidi isolates.",
+    "placeholders": {
+      "range": { "type": "String", "example": "20–50 KB" },
+      "achieved": { "type": "String", "example": "61.3 KB" }
+    }
+  },
+  "outcomeCantReachMax": "We can't get this image down to {max} at this size. Closest: {achieved}.",
+  "@outcomeCantReachMax": {
+    "description": "Same as outcomeCantReachRange, for a target with only a maximum size. max is a size like '50 KB'.",
+    "placeholders": {
+      "max": { "type": "String", "example": "50 KB" },
+      "achieved": { "type": "String", "example": "61.3 KB" }
+    }
+  },
+  "outcomeHintJpegWouldFit": "A JPEG of this image would fit.",
+  "@outcomeHintJpegWouldFit": {
+    "description": "Shown under outcomeCantReachRange for a PNG that is too large, only when a JPEG would fit (FR-10). The screen adds a 'switch to JPEG' button."
+  },
+  "outcomeHintTryJpeg": "PNG can't be made bigger. If the form accepts JPEG, try JPEG.",
+  "@outcomeHintTryJpeg": {
+    "description": "Shown under outcomeCantReachRange for a PNG that is below the minimum size (PRD section 9)."
+  },
+  "outcomeUnsupportedInput": "This file type isn't supported on this device.",
+  "@outcomeUnsupportedInput": {
+    "description": "FEAT-004 AC-5.2: the device can't decode the chosen file."
+  },
+  "outcomeImageTooLarge": "This image is too large to process at this size. Try smaller dimensions.",
+  "@outcomeImageTooLarge": {
+    "description": "FEAT-004 FR-18 / AC-5.3: the target is above 24 megapixels or there isn't enough free memory."
+  },
+  "outcomeOutOfMemory": "Your phone ran out of memory. Close other apps and try again.",
+  "@outcomeOutOfMemory": {
+    "description": "FEAT-004 FR-18: memory ran out during compression; nothing was saved."
+  },
+  "outcomeWriteFailed": "We couldn't save the file. Free up some storage and try again.",
+  "@outcomeWriteFailed": {
+    "description": "FEAT-004 WRITE_FAILED: writing the output file failed, for example low storage."
+  },
+  "outcomeCancelled": "Compression cancelled.",
+  "@outcomeCancelled": {
+    "description": "FEAT-004 CANCELLED: the user stopped the compression."
+  },
+  "outcomeInternalError": "Something went wrong preparing your image. Please try again.",
+  "@outcomeInternalError": {
+    "description": "FEAT-004 PRD section 8: the pixels did not match the target (a programming error)."
+  },
+
+  "noticeNarrowRange": "This range is very narrow. Some portals count KB differently, so the file may still be rejected.",
+  "@noticeNarrowRange": {
+    "description": "FEAT-004 FR-4 / PRD section 8: shown with a success when max/min is below 1.024."
+  },
+  "noticePaddingAdded": "Padding was added to reach the minimum size. The picture itself is unchanged.",
+  "@noticePaddingAdded": {
+    "description": "FEAT-004 FR-8 / AC-2.2: neutral filler was added inside the JPEG to reach the minimum size."
+  },
+  "noticeTransparencyFlattened": "JPEG has no transparency, so transparent areas are now white.",
+  "@noticeTransparencyFlattened": {
+    "description": "FEAT-004 FR-12 / AC-3.4: shown before export when a transparent image becomes a JPEG."
+  },
+
+  "targetMaxOutOfRange": "Enter a maximum size between {min} and {max}.",
+  "@targetMaxOutOfRange": {
+    "description": "FEAT-004 PRD section 8. min is a plain number like '2'; max is a size like '10,240 KB'. Both are already formatted and wrapped in bidi isolates.",
+    "placeholders": {
+      "min": { "type": "String", "example": "2" },
+      "max": { "type": "String", "example": "10,240 KB" }
+    }
+  },
+  "targetMinNotBelowMax": "Minimum must be smaller than maximum.",
+  "@targetMinNotBelowMax": { "description": "FEAT-004 PRD section 8." },
+  "targetWholeNumbersOnly": "Use whole numbers of KB.",
+  "@targetWholeNumbersOnly": { "description": "FEAT-004 PRD section 8. Decimals are not allowed in R1." },
+  "targetInvalidNumber": "Enter a valid size in KB.",
+  "@targetInvalidNumber": { "description": "FEAT-004 PRD section 8: blank, negative, zero or not a number." },
+  "targetChooseJpegOrPng": "Choose JPEG or PNG.",
+  "@targetChooseJpegOrPng": { "description": "FEAT-004 PRD section 8: no output format chosen." }
 }

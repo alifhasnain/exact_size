@@ -152,7 +152,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `data/memory_preflight.dart`: read `MemAvailable` from `/proc/meminfo` (injected reader for tests; fall back to allocation failure if unreadable); target above 24 MP → `IMAGE_TOO_LARGE`; encoder working memory × 2 headroom vs `MemAvailable` → `IMAGE_TOO_LARGE`; native allocation failure → `OUT_OF_MEMORY_HANDLED`.
 - **Done when:** `memory_preflight_test.dart` passes for: 24,000,000 px allowed, 24,000,001 px → `IMAGE_TOO_LARGE`; low `MemAvailable` text → `IMAGE_TOO_LARGE`; unreadable meminfo → no crash, check skipped; simulated null allocation → `OUT_OF_MEMORY_HANDLED` and the buffer is still freed.
 
-### - [ ] FEAT-004-T19 — `OutcomeMessages` and English ARB strings
+### - [x] FEAT-004-T19 — `OutcomeMessages` and English ARB strings
 - **Implements:** FR-11 (message), NFR-4 · **ADRs:** ADR-001
 - **Depends on:** T13, T17
 - **Size:** M
