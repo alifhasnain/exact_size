@@ -85,10 +85,11 @@ void defineMemoryPreflightTests() {
   group('allocation failures', () {
     test('a null native allocation is OutOfMemoryError, nothing leaks', () {
       final before = NativePixelBuffer.live;
-      // 2 TiB: malloc returns null on every test platform.
+      // 2^60 bytes: more than any 64-bit address space, so malloc returns null
+      // even where the kernel overcommits (2 TiB succeeded on the API 28 emulator).
       expect(
           () => NativePixelBuffer.allocate(
-              width: 1 << 20, height: 1 << 19, channels: 4, hasTransparency: true),
+              width: 1 << 30, height: 1 << 28, channels: 4, hasTransparency: true),
           throwsA(isA<OutOfMemoryError>()));
       expect(NativePixelBuffer.live, before);
     });
