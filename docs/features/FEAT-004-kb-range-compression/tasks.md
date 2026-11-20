@@ -68,7 +68,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `packages/es_codec/` FFIgen bindings (final); `lib/features/compression/data/turbo_jpeg_encoder.dart` implementing `encodeJpeg(q, subsampling, optimise, dpi)` from a native pixel pointer (3 channels): baseline only, JFIF APP0 with density from DPI, no EXIF, no ICC; TurboJPEG error codes mapped to a typed error. (The `Encoder` interface itself lands in T08; this adapter implements it.)
 - **Done when:** an integration test on an emulator parses the output of a synthetic image and finds: SOI, APP0 JFIF with density = requested DPI, no APP1/APP2 markers, SOF0 (baseline), sampling factors matching 4:2:0 or 4:4:4, EOI as the last two bytes; two encodes of the same input are byte-identical; an invalid parameter returns the typed error, not a crash.
 
-### - [ ] FEAT-004-T07 — Licences and dependency pinning
+### - [x] FEAT-004-T07 — Licences and dependency pinning
 - **Implements:** — (ADR-002 follow-up, supply chain in FEAT-004-TECH section 7) · **ADRs:** ADR-002
 - **Depends on:** T05
 - **Size:** S

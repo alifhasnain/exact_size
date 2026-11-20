@@ -20,3 +20,12 @@ dependencies:
 dev_dependencies:
   ffigen: 23.0.0
   jnigen: 1.1.0
+
+flutter:
+  # Licence texts of the bundled native code, shown on the app's licence page.
+  assets:
+    - third_party/libjpeg-turbo/LICENSE.md
+    - third_party/libjpeg-turbo/README.ijg
+    - third_party/libjpeg-turbo/src/spng/LICENSE
+    - third_party/libjpeg-turbo/src/spng/libpng-LICENSE.txt
+    - third_party/libjpeg-turbo/src/spng/zlib/LICENSE

@@ -6,6 +6,7 @@ library;
 
 import 'src/android/android_build.g.dart';
 
+export 'src/licenses.dart' show registerEsCodecLicenses;
 export 'src/turbojpeg.g.dart' show TJSAMP;
 export 'src/turbojpeg_encode.dart'
     show TurboJpegException, encodeJpeg, encodeRgba8ToJpeg;
