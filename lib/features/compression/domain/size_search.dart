@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'byte_window.dart';
@@ -183,8 +184,11 @@ class _Search {
     if (atOne > window.hi) {
       return SearchFailure(Reason.aboveMax, closestBytes: atOne, direction: Direction.tooBig);
     }
+    // Closest size at or above the floor: A@qFloor (always encoded by the
+    // binary search; the smallest size seen is a fallback, never null).
     return SearchFailure(Reason.tooDegraded,
-        closestBytes: _sizes[(JpegConfig.a, qFloor)], direction: Direction.tooBig);
+        closestBytes: _sizes[(JpegConfig.a, qFloor)] ?? _sizes.values.reduce(min),
+        direction: Direction.tooBig);
   }
 
   /// Pass cap reached (NFR-1): best in-window candidate, else closest failure.

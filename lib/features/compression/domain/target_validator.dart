@@ -36,6 +36,9 @@ final class InvalidTarget extends TargetValidation {
   const InvalidTarget(this.message);
   final TargetMessage message;
   Reason get reason => Reason.invalidTarget;
+
+  /// No size exists yet, so no closest size or direction (FR-11).
+  CompressionFailure get failure => const CompressionFailure(reason: Reason.invalidTarget);
 }
 
 /// Largest maximum in R1: 10,240 KB = 10 MB (PRD section 8 [Assumption]).

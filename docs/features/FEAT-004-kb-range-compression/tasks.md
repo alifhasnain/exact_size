@@ -110,7 +110,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/jpeg_padder.dart`: COM segments spliced after APP0; target `min(lo + min(1024, (hi − lo) div 2), hi)`; segments ≤ 65,537 bytes with no segment < 4 bytes; constant payload byte (0x20); `BELOW_MIN` (or `NO_FIT` in the jump case) when `hi − size < 4`.
 - **Done when:** `jpeg_padder_test.dart` passes for pad amounts 4, 5, 65,537, 65,538, 65,540 and 200,000 (segment lengths asserted); the padded file ends with FFD9 and nothing after it; it decodes with the `image` package to pixels identical to the unpadded file; payload bytes are all 0x20 (no user, device or time data, AC-2.3); room of 3 bytes → `BELOW_MIN` and `NO_FIT` in the jump case, room of 4 → success; padding twice gives identical bytes.
 
-### - [ ] FEAT-004-T13 — Final size gate, notices and failure details
+### - [x] FEAT-004-T13 — Final size gate, notices and failure details
 - **Implements:** FR-6, FR-11, FR-19, FR-4 (notice), FR-8 (disclosure) · **ADRs:** —
 - **Depends on:** T12
 - **Size:** S
