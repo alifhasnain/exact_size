@@ -7,6 +7,9 @@
 final class ByteWindow {
   const ByteWindow._(this.lo, this.hi, this.narrow);
 
+  /// A window given directly in bytes (tests and exact-byte edge cases).
+  const ByteWindow.bytes(this.lo, this.hi, {this.narrow = false});
+
   factory ByteWindow.fromKb({int? minKb, required int maxKb}) {
     final hi = maxKb * 1000;
     if (minKb == null) return ByteWindow._(0, hi, false);

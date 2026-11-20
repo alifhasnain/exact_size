@@ -103,7 +103,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `domain/size_search.dart`: floor path (tech.md section 3 step 4: B@100, binary search in B, C@100) and jump case (step 3: B and C at the same q, then hand to padding).
 - **Done when:** `size_search_floor_test.dart` passes one scripted case per branch of steps 3 and 4 (success at B@100, success in B search, success at C@100, hand-off to padding from C@100, from B@100 and from the B-search file); the order A → B → C is asserted from the fake encoder call log; progressive mode is never requested.
 
-### - [ ] FEAT-004-T12 — `JpegPadder` and padding outcome
+### - [x] FEAT-004-T12 — `JpegPadder` and padding outcome
 - **Implements:** FR-8 (lever 4), FR-6, FR-15 · **ADRs:** ADR-002
 - **Depends on:** T11
 - **Size:** M
