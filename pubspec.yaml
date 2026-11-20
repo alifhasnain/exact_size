@@ -1,0 +1,31 @@
+name: exact_size
+description: "ExactSize: resize and compress photos and signatures to exact pixel and KB targets, on device."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.14.0
+  flutter: 3.50.1 # pinned (ADR-001); CI reads this version
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_ui: 1.1.7
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: 3.5.0
+  get_it: 9.3.0
+  injectable: 3.0.0
+  intl: 0.20.3
+  material_ui: 1.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: 6.0.0
+  injectable_generator: 3.1.3
+  build_runner: 2.16.1
+
+flutter:
+  uses-material-design: true
+  generate: true

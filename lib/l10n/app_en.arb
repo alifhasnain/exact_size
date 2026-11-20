@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appTitle": "ExactSize",
+  "@appTitle": {
+    "description": "App name. Brand name, not translated."
+  }
+}

@@ -26,7 +26,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 
 ## Tasks
 
-### - [ ] FEAT-004-T01 — Project scaffold (shared, not FEAT-004 effort)
+### - [x] FEAT-004-T01 — Project scaffold (shared, not FEAT-004 effort)
 - **Implements:** foundation for NFR-4, NFR-9 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** M

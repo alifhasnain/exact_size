@@ -1,0 +1,8 @@
+name: es_codec
+description: "Native image codec bindings for ExactSize (libjpeg-turbo, stb_image_resize2) via Dart FFI. Filled in FEAT-004-T03/T05."
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: ^3.14.0
+  flutter: 3.50.1
