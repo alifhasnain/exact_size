@@ -40,7 +40,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** GitHub Actions CI workflow (analyze, test, `build apk` for arm64-v8a, armeabi-v7a, x86_64); throwaway proof in `packages/es_codec/`: one FFIgen-generated binding to a one-line C function, one JNIgen binding to an Android API (for example `android.os.Build.VERSION.SDK_INT`), `record_use` enabled in the release build.
 - **Done when:** CI is green on `main`; Flutter 3.50.x's own minimum Android version is confirmed ≤ API 28 (value and source recorded in the PR and `docs/CHANGELOG.md`); the FFIgen and JNIgen calls return correct values in an integration test on an API 28 emulator; the release build succeeds with `record_use` and an unused binding is shown removed using the check in the official docs; the claims are checked against the official Flutter 3.50 release notes. Any claim that fails → gate G0.
 
-### - [ ] FEAT-004-T03 — Speed spike, part 1: libjpeg-turbo FFI build
+### - [x] FEAT-004-T03 — Speed spike, part 1: libjpeg-turbo FFI build
 - **Implements:** NFR-1 (evidence) · **ADRs:** ADR-001, ADR-002
 - **Depends on:** T02
 - **Size:** M

@@ -2,8 +2,11 @@
 
 /// Native image codec bindings (ADR-001, ADR-002).
 ///
-/// For now only the FEAT-004-T02 interop proof; codec wrappers come in T03/T05.
+/// T02 interop proof plus the T03 libjpeg-turbo spike; real adapters come in T05/T06.
 library;
+
+export 'src/jpeg_spike.dart' show encodeRgba8ToJpeg;
+export 'src/turbojpeg.g.dart' show TJSAMP;
 
 import 'src/android/android_build.g.dart';
 import 'src/es_probe.g.dart' as probe;

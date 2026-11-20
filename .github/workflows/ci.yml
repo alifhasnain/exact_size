@@ -39,7 +39,7 @@ jobs:
         run: bash tool/check_tree_shaking.sh
 
   emulator:
-    name: Interop test on API 28 emulator
+    name: Integration tests on API 28 emulator
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -63,4 +63,4 @@ jobs:
           api-level: 28
           arch: x86_64
           ram-size: 2048M # 2 GB emulator profile (PRD test environment)
-          script: flutter test integration_test/interop_test.dart --dart-define=EXPECTED_SDK_INT=28
+          script: flutter test integration_test --dart-define=EXPECTED_SDK_INT=28
