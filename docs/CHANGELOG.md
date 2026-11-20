@@ -3,6 +3,7 @@
 Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: what changed`.
 
 ## [Unreleased]
+- FEAT-004-T05: es_codec productionised. The build hook verifies a SHA-256 over the vendored libjpeg-turbo tree (pinned in lib/src/vendor_checksum.dart) and fails on any change (checked by appending one byte to jcapimin.c). arm64-v8a, armeabi-v7a and x86_64 build with identical flags, including -z max-page-size=16384 in the build and the release link. tool/check_16kb_alignment.sh (zipalign -c -P 16, ELF LOAD alignment >= 0x4000) passes for every .so of the main and probe APKs, 32-bit included (CI run 44768311063). T02 C probe removed; tree-shaking check now shows unused TurboJPEG functions (tj3Get, tj3Decompress8) stripped. Found: native_toolchain_c reuses the static archive across builds, so after removing a source file a local rebuild failed with duplicate symbols until `flutter clean`; clean CI checkouts are not affected.
 - FEAT-004-T04: profile-mode encoder benchmark (integration_test/encoder_benchmark.dart via flutter drive --profile), 2 MP synthetic image, 2 warm-up + 20 timed runs per case, on the 2 GB emulator profile (x86_64, 2 vCPU, API 36.1). Timings are informational only: emulator CPU does not represent low-end phones (Product Owner, 2026-11-20); libjpeg-turbo runs without SIMD and the time includes copying pixels into native memory. Gate G1 recorded: libjpeg-turbo builds and runs, so ADR-002 Option C is kept. Option B (pure Dart) was 3.5-6x slower in every case.
 
   | Encoder, config | q | median ms | p95 ms | bytes |

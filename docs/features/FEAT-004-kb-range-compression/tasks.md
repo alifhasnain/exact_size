@@ -54,7 +54,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** spike branch; profile-mode benchmark on the emulator profile (informational: emulator CPU timing does not represent low-end phones): Option C (libjpeg-turbo) and Option B (pinned `image` package) encoding the 2 MP synthetic image, configs A (4:2:0, optimised Huffman) and C (4:4:4, standard Huffman), q 40, 75, 100; 2 warm-up runs then 20 timed runs each, back to back so thermal throttling is included.
 - **Done when:** a table of median and p95 ms per pass per encoder/config is recorded in `docs/CHANGELOG.md` and the PR, and the gate records **ADR-002 Option C kept** (approved default; no measured switch without a real low-end device) → continue with T05. If libjpeg-turbo does not build or run on the emulator → stop all FEAT-004 work and go back to the Product Owner. No later task starts until this gate is passed.
 
-### - [ ] FEAT-004-T05 — `es_codec` productionised: 3 ABIs, 16 KB pages, pinned source
+### - [x] FEAT-004-T05 — `es_codec` productionised: 3 ABIs, 16 KB pages, pinned source
 - **Implements:** FR-15, FR-21 (prerequisite), NFR-6 · **ADRs:** ADR-001, ADR-002
 - **Depends on:** T04 (G1 = Option C kept)
 - **Size:** M
