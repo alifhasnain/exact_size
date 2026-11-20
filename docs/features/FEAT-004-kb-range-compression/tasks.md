@@ -33,7 +33,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** Flutter 3.50.x with the exact patch pinned (FVM config or documented version); Android app with `minSdkVersion 28`; `flutter_riverpod` pinned (decide on `riverpod_generator` here and note it in the PR); `get_it`, `injectable`, `injectable_generator` and `build_runner` pinned, with `lib/di/injection.dart` (`configureDependencies()`) called from `main()` (ADR-001 v1.1); `flutter_lints` or stricter analysis options; `gen-l10n` set up with `l10n.yaml` and ARB files for en, es, pt_BR, hi, id, ar; empty module skeleton `lib/features/compression/{domain,data,presentation}`, empty local plugin `packages/es_codec/`.
 - **Done when:** `flutter analyze` reports 0 issues; `flutter test` passes one smoke test; `flutter build apk --debug` succeeds with minSdk 28 in the merged manifest; the app starts in `ar` with an RTL layout (widget test); `dart run build_runner build` generates the DI config and CI fails if generated files are stale.
 
-### - [ ] FEAT-004-T02 — CI and ADR-001 interop checks (shared, not FEAT-004 effort) — gate G0
+### - [x] FEAT-004-T02 — CI and ADR-001 interop checks (shared, not FEAT-004 effort) — gate G0
 - **Implements:** — (ADR-001 follow-up) · **ADRs:** ADR-001
 - **Depends on:** T01
 - **Size:** M

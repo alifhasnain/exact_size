@@ -67,3 +67,4 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-20 | FEAT-002 | Approved | 1.3 | Re-approved with emulator-only test environment; OQ-9 ticked; no open questions |
 | 2026-11-20 | ROADMAP | Approved | 1.3 | Phase A exit on emulators (2 GB RAM profile); timing targets best effort |
 | 2026-11-20 | FEAT-004-TASKS | Approved | 1.0 | 27 tasks; T01-T02 shared scaffold; emulator-only testing; T27 blocked until FEAT-002 |
+| 2026-11-20 | FEAT-004 gate G0 | Passed | — | minSdk 28 allowed; FFIgen, JNIgen, record_use work (CI run 44748990934); native build uses Dart hooks instead of CMake (ADR-001 wording clarification proposed) |
