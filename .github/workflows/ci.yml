@@ -36,7 +36,7 @@ jobs:
       - name: Release APK for arm, arm64, x64
         run: flutter build apk --release --target-platform android-arm,android-arm64,android-x64
       - name: Native tree shaking (record_use)
-        run: tool/check_tree_shaking.sh
+        run: bash tool/check_tree_shaking.sh
 
   emulator:
     name: Interop test on API 28 emulator
