@@ -69,6 +69,14 @@ class OutcomeMessages {
         TargetMessage.chooseJpegOrPng => _l10n.targetChooseJpegOrPng,
       };
 
+  /// Screen-reader progress text for pass [pass] of [total] (NFR-5).
+  String progress(int pass, int total) =>
+      _l10n.announceProgress(_iso(_number.format(pass)), _iso(_number.format(total)));
+
+  /// Screen-reader text for a file inside the window (NFR-5). Rounded to the
+  /// nearest 0.1 KB of 1000 bytes, which always stays within min–max (FR-3).
+  String success(CompressionSuccess s) => _l10n.announceSuccess(_kb(achievedKb(s.sizeBytes, null)));
+
   /// Pixels did not match the target (PRD section 8; a programming error).
   String get internalError => _l10n.outcomeInternalError;
 

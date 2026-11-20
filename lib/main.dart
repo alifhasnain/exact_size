@@ -8,11 +8,11 @@ import 'app.dart';
 import 'di/injection.dart';
 import 'features/compression/data/temp_files.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
+  await configureDependencies();
   registerEsCodecLicenses();
   // FR-20: remove output files left by an earlier run (crash, kill, cancel).
-  unawaited(TempFiles.appCache().then((files) => files.sweep()));
+  unawaited(getIt<TempFiles>().sweep());
   runApp(const ProviderScope(child: ExactSizeApp()));
 }

@@ -75,6 +75,16 @@ class AppLocalizationsEs extends AppLocalizations {
       'JPEG has no transparency, so transparent areas are now white.';
 
   @override
+  String announceProgress(String pass, String total) {
+    return 'Compressing, step $pass of $total.';
+  }
+
+  @override
+  String announceSuccess(String size) {
+    return 'Done. File size: $size.';
+  }
+
+  @override
   String targetMaxOutOfRange(String min, String max) {
     return 'Enter a maximum size between $min and $max.';
   }

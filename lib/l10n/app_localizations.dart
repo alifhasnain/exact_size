@@ -203,6 +203,18 @@ abstract class AppLocalizations {
   /// **'JPEG has no transparency, so transparent areas are now white.'**
   String get noticeTransparencyFlattened;
 
+  /// Screen-reader announcement during compression (NFR-5). pass and total are already formatted numbers wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'Compressing, step {pass} of {total}.'**
+  String announceProgress(String pass, String total);
+
+  /// Screen-reader announcement when the file fits the target (NFR-5). size is like '48.2 KB', already formatted and wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'Done. File size: {size}.'**
+  String announceSuccess(String size);
+
   /// FEAT-004 PRD section 8. min is a plain number like '2'; max is a size like '10,240 KB'. Both are already formatted and wrapped in bidi isolates.
   ///
   /// In en, this message translates to:

@@ -159,7 +159,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** `presentation/outcome_messages.dart`; ARB keys with ICU placeholders for every `Reason`, `Notice` and section 8 validation message (English text from the PRD); numbers and "KB" wrapped in U+2068…U+2069; the other 5 locales listed as untranslated for FEAT-019.
 - **Done when:** `outcome_messages_test.dart` passes: every `Reason` and `Notice` maps to a key; English output for "can't reach" matches PRD section 8 with formatted [MIN]/[MAX]/[ACHIEVED] values; in `ar` every number and "KB" is inside bidi isolates; no message is built with string concatenation (all go through `AppLocalizations` methods, checked in review and by a test that each message has placeholders where the PRD has values); `gen-l10n` produces the untranslated-keys list handed to FEAT-019.
 
-### - [ ] FEAT-004-T20 — Riverpod providers and accessibility hooks for FEAT-006
+### - [x] FEAT-004-T20 — Riverpod providers and accessibility hooks for FEAT-006
 - **Implements:** FR-17, FR-19, NFR-5 (FEAT-004 part) · **ADRs:** ADR-001
 - **Depends on:** T16, T19
 - **Size:** S

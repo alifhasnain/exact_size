@@ -81,6 +81,20 @@
     "description": "FEAT-004 FR-12 / AC-3.4: shown before export when a transparent image becomes a JPEG."
   },
 
+  "announceProgress": "Compressing, step {pass} of {total}.",
+  "@announceProgress": {
+    "description": "Screen-reader announcement during compression (NFR-5). pass and total are already formatted numbers wrapped in bidi isolates.",
+    "placeholders": {
+      "pass": { "type": "String", "example": "3" },
+      "total": { "type": "String", "example": "10" }
+    }
+  },
+  "announceSuccess": "Done. File size: {size}.",
+  "@announceSuccess": {
+    "description": "Screen-reader announcement when the file fits the target (NFR-5). size is like '48.2 KB', already formatted and wrapped in bidi isolates.",
+    "placeholders": { "size": { "type": "String", "example": "48.2 KB" } }
+  },
+
   "targetMaxOutOfRange": "Enter a maximum size between {min} and {max}.",
   "@targetMaxOutOfRange": {
     "description": "FEAT-004 PRD section 8. min is a plain number like '2'; max is a size like '10,240 KB'. Both are already formatted and wrapped in bidi isolates.",
