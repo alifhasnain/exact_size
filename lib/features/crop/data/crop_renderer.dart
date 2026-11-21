@@ -12,6 +12,7 @@ import '../domain/crop_types.dart';
 import '../domain/orientation.dart';
 import '../domain/target_check.dart';
 import 'crop_memory_preflight.dart';
+import 'crop_outcome_log.dart';
 import 'platform_decode.dart';
 import 'source_handle.dart';
 
@@ -53,9 +54,13 @@ class CropRenderer {
     this.debugShapeMismatch = false,
     this.debugFailAllocation = false,
     this.debugCancelAfter,
+    this.log = const CropOutcomeLog(),
   });
 
   final CropMemoryPreflight preflight;
+
+  /// Enum-only outcome log (FR-24).
+  final CropOutcomeLog log;
 
   /// Test hook: report a wrong output width so the shape assert fires.
   final bool debugShapeMismatch;
@@ -106,13 +111,16 @@ class CropRenderer {
       final r = await done.future;
       if (r case (final int address, final int w, final int h, final int channels, final bool alpha, final int length)) {
         _live.value--; // handed over: from now on NativePixelBuffer.live counts it
+        log.success();
         return RenderOk(NativePixelBuffer.adopt(
             address: address, width: w, height: h, channels: channels, hasTransparency: alpha, byteLength: length)
           ..upscaleFactor = CropMath.upscaleFactor(rect, target)
           ..cropRect = (x: rect.x, y: rect.y, w: rect.w, h: rect.h)
           ..rotationApplied = (turns % 4) * 90);
       }
-      return RenderErr(r is Reason ? r : Reason.internalError);
+      final reason = r is Reason ? r : Reason.internalError;
+      log.failure(reason);
+      return RenderErr(reason);
     } finally {
       port.close();
       ownCancel?.dispose();

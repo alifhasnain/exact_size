@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// FEAT-004-T21 / NFR-6: the image pipeline makes no network calls. Network
-/// packages and dart:io network classes may not appear in the compression
-/// feature or in es_codec.
-const scannedDirs = ['lib/features/compression', 'packages/es_codec/lib', 'packages/es_codec/hook'];
+/// FEAT-004-T21 / NFR-6, FEAT-002-T20 / NFR-5: the image pipeline makes no
+/// network calls. Network packages and dart:io network classes may not appear
+/// in the compression or crop features or in es_codec.
+const scannedDirs = ['lib/features/compression', 'lib/features/crop', 'packages/es_codec/lib', 'packages/es_codec/hook'];
 
 final _banned = <RegExp>[
   RegExp(r'''import\s+['"]package:(http|dio|web_socket_channel|grpc|socket_io_client)[/'"]'''),
@@ -35,7 +35,7 @@ void main() {
     expect(networkUses("import 'dart:io';\nfinal f = File('x'); // HttpClient in a comment\n"), isEmpty);
   });
 
-  test('compression feature and es_codec use no network APIs', () {
+  test('compression and crop features and es_codec use no network APIs', () {
     final hits = <String>[];
     var files = 0;
     for (final dir in scannedDirs) {

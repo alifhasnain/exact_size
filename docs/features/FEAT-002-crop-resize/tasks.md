@@ -173,7 +173,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/recents_guard.dart` (route observer or widget): `Activity.setRecentsScreenshotEnabled(false)` on push and `true` on pop, only on API 33+, via the T12 binding; no `FLAG_SECURE`.
 - **Done when:** a unit test with a fake binding shows false on push and true on pop, and no call below API 33; an integration test on API 28 shows no crash; on the latest-API emulator the recents thumbnail of a test screen showing a synthetic image is blank while `adb exec-out screencap` still captures it (screenshots attached to the PR); a test finds no `FLAG_SECURE` in the app code.
 
-### - [ ] FEAT-002-T20 — Privacy guards for the crop module
+### - [x] FEAT-002-T20 — Privacy guards for the crop module
 - **Implements:** FR-17, FR-24, NFR-5, NFR-7, AC-11.1, AC-11.3, AC-11.4 · **ADRs:** ADR-003
 - **Depends on:** T17; FEAT-004-T21 (import-ban test and enum-only logger)
 - **Size:** S

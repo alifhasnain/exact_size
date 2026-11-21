@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'package:exact_size/features/compression/data/compression_runner.dart' show CancelSignal;
 import 'package:exact_size/features/compression/data/native_pixel_buffer.dart';
 import 'package:exact_size/features/compression/domain/pixel_buffer.dart';
+import 'package:crypto/crypto.dart';
+import 'package:exact_size/features/crop/data/crop_outcome_log.dart';
 import 'package:exact_size/features/crop/data/crop_renderer.dart';
 import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/data/source_probe.dart';
@@ -194,5 +196,45 @@ void main() {
     expect(CropRenderer.liveNativeBlocks, 0);
     (px as NativePixelBuffer).free(); // a second free is a no-op
     expect(NativePixelBuffer.live, before);
+  });
+
+  // FEAT-002-T20: privacy on the device.
+
+  test('renders (success, cancel, failure) write no files, leave the source untouched, log only enum names', () async {
+    Future<Set<String>> listing() async {
+      final out = <String>{};
+      for (final d in [await getTemporaryDirectory(), await getApplicationCacheDirectory()]) {
+        if (!d.existsSync()) continue;
+        out.addAll(d.listSync(recursive: true).whereType<File>().map((f) => f.path));
+      }
+      return out;
+    }
+
+    final lines = <String>[];
+    final log = CropOutcomeLog(lines.add);
+    final src = File('${dir.path}/orient_6_exif.jpg');
+    final before = (sha256.convert(src.readAsBytesSync()), src.lastModifiedSync());
+    final cacheBefore = await listing();
+
+    final h = SourceHandle(src.uri.toString());
+    final info = ((await SourceProbe(log: log).probe(h)) as ProbeOk).info;
+    const t = Target(120, 80);
+    final req = RenderRequest(src: h, info: info, cropRect: CropMath.toCropRect(CropMath.initial(info, t), info, t), quarterTurns: 0, target: t);
+    for (final renderer in [
+      CropRenderer(log: log),
+      CropRenderer(log: log, debugCancelAfter: RenderStep.decoded),
+      CropRenderer(log: log, debugShapeMismatch: true),
+    ]) {
+      final r = await renderer.render(req);
+      if (r is RenderOk) (r.pixels as NativePixelBuffer).free();
+    }
+    await SourceProbe(log: log).probe(SourceHandle(File('${dir.path}/truncated.jpg').uri.toString()));
+
+    expect(await listing(), cacheBefore, reason: 'FEAT-002 writes no files');
+    expect((sha256.convert(src.readAsBytesSync()), src.lastModifiedSync()), before);
+    expect(lines, ['exactsize.crop outcome=SUCCESS', 'exactsize.crop outcome=CANCELLED', 'exactsize.crop outcome=INTERNAL_ERROR', 'exactsize.crop outcome=CORRUPT_INPUT']);
+    for (final l in lines) {
+      expect(l.contains(RegExp(r'[/\:]|\.(jpe?g|png|heic)|content|file|[0-9]')), isFalse, reason: l);
+    }
   });
 }

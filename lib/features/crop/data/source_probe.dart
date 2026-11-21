@@ -5,6 +5,7 @@ import 'package:jni/jni.dart';
 
 import '../domain/crop_types.dart';
 import 'container_check.dart';
+import 'crop_outcome_log.dart';
 import 'fd_byte_source.dart';
 import 'header_sniff.dart';
 import 'heif_orientation.dart';
@@ -37,11 +38,16 @@ final class ProbeErr extends ProbeResult {
 /// PNG, WebP and HEIC take the same path. Runs in a worker isolate. Platform
 /// exception text is never logged: every failure maps to a [Reason].
 class SourceProbe {
-  const SourceProbe();
+  const SourceProbe({this.log = const CropOutcomeLog()});
 
-  Future<ProbeResult> probe(SourceHandle src) {
+  /// Enum-only outcome log (FR-24); only refusals are logged here.
+  final CropOutcomeLog log;
+
+  Future<ProbeResult> probe(SourceHandle src) async {
     final uri = src.uri;
-    return Isolate.run(() => probeSync(uri));
+    final r = await Isolate.run(() => probeSync(uri));
+    if (r is ProbeErr) log.failure(r.reason);
+    return r;
   }
 
   /// Same as [probe] on the calling isolate (tests, or a caller already in a worker).
