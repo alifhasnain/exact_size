@@ -89,7 +89,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `android/app/src/main/AndroidManifest.xml`: non-exported `androidx.core.content.FileProvider`, authority `${applicationId}.camera`, `grantUriPermissions`; `queries` entry for `android.media.action.IMAGE_CAPTURE` next to `PROCESS_TEXT`; `uses-feature android.hardware.camera required=false`; Play services photo-picker `ModuleDependencies` service entry; `launchMode` stays `singleTop`; no `uses-permission`. `res/xml/camera_paths.xml` with only `<cache-path name="camera" path="camera/"/>`. `android/app/build.gradle.kts`: pin `androidx.activity` and `androidx.core` to the versions recorded in T01 (ADR-006 proposed 1.10.1 and 1.16.0).
 - **Done when:** debug and release builds pass; `aapt2 dump xmltree` (or the merged manifest file) shows the provider with `exported=false`, the `queries` entry and `required=false`; no new permission appears in the merged manifest; the pins match the T01 record.
 
-### - [ ] FEAT-001-T09 — `checkMergedManifest` Gradle task
+### - [x] FEAT-001-T09 — `checkMergedManifest` Gradle task
 - **Implements:** FR-18, AC-6.4, NFR-6, NFR-10 · **ADRs:** ADR-006
 - **Depends on:** T08
 - **Size:** S
