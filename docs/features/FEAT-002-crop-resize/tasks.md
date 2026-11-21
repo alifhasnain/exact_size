@@ -103,7 +103,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** English ARB keys with ICU placeholders for every PRD section 8 message, the enlarge notice and confirm dialog, animated-image notice, "limited on-screen precision" hint, button labels (Centre, Reset, nudge, zoom, rotate, Continue, Continue anyway, Choose another photo), TalkBack labels and announcements (crop area state, edge reached, handle names, upscale change); `presentation/crop_messages.dart` mapping `Reason` and notices to keys; numbers, "W×H" and units wrapped in U+2068…U+2069; untranslated list for FEAT-019.
 - **Done when:** `crop_messages_test.dart` passes: every `Reason` and notice has a key; English text matches PRD section 8 with formatted [W], [H], [FACTOR]; in `ar` every number and "300×80" is inside bidi isolates and not reversed; every message with a PRD value uses a placeholder (no concatenation); `gen-l10n` lists the 5 untranslated locales for FEAT-019.
 
-### - [ ] FEAT-002-T11 — `cropControllerProvider`, TalkBack action handlers and announcements
+### - [x] FEAT-002-T11 — `cropControllerProvider`, TalkBack action handlers and announcements
 - **Implements:** FR-5, FR-11 (live updates), FR-13 (state restore), FR-20 (state kept), AC-5.4, AC-8.4, AC-9.1, AC-9.3, AC-9.4 · **ADRs:** ADR-001
 - **Depends on:** T08, T10
 - **Size:** M
