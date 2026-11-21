@@ -15,8 +15,11 @@ class FakeSystemPicker implements SystemPicker {
   /// Puts [r] in the slot and signals it, like the bridge after onActivityResult.
   void deliver(SystemPickResult r) {
     slot = r;
-    _ready.add(null);
+    signal();
   }
+
+  /// Signals resultReady without changing the slot.
+  void signal() => _ready.add(null);
 
   @override
   Stream<void> get resultReady => _ready.stream;

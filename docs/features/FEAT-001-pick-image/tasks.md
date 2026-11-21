@@ -117,7 +117,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/features/pick/data/system_picker.dart` (interface), `android_system_picker.dart` (channel wrapper: maps to `SystemPickResult`, unknown or malformed payloads → `NotOpenable`, `PlatformException` → code only, message dropped, never logs payloads); `test_support/fake_system_picker.dart`; `lib/main.dart`: `pendingCaptureName()` then camera `sweep(keep: name)` next to the FEAT-004 sweep. `integration_test/pick_bridge_test.dart` (added to `bundle.dart`, runs in the CI API 28 job): `cameraAvailable()` returns a bool, `takeResult()` and `pendingCaptureName()` are null at rest.
 - **Done when:** unit tests with a mocked channel pass for every payload shape, malformed maps and a `PlatformException` carrying a `[PLACEHOLDER]` message that never reaches the log sink; `pick_bridge_test.dart` passes on API 36.1 and in CI.
 
-### - [ ] FEAT-001-T13 — `PickController`: launch, result handling, one image, `release()`
+### - [x] FEAT-001-T13 — `PickController`: launch, result handling, one image, `release()`
 - **Implements:** FR-1, FR-3, FR-5, FR-6, FR-7, FR-8, FR-9, FR-10, FR-11, FR-15, FR-16, NFR-9 · **ADRs:** ADR-001, ADR-006
 - **Depends on:** T03, T05, T12
 - **Size:** M
