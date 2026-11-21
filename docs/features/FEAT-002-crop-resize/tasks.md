@@ -61,7 +61,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** spike branch; on the emulator profile at API 28 and the latest API, for the T02 large set and variants: `BitmapRegionDecoder.newInstance` and `decodeRegion` with `inSampleSize`, `ARGB_8888`, `inPreferredColorSpace = SRGB`, `inPremultiplied = false`; record whether the region decoder opens the file, the returned config and colour space, peak memory (`dumpsys meminfo` before/after), success or OOM. HEIC: compare our EXIF-based orientation with the `ImageDecoder` oracle for EXIF and `irot`/`imir` fixtures. Animated WebP and GIF: does the region decoder open them, is the first frame returned. 10-bit HEIC, CMYK JPEG, 16-bit and P3 PNG: what config/colour space comes back.
 - **Done when:** a decision record is in the PR and `docs/CHANGELOG.md` with: (1) decode path per format (`region` or `full`); (2) the HEIF orientation rule (force 1 if the decoder applies `irot`, else EXIF), identical on both API levels or per API level; (3) a per-format memory pre-flight factor; (4) the 100 MP and 200 MP outcome per format (decodes, or the pixel threshold above which the probe returns `IMAGE_TOO_LARGE` early, allowed by FR-6 best effort); (5) jnigraphics or `copyPixelsToBuffer`; (6) first-frame behaviour for animated files; (7) which variants map to `UNSUPPORTED_INPUT`. Gate G1 is recorded as passed, or work stops and the failing assumption goes to the Product Owner. No task from T12 onwards starts before G1 passes.
 
-### - [ ] FEAT-002-T05 — Domain types, `Reason` and `TargetCheck`
+### - [x] FEAT-002-T05 — Domain types, `Reason` and `TargetCheck`
 - **Implements:** FR-1, FR-19 (types), NFR-9 · **ADRs:** ADR-003
 - **Depends on:** —
 - **Size:** S
