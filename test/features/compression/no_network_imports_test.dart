@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// FEAT-004-T21 / NFR-6, FEAT-002-T20 / NFR-5: the image pipeline makes no
 /// network calls. Network packages and dart:io network classes may not appear
 /// in the compression or crop features or in es_codec.
-const scannedDirs = ['lib/features/compression', 'lib/features/crop', 'packages/es_codec/lib', 'packages/es_codec/hook'];
+const scannedDirs = ['lib/features/compression', 'lib/features/crop', 'lib/features/pick', 'packages/es_codec/lib', 'packages/es_codec/hook'];
 
 final _banned = <RegExp>[
   RegExp(r'''import\s+['"]package:(http|dio|web_socket_channel|grpc|socket_io_client)[/'"]'''),

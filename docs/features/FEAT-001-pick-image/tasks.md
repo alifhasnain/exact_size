@@ -61,7 +61,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/features/compression/data/temp_files.dart`: optional folder name (default `exactsize_out`, so FEAT-004 callers are unchanged) and `sweep({String? keep})` that skips the one named entry; register a second instance `@Named('camera')` on `<cache>/camera/` in the get_it module. Extend `integration_test/temp_files_test.dart` (already in `bundle.dart`).
 - **Done when:** existing FEAT-004 temp-file tests pass unchanged; new tests show `sweep(keep: name)` leaves only that file, `sweep()` empties the camera folder, and the two instances never touch each other's folder.
 
-### - [ ] FEAT-001-T05 — `PickOutcomeLog` and pick privacy static tests
+### - [x] FEAT-001-T05 — `PickOutcomeLog` and pick privacy static tests
 - **Implements:** FR-8, FR-19, NFR-3, NFR-6, NFR-8 · **ADRs:** ADR-001, ADR-006
 - **Depends on:** T03
 - **Size:** S
