@@ -208,7 +208,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `Semantics` on the crop area with label, value and custom actions wired to the T11 handlers; Centre and Reset buttons (≥ 48 dp, labelled); upscale notice with icon and text in a polite live region; confirm dialog above 2.0 at Continue ("Continue anyway" / "Choose another photo").
 - **Done when:** widget tests pass: the semantics tree exposes move ×4, zoom ±, centre and reset, and each gives the same cropRect as the gesture; Centre and Reset are ≥ 48 dp with labels; a 200×200 source at 300×300 shows the notice with icon and text and Continue enabled; a factor above 2.0 opens the dialog and both choices work; zooming across 1.0 or 2.0 updates the notice and emits one live-region announcement.
 
-### - [ ] FEAT-002-T25 — Continue flow: render, progress, cancel, errors, notices, recents guard
+### - [x] FEAT-002-T25 — Continue flow: render, progress, cancel, errors, notices, recents guard
 - **Implements:** FR-1, FR-2 (messages), FR-15, FR-16 (message), FR-18, FR-19, FR-26 (hook-up), AC-2.1, AC-2.2, AC-4.3, AC-7.1–7.5 · **ADRs:** ADR-003
 - **Depends on:** T24, T18, T19
 - **Size:** M
