@@ -367,19 +367,22 @@ void main() {
       final enRect = en.read(cropControllerProvider)!.cropRect;
       await tester.pumpWidget(const SizedBox()); // fresh navigator
       final ar = await pumpScreen(tester, info, t, pushed: true, locale: const Locale('ar'));
+      final l = lookupAppLocalizations(const Locale('ar'));
       expect(Directionality.of(tester.element(find.byType(CropScreen))), TextDirection.rtl);
       // Mirrored: Back on the right of the title, Continue before the print, rotate group order.
       expect(cx(find.byType(BackButton)), greaterThan(cx(find.byType(AppBar))));
-      expect(cx(find.widgetWithText(FilledButton, 'Continue')), lessThan(cx(find.byType(CropPrint))));
-      expect(cx(find.byTooltip('Rotate counter-clockwise')), greaterThan(cx(find.byTooltip('Zoom in'))));
+      expect(cx(find.widgetWithText(FilledButton, l.cropButtonContinue)), lessThan(cx(find.byType(CropPrint))));
+      expect(cx(find.byTooltip(l.cropButtonRotateCounterclockwise)), greaterThan(cx(find.byTooltip(l.cropButtonZoomIn))));
       // Physical: move arrows stay left-to-right, the crop is the same rect, a move goes physically left.
-      final moves = ['Move left', 'Move up', 'Move down', 'Move right'].map((l) => cx(find.byTooltip(l))).toList();
+      final moves = [l.cropButtonMoveLeft, l.cropButtonMoveUp, l.cropButtonMoveDown, l.cropButtonMoveRight]
+          .map((m) => cx(find.byTooltip(m)))
+          .toList();
       expect(moves, orderedEquals([...moves]..sort()));
       expect(ar.read(cropControllerProvider)!.cropRect, enRect);
-      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.tap(find.byTooltip(l.cropButtonZoomIn));
       await tester.pump();
       final before = ar.read(cropControllerProvider)!.cropRect.x;
-      await tester.tap(find.byTooltip('Move left'));
+      await tester.tap(find.byTooltip(l.cropButtonMoveLeft));
       await tester.pump();
       expect(ar.read(cropControllerProvider)!.cropRect.x, lessThan(before));
     });
@@ -488,11 +491,17 @@ void main() {
     testWidgets('TalkBack labels; handles stay at physical corners in Arabic', (tester) async {
       final semantics = tester.ensureSemantics();
       await pumpScreen(tester, source(4000, 3000), const Target(300, 300), locale: const Locale('ar'));
-      for (final c in ['top-left', 'top-right', 'bottom-left', 'bottom-right']) {
-        expect(find.bySemanticsLabel('Resize crop, $c corner'), findsOneWidget);
+      final l = lookupAppLocalizations(const Locale('ar'));
+      Offset atAr(String corner) {
+        final label = l.cropHandleLabel(corner);
+        expect(find.bySemanticsLabel(label), findsOneWidget, reason: corner);
+        return tester.getCenter(find.byWidgetPredicate((w) => w is Semantics && w.properties.label == label));
       }
-      expect(at(tester, 'top-left').dx, lessThan(at(tester, 'top-right').dx));
-      expect(at(tester, 'top-left').dy, lessThan(at(tester, 'bottom-left').dy));
+      for (final c in ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']) {
+        atAr(c);
+      }
+      expect(atAr('topLeft').dx, lessThan(atAr('topRight').dx));
+      expect(atAr('topLeft').dy, lessThan(atAr('bottomLeft').dy));
       semantics.dispose();
     });
   });

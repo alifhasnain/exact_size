@@ -75,7 +75,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/l10n/app_en.arb`: every PRD section 8 string with `@` descriptions (buttons, disabled-camera reason, all messages, "Opening your photo…", "Cancel"), including the Should strings ("Choose from files", privacy line marked "copy owned by FEAT-016", capture lost) so translation runs once; ICU placeholders only, no concatenation. `lib/features/pick/presentation/pick_messages.dart` maps `PickMessage` → string.
 - **Done when:** `flutter gen-l10n` passes; a unit test checks every `PickMessage` has a non-empty English string; the PR lists the new keys. If a Should is later cut, its keys are removed in that decision's PR.
 
-### - [ ] FEAT-001-T07 — Translate pick strings (es, pt, hi, id, ar)
+### - [x] FEAT-001-T07 — Translate pick strings (es, pt, hi, id, ar)
 - **Implements:** NFR-5, AC-7.3 · **ADRs:** —
 - **Depends on:** T06
 - **Size:** M

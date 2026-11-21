@@ -241,4 +241,70 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - "tidak memerlukan pembesaran" for cropAnnounceNoEnlargement: "lagi" ("any more") is correct, because the announcement fires after a change.
   4. **Kept as in English, against a reviewer flag:** the split between ponsel and perangkat. "Silakan" is used on some failure messages but not others.
   5. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
+- **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
 - **Status:** AI-reviewed only (no native speaker).
+
+## ar (Modern Standard Arabic)
+
+- **Date:** 2026-11-21. Keys: all 65 untranslated.
+- **Models:** drafted by Claude Opus 5.5 (vendored skill `localize-ar`). Blind back-translation review of all keys by Claude Sonnet. Second blind review of the high-risk keys by Claude Haiku.
+- **Variant:** MSA in the standard formal register. Instructions use the masculine singular imperative, the usual convention in Arabic UI. Single-action buttons use the masdar (متابعة, توسيط, التقاط صورة). Failures use the impersonal تعذّر. Arabic punctuation (، ؟). No bidi marks in the strings: isolates are added in code. JPEG, PNG and KB stay in Latin script.
+- **Digits:** checked in code. `NumberFormat('ar')` from intl formats 10240.5 as "10,240.5" and 150 % as "150‎%‎", in Western digits 0–9 as decided. No open item.
+- **Glossary:**
+
+  | English | Arabic |
+  |---|---|
+  | phone | هاتف |
+  | device | جهاز |
+  | photo / image | صورة (one word; Arabic does not separate them) |
+  | dimensions | الأبعاد |
+  | size (KB) | الحجم |
+  | file size | حجم الملف |
+  | range | نطاق الحجم |
+  | crop area | منطقة الاقتصاص |
+  | enlarge (upscale) | تكبير / ستُكبَّر |
+  | zoom in / zoom out | تقريب / تبعيد |
+  | zoom level | مستوى التقريب |
+  | compression | ضغط الصورة |
+  | portal | البوابات الإلكترونية |
+  | form | النموذج الإلكتروني |
+  | soft / blurry | أقل وضوحًا / ضبابية |
+  | take a photo | التقاط صورة |
+  | photo picker | أداة اختيار الصور |
+  | gallery | المعرض |
+  | free up | حرّر |
+  | try again | حاول مرة أخرى / يُرجى المحاولة مرة أخرى |
+  | stored online | محفوظة في التخزين السحابي |
+  | padding | بيانات حشو |
+  | frame (animation) | الإطار |
+  | pixels | بكسل |
+
+- **Fixed after review (25):**
+  - Failure messages: "لا يمكننا" → "تعذّر", and "أقرب نتيجة".
+  - Crop term: "القص" → "الاقتصاص", in the crop area, the handles, the edge announcement and the hint.
+  - Zoom: "تكبير/تصغير العرض" → "تقريب/تبعيد", so zoom is not confused with upscaling or "width".
+  - Compression: "ضغط الصورة", because "الضغط" alone can read as "pressure".
+  - Passive constructions: "أُضيفت", "أُلغيت" and "ستُكبَّر".
+  - cropButtonContinueAnyway: indefinite "متابعة".
+  - "الجزء الأوسط".
+  - "تكبير مفرط".
+  - "بوحدة KB".
+  - "التخزين السحابي".
+  - "نطاق الحجم".
+  - cropConfirmEnlarge: "من الحجم المطلوب".
+  - pickCaptureLost: changed to "بينما كانت الكاميرا مفتوحة". The back-translation showed that the draft "أثناء فتح الكاميرا" meant "while the camera was opening", which is meaning drift.
+- **High-risk keys (second review):** the same 12 as for es. No grammar errors remain.
+- **Open list (Product Owner to decide):**
+  1. **pickPrivacyNote:** the absolute "never uploaded" claim, as in every language. The suggested scoping is "ولا يرفعها التطبيق إلى أي خادم أبدًا" ("and the app never uploads them to any server"). It belongs to FEAT-016.
+  2. **pickCameraNoPhoto:** now reads "لم تلتقط الكاميرا أي صورة" ("the camera took no photo"), because the reviewer called the literal "did not return" a calque. This is a slight shift from the English "didn't return a photo".
+  3. **Masculine singular address:** this is the standard default in Arabic UI. A gender-neutral alternative (يُرجى + masdar throughout) is possible but reads more formal.
+  4. **Reviewer suggestions not taken:**
+     - A next step added to noticeNarrowRange.
+     - "No longer exists" for cropSourceUnavailable: that changes the meaning, so I used "تعذّر العثور" instead.
+     - "file" instead of "item" in pickItemNotOpenable.
+  5. **English wording not yet confirmed by the Product Owner:** the same four keys as for es, plus pickCaptureLost (see id).
+- **Status:** AI-reviewed only (no native speaker).
+
+## Notes across languages
+
+- **es number format:** the `es` locale in intl formats numbers Spain-style (10.240,5), while es-419 usually writes 10,240.5. The strings receive numbers that are already formatted, so the text is unaffected, but the numbers a Latin American user sees use comma decimals. Fixing it would need an `es_419` locale or a number-format override; this needs a Product Owner decision.
