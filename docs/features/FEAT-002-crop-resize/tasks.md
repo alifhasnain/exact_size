@@ -82,7 +82,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `domain/crop_math.dart`: `CropState {cx, cy, cw, quarterTurns}`, initial state, cover width, minimum crop (`max(coverCw/8, width where the shorter side is 32 px)`, capped at cover), `toCropRect` (tech.md FR-8 rule), `upscaleFactor`, `sampleSize` (largest power of two with `cropW/s ≥ W` and `cropH/s ≥ H`, else 1).
 - **Done when:** `crop_math_test.dart` passes: 4000×3000 → 300×300 gives cropRect (500, 0, 3000, 3000); 3000×4000 → 300×80 gives the centred full-width strip 3000×800; 140×60 ratio holds; square/square and equal-ratio sources give the whole image; 1×1 and 7×7 sources give a valid rect with w, h ≥ 1; 200×200 → 300×300 factor 1.5; 1000×100 → 300×300 uses the limiting axis; `sampleSize(3000×3000 → 300×300) = 8`, and 1 when the crop is smaller than the target; a 10,000-case seeded property test finds every cropRect inside the image, the ratio error under 1 source pixel per side, and identical output for identical input.
 
-### - [ ] FEAT-002-T08 — Must reducers: drag, pinch, move, zoom, centre, reset
+### - [x] FEAT-002-T08 — Must reducers: drag, pinch, move, zoom, centre, reset
 - **Implements:** FR-4, FR-5 (logic), FR-27 (logic: same move/zoom reducers), AC-1.2, AC-9.3 · **ADRs:** —
 - **Depends on:** T07
 - **Size:** M
