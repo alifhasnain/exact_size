@@ -1,7 +1,7 @@
 ---
 id: FEAT-004
 title: Compress to a min–max KB range with JPEG/PNG choice
-status: Approved
+status: Implemented
 version: 1.3
 updated: 2026-11-21
 links: [ROADMAP, FEAT-002, FEAT-005, FEAT-006, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-010]
