@@ -47,7 +47,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** **touches FEAT-002 code.** `lib/features/crop/data/source_probe.dart` line 63: `size == 0` → `ProbeErr(Reason.corruptInput)`, `size < 0` stays `Reason.sourceUnavailable`. Add an empty `zero_bytes.jpg` to `tool/gen_crop_fixtures.py` and `test_support/crop_fixtures/MANIFEST.md`; add the case to `integration_test/crop_data_matrix.dart` (already a CI `flutter drive` target with `push_fixtures_driver.dart`). The `docs/CHANGELOG.md` line names both FEAT-001 and FEAT-002. FEAT-002 docs have no zero-byte rule (checked), so no FEAT-002 doc change is needed.
 - **Done when:** `crop_data_matrix.dart` passes on API 36.1 and in the CI API 28 job with `zero_bytes.jpg` → `CORRUPT_INPUT`; the existing FEAT-002 matrix and unit tests still pass unchanged.
 
-### - [ ] FEAT-001-T03 — Pick domain types and `PickRules`
+### - [x] FEAT-001-T03 — Pick domain types and `PickRules`
 - **Implements:** FR-6, FR-8, FR-10, FR-11, FR-14 (mapping), FR-19 (redaction), NFR-9 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** S
