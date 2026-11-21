@@ -100,4 +100,148 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get targetChooseJpegOrPng => 'Choose JPEG or PNG.';
+
+  @override
+  String pixelSize(String width, String height) {
+    return '$width×$height';
+  }
+
+  @override
+  String cropTargetSideOutOfRange(String min, String max) {
+    return 'Enter a width and height between $min and $max pixels.';
+  }
+
+  @override
+  String get cropTargetTooLarge =>
+      'That size is too large for this app. Choose a smaller size.';
+
+  @override
+  String get cropSourceTooLarge =>
+      'This photo is too large to open on this device. Choose another photo.';
+
+  @override
+  String get cropUnsupportedInput =>
+      'This file type isn\'t supported on this device. Choose a JPEG or PNG photo.';
+
+  @override
+  String get cropCorruptInput =>
+      'We can\'t read this file. Choose another photo.';
+
+  @override
+  String get cropSourceUnavailable =>
+      'We can\'t find this photo anymore. Please choose it again.';
+
+  @override
+  String get cropOutOfMemory =>
+      'This photo is too large for this device. Try a smaller photo.';
+
+  @override
+  String get cropCancelled => 'Cancelled. Your photo was not changed.';
+
+  @override
+  String cropNoticeEnlarged(String size) {
+    return 'This photo is smaller than $size px, so it will be enlarged and may look soft.';
+  }
+
+  @override
+  String cropConfirmEnlarge(String factor) {
+    return 'This photo is much smaller than needed ($factor× enlargement) and may look blurry. Continue anyway?';
+  }
+
+  @override
+  String get cropNoticeAnimated =>
+      'This image is animated. Only the first frame is used.';
+
+  @override
+  String get cropHintLimitedPrecision =>
+      'The frame is very thin on screen. Use the move and zoom buttons for fine positioning.';
+
+  @override
+  String get cropButtonCentre => 'Centre';
+
+  @override
+  String get cropButtonReset => 'Reset';
+
+  @override
+  String get cropButtonMoveLeft => 'Move left';
+
+  @override
+  String get cropButtonMoveRight => 'Move right';
+
+  @override
+  String get cropButtonMoveUp => 'Move up';
+
+  @override
+  String get cropButtonMoveDown => 'Move down';
+
+  @override
+  String get cropButtonZoomIn => 'Zoom in';
+
+  @override
+  String get cropButtonZoomOut => 'Zoom out';
+
+  @override
+  String get cropButtonRotateClockwise => 'Rotate clockwise';
+
+  @override
+  String get cropButtonRotateCounterclockwise => 'Rotate counter-clockwise';
+
+  @override
+  String get cropButtonContinue => 'Continue';
+
+  @override
+  String get cropButtonContinueAnyway => 'Continue anyway';
+
+  @override
+  String get cropButtonChooseAnother => 'Choose another photo';
+
+  @override
+  String cropAreaState(String zoom, String position) {
+    String _temp0 = intl.Intl.selectLogic(position, {
+      'centre': 'the centre',
+      'top': 'the top',
+      'bottom': 'the bottom',
+      'left': 'the left side',
+      'right': 'the right side',
+      'topLeft': 'the top-left',
+      'topRight': 'the top-right',
+      'bottomLeft': 'the bottom-left',
+      'bottomRight': 'the bottom-right',
+      'other': 'part',
+    });
+    return 'Crop area, zoom $zoom, showing $_temp0 of the photo';
+  }
+
+  @override
+  String cropEdgeReached(String edge) {
+    String _temp0 = intl.Intl.selectLogic(edge, {
+      'left': 'left',
+      'right': 'right',
+      'top': 'top',
+      'bottom': 'bottom',
+      'other': '',
+    });
+    return 'Reached the $_temp0 edge.';
+  }
+
+  @override
+  String cropHandleLabel(String corner) {
+    String _temp0 = intl.Intl.selectLogic(corner, {
+      'topLeft': 'top-left',
+      'topRight': 'top-right',
+      'bottomLeft': 'bottom-left',
+      'bottomRight': 'bottom-right',
+      'other': '',
+    });
+    return 'Resize crop, $_temp0 corner';
+  }
+
+  @override
+  String get cropAnnounceNoEnlargement =>
+      'The photo no longer needs enlarging.';
+
+  @override
+  String cropAnnounceStrongEnlargement(String factor) {
+    return 'Strong enlargement ($factor×). You will be asked to confirm before continuing.';
+  }
 }

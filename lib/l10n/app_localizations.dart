@@ -244,6 +244,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose JPEG or PNG.'**
   String get targetChooseJpegOrPng;
+
+  /// A size in pixels, for example '300×80'. width and height are already formatted numbers. Keep the × sign or use your language's usual separator.
+  ///
+  /// In en, this message translates to:
+  /// **'{width}×{height}'**
+  String pixelSize(String width, String height);
+
+  /// FEAT-002 PRD section 8. min and max are formatted numbers wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a width and height between {min} and {max} pixels.'**
+  String cropTargetSideOutOfRange(String min, String max);
+
+  /// FEAT-002 PRD section 8: target above 24 MP.
+  ///
+  /// In en, this message translates to:
+  /// **'That size is too large for this app. Choose a smaller size.'**
+  String get cropTargetTooLarge;
+
+  /// FEAT-002 PRD section 8: IMAGE_TOO_LARGE (source above 200 MP or not enough memory to open it).
+  ///
+  /// In en, this message translates to:
+  /// **'This photo is too large to open on this device. Choose another photo.'**
+  String get cropSourceTooLarge;
+
+  /// FEAT-002 PRD section 8: UNSUPPORTED_INPUT.
+  ///
+  /// In en, this message translates to:
+  /// **'This file type isn\'t supported on this device. Choose a JPEG or PNG photo.'**
+  String get cropUnsupportedInput;
+
+  /// FEAT-002 PRD section 8: CORRUPT_INPUT.
+  ///
+  /// In en, this message translates to:
+  /// **'We can\'t read this file. Choose another photo.'**
+  String get cropCorruptInput;
+
+  /// FEAT-002 PRD section 8: SOURCE_UNAVAILABLE.
+  ///
+  /// In en, this message translates to:
+  /// **'We can\'t find this photo anymore. Please choose it again.'**
+  String get cropSourceUnavailable;
+
+  /// FEAT-002 PRD section 8: OUT_OF_MEMORY_HANDLED during the render.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo is too large for this device. Try a smaller photo.'**
+  String get cropOutOfMemory;
+
+  /// Shown or announced when the user cancels preparing the image (CANCELLED). Wording is an assumption, to confirm with the Product Owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled. Your photo was not changed.'**
+  String get cropCancelled;
+
+  /// FEAT-002 FR-11 notice, enlargement above 1.0 times. size is a formatted pixel size like '300×80' wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo is smaller than {size} px, so it will be enlarged and may look soft.'**
+  String cropNoticeEnlarged(String size);
+
+  /// FEAT-002 FR-11 confirmation dialog, enlargement above 2.0 times. factor is a formatted number like '2.5' wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo is much smaller than needed ({factor}× enlargement) and may look blurry. Continue anyway?'**
+  String cropConfirmEnlarge(String factor);
+
+  /// FEAT-002 PRD section 8: animated WebP, PNG or GIF source.
+  ///
+  /// In en, this message translates to:
+  /// **'This image is animated. Only the first frame is used.'**
+  String get cropNoticeAnimated;
+
+  /// FEAT-002 PRD section 9 extreme ratios: the frame has a minimum thickness on screen. Wording is an assumption, to confirm with the Product Owner.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame is very thin on screen. Use the move and zoom buttons for fine positioning.'**
+  String get cropHintLimitedPrecision;
+
+  /// Button: centre the crop on the photo (FR-5).
+  ///
+  /// In en, this message translates to:
+  /// **'Centre'**
+  String get cropButtonCentre;
+
+  /// Button: back to the initial crop (FR-5).
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get cropButtonReset;
+
+  /// Button and accessibility action: move the crop toward the physical left (FR-27). Always physical left, also in right-to-left languages.
+  ///
+  /// In en, this message translates to:
+  /// **'Move left'**
+  String get cropButtonMoveLeft;
+
+  /// Button and accessibility action: move the crop toward the physical right (FR-27).
+  ///
+  /// In en, this message translates to:
+  /// **'Move right'**
+  String get cropButtonMoveRight;
+
+  /// Button and accessibility action: move the crop up (FR-27).
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get cropButtonMoveUp;
+
+  /// Button and accessibility action: move the crop down (FR-27).
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get cropButtonMoveDown;
+
+  /// Button and accessibility action (FR-5, FR-27).
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get cropButtonZoomIn;
+
+  /// Button and accessibility action (FR-5, FR-27).
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get cropButtonZoomOut;
+
+  /// Button: rotate the photo 90 degrees clockwise (FR-21).
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate clockwise'**
+  String get cropButtonRotateClockwise;
+
+  /// Button: rotate the photo 90 degrees counter-clockwise (FR-21).
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate counter-clockwise'**
+  String get cropButtonRotateCounterclockwise;
+
+  /// Button: prepare the image at the target size.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get cropButtonContinue;
+
+  /// Button in the enlargement confirmation dialog (FR-11).
+  ///
+  /// In en, this message translates to:
+  /// **'Continue anyway'**
+  String get cropButtonContinueAnyway;
+
+  /// Button: go back and pick a different photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another photo'**
+  String get cropButtonChooseAnother;
+
+  /// Screen-reader label of the crop area (AC-9.1). zoom is a formatted percentage like '150%' wrapped in bidi isolates. position names the part of the photo in the frame, in physical directions.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop area, zoom {zoom}, showing {position, select, centre{the centre} top{the top} bottom{the bottom} left{the left side} right{the right side} topLeft{the top-left} topRight{the top-right} bottomLeft{the bottom-left} bottomRight{the bottom-right} other{part}} of the photo'**
+  String cropAreaState(String zoom, String position);
+
+  /// Screen-reader announcement when a move stops at the photo edge (AC-9.3). Physical directions.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached the {edge, select, left{left} right{right} top{top} bottom{bottom} other{}} edge.'**
+  String cropEdgeReached(String edge);
+
+  /// Screen-reader label of a corner handle (AC-13.7). Physical corners, also in right-to-left languages.
+  ///
+  /// In en, this message translates to:
+  /// **'Resize crop, {corner, select, topLeft{top-left} topRight{top-right} bottomLeft{bottom-left} bottomRight{bottom-right} other{}} corner'**
+  String cropHandleLabel(String corner);
+
+  /// Screen-reader announcement when the enlargement drops back to 1.0 or less (AC-9.4). Wording is an assumption, to confirm with the Product Owner.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo no longer needs enlarging.'**
+  String get cropAnnounceNoEnlargement;
+
+  /// Screen-reader announcement when the enlargement rises above 2.0 (AC-5.4, AC-9.4). factor is a formatted number wrapped in bidi isolates. Wording is an assumption, to confirm with the Product Owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong enlargement ({factor}×). You will be asked to confirm before continuing.'**
+  String cropAnnounceStrongEnlargement(String factor);
 }
 
 class _AppLocalizationsDelegate

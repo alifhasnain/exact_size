@@ -96,7 +96,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `domain/crop_reducers.dart`: handle reducer anchored at the opposite corner with the same clamps; rotate clockwise / counter-clockwise around the frame centre with re-fit.
 - **Done when:** tests pass: a handle drag keeps the opposite corner fixed and the ratio exact, stops at the image edge and at the minimum; handle release leaves `CropState` unchanged (only the view re-fits later); a zoom-in action and a handle shrink to the same width give the same cropRect (AC-13.7); four rotations in one direction return the original state; after any rotation no empty area is inside the frame.
 
-### - [ ] FEAT-002-T10 — Crop strings (ARB) and `CropMessages`
+### - [x] FEAT-002-T10 — Crop strings (ARB) and `CropMessages`
 - **Implements:** FR-22, NFR-6, AC-10.1, AC-10.3 · **ADRs:** ADR-001
 - **Depends on:** T05
 - **Size:** M
