@@ -208,7 +208,7 @@ Module paths follow ADR-001: `lib/features/compression/{domain,data,presentation
 - **Scope:** encode the synthetic photo and signature set at q 30, 35, 40, 45, 50; produce a side-by-side contact sheet and SSIM per image class [Assumption: SSIM is an adequate proxy, final call is visual]; thin-stroke signatures checked for stroke breakup.
 - **Done when:** the contact sheet and SSIM table are attached to the PR and shown to the Product Owner; result is either "40 confirmed for both classes" or a proposed value / per-type floor that waits for a Product Owner decision before the constant changes.
 
-### - [ ] FEAT-004-T27 — Integration with FEAT-002 pixel producer (BLOCKED until FEAT-002's PixelBuffer handover is implemented)
+### - [x] FEAT-004-T27 — Integration with FEAT-002 pixel producer (BLOCKED until FEAT-002's PixelBuffer handover is implemented)
 - **Implements:** FR-1, FR-13, FR-18, FR-12, US-5 (AC-5.1–5.3) · **ADRs:** ADR-003
 - **Depends on:** T25; FEAT-002 tasks that produce a `PixelBuffer` (not planned yet)
 - **Size:** M

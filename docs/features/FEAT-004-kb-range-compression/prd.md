@@ -1,9 +1,9 @@
 ---
 id: FEAT-004
 title: Compress to a min–max KB range with JPEG/PNG choice
-status: Approved
-version: 1.2
-updated: 2026-11-20
+status: Under Discussion
+version: 1.3
+updated: 2026-11-21
 links: [ROADMAP, FEAT-002, FEAT-005, FEAT-006, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-010]
 ---
 
@@ -72,7 +72,7 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 
 - **US-5** As a user with a modern phone, I want to start from any common photo format, so that I do not convert files first.
   - **AC-5.1** Given a source in JPEG, PNG, HEIC/HEIF or WebP, when the image reaches FEAT-004 as pixels at target W×H, then the target-format output is produced with the same behaviour for all four sources.
-  - **AC-5.2** Given a source format the device cannot decode (for example a corrupt file or an unusual HEIC variant), when it is selected, then the user gets a clear "this file type isn't supported on this device" message and no crash.
+  - **AC-5.2** Given a source the device cannot use, when it is selected, then the user gets one clear message and no crash: a format the device cannot decode (for example a 10-bit HEIC variant) gives "this file type isn't supported on this device" (`UNSUPPORTED_INPUT`); a damaged or non-image file gives "we can't read this file" (`CORRUPT_INPUT`, FEAT-002 gate G1, ADR-004 v1.1).
   - **AC-5.3** Given a very large camera image (for example 50 MP), when it is processed, then the app does not crash from memory pressure: it either completes or shows a clear "image too large" error.
 
 - **US-6** As a user, I want the same result every time and no data leaving my phone, so that I can trust the app with my signature.
@@ -228,3 +228,4 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | 1.1 | 2026-11-20 | Re-approved by Product Owner |
 | 1.2 | 2026-11-20 | Test environment note: emulators only (2 GB RAM profile), timing targets best effort, no physical low-end device (Product Owner). Under Discussion until re-approved |
 | 1.2 | 2026-11-20 | Re-approved by Product Owner |
+| 1.3 | 2026-11-21 | Clarification: AC-5.2 splits corrupt files (`CORRUPT_INPUT`, "we can't read this file") from formats the device cannot decode (`UNSUPPORTED_INPUT`), matching FEAT-002 gate G1 and ADR-004 v1.1. Under Discussion until re-approved |
