@@ -1,7 +1,7 @@
 ---
 id: ADR-004
 title: Image decode path — Android platform decoders (BitmapRegionDecoder / BitmapFactory) via JNIgen, own orientation step, same path for preview and render
-status: Under Discussion
+status: Approved
 version: 1.1
 updated: 2026-11-21
 links: [FEAT-002, FEAT-004, ADR-001, ADR-003, ADR-005]
@@ -74,3 +74,4 @@ Measured on the emulator profile (2 GB RAM, API 28 in CI and API 36 locally), wi
 | 0.2 | 2026-11-20 | Source ceiling 200 MP reflected in drivers and spike |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
 | 1.1 | 2026-11-21 | Spike results (FEAT-002-T04): own HEIF `irot`/`imir` + EXIF orientation reader, structure check before decode (`CORRUPT_INPUT`, early `IMAGE_TOO_LARGE`), per-format memory factor; GIF on the `full` path; tiled HEIC confirmed. Under Discussion until re-approved |
+| 1.1 | 2026-11-21 | Approved by Product Owner |
