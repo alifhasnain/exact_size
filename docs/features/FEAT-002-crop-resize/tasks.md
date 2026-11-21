@@ -138,7 +138,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `packages/es_codec/src/crop.c`: `es_orient` (lossless D4, 8 transforms in the same order as `domain/orientation.dart`); `es_finish` (alpha scan, in-place compaction 4 → 3 channels when opaque); `es_bitmap_lock`/`unlock` via jnigraphics, or the `copyPixelsToBuffer` fallback chosen in T04; `hook/build.dart` links `jnigraphics` for Android targets only; FFIgen bindings.
 - **Done when:** tests pass on the host (orient, finish) and the emulator (lock): for all 8 transforms `es_orient` gives the same grid as the Dart D4 mapping; one pixel with alpha 254 → `hasTransparency` true and 4 channels; all alpha 255 → false and 3 channels with RGB unchanged; a synthetic bitmap's pixels read in C match the Java values; CI builds 3 ABIs and `tool/check_16kb_alignment.sh` passes; release build tree-shaking check still passes.
 
-### - [ ] FEAT-002-T15 — `PreviewDecoder`
+### - [x] FEAT-002-T15 — `PreviewDecoder`
 - **Implements:** FR-7 (preview display only), FR-10, FR-18 (off UI thread), FR-25 (preview ≤ 2048), AC-4.1 · **ADRs:** ADR-004
 - **Depends on:** T12, T14
 - **Size:** S

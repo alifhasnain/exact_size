@@ -2,13 +2,13 @@ import 'dart:isolate';
 
 import 'package:es_codec/es_codec.dart';
 import 'package:jni/jni.dart';
-import 'package:jni_flutter/jni_flutter.dart';
 
 import '../domain/crop_types.dart';
 import 'container_check.dart';
 import 'fd_byte_source.dart';
 import 'header_sniff.dart';
 import 'heif_orientation.dart';
+import 'platform_decode.dart';
 import 'source_handle.dart';
 
 /// Result of [SourceProbe.probe] (tech.md section 4).
@@ -48,16 +48,9 @@ class SourceProbe {
   static ProbeResult probeSync(String uri) {
     final ParcelFileDescriptor pfd;
     try {
-      final context = androidApplicationContext.as(Context.type);
-      final resolver = context.contentResolver!;
-      final juri = Uri.parse(uri.toJString())!;
-      final mode = 'r'.toJString();
-      pfd = resolver.openFileDescriptor(juri, mode) ?? (throw const _Unavailable());
-      juri.release();
-      mode.release();
-      resolver.release();
-    } on Object {
-      return const ProbeErr(Reason.sourceUnavailable);
+      pfd = openReadOnly(uri);
+    } on DecodeFailure catch (e) {
+      return ProbeErr(e.reason);
     }
     try {
       final size = pfd.statSize;
@@ -123,6 +116,3 @@ class SourceProbe {
   }
 }
 
-final class _Unavailable implements Exception {
-  const _Unavailable();
-}
