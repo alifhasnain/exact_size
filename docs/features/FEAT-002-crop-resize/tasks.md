@@ -110,7 +110,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/crop_controller.dart`: Riverpod notifier holding `CropState`, kept alive for the flow session and disposed at flow end (nothing persisted); action handler table (move ×4, zoom ±, centre, reset; handle/rotate actions added when T09 exists) calling the same reducers; announcement composer producing polite messages on actions, button presses, edge reached and upscale threshold crossings (1.0 and 2.0), never per drag update. No widgets.
 - **Done when:** `crop_controller_test.dart` passes: each action handler gives the same cropRect as the matching reducer; a drag of 60 updates produces 0 announcements and a threshold crossing produces exactly 1; an edge-reached move produces the edge message; leaving and re-entering the screen in the same session restores cropRect, zoom and rotation; ending the flow disposes the state; announcement text contains no file name, path or EXIF value.
 
-### - [ ] FEAT-002-T30 — `ContainerCheck` and `HeifOrientation` (ADR-004 v1.1)
+### - [x] FEAT-002-T30 — `ContainerCheck` and `HeifOrientation` (ADR-004 v1.1)
 - **Implements:** FR-3 (HEIF), FR-6 (early ceiling), FR-15, NFR-10, AC-3.2, AC-7.4 · **ADRs:** ADR-004 v1.1
 - **Depends on:** T04 (G1), T05, T06
 - **Size:** M
