@@ -120,16 +120,22 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/large
-          key: large-fixtures-12-50-${{ hashFiles('tool/gen_crop_fixtures.py', 'tool/crop_fixtures_requirements.txt') }}
+          key: large-fixtures-12-50-tiled-${{ hashFiles('tool/gen_crop_fixtures.py', 'tool/crop_fixtures_requirements.txt') }}
       - if: steps.large-fixtures.outputs.cache-hit != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Generate large decoder fixtures (12, 50 MP)
+      - name: Generate large decoder fixtures (12, 50 MP; 50 MP tiled HEIC)
         if: steps.large-fixtures.outputs.cache-hit != 'true'
         run: |
           python -m pip install -r tool/crop_fixtures_requirements.txt
           python -I tool/gen_crop_fixtures.py --large /tmp/large --mp 12,50
+          # Camera-style grid HEIC (512 px tiles): Android's HEIC decoder rejects a
+          # 50 MP single-frame HEIC, real phones write grids (FEAT-002-T04).
+          # heif-enc --cut-tiles needs libheif >= 1.18; Ubuntu's apt has 1.17.
+          /home/linuxbrew/.linuxbrew/bin/brew install libheif
+          /home/linuxbrew/.linuxbrew/bin/heif-enc --version
+          /home/linuxbrew/.linuxbrew/bin/heif-enc -e x265 -q 80 --cut-tiles 512 -o /tmp/large/large_50mp_8164x6124_tiled.heic /tmp/large/large_50mp_8164x6124.png
       # Booted-emulator snapshot, so later runs skip AVD creation and cold boot.
       - id: avd-cache
         uses: actions/cache@v4
