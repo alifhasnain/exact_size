@@ -7,6 +7,7 @@ import 'package:exact_size/features/crop/data/crop_renderer.dart';
 import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/presentation/recents_guard.dart';
 import '../../../../test_support/test_pixels.dart';
+import 'package:exact_size/features/crop/domain/crop_math.dart';
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/crop/presentation/crop_canvas.dart';
 import 'package:exact_size/features/crop/presentation/crop_controller.dart';
@@ -414,6 +415,84 @@ void main() {
         expect(c.read(cropControllerProvider)!.cropRect, rect, reason: '$size');
         expect(tester.takeException(), isNull, reason: '$size');
       }
+    });
+  });
+
+  group('T27 corner handles', () {
+    Finder handle(String corner) =>
+        find.byWidgetPredicate((w) => w is Semantics && w.properties.label == 'Resize crop, $corner corner');
+    Offset at(WidgetTester tester, String corner) => tester.getCenter(handle(corner));
+
+    testWidgets('300×80: four 48 dp handle areas that do not overlap', (tester) async {
+      await pumpScreen(tester, source(3000, 4000), const Target(300, 80));
+      final rects = [for (final c in ['top-left', 'top-right', 'bottom-left', 'bottom-right']) tester.getRect(handle(c))];
+      for (final r in rects) {
+        expect(r.width >= 48 && r.height >= 48, isTrue);
+      }
+      for (var i = 0; i < 4; i++) {
+        for (var j = i + 1; j < 4; j++) {
+          final o = rects[i].intersect(rects[j]);
+          expect(o.width <= 0 || o.height <= 0, isTrue, reason: '$i/$j overlap');
+        }
+      }
+    });
+
+    testWidgets('dragging out past the image edge stops there, opposite corner fixed', (tester) async {
+      final c = await pumpScreen(tester, source(4000, 3000), const Target(300, 300));
+      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.pumpAndSettle();
+      final before = c.read(cropControllerProvider)!.cropRect;
+      await tester.dragFrom(at(tester, 'top-left'), const Offset(-400, -400));
+      await tester.pumpAndSettle();
+      final r = c.read(cropControllerProvider)!.cropRect;
+      expect((r.x + r.w, r.y + r.h), (before.x + before.w, before.y + before.h));
+      expect(r.w, greaterThan(before.w));
+      expect(r.x == 0 || r.y == 0, isTrue, reason: 'stopped at an image edge');
+    });
+
+    testWidgets('shrinking stops at the minimum and updates the notice', (tester) async {
+      final c = await pumpScreen(tester, source(400, 400), const Target(300, 300));
+      expect(find.textContaining('smaller than'), findsNothing);
+      await tester.dragFrom(at(tester, 'bottom-right'), const Offset(-600, -600));
+      await tester.pumpAndSettle();
+      expect(c.read(cropControllerProvider)!.crop.cw, CropMath.minWidth(400, 400, const Target(300, 300)));
+      expect(find.textContaining('smaller than'), findsOneWidget);
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+    });
+
+    testWidgets('release re-fits the view and leaves the cropRect unchanged; pinch is ignored', (tester) async {
+      final c = await pumpScreen(tester, source(4000, 3000), const Target(300, 300));
+      final fitted = tester.getRect(handle('top-left'));
+      final g = await tester.startGesture(at(tester, 'bottom-right'));
+      await g.moveBy(const Offset(-40, -40));
+      await g.moveBy(const Offset(-40, -40));
+      await tester.pump();
+      expect(tester.getRect(handle('top-left')), fitted, reason: 'opposite corner stays put while dragging');
+      final fittedBr = canvasFrame(tester, const Target(300, 300)).shift(tester.getTopLeft(find.byType(CropCanvas))).bottomRight;
+      expect(tester.getCenter(handle('bottom-right')), isNot(fittedBr), reason: 'the frame follows the finger');
+      final during = c.read(cropControllerProvider)!.crop;
+      // A second finger joins and spreads: ignored while the handle holds.
+      final g2 = await tester.startGesture(tester.getCenter(find.byType(CropCanvas)), pointer: 9);
+      await g2.moveBy(const Offset(80, 60));
+      await tester.pump();
+      expect(c.read(cropControllerProvider)!.crop, during);
+      await g2.up();
+      await g.up();
+      await tester.pumpAndSettle();
+      expect(c.read(cropControllerProvider)!.crop, during);
+      final f = canvasFrame(tester, const Target(300, 300)).shift(tester.getTopLeft(find.byType(CropCanvas)));
+      expect(tester.getCenter(handle('bottom-right')), f.bottomRight, reason: 're-fitted to the frame');
+    });
+
+    testWidgets('TalkBack labels; handles stay at physical corners in Arabic', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pumpScreen(tester, source(4000, 3000), const Target(300, 300), locale: const Locale('ar'));
+      for (final c in ['top-left', 'top-right', 'bottom-left', 'bottom-right']) {
+        expect(find.bySemanticsLabel('Resize crop, $c corner'), findsOneWidget);
+      }
+      expect(at(tester, 'top-left').dx, lessThan(at(tester, 'top-right').dx));
+      expect(at(tester, 'top-left').dy, lessThan(at(tester, 'bottom-left').dy));
+      semantics.dispose();
     });
   });
 }

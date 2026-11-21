@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:material_ui/material_ui.dart';
 
 import '../domain/crop_math.dart';
+import '../domain/crop_reducers.dart' show Corner;
 import '../domain/crop_types.dart';
 
 /// Where the fixed crop frame sits inside the canvas (FR-4, OQ-14).
@@ -32,7 +33,10 @@ final class CropFrameLayout {
       h = w / r;
     }
     final c = canvas.center(Offset.zero);
-    return CropFrameLayout(Rect.fromCenter(center: c, width: w, height: math.max(h, 1)), thin: thin);
+    return CropFrameLayout(
+      Rect.fromCenter(center: c, width: w, height: math.max(h, 1)),
+      thin: thin,
+    );
   }
 }
 
@@ -51,6 +55,8 @@ class CropCanvas extends StatefulWidget {
     required this.crop,
     required this.onDrag,
     required this.onPinch,
+    required this.onHandle,
+    required this.handleLabel,
   });
 
   /// Display-only decode in raw orientation (FR-25).
@@ -65,63 +71,154 @@ class CropCanvas extends StatefulWidget {
   /// Zoom by [scale] about (fx, fy) in oriented source pixels.
   final void Function(double scale, double fx, double fy) onPinch;
 
+  /// Corner handle moved by (dx, dy) oriented source pixels (FR-28).
+  final void Function(Corner corner, double dx, double dy) onHandle;
+
+  /// TalkBack label per handle ("Resize crop, top-left corner").
+  final String Function(Corner corner) handleLabel;
+
   /// The booth cabin behind the photo, in both themes (crop screen brief).
   static const background = Color(0xFF1F0B10);
+
+  /// Handle touch target side (FR-28, NFR-4).
+  static const handleTarget = 48.0;
+
+  /// Touch areas of the four handles, at the physical corners of [frame].
+  /// When the frame is under 96 dp in a dimension, the areas are pushed
+  /// outward so they never overlap (AC-13.6).
+  static Map<Corner, Rect> handleRects(Rect frame) {
+    final sx = math.max(0.0, (2 * handleTarget - frame.width) / 2);
+    final sy = math.max(0.0, (2 * handleTarget - frame.height) / 2);
+    Rect at(double x, double y) => Rect.fromCenter(center: Offset(x, y), width: handleTarget, height: handleTarget);
+    return {
+      Corner.topLeft: at(frame.left - sx, frame.top - sy),
+      Corner.topRight: at(frame.right + sx, frame.top - sy),
+      Corner.bottomLeft: at(frame.left - sx, frame.bottom + sy),
+      Corner.bottomRight: at(frame.right + sx, frame.bottom + sy),
+    };
+  }
 
   @override
   State<CropCanvas> createState() => _CropCanvasState();
 }
 
-enum _Mode { none, drag, pinch }
+enum _Mode { none, drag, pinch, handle }
 
 class _CropCanvasState extends State<CropCanvas> {
   var _mode = _Mode.none;
   var _lastScale = 1.0;
+  Corner? _corner;
+
+  /// The fitted frame: the crop always fills it at rest.
   Rect _frame = Rect.zero;
 
+  /// While a handle is dragged the photo stays put and the frame follows the
+  /// crop: screen = (source − origin) × k + offset. Null at rest; on release
+  /// the view re-fits without touching the crop (FR-28).
+  ({double k, Offset origin, Offset offset})? _locked;
+
   double get _k => _frame.width / widget.crop.cw;
+  double get _ch => widget.crop.cw * widget.target.height / widget.target.width;
+  Offset get _cropTopLeft => Offset(widget.crop.cx - widget.crop.cw / 2, widget.crop.cy - _ch / 2);
+
+  /// Where the crop is drawn now.
+  Rect get _shown {
+    final v = _locked;
+    if (v == null) return _frame;
+    final tl = (_cropTopLeft - v.origin) * v.k + v.offset;
+    return Rect.fromLTWH(tl.dx, tl.dy, widget.crop.cw * v.k, _ch * v.k);
+  }
 
   void _start(ScaleStartDetails d) {
-    _mode = d.pointerCount >= 2 ? _Mode.pinch : _Mode.drag;
-    _lastScale = 1;
+    _lastScale = 1; // the recognizer restarts its scale when a finger joins
+    // The first gesture holds until every finger lifts, except that a drag
+    // turns into a pinch when a second finger joins before any movement.
+    if (_mode == _Mode.handle || _mode == _Mode.pinch) return;
+    if (d.pointerCount >= 2) {
+      _mode = _Mode.pinch;
+      return;
+    }
+    final hit = CropCanvas.handleRects(_frame).entries.where((e) => e.value.contains(d.localFocalPoint)).firstOrNull;
+    if (hit == null) {
+      _mode = _Mode.drag;
+      return;
+    }
+    _mode = _Mode.handle;
+    _corner = hit.key;
+    setState(() => _locked = (k: _k, origin: _cropTopLeft, offset: _frame.topLeft));
   }
 
   void _update(ScaleUpdateDetails d) {
     if (_frame.isEmpty) return;
-    if (_mode == _Mode.drag && d.pointerCount == 1) {
-      // The photo follows the finger, so the crop moves the other way.
-      widget.onDrag(-d.focalPointDelta.dx / _k, -d.focalPointDelta.dy / _k);
-    } else if (_mode == _Mode.pinch && d.pointerCount >= 2) {
-      final step = d.scale / _lastScale;
-      _lastScale = d.scale;
-      final c = widget.crop, ch = c.cw * widget.target.height / widget.target.width;
-      final fx = c.cx - c.cw / 2 + (d.localFocalPoint.dx - _frame.left) / _k;
-      final fy = c.cy - ch / 2 + (d.localFocalPoint.dy - _frame.top) / _k;
-      widget.onPinch(step, fx, fy);
+    switch (_mode) {
+      case _Mode.drag when d.pointerCount == 1:
+        // The photo follows the finger, so the crop moves the other way.
+        widget.onDrag(-d.focalPointDelta.dx / _k, -d.focalPointDelta.dy / _k);
+      case _Mode.pinch when d.pointerCount >= 2:
+        final step = d.scale / _lastScale;
+        _lastScale = d.scale;
+        final fx = _cropTopLeft.dx + (d.localFocalPoint.dx - _frame.left) / _k;
+        final fy = _cropTopLeft.dy + (d.localFocalPoint.dy - _frame.top) / _k;
+        widget.onPinch(step, fx, fy);
+      case _Mode.handle when d.pointerCount == 1:
+        final k = _locked!.k;
+        widget.onHandle(_corner!, d.focalPointDelta.dx / k, d.focalPointDelta.dy / k);
+      default: // a second finger during a handle drag or a drag is ignored
     }
+  }
+
+  /// Fingers on the canvas; the scale recognizer does not always report the
+  /// last lift (it restarts when a finger joins or leaves).
+  var _pointers = 0;
+
+  void _up(PointerEvent _) {
+    if (--_pointers > 0) return;
+    _pointers = 0;
+    _mode = _Mode.none;
+    _corner = null;
+    if (_locked != null) setState(() => _locked = null);
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, box) {
-      _frame = CropFrameLayout.of(box.biggest, widget.target).frame;
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onScaleStart: _start,
-        onScaleUpdate: _update,
-        onScaleEnd: (d) {
-          if (d.pointerCount == 0) _mode = _Mode.none;
-        },
-        child: RepaintBoundary(
-          child: ClipRect(
-            child: CustomPaint(
-              size: box.biggest,
-              painter: _CropPainter(widget.preview, widget.info, widget.target, widget.crop, _frame),
+    return LayoutBuilder(
+      builder: (context, box) {
+        _frame = CropFrameLayout.of(box.biggest, widget.target).frame;
+        final shown = _shown;
+        return Listener(
+          onPointerDown: (_) => _pointers++,
+          onPointerUp: _up,
+          onPointerCancel: _up,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onScaleStart: _start,
+            onScaleUpdate: _update,
+            child: Stack(
+              children: [
+                RepaintBoundary(
+                  child: ClipRect(
+                    child: CustomPaint(
+                      size: box.biggest,
+                      painter: _CropPainter(widget.preview, widget.info, widget.target, widget.crop, shown),
+                    ),
+                  ),
+                ),
+                // Handle labels for TalkBack at the physical corners (AC-13.7).
+                for (final MapEntry(key: corner, value: r) in CropCanvas.handleRects(shown).entries)
+                  Positioned.fromRect(
+                    rect: r,
+                    child: Semantics(
+                      container: true,
+                      label: widget.handleLabel(corner),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+              ],
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -142,8 +239,10 @@ class _CropPainter extends CustomPainter {
     canvas.drawRect(
       Offset.zero & size,
       Paint()
-        ..shader = ui.Gradient.radial(
-            frame.center, frame.longestSide * 0.9, const [Color(0x40FFE3BD), Color(0x00FFE3BD)]),
+        ..shader = ui.Gradient.radial(frame.center, frame.longestSide * 0.9, const [
+          Color(0x40FFE3BD),
+          Color(0x00FFE3BD),
+        ]),
     );
     paintPhoto(canvas, size, image, info, target, crop, frame);
 
@@ -220,7 +319,14 @@ void paintPhoto(Canvas canvas, Size size, ui.Image image, SourceInfo info, Targe
 /// output's aspect on photo-paper white, so the applicant sees the exact
 /// result while framing.
 class CropPrint extends StatelessWidget {
-  const CropPrint({super.key, required this.preview, required this.info, required this.target, required this.crop, this.longSide = 64});
+  const CropPrint({
+    super.key,
+    required this.preview,
+    required this.info,
+    required this.target,
+    required this.crop,
+    this.longSide = 64,
+  });
 
   final ui.Image preview;
   final SourceInfo info;

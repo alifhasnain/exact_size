@@ -207,6 +207,8 @@ class _CropScreenState extends ConsumerState<CropScreen> {
               crop: s.crop,
               onDrag: controller.drag,
               onPinch: controller.pinch,
+              onHandle: controller.handle,
+              handleLabel: m.handleLabel,
             ),
           );
 

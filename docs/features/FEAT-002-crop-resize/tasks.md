@@ -222,7 +222,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/`: control rows under `Directionality`, canvas and nudge directions physical; scrollable controls at 200% font with the frame kept visible; geometry recomputed on layout from `CropState`.
 - **Done when:** widget tests pass: in `ar` the control rows, back and Continue mirror while the frame, handles and nudge arrows do not; at text scale 2.0 every control is reachable by scrolling and the frame stays fully visible; a simulated rotation and a split-screen size change keep the same cropRect.
 
-### - [ ] FEAT-002-T27 — Corner handles UI (Should)
+### - [x] FEAT-002-T27 — Corner handles UI (Should)
 - **Implements:** FR-28, AC-13.1–13.8 · **ADRs:** —
 - **Depends on:** T23, T09
 - **Size:** M
