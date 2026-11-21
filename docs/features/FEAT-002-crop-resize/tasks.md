@@ -75,7 +75,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `domain/orientation.dart`: EXIF 1–8 and quarter-turns to one of 8 transforms; compose; point and rect mapping raw ↔ oriented; display matrix values; invalid → 1.
 - **Done when:** `orientation_test.dart` passes: for every EXIF value 1–8 a 3×2 asymmetric grid maps to a hand-written expected grid (mirrored 2, 4, 5, 7 included); 0, 9, −1 and missing map to 1; four clockwise quarter-turns compose to identity for every EXIF value; raw → oriented → raw is identity for 1,000 seeded rects per transform.
 
-### - [ ] FEAT-002-T07 — `CropMath`: cover, minimum, clamp, rounding, upscale, sample size
+### - [x] FEAT-002-T07 — `CropMath`: cover, minimum, clamp, rounding, upscale, sample size
 - **Implements:** FR-4, FR-7 (sample size), FR-8, FR-11 (factor), FR-12 (gesture determinism), AC-1.1, AC-1.3–1.6, AC-5.5 · **ADRs:** ADR-004
 - **Depends on:** T06
 - **Size:** M
