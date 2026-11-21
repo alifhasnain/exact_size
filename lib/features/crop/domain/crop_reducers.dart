@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'crop_math.dart';
 import 'crop_types.dart';
+import 'orientation.dart';
 
 /// Physical move direction (no RTL mirroring: the crop area is drawn in
 /// physical coordinates, FR-23).
@@ -7,6 +10,9 @@ enum MoveDirection { left, right, up, down }
 
 /// Edge a move stopped at, for the TalkBack announcement (FR-5).
 enum Edge { none, left, right, top, bottom }
+
+/// Corner of the crop frame, physical positions (handles do not mirror in RTL).
+enum Corner { topLeft, topRight, bottomLeft, bottomRight }
 
 /// Result of a move: the new state and the edge it hit, if any.
 typedef MoveResult = ({CropState state, Edge edgeReached});
@@ -75,4 +81,40 @@ abstract final class CropReducers {
 
   /// Back to the initial crop: largest centred area, no manual rotation.
   static CropState reset(SourceInfo info, Target t) => CropMath.initial(info, t);
+
+  /// Corner handle drag (FR-28): moves [corner] by ([dx], [dy]) oriented source
+  /// pixels with the opposite corner fixed and the ratio locked. The movement
+  /// is projected onto the frame diagonal; the size stops at the image edge
+  /// and at the FR-4 minimum.
+  static CropState handle(CropState s, Corner corner, double dx, double dy, SourceInfo info, Target t) {
+    final (sw, sh) = _size(s, info);
+    final ch = s.cw * t.height / t.width;
+    final sx = corner == Corner.topRight || corner == Corner.bottomRight ? 1 : -1;
+    final sy = corner == Corner.bottomLeft || corner == Corner.bottomRight ? 1 : -1;
+    // Fixed corner.
+    final ax = s.cx - sx * s.cw / 2;
+    final ay = s.cy - sy * ch / 2;
+    final growth = (sx * dx * t.width + sy * dy * t.height) / (t.width * t.width + t.height * t.height);
+    final roomW = sx > 0 ? sw - ax : ax;
+    final roomH = sy > 0 ? sh - ay : ay;
+    final maxW = math.min(CropMath.coverWidth(sw, sh, t), math.min(roomW, roomH * t.width / t.height));
+    final minW = math.min(CropMath.minWidth(sw, sh, t), maxW);
+    final cw = (s.cw + growth * t.width).clamp(minW, maxW);
+    final nh = cw * t.height / t.width;
+    return CropMath.clamp(s.copyWith(cw: cw, cx: ax + sx * cw / 2, cy: ay + sy * nh / 2), sw, sh, t);
+  }
+
+  /// 90° rotate (FR-21): the image turns around the frame centre and the crop
+  /// re-fits so no empty area shows. Zoom is kept in source pixels, except a
+  /// crop at full cover stays at full cover. A rotation that has to shrink or
+  /// shift the crop is not undone by turning back.
+  static CropState rotate(CropState s, {required bool clockwise, required SourceInfo info, required Target t}) {
+    final (sw, sh) = _size(s, info);
+    final atCover = s.cw >= CropMath.coverWidth(sw, sh, t) - 1e-9;
+    final (cx, cy) = Orientation.rotation(clockwise ? 1 : -1).mapPoint(s.cx, s.cy, sw, sh);
+    final turned = CropState(cx: cx, cy: cy, cw: s.cw, quarterTurns: (s.quarterTurns + (clockwise ? 1 : 3)) % 4);
+    final (nw, nh) = _size(turned, info);
+    final cw = atCover ? CropMath.coverWidth(nw, nh, t) : s.cw;
+    return CropMath.clamp(turned.copyWith(cw: cw), nw, nh, t);
+  }
 }

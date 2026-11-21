@@ -89,7 +89,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `domain/crop_reducers.dart`: pure functions on `CropState`; move step 5% of the visible crop region; result carries an `edgeReached` value (left, right, top, bottom, none) for announcements; physical directions only (no RTL input).
 - **Done when:** `crop_reducers_test.dart` passes: drag and pinch never leave the image or go below minimum / above cover; a move that hits an edge stops there and reports that edge; zoom in/out actions equal pinch with the focal point at the frame centre; centre and reset give the initial state; a seeded property test of 10,000 random reducer sequences keeps every invariant (inside the image, ratio exact, `min ≤ cw ≤ cover`).
 
-### - [ ] FEAT-002-T09 — Should reducers: corner handle and 90° rotate
+### - [x] FEAT-002-T09 — Should reducers: corner handle and 90° rotate
 - **Implements:** FR-21, FR-28 (logic), AC-12.1, AC-12.2, AC-13.1–13.4, AC-13.7 · **ADRs:** ADR-004
 - **Depends on:** T08
 - **Size:** S
