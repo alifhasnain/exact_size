@@ -82,3 +82,5 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-21 | FEAT-002 gate G1 (corrupt files) | Add a file-structure check before decoding; a broken file gets CORRUPT_INPUT (Product Owner) | — | Android decodes truncated JPEG (both APIs) and corrupt PNG (API 36) without an error |
 | 2026-11-21 | ADR-004 | Approved | 1.1 | Gate G1 spike results: own HEIF irot/imir + EXIF orientation reader, structure check before decode (CORRUPT_INPUT, early IMAGE_TOO_LARGE), per-format memory factor, GIF on the full path, tiled HEIC confirmed |
 | 2026-11-21 | FEAT-002-TECH | Approved | 1.1 | Gate G1 results: ContainerCheck and HeifOrientation components, GIF on the full path, per-format memory factors, R4 updated, R12 (own parsers read untrusted bytes) added |
+| 2026-11-21 | FEAT-002-TASKS | Approved | 1.1 | New task T30 (ContainerCheck, HeifOrientation) before T12; T12 and T16 use the G1 results |
+| 2026-11-21 | FEAT-002 gate G1 | Passed: ADR-004 v1.1, FEAT-002-TECH v1.1 and FEAT-002-TASKS v1.1 approved (Product Owner) | — | T04 decision record in docs/CHANGELOG.md; T30 and T12 onwards may start |

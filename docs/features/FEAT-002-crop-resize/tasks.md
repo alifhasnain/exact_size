@@ -1,7 +1,7 @@
 ---
 id: FEAT-002-TASKS
 title: Crop and resize to exact target dimensions — Implementation Tasks
-status: Under Discussion
+status: Approved
 version: 1.1
 updated: 2026-11-21
 links: [FEAT-002, FEAT-002-TECH, ADR-001, ADR-003, ADR-004, ADR-005]
@@ -308,3 +308,4 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 | 0.1 | 2026-11-20 | First draft |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
 | 1.1 | 2026-11-21 | Gate G1 (T04) results: new task T30 (`ContainerCheck`, `HeifOrientation`, ADR-004 v1.1) before T12; T12 uses them; T16 uses the per-format memory factors from FEAT-002-TECH v1.1. Under Discussion until re-approved |
+| 1.1 | 2026-11-21 | Approved by Product Owner |
