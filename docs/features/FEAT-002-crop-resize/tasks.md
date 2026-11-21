@@ -54,7 +54,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** spike branch; JNIgen bindings for `Bitmap` and `BitmapFactory` (temporary); `Isolate.run` that calls `BitmapFactory` via JNIgen; C function that reads a synthetic `Bitmap` through `AndroidBitmap_lockPixels` using the JNI env exposed by `package:jni` (jnigraphics linked in the build hook); fallback measurement with `Bitmap.copyPixelsToBuffer` into a direct `ByteBuffer` over `malloc` memory; profile-mode stb Catmull-Rom timing for 12 MP → 2 MP and 25 MP → 24 MP on synthetic buffers (2 warm-up runs, then 20 timed runs).
 - **Done when:** on the emulator profile at API 28 and the latest API, an integration test shows (a) a JNIgen call inside a worker isolate returning the expected bitmap size, (b) C reading the expected pixel values of a synthetic bitmap with no Java array (jnigraphics, or the fallback if jnigraphics fails); a timing table (median, p95) is recorded in the PR and `docs/CHANGELOG.md`, marked informational, with an optional S23 Ultra arm64 row labelled "high-end, NEON, not the low-end reference".
 
-### - [ ] FEAT-002-T04 — Spike part 2: decode matrix, HEIC orientation, large sources — gate G1
+### - [x] FEAT-002-T04 — Spike part 2: decode matrix, HEIC orientation, large sources — gate G1
 - **Implements:** FR-3, FR-6, FR-7, FR-10, FR-15, NFR-2, NFR-10 (evidence) · **ADRs:** ADR-004, ADR-005
 - **Depends on:** T02, T03
 - **Size:** M
