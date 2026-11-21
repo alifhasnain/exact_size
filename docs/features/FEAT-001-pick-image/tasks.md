@@ -110,7 +110,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `MainActivity.kt`: `cameraAvailable()` (`resolveActivity(IMAGE_CAPTURE)`); `launch(camera)`: `StatFs(cacheDir).availableBytes < MIN_FREE_BYTES` (32 MiB, OQ-T3) → `lowSpace`; create `<cache>/camera/<32 hex from SecureRandom>.jpg`, `IOException` → `lowSpace`; `FileProvider.getUriForFile` + `EXTRA_OUTPUT` + read/write grant flags; `ActivityNotFoundException` → delete file, `unavailable`; marker `es.pendingCapture = <name>` in the `Bundle`; `RESULT_OK` → `Captured(uri, name)`, anything else → `Cancelled(name)`; marker cleared on result; `pendingCaptureName()`. The marker is needed by the Must sweep (FR-11) so a recreated engine does not delete the file under "Don't keep activities".
 - **Done when:** on API 36.1 with the emulator camera, a debug-only manual check shows: capture → one file in `<cache>/camera/` with size > 0 (listed with `adb shell run-as <package> ls cache/camera`, names not copied into the PR); cancel → slot `Cancelled` with the name; `pendingCaptureName()` returns the name while the camera is open and null after.
 
-### - [ ] FEAT-001-T12 — `AndroidSystemPicker`, fake, start-up sweep wiring
+### - [x] FEAT-001-T12 — `AndroidSystemPicker`, fake, start-up sweep wiring
 - **Implements:** FR-11, FR-15, FR-19, NFR-9 · **ADRs:** ADR-006
 - **Depends on:** T03, T04, T11
 - **Size:** S

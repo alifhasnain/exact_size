@@ -16,6 +16,7 @@ import 'package:exact_size/features/compression/data/compression_service.dart'
     as _i99;
 import 'package:exact_size/features/compression/data/temp_files.dart' as _i630;
 import 'package:exact_size/features/pick/data/pick_module.dart' as _i408;
+import 'package:exact_size/features/pick/data/system_picker.dart' as _i727;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -32,6 +33,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => compressionModule.tempFiles,
       preResolve: true,
     );
+    gh.lazySingleton<_i727.SystemPicker>(() => pickModule.systemPicker);
     gh.lazySingleton<_i99.CompressionService>(
       () => compressionModule.compressionService(gh<_i630.TempFiles>()),
     );
