@@ -1,7 +1,7 @@
 ---
 id: FEAT-004
 title: Compress to a min–max KB range with JPEG/PNG choice
-status: Under Discussion
+status: Approved
 version: 1.3
 updated: 2026-11-21
 links: [ROADMAP, FEAT-002, FEAT-005, FEAT-006, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-010]
@@ -229,3 +229,4 @@ Note: because failures are never exported, "99% inside range" is only meaningful
 | 1.2 | 2026-11-20 | Test environment note: emulators only (2 GB RAM profile), timing targets best effort, no physical low-end device (Product Owner). Under Discussion until re-approved |
 | 1.2 | 2026-11-20 | Re-approved by Product Owner |
 | 1.3 | 2026-11-21 | Clarification: AC-5.2 splits corrupt files (`CORRUPT_INPUT`, "we can't read this file") from formats the device cannot decode (`UNSUPPORTED_INPUT`), matching FEAT-002 gate G1 and ADR-004 v1.1. Under Discussion until re-approved |
+| 1.3 | 2026-11-21 | Re-approved by Product Owner |
