@@ -119,11 +119,15 @@ void main() {
     }
   });
 
-  test('gen-l10n lists the new keys as untranslated in the other locales (for FEAT-019)', () {
-    final untranslated = jsonDecode(File('docs/l10n/untranslated_messages.json').readAsStringSync()) as Map;
-    expect(untranslated.keys, containsAll(['es', 'pt_BR', 'hi', 'id', 'ar']));
-    for (final keys in untranslated.values) {
-      expect(keys, containsAll(['outcomeCantReachRange', 'noticePaddingAdded', 'targetChooseJpegOrPng']));
+  test('new keys are translated or listed as untranslated in the other locales (for FEAT-019)', () {
+    final untranslated = jsonDecode(File('docs/l10n/untranslated_messages.json').readAsStringSync()) as Map<String, dynamic>;
+    // Each key is either translated in app_<locale>.arb or still listed as untranslated.
+    for (final locale in ['ar', 'es', 'hi', 'id', 'pt', 'pt_BR']) {
+      final arb = jsonDecode(File('lib/l10n/app_$locale.arb').readAsStringSync()) as Map<String, dynamic>;
+      final pending = (untranslated[locale] as List?) ?? const [];
+      for (final key in ['outcomeCantReachRange', 'noticePaddingAdded', 'targetChooseJpegOrPng']) {
+        expect(arb.containsKey(key) || pending.contains(key), isTrue, reason: '$locale $key');
+      }
     }
   });
 }

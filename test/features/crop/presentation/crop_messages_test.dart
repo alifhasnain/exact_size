@@ -89,11 +89,15 @@ void main() {
     }
   });
 
-  test('gen-l10n lists the crop strings as untranslated for the 5 other languages (FEAT-019)', () {
+  test('crop strings are translated or listed as untranslated in the 5 other languages (FEAT-019)', () {
     final untranslated = jsonDecode(File('docs/l10n/untranslated_messages.json').readAsStringSync()) as Map<String, dynamic>;
-    expect(untranslated.keys.toSet(), {'ar', 'es', 'hi', 'id', 'pt', 'pt_BR'});
-    for (final keys in untranslated.values) {
-      expect(keys as List, containsAll(['cropSourceTooLarge', 'cropNoticeEnlarged', 'cropAreaState', 'pixelSize']));
+    // Each key is either translated in app_<locale>.arb or still listed as untranslated.
+    for (final locale in ['ar', 'es', 'hi', 'id', 'pt', 'pt_BR']) {
+      final arb = jsonDecode(File('lib/l10n/app_$locale.arb').readAsStringSync()) as Map<String, dynamic>;
+      final pending = (untranslated[locale] as List?) ?? const [];
+      for (final key in ['cropSourceTooLarge', 'cropNoticeEnlarged', 'cropAreaState', 'pixelSize']) {
+        expect(arb.containsKey(key) || pending.contains(key), isTrue, reason: '$locale $key');
+      }
     }
   });
 }
