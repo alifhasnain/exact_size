@@ -194,7 +194,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** stop work and hand the Product Owner a non-visual checklist only (no layouts, colours or mock-ups from the developer): screen states and elements the PRD requires (frame with two-tone outline, dimmed outside, checkerboard, corner handles with ≥ 48 dp outward hit areas, Centre/Reset, nudge/zoom, rotate, upscale notice and confirm dialog, animated-image notice, extreme-ratio hint and touch band, progress after 500 ms, error states, Continue), constraints (≥ 24 dp edge margins, ≥ 48 dp frame short side and targets, 300×80 and 1000:10 layouts, 200% font, RTL mirroring rules, contrast on any photo), and the T10 strings. The Product Owner designs the screen with impeccable (https://github.com/pbakaus/impeccable).
 - **Done when:** the Product Owner's impeccable design reference (file or link, no real photos in it) and approval date are recorded in the PR and `docs/CHANGELOG.md`; gate G3 is recorded. T23–T28 do not start before this.
 
-### - [ ] FEAT-002-T23 — Crop canvas: preview, frame, overlay, checkerboard, drag and pinch
+### - [x] FEAT-002-T23 — Crop canvas: preview, frame, overlay, checkerboard, drag and pinch
 - **Implements:** FR-4, FR-14 (checkerboard), FR-25, NFR-4 (contrast), AC-1.1–1.3, AC-6.4 · **ADRs:** ADR-004
 - **Depends on:** T22 (G3), T11, T15
 - **Size:** M

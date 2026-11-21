@@ -39,11 +39,20 @@ class _CropScreenState extends ConsumerState<CropScreen> {
   @override
   void initState() {
     super.initState();
-    // Providers may not change while the tree builds.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ref.read(cropControllerProvider.notifier).start(widget.info, widget.target);
-    });
+    _start();
   }
+
+  /// A new source or target re-initialises the frame (AC-2.2).
+  @override
+  void didUpdateWidget(CropScreen old) {
+    super.didUpdateWidget(old);
+    if (!identical(old.info, widget.info) || old.target != widget.target) _start();
+  }
+
+  // Providers may not change while the tree builds.
+  void _start() => WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(cropControllerProvider.notifier).start(widget.info, widget.target);
+      });
 
   Future<void> _continue(CropSession s, CropMessages m, AppLocalizations l10n) async {
     if (s.upscaleLevel == UpscaleLevel.strong) {
