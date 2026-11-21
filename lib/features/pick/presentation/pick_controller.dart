@@ -73,6 +73,12 @@ class PickController extends Notifier<PickState> {
   /// One in-flight result at a time.
   Future<void> _queue = Future.value();
 
+  /// Camera file of the attempt being opened, for Cancel (FR-13).
+  String? _attemptFile;
+
+  /// Progress appears only if opening takes longer than this (FR-13, NFR-1).
+  static const progressDelay = Duration(milliseconds: 500);
+
   @override
   PickState build() {
     final ready = _picker.resultReady.listen((_) => _drain());
@@ -107,6 +113,17 @@ class PickController extends Notifier<PickState> {
       case LaunchOutcome.lowSpace:
         _refuse(PickMessage.lowSpace);
     }
+  }
+
+  /// Cancel while opening (FR-13): the attempt is dropped, its camera file deleted,
+  /// no message; a late probe answer is discarded by the generation check.
+  Future<void> cancelOpening() async {
+    if (state.phase != PickPhase.opening) return;
+    _generation++;
+    final file = _attemptFile;
+    _attemptFile = null;
+    state = state.copyWith(phase: PickPhase.idle, showProgress: false);
+    await _delete(file);
   }
 
   /// Ends the session: no image, empty camera folder (FR-11; called at start-over and flow end).
@@ -166,9 +183,15 @@ class PickController extends Notifier<PickState> {
   }
 
   Future<void> _open(int generation, String uri, PickOrigin origin, String? cameraFile) async {
-    state = state.copyWith(phase: PickPhase.opening);
+    state = state.copyWith(phase: PickPhase.opening, showProgress: false);
+    _attemptFile = cameraFile;
+    final timer = Timer(progressDelay, () {
+      if (generation == _generation) state = state.copyWith(showProgress: true);
+    });
     final probe = await _probe.probe(SourceHandle(uri));
-    if (generation != _generation) return _delete(cameraFile); // superseded or released
+    timer.cancel();
+    if (generation != _generation) return _delete(cameraFile); // cancelled, superseded or released
+    _attemptFile = null;
     switch (probe) {
       case ProbeErr(:final reason):
         await _delete(cameraFile); // AC-3.2; current and its file stay (AC-3.3)
@@ -189,7 +212,7 @@ class PickController extends Notifier<PickState> {
   }
 
   void _refuse(PickMessage message) {
-    state = state.copyWith(phase: PickPhase.idle, message: message);
+    state = state.copyWith(phase: PickPhase.idle, showProgress: false, message: message);
     _log.refused(message);
   }
 

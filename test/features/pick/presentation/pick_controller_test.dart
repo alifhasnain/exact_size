@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -23,14 +24,18 @@ const _camUri = 'content://com.exactsize.exact_size.camera/camera/[PLACEHOLDER]'
 class _Probe extends SourceProbe {
   ProbeResult next = const ProbeOk(_info);
   int calls = 0;
+
+  /// When set, probe waits for it (T14 timing and late answers).
+  Completer<ProbeResult>? gate;
   @override
   Future<ProbeResult> probe(SourceHandle src) async {
     calls++;
-    return next;
+    return gate != null ? gate!.future : next;
   }
 }
 
-/// FEAT-001-T13: PickController launch, result handling, one image, release().
+/// FEAT-001-T13/T14: PickController launch, result handling, one image, release(),
+/// 500 ms progress, Cancel and late results.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late FakeSystemPicker picker;
@@ -240,5 +245,63 @@ void main() {
     expect(st().current, isNull);
     expect(st().cameraAvailable, isTrue);
     expect(files.dir.listSync(), isEmpty);
+  });
+
+  testWidgets('progress appears at 500 ms, not at 499 ms (FR-13)', (tester) async {
+    probe.gate = Completer();
+    st();
+    await tester.pump();
+    picker.deliver(const Picked(uri: _uri, origin: PickOrigin.gallery));
+    await tester.pump();
+    expect(st().phase, PickPhase.opening);
+    await tester.pump(const Duration(milliseconds: 499));
+    expect(st().showProgress, isFalse);
+    await tester.pump(const Duration(milliseconds: 1));
+    expect(st().showProgress, isTrue);
+    probe.gate!.complete(const ProbeOk(_info));
+    await tester.pump();
+    expect(st().current, isNotNull);
+    expect(st().showProgress, isFalse);
+  });
+
+  test('Cancel then a late Ok: no current, no camera file (FR-13)', () async {
+    await start();
+    probe.gate = Completer();
+    final b = cam();
+    picker.deliver(Captured(uri: _camUri, fileName: b));
+    await settle();
+    expect(st().phase, PickPhase.opening);
+    await ctl().cancelOpening();
+    expect(st().phase, PickPhase.idle);
+    expect(st().message, isNull);
+    expect(exists(b), isFalse);
+    probe.gate!.complete(const ProbeOk(_info));
+    await settle();
+    expect(st().current, isNull);
+    expect(exists(b), isFalse);
+    expect(log, isEmpty);
+  });
+
+  test('Cancel then a late Err: no message; Cancel when not opening does nothing', () async {
+    await start();
+    await ctl().cancelOpening();
+    expect(st().phase, PickPhase.idle);
+    probe.gate = Completer();
+    picker.deliver(const Picked(uri: _uri, origin: PickOrigin.gallery));
+    await settle();
+    await ctl().cancelOpening();
+    probe.gate!.complete(const ProbeErr(Reason.corruptInput));
+    await settle();
+    expect(st().message, isNull);
+    expect(log, isEmpty);
+  });
+
+  test('SOURCE_UNAVAILABLE at pick time gives the pick-time message (FR-14)', () async {
+    await start();
+    probe.next = const ProbeErr(Reason.sourceUnavailable);
+    picker.deliver(const Picked(uri: _uri, origin: PickOrigin.gallery));
+    await settle();
+    expect(st().message, PickMessage.sourceUnavailable);
+    expect(log, ['exactsize.pick outcome=SOURCE_UNAVAILABLE']);
   });
 }

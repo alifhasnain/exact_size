@@ -124,7 +124,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/features/pick/presentation/pick_controller.dart` (Riverpod `Notifier<PickState>`, keep-alive): `launch` ignored unless idle; `LaunchOutcome` → state/message; `cameraAvailable` at build and on app resume; `takeResult()` once in `build()` and on every `resultReady`; result steps 1–7 of tech section 4 for all `SystemPickResult` cases (including `CaptureLost` → delete, `captureLost`, so the switch is exhaustive); generation token; previous camera file deleted only on a new `ProbeOk`; `release()`. `SourceProbe` and camera `TempFiles` injected via get_it, faked in tests.
 - **Done when:** unit tests pass for: each result type; `resultReady` twice → one probe; double `launch` → one `SystemPicker.launch` (AC-5.4); refusal keeps `current` and its file (AC-3.3); acceptance deletes the previous file; refused camera file deleted (AC-3.2); camera missing or zero-byte → `cameraNoPhoto`; `file://` and own-app share → `itemNotOpenable`; `pickerUnavailable` keeps `cameraAvailable`; `release()` empties state and folder; a fresh controller has no `current` (FR-16).
 
-### - [ ] FEAT-001-T14 — `PickController`: 500 ms progress, Cancel, late results, log audit
+### - [x] FEAT-001-T14 — `PickController`: 500 ms progress, Cancel, late results, log audit
 - **Implements:** FR-13, FR-14, FR-19, NFR-1 (timer), AC-4.2, AC-6.3 · **ADRs:** —
 - **Depends on:** T13
 - **Size:** S
