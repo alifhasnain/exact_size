@@ -68,7 +68,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `lib/features/crop/domain/`: `Target`, `CropRect`, `SourceInfo`, `Reason` (`INVALID_TARGET_DIMENSIONS`, `UNSUPPORTED_INPUT`, `CORRUPT_INPUT`, `SOURCE_UNAVAILABLE`, `IMAGE_TOO_LARGE`, `OUT_OF_MEMORY_HANDLED`, `CANCELLED`, `INTERNAL_ERROR`), `RenderResult`, `target_check.dart`.
 - **Done when:** `target_check_test.dart` passes for W or H = 0, 1, 10,000, 10,001, negative, and W×H = 24,000,000 (allowed) and 24,000,001 (refused), each refusal giving `INVALID_TARGET_DIMENSIONS` with the right message key (per-side vs too-large); `Reason.values` equals the list above; an import-scan test shows `lib/features/crop/domain/` has no Flutter, Riverpod, get_it or JNI imports.
 
-### - [ ] FEAT-002-T06 — `Orientation` (D4) table
+### - [x] FEAT-002-T06 — `Orientation` (D4) table
 - **Implements:** FR-3, FR-21 (composition), AC-3.2, AC-3.3, AC-12.2 · **ADRs:** ADR-004
 - **Depends on:** T05
 - **Size:** S
