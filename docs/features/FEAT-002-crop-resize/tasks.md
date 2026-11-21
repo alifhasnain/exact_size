@@ -187,7 +187,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `integration_test/crop_orientation_test.dart`, `integration_test/crop_determinism_test.dart`: for the 8 orientations in JPEG and HEIC, compare our render and our preview with the `ImageDecoder` oracle by sampling the coloured quadrants of the arrow pattern; render twice and compare SHA-256; N re-crops ending in the same cropRect vs a fresh render; four rotations vs unrotated; mixed drag/pinch/handle sequences ending in the same cropRect vs a fresh render (pure part via reducers). Optional cross-ABI run: x86_64 emulator vs the S23 Ultra (arm64), recorded only.
 - **Done when:** on the emulator profile at both API levels all 16 orientation cases are upright and not mirrored in preview and render, matching the oracle; same-device, same-OS-build renders are byte-identical; re-crop and four-rotation outputs are pixel-identical to fresh renders; the cross-ABI result (identical or not) is recorded in the PR as Should evidence. Gate G4 is recorded.
 
-### - [ ] FEAT-002-T22 — Crop screen design review with the Product Owner (impeccable) — gate G3
+### - [x] FEAT-002-T22 — Crop screen design review with the Product Owner (impeccable) — gate G3
 - **Implements:** prerequisite for FR-4, FR-5, FR-11, FR-14, FR-20, FR-23, FR-27, FR-28, NFR-4 (visual) · **ADRs:** —
 - **Depends on:** T11
 - **Size:** S (developer preparation; the Product Owner's design time is not counted)
