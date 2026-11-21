@@ -82,7 +82,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** run `/l10n-translate <lang>` one language at a time for the T06 keys, using only the vendored `localize-*` skills and the variants fixed in CLAUDE.md (pt-BR, es-419, MSA with Western digits). Send only app strings, never user data. Keys, ICU syntax and placeholder names identical to `app_en.arb`.
 - **Done when:** all five `app_*.arb` files contain every T06 key; the mechanical checks pass; one entry per language is in `docs/l10n/ai-review-log.md` with status `AI-reviewed only`; `flutter gen-l10n` reports no untranslated FEAT-001 keys.
 
-### - [ ] FEAT-001-T08 — Manifest, FileProvider, `queries`, Play services entry, AndroidX pins
+### - [x] FEAT-001-T08 — Manifest, FileProvider, `queries`, Play services entry, AndroidX pins
 - **Implements:** FR-4, FR-5, FR-18, NFR-6, NFR-7 · **ADRs:** ADR-006
 - **Depends on:** T01 (G1)
 - **Size:** S

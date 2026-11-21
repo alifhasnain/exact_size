@@ -47,3 +47,10 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// FEAT-001 (ADR-006): photo picker and camera contracts, FileProvider. Versions from the
+// gate G1 record (docs/features/FEAT-001-pick-image/t01/spike_record.md, item e).
+dependencies {
+    implementation("androidx.activity:activity:1.10.1")
+    implementation("androidx.core:core:1.16.0")
+}

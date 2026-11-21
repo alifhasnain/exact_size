@@ -303,6 +303,7 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - "No longer exists" for cropSourceUnavailable: that changes the meaning, so I used "تعذّر العثور" instead.
      - "file" instead of "item" in pickItemNotOpenable.
   5. **English wording not yet confirmed by the Product Owner:** the same four keys as for es, plus pickCaptureLost (see id).
+- **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
 - **Status:** AI-reviewed only (no native speaker).
 
 ## Notes across languages
