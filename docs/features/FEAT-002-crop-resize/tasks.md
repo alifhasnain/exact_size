@@ -180,7 +180,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** extend the FEAT-004 import-ban test to `lib/features/crop/`; route crop outcomes through the enum-only logger; a test that bans write APIs in the crop module (`openOutputStream`, mode `"w"`/`"rw"`, `File.write*`, `delete`); app-cache listing before/after renders.
 - **Done when:** the import-ban test fails on a planted network import in `lib/features/crop/` and passes on the real code; the write-API ban test fails on a planted write call; after success, cancel and failure renders the app cache holds no new files (FEAT-002 writes none) and each source fixture is byte-identical with an unchanged mtime; captured logs of a full session contain only enum names (a test rejects path separators, file extensions, URI schemes, numbers tied to crop coordinates and EXIF tag names).
 
-### - [ ] FEAT-002-T21 — Orientation, determinism and re-crop instrumented tests — gate G4
+### - [x] FEAT-002-T21 — Orientation, determinism and re-crop instrumented tests — gate G4
 - **Implements:** FR-3, FR-12, FR-13, FR-21, AC-3.1–3.5, AC-8.1–8.3, AC-12.2, AC-12.3, AC-13.5, NFR-3, NFR-9, NFR-10 · **ADRs:** ADR-004, ADR-005
 - **Depends on:** T02, T15, T18
 - **Size:** M
