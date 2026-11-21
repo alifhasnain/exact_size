@@ -166,7 +166,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `data/crop_renderer.dart`: Java `OutOfMemoryError` and native allocation failure → `OUT_OF_MEMORY_HANDLED`; revoked or deleted source → `SOURCE_UNAVAILABLE`; cancel flag between steps → `CANCELLED`; `RenderStep` progress events; try/finally frees the bitmap and buffers on every path; debug leak counter; producer-side contract test that hands the `PixelBuffer` to a fake consumer which frees it (ownership transfer).
 - **Done when:** tests pass on the emulator profile: deleting the fixture after probing gives `SOURCE_UNAVAILABLE`; cancel during decode or resample gives `CANCELLED` within one step; a forced OOM gives `OUT_OF_MEMORY_HANDLED` with no crash; the leak counter is 0 after 100 mixed runs (success, failure, cancel); the contract test asserts width, height, channels, tight stride and that the producer no longer frees the buffer after handover. FEAT-004-T27 can start once this task is done (note it in `docs/CHANGELOG.md`).
 
-### - [ ] FEAT-002-T19 — `RecentsGuard`
+### - [x] FEAT-002-T19 — `RecentsGuard`
 - **Implements:** FR-26 · **ADRs:** ADR-001
 - **Depends on:** T12
 - **Size:** S
