@@ -3,10 +3,17 @@ name: CI
 on:
   push:
     branches: [main]
+    paths-ignore: ['docs/**', '**.md']
   pull_request:
+    paths-ignore: ['docs/**', '**.md']
 
 permissions:
   contents: read
+
+# A newer push makes an older run of the same branch obsolete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -19,10 +26,18 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: pubspec.yaml # pinned Flutter (ADR-001)
           cache: true
+      # Native code (libjpeg-turbo, stb) built by the es_codec hooks; the hooks
+      # runner re-checks its inputs by content hash, so a stale cache rebuilds.
+      - uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner
+          key: hooks-release-${{ hashFiles('pubspec.lock', 'packages/es_codec/**') }}
+          restore-keys: hooks-release-
       - run: flutter pub get
       - name: Resolve es_codec dev tools (ffigen, jnigen) for analysis
         run: flutter pub get --directory packages/es_codec
@@ -37,6 +52,28 @@ jobs:
         run: flutter build apk --release --target-platform android-arm,android-arm64,android-x64
       - name: 16 KB page alignment (main app, 3 ABIs)
         run: bash tool/check_16kb_alignment.sh build/app/outputs/flutter-apk/app-release.apk
+
+  tree-shaking:
+    name: Native tree shaking
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner
+          key: hooks-shaking-${{ hashFiles('pubspec.lock', 'packages/es_codec/**') }}
+          restore-keys: hooks-shaking-
+      - run: flutter pub get
       - name: Native tree shaking (record_use)
         run: bash tool/check_tree_shaking.sh
       - name: 16 KB page alignment (probe app with libes_codec.so, 3 ABIs)
@@ -46,18 +83,27 @@ jobs:
     name: Integration tests on API 28 emulator
     runs-on: ubuntu-latest
     timeout-minutes: 60 # includes the 780-case corpus (FEAT-004-T24)
+    env:
+      # Same values for the snapshot and the test run, or the snapshot is unusable.
+      EMULATOR_OPTIONS: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: pubspec.yaml
           cache: true
-      # Each integration test file builds its own debug APK; 13+ builds plus
-      # the emulator filled the runner's disk ("No space left on device").
+      - uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner
+          key: hooks-debug-${{ hashFiles('pubspec.lock', 'packages/es_codec/**') }}
+          restore-keys: hooks-debug-
+      # The emulator plus the debug builds filled the runner's disk once
+      # ("No space left on device").
       - name: Free disk space (toolchains this project does not use)
         run: |
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/share/swift /usr/local/share/boost /opt/hostedtoolcache/CodeQL
@@ -68,21 +114,54 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - run: flutter pub get
-      # FEAT-002-T04 decode matrix: 12 and 50 MP synthetic sources, generated offline here.
-      - uses: actions/setup-python@v5
+      # FEAT-002-T04 decode matrix: 12 and 50 MP synthetic sources, generated
+      # offline; byte-stable, so cached until the generator changes.
+      - id: large-fixtures
+        uses: actions/cache@v4
+        with:
+          path: /tmp/large
+          key: large-fixtures-12-50-${{ hashFiles('tool/gen_crop_fixtures.py', 'tool/crop_fixtures_requirements.txt') }}
+      - if: steps.large-fixtures.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v5
         with:
           python-version: '3.13'
       - name: Generate large decoder fixtures (12, 50 MP)
+        if: steps.large-fixtures.outputs.cache-hit != 'true'
         run: |
           python -m pip install -r tool/crop_fixtures_requirements.txt
           python -I tool/gen_crop_fixtures.py --large /tmp/large --mp 12,50
+      # Booted-emulator snapshot, so later runs skip AVD creation and cold boot.
+      - id: avd-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-28-x86_64-2048m
+      - name: Create AVD snapshot
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: x86_64
+          ram-size: 2048M
+          force-avd-creation: false
+          emulator-options: ${{ env.EMULATOR_OPTIONS }}
+          disable-animations: false
+          script: echo "AVD snapshot created"
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
           arch: x86_64
           ram-size: 2048M # 2 GB emulator profile (PRD test environment)
-          # Then AC-6.2: the same app with networking off (FEAT-004-T25).
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save ${{ env.EMULATOR_OPTIONS }}
+          disable-animations: true
+          # One app build for all integration tests (integration_test/bundle.dart);
+          # the memory profile runs alone so earlier tests do not inflate its RSS;
+          # then AC-6.2 with networking off (FEAT-004-T25) and the decode matrix.
           script: |
-            flutter test integration_test --dart-define=EXPECTED_SDK_INT=28
+            flutter test integration_test/bundle.dart --dart-define=EXPECTED_SDK_INT=28
+            flutter test integration_test/memory_profile_test.dart
             bash tool/run_offline_test.sh
             DEVICE=emulator-5554 LARGE_DIR=/tmp/large flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/decode_matrix.dart -d emulator-5554
