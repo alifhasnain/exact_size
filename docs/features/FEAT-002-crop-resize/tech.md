@@ -1,7 +1,7 @@
 ---
 id: FEAT-002-TECH
 title: Crop and resize to exact target dimensions — Technical Plan
-status: Under Discussion
+status: Approved
 version: 1.1
 updated: 2026-11-21
 links: [FEAT-002, FEAT-004, ADR-001, ADR-002, ADR-003, ADR-004, ADR-005]
@@ -229,3 +229,4 @@ Not counted here, to avoid double counting: the `es_codec` CMake/3-ABI/16 KB bui
 | 0.2 | 2026-11-20 | Source ceiling 200 MP (PRD v1.1): probe, R2, fixtures, spike; effort 4.5 → 4.7 pw |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
 | 1.1 | 2026-11-21 | Gate G1 spike results (FEAT-002-T04, ADR-004 v1.1): `ContainerCheck` and `HeifOrientation` components, GIF on the `full` path, per-format memory factors, R4 updated, R12 added. Under Discussion until re-approved |
+| 1.1 | 2026-11-21 | Approved by Product Owner |
