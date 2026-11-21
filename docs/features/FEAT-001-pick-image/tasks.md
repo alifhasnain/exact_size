@@ -33,7 +33,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 
 ## Tasks
 
-### - [ ] FEAT-001-T01 — Spike: picker availability, result ordering, grants, camera output, AndroidX versions, share task — gate G1
+### - [x] FEAT-001-T01 — Spike: picker availability, result ordering, grants, camera output, AndroidX versions, share task — gate G1
 - **Implements:** FR-2, FR-3, FR-4, FR-15, FR-17, FR-20, NFR-7 (evidence) · **ADRs:** ADR-006
 - **Depends on:** —
 - **Size:** M

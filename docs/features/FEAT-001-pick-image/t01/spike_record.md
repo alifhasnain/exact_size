@@ -1,7 +1,7 @@
 ---
 id: FEAT-001-T01-RECORD
 title: FEAT-001-T01 spike — gate G1 decision record
-status: Proposed
+status: Approved
 version: 0.2
 updated: 2026-11-21
 links: [FEAT-001-TASKS, FEAT-001-TECH, ADR-006]
