@@ -1,9 +1,9 @@
 ---
 id: FEAT-002-TECH
 title: Crop and resize to exact target dimensions — Technical Plan
-status: Approved
-version: 1.0
-updated: 2026-11-20
+status: Under Discussion
+version: 1.1
+updated: 2026-11-21
 links: [FEAT-002, FEAT-004, ADR-001, ADR-002, ADR-003, ADR-004, ADR-005]
 ---
 
@@ -35,10 +35,12 @@ flowchart LR
 | `Orientation` (D4) | domain | Maps EXIF 1–8 and user quarter-turns to one of 8 rotate/flip transforms. Provides point/rect mapping raw↔oriented and the display matrix. Invalid → 1 | New |
 | `CropState` / `CropMath` | domain | Pure state `{cx, cy, cw, quarterTurns}` (doubles, oriented space; `ch = cw·H/W`). Cover, minimum and clamp rules (FR-4), `toCropRect` rounding (FR-8), `upscaleFactor` (FR-11), drag/pinch/handle/nudge/zoom/rotate/centre/reset reducers | New |
 | `SourceHandle` | data | Wraps the FEAT-001 read URI in memory. `toString()` is redacted; never logged or persisted | New |
-| `SourceProbe` | data | Opens the URI read-only, reads `BitmapFactory` bounds (w, h, mime), sniffs the animation flag (WebP `VP8X`/`ANIM`, PNG `acTL`, GIF) from header bytes, reads the orientation only, and chooses the decode path `region|full`. Ceiling 200 MP → `IMAGE_TOO_LARGE` | New |
+| `SourceProbe` | data | Opens the URI read-only, runs the `ContainerCheck`, reads `BitmapFactory` bounds (w, h, mime), sniffs the animation flag (WebP `VP8X`/`ANIM`, PNG `acTL`, GIF) from header bytes, reads the orientation only (`ExifInterface` for JPEG/PNG/WebP, `HeifOrientation` for HEIC), and chooses the decode path: `full` for GIF, `region` otherwise (ADR-004 v1.1). Ceiling 200 MP → `IMAGE_TOO_LARGE` | New |
+| `ContainerCheck` | data | Pure Dart over the first bytes and the file length: JPEG SOI + SOF, PNG signature + IHDR (+ IEND present), WebP RIFF/VP8 header and RIFF length, HEIF `ftyp` + `meta`, GIF header. Missing or inconsistent structure or truncated data → `CORRUPT_INPUT`; declared size > 200 MP → `IMAGE_TOO_LARGE` before any decode (ADR-004 v1.1) | New (v1.1) |
+| `HeifOrientation` | data | Pure Dart ISOBMFF reader: primary item (`pitm`), its `irot`/`imir` via `iprp`/`ipma`; if neither, `TAG_ORIENTATION` from the file's `Exif` item; else 1. Bounded reads, never trusts box sizes beyond the file length (ADR-004 v1.1) | New (v1.1) |
 | `PreviewDecoder` | data | Same decode path at a sample size where the long side is ≤ 2048. Pixels go to `ui.ImageDescriptor.raw` → `ui.Image`. Display only (FR-25, FR-7) | New |
 | `CropRenderer` | data | Worker isolate pipeline (below). Cancel flag between steps; try/finally frees the bitmap and buffers on every path | New |
-| `MemoryPreflight` | data | Estimates (decoded region + output + transform buffer) × 2 against `MemAvailable` → `IMAGE_TOO_LARGE` | Reuses FEAT-004 reader |
+| `MemoryPreflight` | data | Estimates (decoded region + output + transform buffer + per-format decoder working memory) × 2 against `MemAvailable` → `IMAGE_TOO_LARGE`. Working memory per source pixel (T04, ADR-004 v1.1): progressive JPEG 3.5 B, baseline JPEG 0.7 B, PNG/WebP/HEIC 0 [Assumption: measured on one arm64 device; emulator RSS was unreliable] | Reuses FEAT-004 reader |
 | `es_codec` crop functions | native | `es_resample` (stb, Catmull-Rom, `STBIR_RGBA` or `STBIR_4CHANNEL`), `es_orient` (lossless D4), `es_finish` (alpha scan, compact 4→3 if opaque), `es_bitmap_lock` (jnigraphics) | Changed |
 | `cropControllerProvider` | state | Riverpod notifier holding `CropState` for the flow session (keep-alive until the flow ends); restores state on return (AC-8.4) | New |
 | `CropScreen` | UI | Preview `ui.Image` painted under a matrix (orientation × zoom/pan), dimmed outside the frame, two-tone frame outline, checkerboard under alpha, corner handles, Centre/Reset (Must), nudge/zoom (Should), rotate (Should), upscale notice, Continue, progress after 500 ms | New |
@@ -162,13 +164,14 @@ No SDK, network client or downloadable codec is used (NFR-5).
 | R1 | Memory: 24 MP target on a 2 GB device (~192 MB peak in our code, plus Flutter and ads) leads to a low-memory kill that looks like a crash | Medium | High | Pre-flight with 2× headroom → `IMAGE_TOO_LARGE`; free the region before orienting; preview freed during render [Assumption: the preview can be re-decoded on return]; test on the 2 GB device with ads loaded |
 | R2 | 100–200 MP sources: progressive JPEG, PNG or HEIC region decode may allocate near full size (~800 MB at 200 MP) or exceed 8 s [Hypothesis] | Medium | High | Spike with synthetic 100 and 200 MP baseline/progressive JPEG, PNG and HEIC; per-format pre-flight factor; early `IMAGE_TOO_LARGE` if needed; catch OOM |
 | R3 | Region decoder gaps: format/OEM differences, `inPreferredColorSpace` or `inPremultiplied` not honoured by `decodeRegion` [Hypothesis] | Medium | Medium | Per-source `full` fallback; post-decode config/colour-space check; device matrix of ≥ 3 OEMs |
-| R4 | EXIF orientation wrong: mirrored values 2/4/5/7, preview/render mismatch, HEIF `irot` applied twice or not at all | Medium | High (sideways or mirrored ID photo) | One D4 table for everything; asymmetric synthetic fixtures for all 8 values in JPEG and HEIC; instrumented oracle test against `ImageDecoder` (which orients itself) |
+| R4 | EXIF orientation wrong: mirrored values 2/4/5/7, preview/render mismatch, HEIF `irot` applied twice or not at all | Medium | High (sideways or mirrored ID photo) | One D4 table for everything; own `HeifOrientation` reader because decoders ignore `irot`/`imir` and `ExifInterface` differs per API level (T04); asymmetric synthetic fixtures for all 8 values in JPEG and HEIC (EXIF and `irot`/`imir`); instrumented check against the fixture's known orientation (`ImageDecoder` is not a reliable oracle on API 28: it ignores `imir`) |
 | R5 | HEIC variants: 10-bit/HDR, gain maps, grid/tiled, multi-image (burst/live) | Medium | Medium | Primary image only; F16 or non-sRGB output → `UNSUPPORTED_INPUT` (no crash); script-generated fixtures for each variant |
 | R6 | Gesture jank on low-end GPUs (< 30 fps) | Low–Medium | Medium | Matrix-only repaint of a pre-uploaded texture; simple stroke overlays; profile-mode trace on the R1 device; drop the preview to 1536 px if needed |
 | R7 | `package:jni` on a worker isolate, or jnigraphics access to the JNI env, does not work as assumed [Assumption] | Medium | High | Day-1 spike; fallback `copyPixelsToBuffer` into a direct buffer over native memory; last resort, decode on the main isolate with progress (jank risk) |
 | R8 | Read URI permission lapses before render (OQ-3) | Low–Medium | Low | `SOURCE_UNAVAILABLE` + "choose again"; test with revoked permission |
 | R9 | An OS update changes decoder output, breaking FR-12 for the "same device" | Low | Medium | Goldens only on decoded synthetic buffers; device determinism test runs twice in one session; OQ-12 |
 | R10 | Path/URI leak via exception text in logs or crash reports | Low | High | Never log exception messages; lint/review rule; release-log audit test (AC-11.4) |
+| R12 (v1.1) | The own parsers (`ContainerCheck`, `HeifOrientation`) read untrusted bytes: a crafted file could cause a hang, huge allocation or exception | Low | Medium | Bounded loops and reads, box sizes checked against the file length, no allocation from declared sizes; seeded mutation test over the T02 fixtures (truncate, flip bytes) expecting a `Reason` or a valid result, never a crash |
 | R11 | Effort overrun (section 12) | High | Medium | Ship Musts first; Shoulds (handles, rotate, nudge buttons) are separate tasks that can slip to R1.x |
 
 ## 10. Decisions
@@ -225,3 +228,4 @@ Not counted here, to avoid double counting: the `es_codec` CMake/3-ABI/16 KB bui
 | 0.1 | 2026-11-20 | First draft |
 | 0.2 | 2026-11-20 | Source ceiling 200 MP (PRD v1.1): probe, R2, fixtures, spike; effort 4.5 → 4.7 pw |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
+| 1.1 | 2026-11-21 | Gate G1 spike results (FEAT-002-T04, ADR-004 v1.1): `ContainerCheck` and `HeifOrientation` components, GIF on the `full` path, per-format memory factors, R4 updated, R12 added. Under Discussion until re-approved |

@@ -1,9 +1,9 @@
 ---
 id: ADR-004
 title: Image decode path — Android platform decoders (BitmapRegionDecoder / BitmapFactory) via JNIgen, own orientation step, same path for preview and render
-status: Approved
-version: 1.0
-updated: 2026-11-20
+status: Under Discussion
+version: 1.1
+updated: 2026-11-21
 links: [FEAT-002, FEAT-004, ADR-001, ADR-003, ADR-005]
 ---
 
@@ -42,17 +42,30 @@ FEAT-002 must decode JPEG, PNG, WebP and HEIC/HEIF (minSdk 28) to 8-bit sRGB usi
 Recommend **Option A**, with these rules:
 - **Decode path chosen once per source at probe time** and used for both preview and render: `region` (`BitmapRegionDecoder`) by default; `full` (`BitmapFactory.decodeFileDescriptor` with `inSampleSize`, then crop in memory) when the region decoder cannot open the file (for example GIF or some animated WebP) [Hypothesis]. Both paths ignore EXIF, so the single D4 rule applies to both.
 - Always request `ARGB_8888`, `inPreferredColorSpace = SRGB`, `inPremultiplied = false`. If the returned bitmap's config or colour space differs, the result is `UNSUPPORTED_INPUT` (FR-10). This is a verifiable check, not our own colour conversion.
-- Orientation is read only through `ExifInterface.getAttributeInt(TAG_ORIENTATION, 1)`; values outside 1–8 are treated as 1.
+- Orientation, JPEG, PNG and WebP: read only through `ExifInterface.getAttributeInt(TAG_ORIENTATION, 1)`; values outside 1–8 are treated as 1.
+- Orientation, HEIC/HEIF (v1.1, from the spike): **our own reader**, not `ExifInterface`. It parses the primary item's `irot` and `imir` properties from the file's box structure; if the primary item has neither, it reads `TAG_ORIENTATION` from the file's own `Exif` item; otherwise 1. The decoders never apply `irot`/`imir`, so the result goes through the same D4 step as every other format. Reason: `ExifInterface` gives different answers per API level for the same file (see Spike results).
+- **Structure check before decode** (v1.1): the probe reads the container header itself (JPEG SOI and frame header, PNG signature and IHDR, WebP RIFF/VP8 header, HEIF `ftyp`/`meta`, GIF header) for the format and declared size. A missing or inconsistent header or truncated data gives `CORRUPT_INPUT`; a declared size above the 200 MP ceiling gives `IMAGE_TOO_LARGE` with no pixel decode. Reason: truncated JPEGs and some corrupt PNGs decode silently or partially on the platform decoders.
+- **Per-format memory factor** in the pre-flight (v1.1): progressive JPEG adds about 3.5 bytes per source pixel of decoder working memory during a region decode; baseline JPEG about 0.7; PNG, WebP and HEIC (tiled) stay close to the region output. The pre-flight returns `IMAGE_TOO_LARGE` early when the estimate does not fit (FR-6 best effort).
 - Pixels are read in `es_codec` through `AndroidBitmap_lockPixels` (jnigraphics) and resampled straight into the ADR-003 native buffer, then the bitmap is recycled.
 - `ImageDecoder` (Option B) is used only as a **test oracle** in instrumented tests, to check our orientation result.
 - A ≤ 1-day spike (shared with ADR-005) runs on the slowest R1 device and checks: (1) region decode + sample + sRGB for JPEG (baseline and progressive), PNG, WebP and HEIC at 12/50/100/200 MP; (2) whether HEIF `irot` is applied by the decoder (if so, HEIF orientation is forced to 1); (3) JNIgen calls from a worker isolate; (4) jnigraphics access through the JNI env exposed by `package:jni`. If (3) or (4) fails, the fallback is `Bitmap.copyPixelsToBuffer` into a direct `ByteBuffer` over the native buffer, which is still no Java array.
 Final once the Product Owner approves.
+
+## Spike results (FEAT-002-T04, 2026-11-21)
+Measured on the emulator profile (2 GB RAM, API 28 in CI and API 36 locally), with the Samsung S23 Ultra as an extra arm64 device. Synthetic fixtures only (T02). Full decision table: `docs/CHANGELOG.md`, FEAT-002-T04 entry.
+- **Region decode** works for baseline and progressive JPEG, PNG, WebP (animated: first frame) and HEIC. GIF needs the `full` path (first frame). Every result is `ARGB_8888`, sRGB, unpremultiplied, including CMYK JPEG, Display P3, 16-bit and grayscale PNG (the platform converts them).
+- **HEIF orientation:** `BitmapFactory` and `BitmapRegionDecoder` ignore `irot`/`imir` on API 28, API 36 and the S23. `ExifInterface` on API 28 derives HEIC orientation from `irot` and loses mirroring (reports 6 for EXIF 5 and 7, 1 for 2 and 4), and ignores the file's EXIF; on API 36 it reads EXIF only (an `irot`-only file reports 1). `ImageDecoder` applies `irot` and `imir` on API 36 but not `imir` on API 28. Hence the own reader above (Product Owner decision 2026-11-21, option A).
+- **Large sources:** JPEG (baseline and progressive) and PNG decode at 100 and 200 MP on API 36 (2 GB) and the S23; WebP at 100 MP (a 200 MP WebP could not be generated). A single-frame HEIC of 50 MP or more fails in the platform HEVC decoder; camera-style **tiled** HEIC (512 px grid) decodes at 50, 100 and 200 MP on API 36. Peak RSS on the S23: progressive JPEG 188 / 360 / 685 MB at 50 / 100 / 200 MP (about 3.4 bytes per source pixel); baseline JPEG 144 MB at 200 MP (about 0.7). Emulator RSS deltas were unreliable.
+- **NFR-2:** 12 MP → 2 MP used 21 MB (API 36) and 19 MB (S23); a 24 MP target region used 125 MB and 124 MB.
+- **JNI:** JNIgen calls work from a worker isolate; jnigraphics `AndroidBitmap_lockPixels` reads pixels in C with no Java array (main path), `copyPixelsToBuffer` into a direct buffer is the measured fallback.
+- **Unsupported and damaged input:** 10-bit HEIC fails on every device → `UNSUPPORTED_INPUT`. A text file named `.jpg` gives no bitmap → `CORRUPT_INPUT`. A PNG header claiming 200,000,001 px is refused by the decoder before pixels → `IMAGE_TOO_LARGE` from our structure check. A truncated JPEG decodes silently (grey tail) on both API levels; a corrupt PNG decodes partially on API 36 and fails on API 28 → structure check gives `CORRUPT_INPUT` (Product Owner decision 2026-11-21).
 
 ## Consequences
 - Easier: memory stays close to region size plus output; one orientation rule; HEIC with no bundled codec; no new licences.
 - Harder: own D4 maths and an 8-orientation × format fixture set; a fallback path for formats the region decoder can't open; same-device determinism holds per OS build, not across OS updates (see FEAT-002-TECH OQ-12).
 - Main alternative: Option B if the spike shows the region decoder misbehaves on HEIC or on common OEM builds; the cost is higher peak memory, so `IMAGE_TOO_LARGE` would appear earlier on 2 GB devices.
 - Follow-up: synthetic fixtures only (generated test patterns, no real people); add jnigraphics to the `es_codec` CMake link.
+- v1.1 adds two small parsers (HEIF orientation, container structure check) that must be fuzz-tested with the T02 damaged fixtures, because they read untrusted bytes.
 
 ## Change log
 | Version | Date | Change |
@@ -60,3 +73,4 @@ Final once the Product Owner approves.
 | 0.1 | 2026-11-20 | First draft |
 | 0.2 | 2026-11-20 | Source ceiling 200 MP reflected in drivers and spike |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
+| 1.1 | 2026-11-21 | Spike results (FEAT-002-T04): own HEIF `irot`/`imir` + EXIF orientation reader, structure check before decode (`CORRUPT_INPUT`, early `IMAGE_TOO_LARGE`), per-format memory factor; GIF on the `full` path; tiled HEIC confirmed. Under Discussion until re-approved |

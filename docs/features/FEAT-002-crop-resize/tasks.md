@@ -1,9 +1,9 @@
 ---
 id: FEAT-002-TASKS
 title: Crop and resize to exact target dimensions — Implementation Tasks
-status: Approved
-version: 1.0
-updated: 2026-11-20
+status: Under Discussion
+version: 1.1
+updated: 2026-11-21
 links: [FEAT-002, FEAT-002-TECH, ADR-001, ADR-003, ADR-004, ADR-005]
 ---
 
@@ -110,11 +110,18 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/crop_controller.dart`: Riverpod notifier holding `CropState`, kept alive for the flow session and disposed at flow end (nothing persisted); action handler table (move ×4, zoom ±, centre, reset; handle/rotate actions added when T09 exists) calling the same reducers; announcement composer producing polite messages on actions, button presses, edge reached and upscale threshold crossings (1.0 and 2.0), never per drag update. No widgets.
 - **Done when:** `crop_controller_test.dart` passes: each action handler gives the same cropRect as the matching reducer; a drag of 60 updates produces 0 announcements and a threshold crossing produces exactly 1; an edge-reached move produces the edge message; leaving and re-entering the screen in the same session restores cropRect, zoom and rotation; ending the flow disposes the state; announcement text contains no file name, path or EXIF value.
 
-### - [ ] FEAT-002-T12 — JNIgen bindings, `SourceHandle` and `SourceProbe`
-- **Implements:** FR-2, FR-3 (read), FR-6 (ceiling), FR-15 (flag), FR-17, FR-24, NFR-10, AC-3.3, AC-7.1, AC-7.2, AC-7.4 · **ADRs:** ADR-001, ADR-004
+### - [ ] FEAT-002-T30 — `ContainerCheck` and `HeifOrientation` (ADR-004 v1.1)
+- **Implements:** FR-3 (HEIF), FR-6 (early ceiling), FR-15, NFR-10, AC-3.2, AC-7.4 · **ADRs:** ADR-004 v1.1
 - **Depends on:** T04 (G1), T05, T06
 - **Size:** M
-- **Scope:** final JNIgen config and bindings in `packages/es_codec/lib/src/android/` for `BitmapRegionDecoder`, `BitmapFactory(.Options)`, `Bitmap`, `ExifInterface` (orientation only), `ContentResolver`/`ParcelFileDescriptor`, `Activity.setRecentsScreenshotEnabled`; `data/source_handle.dart` (redacted `toString`); `data/source_probe.dart`: open read-only (`"r"`), bounds-only decode, header sniff for animation (WebP `VP8X`/`ANIM`, PNG `acTL`, GIF), orientation with the T04 HEIF rule, decode path from the T04 table, 200 MP ceiling and any T04 per-format threshold → `IMAGE_TOO_LARGE`; platform exception text never logged, mapped to `Reason`.
+- **Scope:** `lib/features/crop/data/container_check.dart`: pure Dart over a header read and the file length; JPEG SOI + SOF, PNG signature + IHDR + IEND present, WebP RIFF/VP8/VP8L/VP8X header and RIFF length, HEIF `ftyp` + `meta`, GIF header; result: format, declared width and height, or `CORRUPT_INPUT`, or `IMAGE_TOO_LARGE` above 200 MP. `lib/features/crop/data/heif_orientation.dart`: pure Dart ISOBMFF reader: `pitm`, `iinf`, `iprp`/`ipco`/`ipma`, primary item's `irot` and `imir` mapped to one of the 8 D4 transforms; if neither, `TAG_ORIENTATION` from the `Exif` item (TIFF header, both byte orders); else 1. Every box size checked against the file length; no allocation from declared sizes.
+- **Done when:** unit tests on the T02 fixtures pass: every small fixture gets its expected format and size; truncated JPEG and corrupt PNG → `CORRUPT_INPUT`; the text file named `.jpg` → `CORRUPT_INPUT`; the 200,000,001 px PNG header → `IMAGE_TOO_LARGE`; HEIC orientation 1–8 via EXIF and via `irot`/`imir` maps to the D4 transform that turns the arrow fixture upright (checked against `Orientation`); a seeded mutation test (10,000 truncations and byte flips of the fixtures) never throws and never runs longer than 50 ms per file.
+
+### - [ ] FEAT-002-T12 — JNIgen bindings, `SourceHandle` and `SourceProbe`
+- **Implements:** FR-2, FR-3 (read), FR-6 (ceiling), FR-15 (flag), FR-17, FR-24, NFR-10, AC-3.3, AC-7.1, AC-7.2, AC-7.4 · **ADRs:** ADR-001, ADR-004
+- **Depends on:** T04 (G1), T05, T06, T30
+- **Size:** M
+- **Scope:** final JNIgen config and bindings in `packages/es_codec/lib/src/android/` for `BitmapRegionDecoder`, `BitmapFactory(.Options)`, `Bitmap`, `ExifInterface` (orientation only), `ContentResolver`/`ParcelFileDescriptor`, `Activity.setRecentsScreenshotEnabled`; `data/source_handle.dart` (redacted `toString`); `data/source_probe.dart`: open read-only (`"r"`), bounds-only decode, header sniff for animation (WebP `VP8X`/`ANIM`, PNG `acTL`, GIF), `ContainerCheck` first (T30), orientation via `ExifInterface` for JPEG/PNG/WebP and `HeifOrientation` for HEIC (T30), decode path `full` for GIF and `region` otherwise (T04), 200 MP ceiling and any T04 per-format threshold → `IMAGE_TOO_LARGE`; platform exception text never logged, mapped to `Reason`.
 - **Done when:** `source_probe_test.dart` (integration, emulator profile, both API levels) gives the expected `SourceInfo` or `Reason` for every T02 small fixture, including orientation 1–8, invalid values as 1, the `.jpg` text file → `CORRUPT_INPUT` or `UNSUPPORTED_INPUT`, the 200,000,001 px header → `IMAGE_TOO_LARGE` with no pixel decode; `SourceHandle.toString()` contains no URI text; each fixture's bytes and mtime are unchanged after probing; JPEG, PNG, WebP and HEIC go through the same code path.
 
 ### - [ ] FEAT-002-T13 — `es_resample` (stb Catmull-Rom), goldens and visual chart — gate G2
@@ -241,10 +248,10 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 |---|---|---|
 | FR-1 | T05, T17, T25 | Entry validation UI is FEAT-005 / FEAT-011 |
 | FR-2 | T12, T25 | FEAT-001 calls `SourceProbe` right after picking (OQ-11); that call is FEAT-001 work |
-| FR-3 | T04, T06, T12, T14, T21 | |
+| FR-3 | T04, T06, T30, T12, T14, T21 | HEIF orientation reader in T30 (ADR-004 v1.1) |
 | FR-4 | T07, T08, T23 | |
 | FR-5 | T08, T11, T24 | |
-| FR-6 | T04, T12, T16, T18, T29 | Low-memory-killer process kills cannot be caught (tech.md gap 2) |
+| FR-6 | T04, T30, T12, T16, T18, T29 | Low-memory-killer process kills cannot be caught (tech.md gap 2) |
 | FR-7 | T04, T07, T15, T17 | |
 | FR-8 | T07, T13, T17 | |
 | FR-9 | T01, T13, T17 | Gate G2 |
@@ -253,7 +260,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 | FR-12 | T07, T13, T21 | Same device and OS build; cross-device is Should, recorded in T21 |
 | FR-13 | T11, T17, T21 | |
 | FR-14 | T13, T14, T17, T23 | Flattening is FEAT-004 FR-12 |
-| FR-15 | T04, T12, T15, T25 | |
+| FR-15 | T04, T30, T12, T15, T25 | |
 | FR-16 | T17, T18, T25 | |
 | FR-17 | T12, T17, T20 | |
 | FR-18 | T03, T15, T18, T25 | No temp files (ADR-003); start-up orphan sweep is FEAT-004-T17 |
@@ -276,7 +283,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 | NFR-7 | T20 | |
 | NFR-8 | T02, T29 | Gate G5 |
 | NFR-9 | T02, T05, T13, T21 | Purity starts after decode (tech.md gap 4) |
-| NFR-10 | T04, T12, T21 | |
+| NFR-10 | T04, T30, T12, T21 | |
 
 **Not covered by a task:** the PRD section 3 metric "Task speed: median ≤ 15 s from crop screen open to Continue for a first-time user" needs a usability check with people; no task can verify it (see Open questions).
 
@@ -300,3 +307,4 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 |---|---|---|
 | 0.1 | 2026-11-20 | First draft |
 | 1.0 | 2026-11-20 | Approved by Product Owner |
+| 1.1 | 2026-11-21 | Gate G1 (T04) results: new task T30 (`ContainerCheck`, `HeifOrientation`, ADR-004 v1.1) before T12; T12 uses them; T16 uses the per-format memory factors from FEAT-002-TECH v1.1. Under Discussion until re-approved |
