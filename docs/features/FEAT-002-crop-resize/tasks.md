@@ -131,7 +131,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `packages/es_codec/src/crop.c` (and header): `es_resample` from a source pointer with any stride to a tight W×H buffer, `STBIR_TYPE_UINT8`, Catmull-Rom, edge clamp, `STBIR_RGBA` for alpha sources and `STBIR_4CHANNEL` for opaque ones; sources added in `lib/src/c_library.dart`; FFIgen bindings; host and emulator tests on synthetic buffers; contact sheet tool producing the chart at Catmull-Rom and Mitchell.
 - **Done when:** `es_resample_test.dart` passes on the host and the emulator: output is exactly W×H for 3000×3000 → 300×300, 3000×800 → 300×80, 2333×1000 → 140×60, 1×1 → 300×300; a same-size resample equals the input (or the maximum deviation is recorded and reported as "identity within the pinned algorithm", PRD section 9); a red opaque shape on transparent pixels shows no dark fringe (RGB of every pixel with alpha > 0 within ±2 of red); SHA-256 goldens for about 10 cases are stable over two runs; the chart (diagonal lines, zone plate, thin strokes, alpha edge) is attached to the PR and shown to the Product Owner, and gate G2 is recorded.
 
-### - [ ] FEAT-002-T14 — `es_orient`, `es_finish` and bitmap pixel access
+### - [x] FEAT-002-T14 — `es_orient`, `es_finish` and bitmap pixel access
 - **Implements:** FR-3, FR-14, FR-21, AC-3.5, AC-6.1, AC-6.2, AC-12.3 · **ADRs:** ADR-004, ADR-005, ADR-003
 - **Depends on:** T06, T13
 - **Size:** M

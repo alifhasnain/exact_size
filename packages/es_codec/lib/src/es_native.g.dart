@@ -39,6 +39,63 @@ external int es_bitmap_copy_rgba(
 @meta.RecordUse()
 @ffi.Native<
   ffi.Int32 Function(
+    ffi.Pointer<ffi.Void>,
+    ffi.Pointer<ffi.Void>,
+    ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+    ffi.Pointer<ffi.Int32>,
+    ffi.Pointer<ffi.Int32>,
+    ffi.Pointer<ffi.Int32>,
+  )
+>(isLeaf: true)
+external int es_bitmap_lock(
+  ffi.Pointer<ffi.Void> java_vm,
+  ffi.Pointer<ffi.Void> bitmap,
+  ffi.Pointer<ffi.Pointer<ffi.Uint8>> pixels,
+  ffi.Pointer<ffi.Int32> width,
+  ffi.Pointer<ffi.Int32> height,
+  ffi.Pointer<ffi.Int32> stride,
+);
+
+@meta.RecordUse()
+@ffi.Native<ffi.Int32 Function(ffi.Pointer<ffi.Void>, ffi.Pointer<ffi.Void>)>(
+  isLeaf: true,
+)
+external int es_bitmap_unlock(
+  ffi.Pointer<ffi.Void> java_vm,
+  ffi.Pointer<ffi.Void> bitmap,
+);
+
+@meta.RecordUse()
+@ffi.Native<ffi.Int32 Function(ffi.Pointer<ffi.Uint8>, ffi.Int32, ffi.Int32)>(
+  isLeaf: true,
+)
+external int es_finish(ffi.Pointer<ffi.Uint8> rgba, int w, int h);
+
+@meta.RecordUse()
+@ffi.Native<
+  ffi.Int32 Function(
+    ffi.Pointer<ffi.Uint8>,
+    ffi.Int32,
+    ffi.Int32,
+    ffi.Int32,
+    ffi.Pointer<ffi.Uint8>,
+    ffi.Int32,
+    ffi.Int32,
+  )
+>(isLeaf: true)
+external int es_orient(
+  ffi.Pointer<ffi.Uint8> in$,
+  int w,
+  int h,
+  int channels,
+  ffi.Pointer<ffi.Uint8> out,
+  int mirrored,
+  int quarter_turns,
+);
+
+@meta.RecordUse()
+@ffi.Native<
+  ffi.Int32 Function(
     ffi.Pointer<ffi.Uint8>,
     ffi.Int32,
     ffi.Int32,

@@ -39,7 +39,63 @@ int32_t es_bitmap_copy_rgba(void *java_vm, void *bitmap, uint8_t *out, int64_t o
   if (attached) (*vm)->DetachCurrentThread(vm);
   return rc;
 }
+
+static JNIEnv *es_env(JavaVM *vm, int *attached) {
+  JNIEnv *env = NULL;
+  *attached = 0;
+  if ((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_6) == JNI_EDETACHED) {
+    if ((*vm)->AttachCurrentThread(vm, &env, NULL) != JNI_OK) return NULL;
+    *attached = 1;
+  }
+  return env;
+}
+
+int32_t es_bitmap_lock(void *java_vm, void *bitmap, uint8_t **pixels, int32_t *width,
+                       int32_t *height, int32_t *stride) {
+  JavaVM *vm = (JavaVM *)java_vm;
+  int attached;
+  JNIEnv *env = es_env(vm, &attached);
+  if (env == NULL) return -1;
+  int32_t rc = 0;
+  AndroidBitmapInfo info;
+  void *p = NULL;
+  if (AndroidBitmap_getInfo(env, (jobject)bitmap, &info) != ANDROID_BITMAP_RESULT_SUCCESS) {
+    rc = -2;
+  } else if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+    rc = -3;
+  } else if (AndroidBitmap_lockPixels(env, (jobject)bitmap, &p) != ANDROID_BITMAP_RESULT_SUCCESS) {
+    rc = -5;
+  } else {
+    *pixels = (uint8_t *)p;
+    *width = (int32_t)info.width;
+    *height = (int32_t)info.height;
+    *stride = (int32_t)info.stride;
+  }
+  if (attached) (*vm)->DetachCurrentThread(vm);
+  return rc;
+}
+
+int32_t es_bitmap_unlock(void *java_vm, void *bitmap) {
+  JavaVM *vm = (JavaVM *)java_vm;
+  int attached;
+  JNIEnv *env = es_env(vm, &attached);
+  if (env == NULL) return -1;
+  int32_t rc = AndroidBitmap_unlockPixels(env, (jobject)bitmap) == ANDROID_BITMAP_RESULT_SUCCESS ? 0 : -5;
+  if (attached) (*vm)->DetachCurrentThread(vm);
+  return rc;
+}
 #else
+int32_t es_bitmap_lock(void *java_vm, void *bitmap, uint8_t **pixels, int32_t *width,
+                       int32_t *height, int32_t *stride) {
+  (void)java_vm; (void)bitmap; (void)pixels; (void)width; (void)height; (void)stride;
+  return -100;
+}
+
+int32_t es_bitmap_unlock(void *java_vm, void *bitmap) {
+  (void)java_vm; (void)bitmap;
+  return -100;
+}
+
 int32_t es_bitmap_copy_rgba(void *java_vm, void *bitmap, uint8_t *out, int64_t out_len,
                             int32_t *width, int32_t *height) {
   (void)java_vm; (void)bitmap; (void)out; (void)out_len; (void)width; (void)height;

@@ -33,4 +33,27 @@ ES_EXPORT int32_t es_resample(const uint8_t *in, int32_t in_w, int32_t in_h, int
                               uint8_t *out, int32_t out_w, int32_t out_h, int32_t alpha,
                               int32_t filter);
 
+// FEAT-002-T14 (ADR-004): locks an ARGB_8888 Bitmap's pixels for reading in
+// place through jnigraphics, so the render resamples straight from the bitmap
+// with no copy. Writes the pixel pointer, size and row stride in bytes.
+// Every successful lock must be followed by es_bitmap_unlock on the same
+// bitmap. Returns 0, or the es_bitmap_copy_rgba error codes (no -4).
+ES_EXPORT int32_t es_bitmap_lock(void *java_vm, void *bitmap, uint8_t **pixels, int32_t *width,
+                                 int32_t *height, int32_t *stride);
+ES_EXPORT int32_t es_bitmap_unlock(void *java_vm, void *bitmap);
+
+// FEAT-002-T14 (FR-3, FR-21, ADR-004): lossless D4 transform of a tight
+// [w] x [h] x [channels] buffer into [out] (same byte count), in the order of
+// lib/features/crop/domain/orientation.dart: mirror left-right first if
+// [mirrored], then rotate [quarter_turns] x 90 degrees clockwise. The output
+// is [h] x [w] for odd turns. Returns 0, or -1 on bad arguments.
+ES_EXPORT int32_t es_orient(const uint8_t *in, int32_t w, int32_t h, int32_t channels,
+                            uint8_t *out, int32_t mirrored, int32_t quarter_turns);
+
+// FEAT-002-T14 (FR-14): scans a tight RGBA buffer. If any alpha is below 255
+// it returns 1 and leaves the buffer as RGBA. Otherwise it compacts the buffer
+// in place to tight RGB (w * 3 bytes per row, alpha dropped) and returns 0.
+// Returns -1 on bad arguments.
+ES_EXPORT int32_t es_finish(uint8_t *rgba, int32_t w, int32_t h);
+
 #endif

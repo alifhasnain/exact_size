@@ -34,6 +34,7 @@ export 'src/android/android_graphics.g.dart'
         Uri;
 
 export 'src/bitmap_pixels.dart' show BitmapPixelsException, copyBitmapRgba, copyBitmapViaDirectBuffer;
+export 'src/crop_native.dart' show finishAlpha, orient, withBitmapPixels;
 export 'src/licenses.dart' show registerEsCodecLicenses;
 export 'src/resample.dart' show ResampleFilter, resample;
 export 'src/turbojpeg.g.dart' show TJSAMP;
