@@ -1,8 +1,8 @@
 ---
 id: FEAT-001-TECH
 title: Pick image from camera or gallery — Technical Plan
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-21
 links: [FEAT-001, FEAT-002, FEAT-004, FEAT-007, ADR-001, ADR-003, ADR-004, ADR-006]
 ---
@@ -276,3 +276,4 @@ Not counted: impeccable design work for the pick screen, translations (FEAT-019)
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-21 | First draft |
+| 1.0 | 2026-11-21 | Approved by Product Owner |
