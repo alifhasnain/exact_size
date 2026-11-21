@@ -117,26 +117,27 @@ void main() {
     report('first_frame_12mp probe=$probeMs ms total=${sw.elapsedMilliseconds} ms (FR-25, info)');
     preview.dispose();
 
-    report('render_12mp_to_2mp ${await timeRenders(h, info, twoMp)} (NFR-1, info)');
+    // Memory first, cold: after repeated renders freed pages stay resident.
     final mb = await peakMb(() async {
       final r = await render(h, info, twoMp);
       ((r as RenderOk).pixels as NativePixelBuffer).free();
     });
     report('memory_12mp_to_2mp attributable=${mb.toStringAsFixed(1)} MB (limit 200)');
     expect(mb, lessThanOrEqualTo(200));
+    report('render_12mp_to_2mp ${await timeRenders(h, info, twoMp)} (NFR-1, info)');
   }, timeout: const Timeout(Duration(minutes: 10)));
 
   test('50 MP: renders to 2 MP; 24 MP target peak ≤ 350 MB or a handled refusal', () async {
     final h = handle('large_50mp_8164x6124_baseline.jpg');
     if (h == null) return markTestSkipped('50 MP fixture not pushed');
     final info = ((await const SourceProbe().probe(h)) as ProbeOk).info;
-    report('render_50mp_to_2mp ${await timeRenders(h, info, twoMp)} (NFR-1, info)');
     RenderResult? r;
     final mb = await peakMb(() async => r = await render(h, info, const Target(6000, 4000)));
     final outcome = r is RenderErr ? (r! as RenderErr).reason.code : 'SUCCESS';
     if (r case RenderOk(:final NativePixelBuffer pixels)) pixels.free();
     report('memory_50mp_to_24mp attributable=${mb.toStringAsFixed(1)} MB outcome=$outcome (limit 350)');
     expect(mb <= 350 || outcome == Reason.imageTooLarge.code || outcome == Reason.outOfMemoryHandled.code, isTrue);
+    report('render_50mp_to_2mp ${await timeRenders(h, info, twoMp)} (NFR-1, info)');
   }, timeout: const Timeout(Duration(minutes: 15)));
 
   test('100 MP, 200 MP, corrupt, 1×1 and extreme ratio: handled outcome, no crash', () async {

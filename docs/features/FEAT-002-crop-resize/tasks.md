@@ -236,7 +236,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/`: rotate clockwise / counter-clockwise buttons; nudge up/down/left/right (long-press repeats) and zoom in/out buttons, each ≥ 48 dp and labelled, calling the T08/T09 reducers.
 - **Done when:** widget tests pass: each button gives the same cropRect as its reducer; long-press repeats a nudge until released and stops at the edge with the edge announcement; rotate keeps the frame ratio and shows no empty area; all buttons are ≥ 48 dp with labels.
 
-### - [ ] FEAT-002-T29 — Emulator run: memory, reliability, offline; timings and frame rate informational — gate G5
+### - [x] FEAT-002-T29 — Emulator run: memory, reliability, offline; timings and frame rate informational — gate G5
 - **Implements:** NFR-1, NFR-2, NFR-5, NFR-8, FR-6, FR-25, AC-4.1–4.4, AC-11.2 · **ADRs:** ADR-003, ADR-004, ADR-005
 - **Depends on:** T20, T21, T26 (and T27, T28 if the Shoulds ship)
 - **Size:** M
