@@ -44,6 +44,14 @@ The user is the **Product Owner** and makes every product decision.
 - If implementation reveals a requirement gap, stop and propose a PRD change instead of improvising.
 - Before designing or building any real UI screen, stop and tell the Product Owner first: screens are designed with impeccable (https://github.com/pbakaus/impeccable; Product Owner decision 2026-11-20). Non-visual work (engine, providers, strings) may proceed.
 
+## Localization (FEAT-019)
+- Translating `lib/l10n/app_*.arb` uses the vendored skills `localize-{ar,es,hi,id,pt}` (source, commit and checksums: `docs/l10n/VENDOR.md`). Use only those; do not install i18nstack's `setup`, CLIs or other languages.
+- Variants: `pt` = pt-BR, `ar` = MSA. Spanish variant (es-ES or es-419) and Arabic digit style (Western or Eastern) are Product Owner decisions: ask, do not pick.
+- Translations are drafts. Keep ICU syntax, placeholder names and keys identical to `app_en.arb`; never translate or add bidi marks to placeholders (isolates are added in code). Send only app strings to the model, never user data.
+- No native reviewer is available (Product Owner decision 2026-11-21): every language goes through `/l10n-translate <lang>` (draft, mechanical checks, blind back-translation review by a fresh subagent on another model, log in `docs/l10n/ai-review-log.md`). That is the only quality gate, so its status is `AI-reviewed only`. Never write "native-quality" or "native-reviewed" in docs, UI or store text. Residual error risk is a [Hypothesis]; keep consent, privacy, ads, subscription and failure messages short and plain. If a native speaker ever reviews a language, record it in the log.
+- `/l10n-translate` may delegate one reviewer per language, one language at a time (exception to one delegation per stage).
+- Changing a vendored skill: re-pin the commit, re-scan, re-read the diff, update `docs/l10n/VENDOR.md`.
+
 ## Security & compliance (SSLWIRELESS policy)
 - Never write real card numbers, tokens, credentials or personal data in docs or code examples — use `[PLACEHOLDER]`.
 - Every PRD has a Compliance & Data Privacy section (Bangladesh Bank rules, PCI-DSS scope, personal data). State "N/A — reason" only if the feature touches no money or personal data. Flag privacy risks proactively.
