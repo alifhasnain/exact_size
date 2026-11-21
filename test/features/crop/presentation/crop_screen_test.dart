@@ -65,7 +65,9 @@ Future<ProviderContainer> pumpScreen(WidgetTester tester, SourceInfo info, Targe
     VoidCallback? onChooseAnother,
     Locale? locale,
     CropRenderFn? render,
-    RecentsBinding? recents}) async {
+    RecentsBinding? recents,
+    double textScale = 1,
+    bool pushed = false}) async {
   tester.view.physicalSize = const Size(360, 800);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -76,19 +78,34 @@ Future<ProviderContainer> pumpScreen(WidgetTester tester, SourceInfo info, Targe
     container: container,
     child: ExactSizeApp(
       locale: locale ?? const Locale('en'),
-      home: CropScreen(
-        src: SourceHandle('file:///synthetic/photo.jpg'),
-        render: render ?? fakeRender(),
-        recentsBinding: recents ?? FakeRecents(),
-        preview: image,
-        info: info,
-        target: target,
-        onContinue: onContinue ?? (_) {},
-        onChooseAnother: onChooseAnother ?? () {},
-      ),
+      home: Builder(builder: (context) {
+        final screen = MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+          child: CropScreen(
+            src: SourceHandle('file:///synthetic/photo.jpg'),
+            render: render ?? fakeRender(),
+            recentsBinding: recents ?? FakeRecents(),
+            preview: image,
+            info: info,
+            target: target,
+            onContinue: onContinue ?? (_) {},
+            onChooseAnother: onChooseAnother ?? () {},
+          ),
+        );
+        if (!pushed) return screen;
+        // Pushed as a second route, so the app bar shows Back.
+        return TextButton(
+          onPressed: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => screen)),
+          child: const Text('open'),
+        );
+      }),
     ),
   ));
   await tester.pumpAndSettle();
+  if (pushed) {
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+  }
   return container;
 }
 
@@ -336,6 +353,67 @@ void main() {
       final recents = FakeRecents();
       await pumpScreen(tester, source(4000, 3000), const Target(300, 300), recents: recents);
       expect(recents.calls, [false]);
+    });
+  });
+
+  group('T26 RTL, 200% text, rotation, split-screen', () {
+    testWidgets('Arabic: app bar, control rows and Continue mirror; canvas and moves do not', (tester) async {
+      double cx(Finder f) => tester.getCenter(f).dx;
+      final info = source(4000, 3000);
+      const t = Target(300, 300);
+      final en = await pumpScreen(tester, info, t, pushed: true);
+      final enRect = en.read(cropControllerProvider)!.cropRect;
+      await tester.pumpWidget(const SizedBox()); // fresh navigator
+      final ar = await pumpScreen(tester, info, t, pushed: true, locale: const Locale('ar'));
+      expect(Directionality.of(tester.element(find.byType(CropScreen))), TextDirection.rtl);
+      // Mirrored: Back on the right of the title, Continue before the print, rotate group order.
+      expect(cx(find.byType(BackButton)), greaterThan(cx(find.byType(AppBar))));
+      expect(cx(find.widgetWithText(FilledButton, 'Continue')), lessThan(cx(find.byType(CropPrint))));
+      expect(cx(find.byTooltip('Rotate counter-clockwise')), greaterThan(cx(find.byTooltip('Zoom in'))));
+      // Physical: move arrows stay left-to-right, the crop is the same rect, a move goes physically left.
+      final moves = ['Move left', 'Move up', 'Move down', 'Move right'].map((l) => cx(find.byTooltip(l))).toList();
+      expect(moves, orderedEquals([...moves]..sort()));
+      expect(ar.read(cropControllerProvider)!.cropRect, enRect);
+      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.pump();
+      final before = ar.read(cropControllerProvider)!.cropRect.x;
+      await tester.tap(find.byTooltip('Move left'));
+      await tester.pump();
+      expect(ar.read(cropControllerProvider)!.cropRect.x, lessThan(before));
+    });
+
+    testWidgets('200% text: every control reachable by scrolling; frame fully visible', (tester) async {
+      var handed = 0;
+      await pumpScreen(tester, source(4000, 3000), const Target(300, 300), textScale: 2, onContinue: (_) => handed++);
+      final canvas = tester.getRect(find.byType(CropCanvas));
+      final f = canvasFrame(tester, const Target(300, 300)).shift(canvas.topLeft);
+      expect(canvas.top >= 0 && canvas.bottom <= 800, isTrue);
+      expect(canvas.contains(f.topLeft) && canvas.contains(f.bottomRight - const Offset(1, 1)), isTrue);
+      expect(f.shortestSide, greaterThanOrEqualTo(48));
+      for (final label in ['Rotate clockwise', 'Zoom in', 'Move right']) {
+        await tester.ensureVisible(find.byTooltip(label));
+      }
+      await tester.ensureVisible(find.widgetWithText(TextButton, 'Reset'));
+      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+      expect(handed, 1);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('rotation and split-screen keep the cropRect', (tester) async {
+      final c = await pumpScreen(tester, source(4000, 3000), const Target(300, 80));
+      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.tap(find.byTooltip('Move up'));
+      await tester.pumpAndSettle();
+      final rect = c.read(cropControllerProvider)!.cropRect;
+      for (final size in [const Size(800, 360), const Size(360, 380), const Size(360, 800)]) {
+        tester.view.physicalSize = size;
+        await tester.pumpAndSettle();
+        expect(c.read(cropControllerProvider)!.cropRect, rect, reason: '$size');
+        expect(tester.takeException(), isNull, reason: '$size');
+      }
     });
   });
 }

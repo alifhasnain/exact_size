@@ -215,7 +215,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/crop_screen.dart`: Continue (debounced, one render at a time) → `CropRenderer`; progress shown after 500 ms with cancel; every `Reason` mapped to its T10 message with one next action; animated-image notice; `RecentsGuard` applied to the route; `PixelBuffer` passed to a hand-off callback (FEAT-004 wiring is FEAT-004-T27); a changed target re-initialises the frame (AC-2.2). Tests use fixture URIs and fixed targets, since FEAT-001/005/011 are not built.
 - **Done when:** widget and integration tests pass: a double tap on Continue starts one render; a render over 500 ms (test delay) shows progress and cancel returns to the screen with nothing handed off; each `Reason` shows its message and next action; an animated fixture shows the notice; a new target changes the frame ratio and output size; the callback receives a W×H buffer.
 
-### - [ ] FEAT-002-T26 — RTL, 200% font, device rotation and split-screen
+### - [x] FEAT-002-T26 — RTL, 200% font, device rotation and split-screen
 - **Implements:** FR-20, FR-23, NFR-4, NFR-6, AC-9.5, AC-10.2 · **ADRs:** —
 - **Depends on:** T25
 - **Size:** S
