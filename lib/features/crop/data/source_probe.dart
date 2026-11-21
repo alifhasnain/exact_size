@@ -84,6 +84,7 @@ class SourceProbe {
         isAnimated: flags.animated,
         hasAlpha: flags.alpha,
         decodePath: ok.format == ContainerFormat.gif ? DecodePath.full : DecodePath.region,
+        isProgressive: ok.progressive,
       ));
     } on Object {
       return const ProbeErr(Reason.unsupportedInput);

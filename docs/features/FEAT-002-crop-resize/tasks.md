@@ -145,7 +145,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `data/preview_decoder.dart`: worker isolate; sample size so the long side is ≤ 2048; region or full path per `SourceInfo`; config/colour-space check → `UNSUPPORTED_INPUT`; Java OOM → `OUT_OF_MEMORY_HANDLED`; pixels → `ui.ImageDescriptor.raw` → `ui.Image`; bitmap recycled on every path. The preview type is not accepted by the renderer API.
 - **Done when:** `preview_decoder_test.dart` (integration, emulator profile, both API levels) passes: 12 MP and 50 MP fixtures give a preview with long side ≤ 2048 and no crash; T04's unsupported variants give `UNSUPPORTED_INPUT`; animated fixtures give the first frame and set the animation flag; a forced OOM (test hook) gives `OUT_OF_MEMORY_HANDLED`.
 
-### - [ ] FEAT-002-T16 — Crop `MemoryPreflight`
+### - [x] FEAT-002-T16 — Crop `MemoryPreflight`
 - **Implements:** FR-6, NFR-2 · **ADRs:** ADR-003, ADR-004
 - **Depends on:** T04 (G1), T05; FEAT-004-T18 (`/proc/meminfo` reader)
 - **Size:** S

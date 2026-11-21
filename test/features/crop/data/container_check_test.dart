@@ -66,6 +66,14 @@ void main() {
       });
     }
 
+    test('progressive JPEG (SOF2) is flagged, baseline is not', () {
+      final b = File('$dir/orient_1_exif.jpg').readAsBytesSync();
+      expect((checkContainer(MemoryByteSource(b)) as ContainerOk).progressive, isFalse);
+      final sof = [for (var i = 0; i + 1 < b.length; i++) if (b[i] == 0xff && b[i + 1] == 0xc0) i].first;
+      final p = Uint8List.fromList(b)..[sof + 1] = 0xc2; // same frame header, progressive marker
+      expect((checkContainer(MemoryByteSource(p)) as ContainerOk).progressive, isTrue);
+    });
+
     test('bytes after a JPEG EOI (camera trailers) are allowed; an empty file is corrupt', () {
       final b = File('$dir/orient_1_exif.jpg').readAsBytesSync();
       final trailer = Uint8List.fromList([...b, ...List.filled(500, 0x41)]);

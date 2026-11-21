@@ -61,6 +61,7 @@ final class SourceInfo {
     required this.isAnimated,
     required this.hasAlpha,
     required this.decodePath,
+    this.isProgressive = false,
   });
 
   /// Size as stored, before orientation.
@@ -73,6 +74,9 @@ final class SourceInfo {
   final bool isAnimated;
   final bool hasAlpha;
   final DecodePath decodePath;
+
+  /// Progressive JPEG, for the memory pre-flight (T16).
+  final bool isProgressive;
 }
 
 /// Result of a render: pixels for FEAT-004 (ADR-003, ownership passes to the

@@ -12,8 +12,12 @@ sealed class ContainerResult {
 }
 
 final class ContainerOk extends ContainerResult {
-  const ContainerOk(this.format, this.width, this.height);
+  const ContainerOk(this.format, this.width, this.height, {this.progressive = false});
   final ContainerFormat format;
+
+  /// Progressive JPEG (SOF2/6/10/14): the decoder keeps coefficients for the
+  /// whole image, about 3.5 bytes per source pixel (T04).
+  final bool progressive;
 
   /// Declared size as stored (before any orientation).
   final int width;
@@ -98,6 +102,7 @@ ContainerOk _jpeg(ByteSource src) {
   var o = 2;
   int? w, h;
   var scans = 0;
+  var progressive = false;
   for (var guard = 0; guard < 100000; guard++) {
     var b = _need(src, o, 2);
     while (b[0] == 0xff && b[1] == 0xff) {
@@ -109,7 +114,7 @@ ContainerOk _jpeg(ByteSource src) {
     o += 2;
     if (m == 0xd9) {
       if (w == null || h == null || scans == 0) throw const MalformedImage();
-      return ContainerOk(ContainerFormat.jpeg, w, h);
+      return ContainerOk(ContainerFormat.jpeg, w, h, progressive: progressive);
     }
     if (m == 0x01 || (m >= 0xd0 && m <= 0xd7)) continue; // no length
     if (m == 0xd8 || m == 0x00) throw const MalformedImage();
@@ -117,6 +122,7 @@ ContainerOk _jpeg(ByteSource src) {
     if (len < 2) throw const MalformedImage();
     final isSof = m >= 0xc0 && m <= 0xcf && m != 0xc4 && m != 0xc8 && m != 0xcc;
     if (isSof) {
+      progressive = m == 0xc2 || m == 0xc6 || m == 0xca || m == 0xce;
       final f = ByteData.sublistView(_need(src, o, 7));
       h = f.getUint16(3);
       w = f.getUint16(5);
