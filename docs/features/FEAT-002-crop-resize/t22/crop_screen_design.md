@@ -2,7 +2,7 @@
 id: FEAT-002-T22-DESIGN
 title: Crop screen — lean design (impeccable, gate G3)
 status: Proposed
-version: 0.1
+version: 0.2
 updated: 2026-11-21
 links: [FEAT-002, FEAT-002-T22-CHECKLIST, PRODUCT.md]
 ---
@@ -11,10 +11,11 @@ links: [FEAT-002, FEAT-002-T22-CHECKLIST, PRODUCT.md]
 
 The Product Owner chose the lean impeccable path on 2026-11-21 (see the CLAUDE.md Budget section). Claude designs on Material 3 and builds in Flutter. The Product Owner reviews emulator screenshots of the states below and approves gate G3. Mode: Operate (finish a task). Platform: Android, Material 3.
 
-## Direction
-- **The photo is the content; the chrome is quiet.** The canvas has a fixed near-black background in both themes, so photos and the frame keep contrast whatever the theme. Controls sit on the normal Material surface below the canvas; in landscape they sit to the side.
-- **One primary action:** Continue, a filled button at the bottom end. Everything else is tonal or text.
-- **The colour seed is a placeholder** (teal), because PRODUCT.md has no brand colours. Every colour comes from a Material colour role, so a later brand only changes the seed.
+## Direction (v0.2, impeccable roll: ID photo booth)
+- World: an ID photo booth. Curtain-maroon shell, a dark cabin with a warm booth-light glow behind the photo, chrome-pale rounded keys on a darker control plate, one flash-amber Continue key. The palette is fixed in both themes and every text pair meets WCAG AA.
+- The target size sits in the app bar as an outlined cell in Barlow Condensed (OFL, bundled) with tabular figures, like a booth price display.
+- Signature move: the print slot, a live thumbnail at the output aspect on photo-paper white beside Continue. It shows the exact result while you frame.
+- The direction contract is in `.impeccable/surfaces/lib-features-crop-presentation-crop-screen-dart.md`. The v0.1 stock Material look was rejected by the Product Owner as generic.
 
 ## Layout (portrait phone, 360 dp wide)
 1. **Top app bar:** Back, and the target size as the title (for example "300 × 80 px", inside isolates).

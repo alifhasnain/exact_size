@@ -39,3 +39,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/fonts/BarlowCondensed-OFL.txt
+  fonts:
+    # Spec numerals on the crop screen (OFL 1.1, google/fonts ofl/barlowcondensed).
+    - family: BarlowCondensed
+      fonts:
+        - asset: assets/fonts/BarlowCondensed-SemiBold.ttf
+          weight: 600

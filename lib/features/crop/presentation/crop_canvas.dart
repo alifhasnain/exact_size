@@ -65,8 +65,8 @@ class CropCanvas extends StatefulWidget {
   /// Zoom by [scale] about (fx, fy) in oriented source pixels.
   final void Function(double scale, double fx, double fy) onPinch;
 
-  /// Canvas background in both themes: photos and the frame keep contrast.
-  static const background = Color(0xFF121212);
+  /// The booth cabin behind the photo, in both themes (crop screen brief).
+  static const background = Color(0xFF1F0B10);
 
   @override
   State<CropCanvas> createState() => _CropCanvasState();
@@ -138,26 +138,14 @@ class _CropPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(Offset.zero & size, Paint()..color = CropCanvas.background);
     if (frame.isEmpty) return;
-    final k = frame.width / crop.cw;
-    final ch = crop.cw * target.height / target.width;
-    final (left, top) = (crop.cx - crop.cw / 2, crop.cy - ch / 2);
-    final (sw, sh) = CropMath.orientedSize(info, crop.quarterTurns);
-    final imageRect = Rect.fromLTWH(frame.left - left * k, frame.top - top * k, sw * k, sh * k);
-
-    if (info.hasAlpha) _checkerboard(canvas, imageRect.intersect(Offset.zero & size));
-
-    // Preview (raw orientation, sampled) → oriented source pixels → screen.
-    final o = CropMath.orientation(info, crop.quarterTurns);
-    final (pw, ph) = (image.width, image.height);
-    final (ow, oh) = o.orientedSize(pw, ph);
-    final (a, b, c, d, tx, ty) = o.matrix(pw, ph);
-    canvas
-      ..save()
-      ..translate(imageRect.left, imageRect.top)
-      ..scale(imageRect.width / ow, imageRect.height / oh)
-      ..transform(Float64List.fromList([a, c, 0, 0, b, d, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1]))
-      ..drawImage(image, Offset.zero, Paint()..filterQuality = FilterQuality.medium)
-      ..restore();
+    // Booth light: a warm glow around the frame.
+    canvas.drawRect(
+      Offset.zero & size,
+      Paint()
+        ..shader = ui.Gradient.radial(
+            frame.center, frame.longestSide * 0.9, const [Color(0x40FFE3BD), Color(0x00FFE3BD)]),
+    );
+    paintPhoto(canvas, size, image, info, target, crop, frame);
 
     // Dim outside the frame.
     canvas.drawPath(
@@ -198,24 +186,96 @@ class _CropPainter extends CustomPainter {
     ..style = PaintingStyle.stroke
     ..strokeWidth = w;
 
-  static void _checkerboard(Canvas canvas, Rect r) {
-    if (r.isEmpty) return;
-    const cell = 8.0;
-    canvas
-      ..save()
-      ..clipRect(r)
-      ..drawRect(r, Paint()..color = const Color(0xFFFFFFFF));
-    final grey = Paint()..color = const Color(0xFFD0D0D0);
-    final x0 = (r.left / cell).floor(), y0 = (r.top / cell).floor();
-    for (var y = y0; y * cell < r.bottom; y++) {
-      for (var x = x0 + ((y + x0).isOdd ? 1 : 0); x * cell < r.right; x += 2) {
-        canvas.drawRect(Rect.fromLTWH(x * cell, y * cell, cell, cell), grey);
-      }
-    }
-    canvas.restore();
-  }
-
   @override
   bool shouldRepaint(_CropPainter old) =>
       old.image != image || old.crop != crop || old.frame != frame || old.target != target || old.info != info;
+}
+
+/// Paints the preview so the crop region lands exactly on [frame]
+/// (raw orientation, sampled → oriented source pixels → screen), with a
+/// checkerboard under transparent sources.
+void paintPhoto(Canvas canvas, Size size, ui.Image image, SourceInfo info, Target target, CropState crop, Rect frame) {
+  final k = frame.width / crop.cw;
+  final ch = crop.cw * target.height / target.width;
+  final (left, top) = (crop.cx - crop.cw / 2, crop.cy - ch / 2);
+  final (sw, sh) = CropMath.orientedSize(info, crop.quarterTurns);
+  final imageRect = Rect.fromLTWH(frame.left - left * k, frame.top - top * k, sw * k, sh * k);
+
+  if (info.hasAlpha) _checkerboard(canvas, imageRect.intersect(Offset.zero & size));
+
+  final o = CropMath.orientation(info, crop.quarterTurns);
+  final (pw, ph) = (image.width, image.height);
+  final (ow, oh) = o.orientedSize(pw, ph);
+  final (a, b, c, d, tx, ty) = o.matrix(pw, ph);
+  canvas
+    ..save()
+    ..translate(imageRect.left, imageRect.top)
+    ..scale(imageRect.width / ow, imageRect.height / oh)
+    ..transform(Float64List.fromList([a, c, 0, 0, b, d, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1]))
+    ..drawImage(image, Offset.zero, Paint()..filterQuality = FilterQuality.medium)
+    ..restore();
+}
+
+/// The print slot (crop screen brief, signature move): the live crop at the
+/// output's aspect on photo-paper white, so the applicant sees the exact
+/// result while framing.
+class CropPrint extends StatelessWidget {
+  const CropPrint({super.key, required this.preview, required this.info, required this.target, required this.crop, this.longSide = 64});
+
+  final ui.Image preview;
+  final SourceInfo info;
+  final Target target;
+  final CropState crop;
+  final double longSide;
+
+  @override
+  Widget build(BuildContext context) {
+    final r = target.width / target.height;
+    // Very thin targets keep at least a 6 dp short side so the print reads.
+    final w = r >= 1 ? longSide : math.max(6.0, longSide * r);
+    final h = r >= 1 ? math.max(6.0, longSide / r) : longSide;
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: Color(0xFFFFFDF8),
+        boxShadow: [BoxShadow(color: Color(0x66000000), blurRadius: 6, offset: Offset(0, 2))],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(3),
+        child: ClipRect(
+          child: CustomPaint(size: Size(w, h), painter: _PrintPainter(preview, info, target, crop)),
+        ),
+      ),
+    );
+  }
+}
+
+class _PrintPainter extends CustomPainter {
+  _PrintPainter(this.image, this.info, this.target, this.crop);
+  final ui.Image image;
+  final SourceInfo info;
+  final Target target;
+  final CropState crop;
+
+  @override
+  void paint(Canvas canvas, Size size) => paintPhoto(canvas, size, image, info, target, crop, Offset.zero & size);
+
+  @override
+  bool shouldRepaint(_PrintPainter old) => old.crop != crop || old.image != image || old.target != target;
+}
+
+void _checkerboard(Canvas canvas, Rect r) {
+  if (r.isEmpty) return;
+  const cell = 8.0;
+  canvas
+    ..save()
+    ..clipRect(r)
+    ..drawRect(r, Paint()..color = const Color(0xFFFFFFFF));
+  final grey = Paint()..color = const Color(0xFFD0D0D0);
+  final x0 = (r.left / cell).floor(), y0 = (r.top / cell).floor();
+  for (var y = y0; y * cell < r.bottom; y++) {
+    for (var x = x0 + ((y + x0).isOdd ? 1 : 0); x * cell < r.right; x += 2) {
+      canvas.drawRect(Rect.fromLTWH(x * cell, y * cell, cell, cell), grey);
+    }
+  }
+  canvas.restore();
 }
