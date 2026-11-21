@@ -177,4 +177,68 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - The split between डिवाइस and फ़ोन is kept.
      - "पैडिंग" is kept as a loanword.
   4. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
+- **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
+- **Status:** AI-reviewed only (no native speaker).
+
+## id (Bahasa Indonesia)
+
+- **Date:** 2026-11-21. Keys: all 65 untranslated.
+- **Models:** drafted by Claude Opus 5.5 (vendored skill `localize-id`). Blind back-translation review of all keys by Claude Sonnet. Second blind review of the high-risk keys by Claude Haiku.
+- **Variant:** Indonesian, not Malaysian. Formal register (bahasa baku) with "Anda"; "kami" is the app speaking. Buttons use short imperatives. "file" is kept rather than "berkas", since both are accepted in UI. Number formatting (1.234,56) comes from code via the `id` locale [Assumption].
+- **Glossary:**
+
+  | English | Indonesian |
+  |---|---|
+  | phone | ponsel |
+  | device | perangkat |
+  | photo / image | foto / gambar |
+  | dimensions | dimensi |
+  | size (KB) | ukuran |
+  | file size | ukuran file |
+  | range | rentang ukuran |
+  | crop area | area pangkas |
+  | enlarge (upscale) | perbesar / pembesaran |
+  | zoom in / zoom out | Perbesar tampilan / Perkecil tampilan |
+  | move | geser |
+  | rotate clockwise / counter-clockwise | Putar searah / berlawanan arah jarum jam |
+  | soft / blurry | kurang tajam / buram |
+  | take a photo | ambil foto |
+  | photo picker | pemilih foto |
+  | gallery | galeri |
+  | storage | ruang penyimpanan |
+  | enter | masukkan |
+  | try again | coba lagi |
+  | stored online | tersimpan di cloud |
+  | whole number | bilangan bulat |
+  | padding | data pengisi |
+  | frame (animation) | frame |
+
+- **Fixed after review (16):**
+  - outcomeCantReachMax: "ukuran file".
+  - outcomeHintTryJpeg: "ditambah"; "coba gunakan JPEG".
+  - outcomeOutOfMemory: "tidak cukup".
+  - outcomeWriteFailed: "ruang penyimpanan".
+  - noticeNarrowRange: "sehingga … dapat".
+  - noticePaddingAdded: "Gambar itu sendiri".
+  - targetMinNotBelowMax: "daripada".
+  - cropHintLimitedPrecision: "tampak sangat sempit".
+  - cropButtonZoomIn and cropButtonZoomOut: "… tampilan", so they are not confused with upscaling.
+  - cropAreaState: "bagian kiri/kanan".
+  - pickCameraNoPhoto: "Tidak ada foto yang diterima".
+  - pickLowSpace: "ruang penyimpanan".
+  - pickCaptureLost: "ambil foto lagi".
+  - pickSourceUnavailable: "sambungkan ponsel".
+  - cropSourceUnavailable: "pilih ulang".
+- **High-risk keys (second review):** the same 12 as for es. The second review found no grammar errors.
+- **Open list (Product Owner to decide):**
+  1. **pickPrivacyNote:** the absolute "never uploaded" claim, the same issue as in every language. The suggested scoping is "tidak diunggah ke internet oleh aplikasi ini" ("not uploaded to the internet by this app"). It belongs to FEAT-016.
+  2. **pickCaptureLost:** the reviewers for hi and id both said "photo lost" can read as a photo deleted from the gallery, and suggested "the photo was not received from the camera". That is a question about the English wording (FEAT-001 FR-17), so every language would follow it.
+  3. **Reviewer suggestions not taken:**
+     - "berkas" for "file".
+     - A next step added to noticeNarrowRange ("check the portal's requirements").
+     - "galeri" for "photo picker": wrong, because the picker can be the file picker.
+     - A rewording of pickItemNotOpenable.
+     - "tidak memerlukan pembesaran" for cropAnnounceNoEnlargement: "lagi" ("any more") is correct, because the announcement fires after a change.
+  4. **Kept as in English, against a reviewer flag:** the split between ponsel and perangkat. "Silakan" is used on some failure messages but not others.
+  5. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
 - **Status:** AI-reviewed only (no native speaker).

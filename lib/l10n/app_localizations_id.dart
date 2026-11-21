@@ -24,82 +24,84 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String outcomeCantReachRange(String range, String achieved) {
-    return 'We can\'t reach $range for this image at this size. Closest: $achieved.';
+    return 'Kami tidak dapat mencapai $range untuk gambar ini pada dimensi ini. Hasil terdekat: $achieved.';
   }
 
   @override
   String outcomeCantReachMax(String max, String achieved) {
-    return 'We can\'t get this image down to $max at this size. Closest: $achieved.';
+    return 'Kami tidak dapat memperkecil ukuran file gambar ini hingga $max pada dimensi ini. Hasil terdekat: $achieved.';
   }
 
   @override
-  String get outcomeHintJpegWouldFit => 'A JPEG of this image would fit.';
+  String get outcomeHintJpegWouldFit =>
+      'Sebagai JPEG, gambar ini akan sesuai dengan ukuran yang diminta.';
 
   @override
   String get outcomeHintTryJpeg =>
-      'PNG can\'t be made bigger. If the form accepts JPEG, try JPEG.';
+      'Ukuran file PNG tidak dapat ditambah. Jika formulir menerima JPEG, coba gunakan JPEG.';
 
   @override
   String get outcomeUnsupportedInput =>
-      'This file type isn\'t supported on this device.';
+      'Jenis file ini tidak didukung di perangkat ini.';
 
   @override
   String get outcomeImageTooLarge =>
-      'This image is too large to process at this size. Try smaller dimensions.';
+      'Gambar ini terlalu besar untuk diproses pada dimensi ini. Coba dimensi yang lebih kecil.';
 
   @override
   String get outcomeOutOfMemory =>
-      'Your phone ran out of memory. Close other apps and try again.';
+      'Memori ponsel Anda tidak cukup. Tutup aplikasi lain, lalu coba lagi.';
 
   @override
   String get outcomeWriteFailed =>
-      'We couldn\'t save the file. Free up some storage and try again.';
+      'File tidak dapat disimpan. Kosongkan sebagian ruang penyimpanan, lalu coba lagi.';
 
   @override
-  String get outcomeCancelled => 'Compression cancelled.';
+  String get outcomeCancelled => 'Kompresi dibatalkan.';
 
   @override
   String get outcomeInternalError =>
-      'Something went wrong preparing your image. Please try again.';
+      'Terjadi masalah saat menyiapkan gambar Anda. Silakan coba lagi.';
 
   @override
   String get noticeNarrowRange =>
-      'This range is very narrow. Some portals count KB differently, so the file may still be rejected.';
+      'Rentang ukuran ini sangat sempit. Beberapa portal menghitung KB dengan cara berbeda, sehingga file masih dapat ditolak.';
 
   @override
   String get noticePaddingAdded =>
-      'Padding was added to reach the minimum size. The picture itself is unchanged.';
+      'Data pengisi ditambahkan ke file untuk mencapai ukuran minimum. Gambar itu sendiri tidak berubah.';
 
   @override
   String get noticeTransparencyFlattened =>
-      'JPEG has no transparency, so transparent areas are now white.';
+      'JPEG tidak mendukung transparansi, jadi area transparan sekarang berwarna putih.';
 
   @override
   String announceProgress(String pass, String total) {
-    return 'Compressing, step $pass of $total.';
+    return 'Mengompresi, langkah $pass dari $total.';
   }
 
   @override
   String announceSuccess(String size) {
-    return 'Done. File size: $size.';
+    return 'Selesai. Ukuran file: $size.';
   }
 
   @override
   String targetMaxOutOfRange(String min, String max) {
-    return 'Enter a maximum size between $min and $max.';
+    return 'Masukkan ukuran maksimum antara $min dan $max.';
   }
 
   @override
-  String get targetMinNotBelowMax => 'Minimum must be smaller than maximum.';
+  String get targetMinNotBelowMax =>
+      'Ukuran minimum harus lebih kecil daripada ukuran maksimum.';
 
   @override
-  String get targetWholeNumbersOnly => 'Use whole numbers of KB.';
+  String get targetWholeNumbersOnly => 'Gunakan bilangan bulat untuk KB.';
 
   @override
-  String get targetInvalidNumber => 'Enter a valid size in KB.';
+  String get targetInvalidNumber => 'Masukkan ukuran yang valid dalam KB.';
 
   @override
-  String get targetChooseJpegOrPng => 'Choose JPEG or PNG.';
+  String get targetChooseJpegOrPng => 'Pilih JPEG atau PNG.';
 
   @override
   String pixelSize(String width, String height) {
@@ -108,184 +110,184 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String cropTargetSideOutOfRange(String min, String max) {
-    return 'Enter a width and height between $min and $max pixels.';
+    return 'Masukkan lebar dan tinggi antara $min dan $max piksel.';
   }
 
   @override
   String get cropTargetTooLarge =>
-      'That size is too large for this app. Choose a smaller size.';
+      'Dimensi itu terlalu besar untuk aplikasi ini. Pilih dimensi yang lebih kecil.';
 
   @override
   String get cropSourceTooLarge =>
-      'This photo is too large to open on this device. Choose another photo.';
+      'Foto ini terlalu besar untuk dibuka di perangkat ini. Pilih foto lain.';
 
   @override
   String get cropUnsupportedInput =>
-      'This file type isn\'t supported on this device. Choose a JPEG or PNG photo.';
+      'Jenis file ini tidak didukung di perangkat ini. Pilih foto JPEG atau PNG.';
 
   @override
   String get cropCorruptInput =>
-      'We can\'t read this file. Choose another photo.';
+      'Kami tidak dapat membaca file ini. Pilih foto lain.';
 
   @override
   String get cropSourceUnavailable =>
-      'We can\'t find this photo anymore. Please choose it again.';
+      'Kami tidak dapat menemukan foto ini lagi. Silakan pilih ulang.';
 
   @override
   String get cropOutOfMemory =>
-      'This photo is too large for this device. Try a smaller photo.';
+      'Foto ini terlalu besar untuk perangkat ini. Coba foto yang lebih kecil.';
 
   @override
-  String get cropCancelled => 'Cancelled. Your photo was not changed.';
+  String get cropCancelled => 'Proses dibatalkan. Foto Anda tidak diubah.';
 
   @override
   String cropNoticeEnlarged(String size) {
-    return 'This photo is smaller than $size px, so it will be enlarged and may look soft.';
+    return 'Foto ini lebih kecil dari $size piksel, jadi akan diperbesar dan mungkin terlihat kurang tajam.';
   }
 
   @override
   String cropConfirmEnlarge(String factor) {
-    return 'This photo is much smaller than needed ($factor× enlargement) and may look blurry. Continue anyway?';
+    return 'Foto ini jauh lebih kecil dari yang dibutuhkan (diperbesar $factor×) dan mungkin terlihat buram. Tetap lanjutkan?';
   }
 
   @override
   String get cropNoticeAnimated =>
-      'This image is animated. Only the first frame is used.';
+      'Gambar ini beranimasi. Hanya frame pertama yang digunakan.';
 
   @override
   String get cropHintLimitedPrecision =>
-      'The frame is very thin on screen. Use the move and zoom buttons for fine positioning.';
+      'Area pangkas tampak sangat sempit di layar. Gunakan tombol geser dan zoom untuk mengatur posisi dengan tepat.';
 
   @override
-  String get cropButtonCentre => 'Centre';
+  String get cropButtonCentre => 'Tengahkan';
 
   @override
-  String get cropButtonReset => 'Reset';
+  String get cropButtonReset => 'Atur ulang';
 
   @override
-  String get cropButtonMoveLeft => 'Move left';
+  String get cropButtonMoveLeft => 'Geser ke kiri';
 
   @override
-  String get cropButtonMoveRight => 'Move right';
+  String get cropButtonMoveRight => 'Geser ke kanan';
 
   @override
-  String get cropButtonMoveUp => 'Move up';
+  String get cropButtonMoveUp => 'Geser ke atas';
 
   @override
-  String get cropButtonMoveDown => 'Move down';
+  String get cropButtonMoveDown => 'Geser ke bawah';
 
   @override
-  String get cropButtonZoomIn => 'Zoom in';
+  String get cropButtonZoomIn => 'Perbesar tampilan';
 
   @override
-  String get cropButtonZoomOut => 'Zoom out';
+  String get cropButtonZoomOut => 'Perkecil tampilan';
 
   @override
-  String get cropButtonRotateClockwise => 'Rotate clockwise';
+  String get cropButtonRotateClockwise => 'Putar searah jarum jam';
 
   @override
-  String get cropButtonRotateCounterclockwise => 'Rotate counter-clockwise';
+  String get cropButtonRotateCounterclockwise =>
+      'Putar berlawanan arah jarum jam';
 
   @override
-  String get cropButtonContinue => 'Continue';
+  String get cropButtonContinue => 'Lanjutkan';
 
   @override
-  String get cropButtonContinueAnyway => 'Continue anyway';
+  String get cropButtonContinueAnyway => 'Tetap lanjutkan';
 
   @override
-  String get cropButtonChooseAnother => 'Choose another photo';
+  String get cropButtonChooseAnother => 'Pilih foto lain';
 
   @override
   String cropAreaState(String zoom, String position) {
     String _temp0 = intl.Intl.selectLogic(position, {
-      'centre': 'the centre',
-      'top': 'the top',
-      'bottom': 'the bottom',
-      'left': 'the left side',
-      'right': 'the right side',
-      'topLeft': 'the top-left',
-      'topRight': 'the top-right',
-      'bottomLeft': 'the bottom-left',
-      'bottomRight': 'the bottom-right',
-      'other': 'part',
+      'centre': 'bagian tengah',
+      'top': 'bagian atas',
+      'bottom': 'bagian bawah',
+      'left': 'bagian kiri',
+      'right': 'bagian kanan',
+      'topLeft': 'bagian kiri atas',
+      'topRight': 'bagian kanan atas',
+      'bottomLeft': 'bagian kiri bawah',
+      'bottomRight': 'bagian kanan bawah',
+      'other': 'sebagian',
     });
-    return 'Crop area, zoom $zoom, showing $_temp0 of the photo';
+    return 'Area pangkas, zoom $zoom, menampilkan $_temp0 foto';
   }
 
   @override
   String cropEdgeReached(String edge) {
     String _temp0 = intl.Intl.selectLogic(edge, {
-      'left': 'left',
-      'right': 'right',
-      'top': 'top',
-      'bottom': 'bottom',
+      'left': 'kiri',
+      'right': 'kanan',
+      'top': 'atas',
+      'bottom': 'bawah',
       'other': '',
     });
-    return 'Reached the $_temp0 edge.';
+    return 'Sudah mencapai tepi $_temp0.';
   }
 
   @override
   String cropHandleLabel(String corner) {
     String _temp0 = intl.Intl.selectLogic(corner, {
-      'topLeft': 'top-left',
-      'topRight': 'top-right',
-      'bottomLeft': 'bottom-left',
-      'bottomRight': 'bottom-right',
+      'topLeft': 'kiri atas',
+      'topRight': 'kanan atas',
+      'bottomLeft': 'kiri bawah',
+      'bottomRight': 'kanan bawah',
       'other': '',
     });
-    return 'Resize crop, $_temp0 corner';
+    return 'Ubah ukuran area pangkas, sudut $_temp0';
   }
 
   @override
-  String get cropAnnounceNoEnlargement =>
-      'The photo no longer needs enlarging.';
+  String get cropAnnounceNoEnlargement => 'Foto tidak perlu diperbesar lagi.';
 
   @override
   String cropAnnounceStrongEnlargement(String factor) {
-    return 'Strong enlargement ($factor×). You will be asked to confirm before continuing.';
+    return 'Pembesaran tinggi ($factor×). Anda akan diminta mengonfirmasi sebelum melanjutkan.';
   }
 
   @override
-  String get pickTakePhoto => 'Take a photo';
+  String get pickTakePhoto => 'Ambil foto';
 
   @override
-  String get pickChooseGallery => 'Choose from gallery';
+  String get pickChooseGallery => 'Pilih dari galeri';
 
   @override
-  String get pickChooseFiles => 'Choose from files';
+  String get pickChooseFiles => 'Pilih dari file';
 
   @override
   String get pickPrivacyNote =>
-      'Your photos stay on your phone and are never uploaded.';
+      'Foto Anda tetap di ponsel Anda dan tidak pernah diunggah ke internet.';
 
   @override
-  String get pickOpening => 'Opening your photo…';
+  String get pickOpening => 'Membuka foto Anda…';
 
   @override
   String get pickNoCamera =>
-      'No camera app was found on this phone. Choose a photo from the gallery instead.';
+      'Tidak ada aplikasi kamera di ponsel ini. Sebagai gantinya, pilih foto dari galeri.';
 
   @override
   String get pickPickerUnavailable =>
-      'We couldn\'t open the photo chooser. Try again or take a photo.';
+      'Kami tidak dapat membuka pemilih foto. Coba lagi atau ambil foto.';
 
   @override
   String get pickCameraNoPhoto =>
-      'The camera didn\'t return a photo. Please try again.';
+      'Tidak ada foto yang diterima dari kamera. Silakan coba lagi.';
 
   @override
   String get pickLowSpace =>
-      'There isn\'t enough free space on this phone to take a photo. Free some space or choose a photo from the gallery.';
+      'Ruang penyimpanan di ponsel ini tidak cukup untuk mengambil foto. Kosongkan sebagian ruang penyimpanan atau pilih foto dari galeri.';
 
   @override
   String get pickCaptureLost =>
-      'The photo was lost while the camera was open. Please take it again.';
+      'Foto hilang saat kamera terbuka. Silakan ambil foto lagi.';
 
   @override
   String get pickItemNotOpenable =>
-      'We can\'t open that item. Choose a photo instead.';
+      'Kami tidak dapat membuka item itu. Sebagai gantinya, pilih foto.';
 
   @override
   String get pickSourceUnavailable =>
-      'We couldn\'t open this photo. If it is stored online, connect to the internet or choose a photo saved on this phone.';
+      'Kami tidak dapat membuka foto ini. Jika foto tersimpan di cloud, sambungkan ponsel ke internet atau pilih foto yang tersimpan di ponsel ini.';
 }
