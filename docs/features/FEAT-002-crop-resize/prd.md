@@ -1,9 +1,9 @@
 ---
 id: FEAT-002
 title: Crop and resize to exact target dimensions
-status: Approved
+status: Implemented
 version: 1.3
-updated: 2026-11-20
+updated: 2026-11-21
 links: [ROADMAP, FEAT-001, FEAT-004, FEAT-005, FEAT-006, FEAT-008, FEAT-011, FEAT-016, FEAT-018]
 ---
 
