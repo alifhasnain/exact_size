@@ -31,7 +31,7 @@ final class HeifMirror extends HeifTransform {
 /// What the parsers need from a HEIF file's `meta` box: the primary item's
 /// declared size and transforms, and where the `Exif` item lives.
 final class HeifMeta {
-  const HeifMeta({required this.width, required this.height, required this.transforms, this.exif});
+  const HeifMeta({required this.width, required this.height, required this.transforms, this.exif, this.hasAlpha = false});
 
   /// From the primary item's `ispe` (stored size, before `irot`/`imir`).
   final int width;
@@ -40,6 +40,9 @@ final class HeifMeta {
 
   /// Absolute file range of the `Exif` item payload, if there is one.
   final ({int offset, int length})? exif;
+
+  /// An alpha auxiliary image exists (`auxC` with an alpha URN).
+  final bool hasAlpha;
 
   static const _maxBoxes = 4096;
 
@@ -84,12 +87,17 @@ final class HeifMeta {
       }
     }
     if (w == null || h == null || w <= 0 || h <= 0) throw const MalformedImage();
+    final hasAlpha = props.any((p) {
+      if (p.type != 'auxC') return false;
+      final urn = String.fromCharCodes(src.read(p.bodyStart + 4, (p.end - p.bodyStart - 4).clamp(0, 256)));
+      return urn.contains('alpha') || urn.contains('auxid:1');
+    });
 
     final exifId = _exifItemId(src, children.where((b) => b.type == 'iinf').firstOrNull);
     final iloc = children.where((b) => b.type == 'iloc').firstOrNull;
     final idat = children.where((b) => b.type == 'idat').firstOrNull;
     final exif = exifId == null || iloc == null ? null : _itemLocation(src, iloc, idat, exifId);
-    return HeifMeta(width: w, height: h, transforms: transforms, exif: exif);
+    return HeifMeta(width: w, height: h, transforms: transforms, exif: exif, hasAlpha: hasAlpha);
   }
 
   static bool _isHeifBrand(ByteSource src, Box ftyp) {

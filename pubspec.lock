@@ -375,7 +375,7 @@ packages:
     source: hosted
     version: "1.1.0"
   jni:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: jni
       sha256: "19764f78f6b9e0d40f6395b04649d1046eb57f5ccf05afce50cc63e5a82777b0"
@@ -383,7 +383,7 @@ packages:
     source: hosted
     version: "1.2.1"
   jni_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: jni_flutter
       sha256: "586594ad345b403bda8a794b0b8a9e34298238b86c2a7d7f15160b092fe9ef3d"

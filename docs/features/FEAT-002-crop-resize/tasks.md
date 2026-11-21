@@ -117,7 +117,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `lib/features/crop/data/container_check.dart`: pure Dart over a header read and the file length; JPEG SOI + SOF, PNG signature + IHDR + IEND present, WebP RIFF/VP8/VP8L/VP8X header and RIFF length, HEIF `ftyp` + `meta`, GIF header; result: format, declared width and height, or `CORRUPT_INPUT`, or `IMAGE_TOO_LARGE` above 200 MP. `lib/features/crop/data/heif_orientation.dart`: pure Dart ISOBMFF reader: `pitm`, `iinf`, `iprp`/`ipco`/`ipma`, primary item's `irot` and `imir` mapped to one of the 8 D4 transforms; if neither, `TAG_ORIENTATION` from the `Exif` item (TIFF header, both byte orders); else 1. Every box size checked against the file length; no allocation from declared sizes.
 - **Done when:** unit tests on the T02 fixtures pass: every small fixture gets its expected format and size; truncated JPEG and corrupt PNG → `CORRUPT_INPUT`; the text file named `.jpg` → `CORRUPT_INPUT`; the 200,000,001 px PNG header → `IMAGE_TOO_LARGE`; HEIC orientation 1–8 via EXIF and via `irot`/`imir` maps to the D4 transform that turns the arrow fixture upright (checked against `Orientation`); a seeded mutation test (10,000 truncations and byte flips of the fixtures) never throws and never runs longer than 50 ms per file.
 
-### - [ ] FEAT-002-T12 — JNIgen bindings, `SourceHandle` and `SourceProbe`
+### - [x] FEAT-002-T12 — JNIgen bindings, `SourceHandle` and `SourceProbe`
 - **Implements:** FR-2, FR-3 (read), FR-6 (ceiling), FR-15 (flag), FR-17, FR-24, NFR-10, AC-3.3, AC-7.1, AC-7.2, AC-7.4 · **ADRs:** ADR-001, ADR-004
 - **Depends on:** T04 (G1), T05, T06, T30
 - **Size:** M

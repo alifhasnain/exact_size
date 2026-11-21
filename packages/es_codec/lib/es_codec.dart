@@ -19,11 +19,19 @@ export 'src/android/android_graphics.g.dart'
         ColorSpace,
         ColorSpace$$Methods,
         ColorSpace$Named,
+        ContentResolver,
+        ContentResolver$$Methods,
+        Context,
+        Context$$Methods,
         ExifInterface,
         ExifInterface$$Methods,
+        FileDescriptor,
         ImageDecoder,
         ImageDecoder$Source,
-        Rect;
+        ParcelFileDescriptor,
+        ParcelFileDescriptor$$Methods,
+        Rect,
+        Uri;
 
 export 'src/bitmap_pixels.dart' show BitmapPixelsException, copyBitmapRgba, copyBitmapViaDirectBuffer;
 export 'src/licenses.dart' show registerEsCodecLicenses;

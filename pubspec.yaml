@@ -23,6 +23,8 @@ dependencies:
   es_codec:
     path: packages/es_codec
   path_provider: 2.1.6 # app cache dir for temp output (FEAT-004-T17)
+  jni: 1.2.1 # JNIgen runtime for the crop data layer (FEAT-002-T12); same version as es_codec
+  jni_flutter: 1.1.0 # Android application Context for JNIgen calls (moved out of jni in 1.0)
 
 dev_dependencies:
   flutter_test:
@@ -31,7 +33,6 @@ dev_dependencies:
   injectable_generator: 3.1.3
   build_runner: 2.16.1
   crypto: 3.0.8 # SHA-256 of golden outputs (FEAT-004-T22); already in the lock file
-  jni: 1.2.1 # BitmapFactory decode check in integration tests (FEAT-004-T25); already in the lock file via es_codec
   integration_test:
     sdk: flutter
 

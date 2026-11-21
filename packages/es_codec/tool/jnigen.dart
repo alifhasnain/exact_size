@@ -8,7 +8,9 @@ import 'package:jnigen/jnigen.dart';
 /// - android.os.Build (VERSION.SDK_INT), FEAT-004-T02 proof;
 /// - android.graphics.Bitmap and BitmapFactory (with Options), FEAT-002-T03
 ///   spike, kept for the decoder (FEAT-002-T12); BitmapRegionDecoder,
-///   ColorSpace, Rect, ImageDecoder and media.ExifInterface for the T04 matrix.
+///   ColorSpace, Rect, ImageDecoder and media.ExifInterface for the T04 matrix;
+///   Context, ContentResolver, Uri, ParcelFileDescriptor and FileDescriptor for
+///   the T12 source probe.
 Future<void> main() async {
   final root = Platform.script.resolve('../');
   await JniGenerator(
@@ -22,9 +24,22 @@ Future<void> main() async {
         'android.graphics.Rect',
         'android.graphics.ImageDecoder',
         'android.media.ExifInterface',
+        // FEAT-002-T12 SourceProbe: read-only open of the picked URI.
+        'android.content.Context',
+        'android.content.ContentResolver',
+        'android.net.Uri',
+        'android.os.ParcelFileDescriptor',
+        'java.io.FileDescriptor',
       ],
       androidSdk: AndroidSdk(versions: [36], sdkRoot: _androidSdkRoot()),
     ),
+    // No socket bindings: the image pipeline makes no network calls (NFR-6;
+    // test/features/compression/no_network_imports_test.dart scans this file).
+    visitors: [
+      Visitor(method: (m) {
+        if (const {'fromSocket', 'fromDatagramSocket'}.contains(m.originalName)) m.isIncluded = false;
+      }),
+    ],
     output: Output(
       dart: DartOutput(
         path: root.resolve('lib/src/android/android_graphics.g.dart'),
