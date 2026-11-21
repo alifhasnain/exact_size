@@ -3,6 +3,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'crop_orientation_determinism.dart' as crop_orientation;
 import 'crop_renderer_matrix.dart' as crop_renderer;
+import 'crop_screen_flow.dart' as crop_screen;
 import 'preview_decoder_matrix.dart' as preview_decoder;
 import 'source_probe_matrix.dart' as source_probe;
 
@@ -16,4 +17,5 @@ void main() {
   group('preview_decoder', preview_decoder.main);
   group('crop_renderer', crop_renderer.main);
   group('crop_orientation', crop_orientation.main);
+  group('crop_screen', crop_screen.main);
 }

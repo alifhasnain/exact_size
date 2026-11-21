@@ -6,10 +6,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../compression/data/compression_runner.dart' show CancelSignal;
+import '../../compression/data/native_pixel_buffer.dart';
+import '../../compression/domain/pixel_buffer.dart';
+import '../data/crop_renderer.dart';
+import '../data/source_handle.dart';
 import '../domain/crop_types.dart';
+import '../domain/target_check.dart';
 import 'crop_canvas.dart';
 import 'crop_controller.dart';
 import 'crop_messages.dart';
+import 'recents_guard.dart';
+
+/// Runs one render; replaceable in tests.
+typedef CropRenderFn = Future<RenderResult> Function(RenderRequest request, CancelSignal cancel);
+
+Future<RenderResult> _defaultRender(RenderRequest request, CancelSignal cancel) =>
+    const CropRenderer().render(request, cancel: cancel);
 
 /// The crop screen (FEAT-002; direction: the ID photo booth, surface brief in
 /// .impeccable/surfaces/; gate G3). Booth cabin on top (start side in
@@ -18,18 +31,31 @@ import 'crop_messages.dart';
 class CropScreen extends ConsumerStatefulWidget {
   const CropScreen({
     super.key,
+    required this.src,
     required this.preview,
     required this.info,
     required this.target,
     required this.onContinue,
     required this.onChooseAnother,
+    this.render = _defaultRender,
+    this.recentsBinding = const AndroidRecentsBinding(),
   });
 
+  /// The original, re-opened read-only by the render (FR-7).
+  final SourceHandle src;
   final ui.Image preview;
   final SourceInfo info;
   final Target target;
-  final void Function(CropSession session) onContinue;
+
+  /// Hand-off of the exact W×H buffer; ownership moves to the callee
+  /// (ADR-003; FEAT-004 wiring is FEAT-004-T27).
+  final void Function(PixelBuffer pixels) onContinue;
   final VoidCallback onChooseAnother;
+  final CropRenderFn render;
+  final RecentsBinding recentsBinding;
+
+  /// Progress shows only for renders slower than this (FR-18).
+  static const progressDelay = Duration(milliseconds: 500);
 
   @override
   ConsumerState<CropScreen> createState() => _CropScreenState();
@@ -51,10 +77,24 @@ class _CropScreenState extends ConsumerState<CropScreen> {
 
   // Providers may not change while the tree builds.
   void _start() => WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) ref.read(cropControllerProvider.notifier).start(widget.info, widget.target);
-      });
+    if (mounted) ref.read(cropControllerProvider.notifier).start(widget.info, widget.target);
+  });
 
+  var _busy = false, _showProgress = false;
+  CancelSignal? _cancel;
+  Timer? _progressTimer;
+
+  @override
+  void dispose() {
+    _progressTimer?.cancel();
+    _cancel?.cancel(); // the render frees its memory and reports CANCELLED
+    super.dispose();
+  }
+
+  /// Continue (US-2): one render at a time, confirmation above 2.0 first.
   Future<void> _continue(CropSession s, CropMessages m, AppLocalizations l10n) async {
+    if (_busy) return;
+    setState(() => _busy = true);
     if (s.upscaleLevel == UpscaleLevel.strong) {
       final ok = await showDialog<bool>(
         context: context,
@@ -66,10 +106,62 @@ class _CropScreenState extends ConsumerState<CropScreen> {
           ],
         ),
       );
-      if (ok == null || !mounted) return;
-      if (!ok) return widget.onChooseAnother();
+      if (!mounted) return;
+      if (ok != true) {
+        setState(() => _busy = false);
+        if (ok == false) widget.onChooseAnother();
+        return;
+      }
     }
-    widget.onContinue(s);
+
+    final cancel = _cancel = CancelSignal();
+    _progressTimer = Timer(CropScreen.progressDelay, () {
+      if (mounted) setState(() => _showProgress = true);
+    });
+    final r = await widget.render(
+      RenderRequest(
+        src: widget.src,
+        info: s.info,
+        cropRect: s.cropRect,
+        quarterTurns: s.crop.quarterTurns,
+        target: s.target,
+      ),
+      cancel,
+    );
+    _progressTimer?.cancel();
+    _cancel = null;
+    cancel.dispose();
+    if (!mounted) {
+      if (r case RenderOk(pixels: final NativePixelBuffer p)) p.free();
+      return;
+    }
+    setState(() => _busy = _showProgress = false);
+    switch (r) {
+      case RenderOk(:final pixels):
+        widget.onContinue(pixels);
+      case RenderErr(reason: Reason.cancelled):
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m.reason(Reason.cancelled))));
+      case RenderErr(:final reason):
+        await _showError(reason, m, l10n);
+    }
+  }
+
+  /// One message and one next action per reason (PRD section 8).
+  Future<void> _showError(Reason reason, CropMessages m, AppLocalizations l10n) async {
+    final fixTarget = reason == Reason.invalidTargetDimensions;
+    final chooseAnother = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(m.reason(reason, targetMessage: fixTarget ? checkTarget(widget.target) : null)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, !fixTarget),
+            child: Text(fixTarget ? MaterialLocalizations.of(context).okButtonLabel : l10n.cropButtonChooseAnother),
+          ),
+        ],
+      ),
+    );
+    if (chooseAnother == true && mounted) widget.onChooseAnother();
   }
 
   @override
@@ -81,11 +173,15 @@ class _CropScreenState extends ConsumerState<CropScreen> {
     ref.listen(cropControllerProvider, (_, next) {
       if (next == null) return;
       for (final a in next.announcements) {
-        unawaited(SemanticsService.sendAnnouncement(View.of(context), a.text(m, next.target), Directionality.of(context)));
+        unawaited(
+          SemanticsService.sendAnnouncement(View.of(context), a.text(m, next.target), Directionality.of(context)),
+        );
       }
     });
 
-    final s = session != null && identical(session.info, widget.info) && session.target == widget.target ? session : null;
+    final s = session != null && identical(session.info, widget.info) && session.target == widget.target
+        ? session
+        : null;
     final canvas = s == null
         ? const ColoredBox(color: CropCanvas.background, child: SizedBox.expand())
         : Semantics(
@@ -114,41 +210,79 @@ class _CropScreenState extends ConsumerState<CropScreen> {
             ),
           );
 
-    return Theme(
-      data: _Booth.theme(Theme.of(context)),
-      child: Scaffold(
-        appBar: AppBar(title: _SpecCells(m.size(widget.target))),
-        body: SafeArea(
-          top: false,
-          child: LayoutBuilder(builder: (context, box) {
-            final landscape = box.maxWidth > box.maxHeight && box.maxWidth >= 600;
-            final panel = _Panel(
-              session: s,
-              preview: widget.preview,
-              messages: m,
-              l10n: l10n,
-              thin: CropFrameLayout.of(box.biggest, widget.target).thin,
-              onAction: controller.perform,
-              onContinue: s == null ? null : () => _continue(s, m, l10n),
-            );
-            if (landscape) {
-              return Row(children: [
-                Expanded(child: canvas),
-                SizedBox(width: 340, child: SingleChildScrollView(child: panel)),
-              ]);
-            }
-            return Column(children: [
-              Expanded(child: canvas),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: box.maxHeight / 2),
-                child: SingleChildScrollView(child: panel),
+    return RecentsGuard(
+      binding: widget.recentsBinding,
+      child: Theme(
+        data: _Booth.theme(Theme.of(context)),
+        child: Stack(
+          children: [
+            Scaffold(
+              appBar: AppBar(title: _SpecCells(m.size(widget.target))),
+              body: SafeArea(
+                top: false,
+                child: LayoutBuilder(
+                  builder: (context, box) {
+                    final landscape = box.maxWidth > box.maxHeight && box.maxWidth >= 600;
+                    final panel = _Panel(
+                      session: s,
+                      preview: widget.preview,
+                      messages: m,
+                      l10n: l10n,
+                      thin: CropFrameLayout.of(box.biggest, widget.target).thin,
+                      onAction: controller.perform,
+                      onContinue: s == null || _busy ? null : () => _continue(s, m, l10n),
+                    );
+                    if (landscape) {
+                      return Row(
+                        children: [
+                          Expanded(child: canvas),
+                          SizedBox(width: 340, child: SingleChildScrollView(child: panel)),
+                        ],
+                      );
+                    }
+                    return Column(
+                      children: [
+                        Expanded(child: canvas),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: box.maxHeight / 2),
+                          child: SingleChildScrollView(child: panel),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ]);
-          }),
+            ),
+            if (_showProgress) _Progress(onCancel: () => _cancel?.cancel()),
+          ],
         ),
       ),
     );
   }
+}
+
+/// Render progress after 500 ms, cancellable (FR-18). Blocks the screen
+/// underneath so the crop cannot change mid-render.
+class _Progress extends StatelessWidget {
+  const _Progress({required this.onCancel});
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) => Positioned.fill(
+    child: ColoredBox(
+      color: const Color(0xB3000000),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 24,
+          children: [
+            const CircularProgressIndicator(color: _Booth.flash),
+            TextButton(onPressed: onCancel, child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 /// The ID photo booth palette. Fixed in both app themes (the booth is the same
@@ -182,7 +316,11 @@ abstract final class _Booth {
         style: TextButton.styleFrom(foregroundColor: text, minimumSize: const Size(48, 48)),
       ),
       filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(minimumSize: const Size(64, 56), shape: keyShape, textStyle: base.textTheme.titleMedium),
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(64, 56),
+          shape: keyShape,
+          textStyle: base.textTheme.titleMedium,
+        ),
       ),
     );
   }
@@ -196,23 +334,23 @@ class _SpecCells extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-        decoration: BoxDecoration(
-          border: Border.all(color: _Booth.text.withValues(alpha: 0.6), width: 1.5),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontFamily: 'BarlowCondensed',
-            fontWeight: FontWeight.w600,
-            fontSize: 24,
-            letterSpacing: 1.5,
-            fontFeatures: [FontFeature.tabularFigures()],
-            color: _Booth.text,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+    decoration: BoxDecoration(
+      border: Border.all(color: _Booth.text.withValues(alpha: 0.6), width: 1.5),
+      borderRadius: BorderRadius.circular(6),
+    ),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'BarlowCondensed',
+        fontWeight: FontWeight.w600,
+        fontSize: 24,
+        letterSpacing: 1.5,
+        fontFeatures: [FontFeature.tabularFigures()],
+        color: _Booth.text,
+      ),
+    ),
+  );
 }
 
 class _Panel extends StatelessWidget {
@@ -258,53 +396,69 @@ class _Panel extends StatelessWidget {
         children: [
           Semantics(
             liveRegion: true,
-            child: Column(children: [for (final (icon, text) in notices) _Notice(icon: icon, text: text)]),
+            child: Column(
+              children: [for (final (icon, text) in notices) _Notice(icon: icon, text: text)],
+            ),
           ),
           // The control plate.
           DecoratedBox(
             decoration: BoxDecoration(color: _Booth.plate, borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-              child: Column(children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 20,
-                  runSpacing: 8,
-                  children: [
-                    _Group([
-                      tool(CropAction.rotateCounterclockwise, Icons.rotate_left, l10n.cropButtonRotateCounterclockwise),
-                      tool(CropAction.rotateClockwise, Icons.rotate_right, l10n.cropButtonRotateClockwise),
-                      tool(CropAction.zoomOut, Icons.zoom_out, l10n.cropButtonZoomOut, repeat: true),
-                      tool(CropAction.zoomIn, Icons.zoom_in, l10n.cropButtonZoomIn, repeat: true),
-                    ]),
-                    // Physical directions: never mirrored in RTL (FR-23).
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: _Group([
-                        tool(CropAction.moveLeft, Icons.west, l10n.cropButtonMoveLeft, repeat: true),
-                        tool(CropAction.moveUp, Icons.north, l10n.cropButtonMoveUp, repeat: true),
-                        tool(CropAction.moveDown, Icons.south, l10n.cropButtonMoveDown, repeat: true),
-                        tool(CropAction.moveRight, Icons.east, l10n.cropButtonMoveRight, repeat: true),
+              child: Column(
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 20,
+                    runSpacing: 8,
+                    children: [
+                      _Group([
+                        tool(
+                          CropAction.rotateCounterclockwise,
+                          Icons.rotate_left,
+                          l10n.cropButtonRotateCounterclockwise,
+                        ),
+                        tool(CropAction.rotateClockwise, Icons.rotate_right, l10n.cropButtonRotateClockwise),
+                        tool(CropAction.zoomOut, Icons.zoom_out, l10n.cropButtonZoomOut, repeat: true),
+                        tool(CropAction.zoomIn, Icons.zoom_in, l10n.cropButtonZoomIn, repeat: true),
                       ]),
-                    ),
-                  ],
-                ),
-                Wrap(alignment: WrapAlignment.center, children: [
-                  TextButton(onPressed: act(CropAction.centre), child: Text(l10n.cropButtonCentre)),
-                  TextButton(onPressed: act(CropAction.reset), child: Text(l10n.cropButtonReset)),
-                ]),
-              ]),
+                      // Physical directions: never mirrored in RTL (FR-23).
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: _Group([
+                          tool(CropAction.moveLeft, Icons.west, l10n.cropButtonMoveLeft, repeat: true),
+                          tool(CropAction.moveUp, Icons.north, l10n.cropButtonMoveUp, repeat: true),
+                          tool(CropAction.moveDown, Icons.south, l10n.cropButtonMoveDown, repeat: true),
+                          tool(CropAction.moveRight, Icons.east, l10n.cropButtonMoveRight, repeat: true),
+                        ]),
+                      ),
+                    ],
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      TextButton(onPressed: act(CropAction.centre), child: Text(l10n.cropButtonCentre)),
+                      TextButton(onPressed: act(CropAction.reset), child: Text(l10n.cropButtonReset)),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
           // The print slot beside the flash key: the exact result, then go.
-          Row(spacing: 16, children: [
-            if (s != null)
-              ExcludeSemantics(
-                child: CropPrint(preview: preview, info: s.info, target: s.target, crop: s.crop, longSide: 56),
+          Row(
+            spacing: 16,
+            children: [
+              if (s != null)
+                ExcludeSemantics(
+                  child: CropPrint(preview: preview, info: s.info, target: s.target, crop: s.crop, longSide: 56),
+                ),
+              Expanded(
+                child: FilledButton(onPressed: onContinue, child: Text(l10n.cropButtonContinue)),
               ),
-            Expanded(child: FilledButton(onPressed: onContinue, child: Text(l10n.cropButtonContinue))),
-          ]),
+            ],
+          ),
         ],
       ),
     );
@@ -330,12 +484,16 @@ class _Notice extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(color: _Booth.notice, borderRadius: BorderRadius.circular(12)),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: 12, children: [
-        Icon(icon, size: 20, color: _Booth.text),
-        Expanded(
-          child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _Booth.text)),
-        ),
-      ]),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
+        children: [
+          Icon(icon, size: 20, color: _Booth.text),
+          Expanded(
+            child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _Booth.text)),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -376,7 +534,8 @@ class _ToolButtonState extends State<_ToolButton> {
     );
     if (!widget.repeat || widget.onPressed == null) return button;
     return GestureDetector(
-      onLongPressStart: (_) => _timer = Timer.periodic(const Duration(milliseconds: 120), (_) => widget.onPressed?.call()),
+      onLongPressStart: (_) =>
+          _timer = Timer.periodic(const Duration(milliseconds: 120), (_) => widget.onPressed?.call()),
       onLongPressEnd: (_) => _stop(),
       onLongPressCancel: _stop,
       child: button,

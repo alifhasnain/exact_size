@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:exact_size/app.dart';
+import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/crop/presentation/crop_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,7 +45,13 @@ Future<void> main() async {
       home: Builder(
         builder: (context) => MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(state == 'font200' ? 2 : 1)),
-          child: CropScreen(preview: image, info: info, target: target, onContinue: (_) {}, onChooseAnother: () {}),
+          child: CropScreen(
+              src: SourceHandle('file:///synthetic/demo.jpg'), // never rendered in the demo
+              preview: image,
+              info: info,
+              target: target,
+              onContinue: (_) {},
+              onChooseAnother: () {}),
         ),
       ),
     ),

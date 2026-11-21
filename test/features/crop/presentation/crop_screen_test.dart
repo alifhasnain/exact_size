@@ -1,10 +1,18 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:exact_size/app.dart';
+import 'package:exact_size/features/compression/domain/pixel_buffer.dart';
+import 'package:exact_size/features/crop/data/crop_renderer.dart';
+import 'package:exact_size/features/crop/data/source_handle.dart';
+import 'package:exact_size/features/crop/presentation/recents_guard.dart';
+import '../../../../test_support/test_pixels.dart';
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/crop/presentation/crop_canvas.dart';
 import 'package:exact_size/features/crop/presentation/crop_controller.dart';
+import 'package:exact_size/features/crop/presentation/crop_messages.dart';
 import 'package:exact_size/features/crop/presentation/crop_screen.dart';
+import 'package:exact_size/l10n/app_localizations.dart';
 import 'package:flutter/semantics.dart' show CustomSemanticsAction, SemanticsAction;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,9 +35,37 @@ Future<ui.Image> preview(WidgetTester tester, int w, int h) async => (await test
       return r.endRecording().toImage(w, h);
     }))!;
 
+final class FakeRecents implements RecentsBinding {
+  @override
+  int get sdkInt => 34;
+  final calls = <bool>[];
+  @override
+  void setRecentsScreenshotEnabled(bool enabled) => calls.add(enabled);
+}
+
+/// Instant fake render: an exact W×H buffer, or [result] when given.
+CropRenderFn fakeRender({List<RenderRequest>? log, RenderResult? result, Duration delay = Duration.zero}) =>
+    (req, cancel) async {
+      log?.add(req);
+      if (delay > Duration.zero) {
+        final end = DateTime.now().add(delay);
+        while (DateTime.now().isBefore(end) && !cancel.isCancelled) {
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+        }
+        if (cancel.isCancelled) return const RenderErr(Reason.cancelled);
+      }
+      return result ??
+          RenderOk(TestPixels(req.target.width, req.target.height, 3,
+              Uint8List(req.target.width * req.target.height * 3), hasTransparency: false));
+    };
+
 /// Pumps the crop screen on a 360×800 dp phone; returns the provider container.
 Future<ProviderContainer> pumpScreen(WidgetTester tester, SourceInfo info, Target target,
-    {void Function(CropSession)? onContinue, VoidCallback? onChooseAnother, Locale? locale}) async {
+    {void Function(PixelBuffer)? onContinue,
+    VoidCallback? onChooseAnother,
+    Locale? locale,
+    CropRenderFn? render,
+    RecentsBinding? recents}) async {
   tester.view.physicalSize = const Size(360, 800);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -41,6 +77,9 @@ Future<ProviderContainer> pumpScreen(WidgetTester tester, SourceInfo info, Targe
     child: ExactSizeApp(
       locale: locale ?? const Locale('en'),
       home: CropScreen(
+        src: SourceHandle('file:///synthetic/photo.jpg'),
+        render: render ?? fakeRender(),
+        recentsBinding: recents ?? FakeRecents(),
         preview: image,
         info: info,
         target: target,
@@ -175,14 +214,14 @@ void main() {
     });
 
     testWidgets('200×200 at 300×300: notice with icon and text, Continue works', (tester) async {
-      CropSession? got;
+      PixelBuffer? got;
       await pumpScreen(tester, source(200, 200), const Target(300, 300), onContinue: (s) => got = s);
       expect(find.textContaining('smaller than'), findsOneWidget);
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsNothing);
-      expect(got?.upscaleFactor, closeTo(1.5, 1e-9));
+      expect((got?.width, got?.height), (300, 300));
     });
 
     testWidgets('above 2.0 Continue asks first; both choices work', (tester) async {
@@ -214,6 +253,89 @@ void main() {
       expect(c.read(cropControllerProvider)!.announcements.whereType<UpscaleAnnouncement>(), hasLength(1));
       final live = find.ancestor(of: find.textContaining('smaller than'), matching: find.byWidgetPredicate((w) => w is Semantics && (w.properties.liveRegion ?? false)));
       expect(live, findsOneWidget);
+    });
+  });
+
+  group('T25 Continue flow', () {
+    /// Fake render that takes [ms] on the test clock and honours cancel.
+    CropRenderFn slowRender(int ms, List<RenderRequest> log) => (req, cancel) async {
+          log.add(req);
+          for (var t = 0; t < ms && !cancel.isCancelled; t += 10) {
+            await Future<void>.delayed(const Duration(milliseconds: 10));
+          }
+          if (cancel.isCancelled) return const RenderErr(Reason.cancelled);
+          return fakeRender()(req, cancel);
+        };
+
+    testWidgets('a double tap on Continue starts one render', (tester) async {
+      final log = <RenderRequest>[];
+      await pumpScreen(tester, source(4000, 3000), const Target(300, 300), render: slowRender(100, log));
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(log, hasLength(1));
+    });
+
+    testWidgets('progress after 500 ms; cancel returns with nothing handed off', (tester) async {
+      final log = <RenderRequest>[];
+      var handed = 0;
+      await pumpScreen(tester, source(4000, 3000), const Target(300, 300),
+          render: slowRender(5000, log), onContinue: (_) => handed++);
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('Cancelled. Your photo was not changed.'), findsOneWidget);
+      expect(handed, 0);
+    });
+
+    testWidgets('each failure shows its message and one next action', (tester) async {
+      final m = CropMessages(lookupAppLocalizations(const Locale('en')));
+      for (final reason in Reason.values.where((r) => r != Reason.cancelled)) {
+        var other = 0;
+        await pumpScreen(tester, source(4000, 3000), const Target(300, 300),
+            render: fakeRender(result: RenderErr(reason)), onChooseAnother: () => other++);
+        await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+        await tester.pumpAndSettle();
+        expect(find.text(m.reason(reason)), findsOneWidget, reason: reason.code);
+        final actions = find.descendant(of: find.byType(AlertDialog), matching: find.byType(TextButton));
+        expect(actions, findsOneWidget, reason: reason.code);
+        await tester.tap(actions);
+        await tester.pumpAndSettle();
+        expect(other, reason == Reason.invalidTargetDimensions ? 0 : 1, reason: reason.code);
+      }
+    });
+
+    testWidgets('animated source shows the first-frame notice', (tester) async {
+      const info = SourceInfo(
+          rawWidth: 400, rawHeight: 400, mime: 'image/gif', exifOrientation: 1, isAnimated: true, hasAlpha: false, decodePath: DecodePath.full);
+      await pumpScreen(tester, info, const Target(300, 300));
+      expect(find.textContaining('animated'), findsOneWidget);
+    });
+
+    testWidgets('a new target changes the frame ratio and the output size', (tester) async {
+      final log = <RenderRequest>[];
+      PixelBuffer? got;
+      final info = source(4000, 3000);
+      await pumpScreen(tester, info, const Target(300, 300), render: fakeRender(log: log), onContinue: (p) => got = p);
+      final c = await pumpScreen(tester, info, const Target(300, 80), render: fakeRender(log: log), onContinue: (p) => got = p);
+      final f = canvasFrame(tester, const Target(300, 80));
+      expect(f.width / f.height, closeTo(300 / 80, 1e-9));
+      expect(c.read(cropControllerProvider)!.target, const Target(300, 80));
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+      expect(log.single.target, const Target(300, 80));
+      expect((got?.width, got?.height), (300, 80));
+    });
+
+    testWidgets('the screen is hidden from the recents thumbnail (RecentsGuard)', (tester) async {
+      final recents = FakeRecents();
+      await pumpScreen(tester, source(4000, 3000), const Target(300, 300), recents: recents);
+      expect(recents.calls, [false]);
     });
   });
 }
