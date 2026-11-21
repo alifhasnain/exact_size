@@ -244,4 +244,48 @@ class AppLocalizationsAr extends AppLocalizations {
   String cropAnnounceStrongEnlargement(String factor) {
     return 'Strong enlargement ($factor×). You will be asked to confirm before continuing.';
   }
+
+  @override
+  String get pickTakePhoto => 'Take a photo';
+
+  @override
+  String get pickChooseGallery => 'Choose from gallery';
+
+  @override
+  String get pickChooseFiles => 'Choose from files';
+
+  @override
+  String get pickPrivacyNote =>
+      'Your photos stay on your phone and are never uploaded.';
+
+  @override
+  String get pickOpening => 'Opening your photo…';
+
+  @override
+  String get pickNoCamera =>
+      'No camera app was found on this phone. Choose a photo from the gallery instead.';
+
+  @override
+  String get pickPickerUnavailable =>
+      'We couldn\'t open the photo chooser. Try again or take a photo.';
+
+  @override
+  String get pickCameraNoPhoto =>
+      'The camera didn\'t return a photo. Please try again.';
+
+  @override
+  String get pickLowSpace =>
+      'There isn\'t enough free space on this phone to take a photo. Free some space or choose a photo from the gallery.';
+
+  @override
+  String get pickCaptureLost =>
+      'The photo was lost while the camera was open. Please take it again.';
+
+  @override
+  String get pickItemNotOpenable =>
+      'We can\'t open that item. Choose a photo instead.';
+
+  @override
+  String get pickSourceUnavailable =>
+      'We couldn\'t open this photo. If it is stored online, connect to the internet or choose a photo saved on this phone.';
 }

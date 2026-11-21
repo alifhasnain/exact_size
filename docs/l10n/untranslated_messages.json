@@ -52,7 +52,19 @@
     "cropEdgeReached",
     "cropHandleLabel",
     "cropAnnounceNoEnlargement",
-    "cropAnnounceStrongEnlargement"
+    "cropAnnounceStrongEnlargement",
+    "pickTakePhoto",
+    "pickChooseGallery",
+    "pickChooseFiles",
+    "pickPrivacyNote",
+    "pickOpening",
+    "pickNoCamera",
+    "pickPickerUnavailable",
+    "pickCameraNoPhoto",
+    "pickLowSpace",
+    "pickCaptureLost",
+    "pickItemNotOpenable",
+    "pickSourceUnavailable"
   ],
 
   "es": [
@@ -108,7 +120,19 @@
     "cropEdgeReached",
     "cropHandleLabel",
     "cropAnnounceNoEnlargement",
-    "cropAnnounceStrongEnlargement"
+    "cropAnnounceStrongEnlargement",
+    "pickTakePhoto",
+    "pickChooseGallery",
+    "pickChooseFiles",
+    "pickPrivacyNote",
+    "pickOpening",
+    "pickNoCamera",
+    "pickPickerUnavailable",
+    "pickCameraNoPhoto",
+    "pickLowSpace",
+    "pickCaptureLost",
+    "pickItemNotOpenable",
+    "pickSourceUnavailable"
   ],
 
   "hi": [
@@ -164,7 +188,19 @@
     "cropEdgeReached",
     "cropHandleLabel",
     "cropAnnounceNoEnlargement",
-    "cropAnnounceStrongEnlargement"
+    "cropAnnounceStrongEnlargement",
+    "pickTakePhoto",
+    "pickChooseGallery",
+    "pickChooseFiles",
+    "pickPrivacyNote",
+    "pickOpening",
+    "pickNoCamera",
+    "pickPickerUnavailable",
+    "pickCameraNoPhoto",
+    "pickLowSpace",
+    "pickCaptureLost",
+    "pickItemNotOpenable",
+    "pickSourceUnavailable"
   ],
 
   "id": [
@@ -220,7 +256,19 @@
     "cropEdgeReached",
     "cropHandleLabel",
     "cropAnnounceNoEnlargement",
-    "cropAnnounceStrongEnlargement"
+    "cropAnnounceStrongEnlargement",
+    "pickTakePhoto",
+    "pickChooseGallery",
+    "pickChooseFiles",
+    "pickPrivacyNote",
+    "pickOpening",
+    "pickNoCamera",
+    "pickPickerUnavailable",
+    "pickCameraNoPhoto",
+    "pickLowSpace",
+    "pickCaptureLost",
+    "pickItemNotOpenable",
+    "pickSourceUnavailable"
   ],
 
   "pt": [
@@ -276,7 +324,19 @@
     "cropEdgeReached",
     "cropHandleLabel",
     "cropAnnounceNoEnlargement",
-    "cropAnnounceStrongEnlargement"
+    "cropAnnounceStrongEnlargement",
+    "pickTakePhoto",
+    "pickChooseGallery",
+    "pickChooseFiles",
+    "pickPrivacyNote",
+    "pickOpening",
+    "pickNoCamera",
+    "pickPickerUnavailable",
+    "pickCameraNoPhoto",
+    "pickLowSpace",
+    "pickCaptureLost",
+    "pickItemNotOpenable",
+    "pickSourceUnavailable"
   ],
 
   "pt_BR": [
@@ -332,6 +392,18 @@
     "cropEdgeReached",
     "cropHandleLabel",
     "cropAnnounceNoEnlargement",
-    "cropAnnounceStrongEnlargement"
+    "cropAnnounceStrongEnlargement",
+    "pickTakePhoto",
+    "pickChooseGallery",
+    "pickChooseFiles",
+    "pickPrivacyNote",
+    "pickOpening",
+    "pickNoCamera",
+    "pickPickerUnavailable",
+    "pickCameraNoPhoto",
+    "pickLowSpace",
+    "pickCaptureLost",
+    "pickItemNotOpenable",
+    "pickSourceUnavailable"
   ]
 }

@@ -68,7 +68,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/features/pick/data/pick_outcome_log.dart` (same shape as `CropOutcomeLog`, line `exactsize.pick outcome=<CODE>`, no origin, URI, name or size). `test/features/pick/pick_privacy_test.dart`: extend the import-ban to `lib/features/pick/`; grep `lib/features/pick/` for `OpenableColumns`, `DISPLAY_NAME`, `BitmapFactory`, `dart:ui` image types and pixel buffers; grep `MainActivity.kt` and (when it exists) `ShareTargetActivity.kt` for `Log.`, `println`, `printStackTrace`.
 - **Done when:** the tests pass on the current tree and fail when a forbidden token is added to a scratch file in each scanned location (shown in the PR).
 
-### - [ ] FEAT-001-T06 — English strings and `PickMessages`
+### - [x] FEAT-001-T06 — English strings and `PickMessages`
 - **Implements:** FR-1, FR-5, FR-13, FR-14, NFR-4 (text), NFR-5 · **ADRs:** —
 - **Depends on:** T03
 - **Size:** S

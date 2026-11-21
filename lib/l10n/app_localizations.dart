@@ -430,6 +430,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Strong enlargement ({factor}×). You will be asked to confirm before continuing.'**
   String cropAnnounceStrongEnlargement(String factor);
+
+  /// Pick screen button: opens the phone's camera app (FEAT-001 FR-1).
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get pickTakePhoto;
+
+  /// Pick screen button: opens the system photo picker (FEAT-001 FR-1).
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get pickChooseGallery;
+
+  /// Pick screen button (Should): opens the system file picker for images (FEAT-001 FR-21).
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from files'**
+  String get pickChooseFiles;
+
+  /// Pick screen privacy line (Should, FEAT-001 FR-22). Final copy is owned by FEAT-016; keep it short and plain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photos stay on your phone and are never uploaded.'**
+  String get pickPrivacyNote;
+
+  /// Progress text shown when opening a picked photo takes over 500 ms (FEAT-001 FR-13).
+  ///
+  /// In en, this message translates to:
+  /// **'Opening your photo…'**
+  String get pickOpening;
+
+  /// Reason shown when no camera app can take a photo; the camera button is disabled (FEAT-001 FR-5).
+  ///
+  /// In en, this message translates to:
+  /// **'No camera app was found on this phone. Choose a photo from the gallery instead.'**
+  String get pickNoCamera;
+
+  /// Neither the photo picker nor the file picker could start (FEAT-001 FR-3).
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open the photo chooser. Try again or take a photo.'**
+  String get pickPickerUnavailable;
+
+  /// The camera app returned without a usable photo (FEAT-001 FR-6).
+  ///
+  /// In en, this message translates to:
+  /// **'The camera didn\'t return a photo. Please try again.'**
+  String get pickCameraNoPhoto;
+
+  /// Too little free space to create the camera file (FEAT-001 FR-5).
+  ///
+  /// In en, this message translates to:
+  /// **'There isn\'t enough free space on this phone to take a photo. Free some space or choose a photo from the gallery.'**
+  String get pickLowSpace;
+
+  /// Recovery of a camera photo after the app was restarted failed (Should, FEAT-001 FR-17).
+  ///
+  /// In en, this message translates to:
+  /// **'The photo was lost while the camera was open. Please take it again.'**
+  String get pickCaptureLost;
+
+  /// The chosen or shared item is not a photo the app may open, e.g. not a content link (FEAT-001 FR-8, FR-20).
+  ///
+  /// In en, this message translates to:
+  /// **'We can\'t open that item. Choose a photo instead.'**
+  String get pickItemNotOpenable;
+
+  /// Pick-time variant of SOURCE_UNAVAILABLE: the photo could not be read, often an online-only photo while offline (FEAT-001 FR-14).
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open this photo. If it is stored online, connect to the internet or choose a photo saved on this phone.'**
+  String get pickSourceUnavailable;
 }
 
 class _AppLocalizationsDelegate

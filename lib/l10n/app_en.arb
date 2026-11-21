@@ -337,5 +337,53 @@
         "example": "2.5"
       }
     }
+  },
+  "pickTakePhoto": "Take a photo",
+  "@pickTakePhoto": {
+    "description": "Pick screen button: opens the phone's camera app (FEAT-001 FR-1)."
+  },
+  "pickChooseGallery": "Choose from gallery",
+  "@pickChooseGallery": {
+    "description": "Pick screen button: opens the system photo picker (FEAT-001 FR-1)."
+  },
+  "pickChooseFiles": "Choose from files",
+  "@pickChooseFiles": {
+    "description": "Pick screen button (Should): opens the system file picker for images (FEAT-001 FR-21)."
+  },
+  "pickPrivacyNote": "Your photos stay on your phone and are never uploaded.",
+  "@pickPrivacyNote": {
+    "description": "Pick screen privacy line (Should, FEAT-001 FR-22). Final copy is owned by FEAT-016; keep it short and plain."
+  },
+  "pickOpening": "Opening your photo…",
+  "@pickOpening": {
+    "description": "Progress text shown when opening a picked photo takes over 500 ms (FEAT-001 FR-13)."
+  },
+  "pickNoCamera": "No camera app was found on this phone. Choose a photo from the gallery instead.",
+  "@pickNoCamera": {
+    "description": "Reason shown when no camera app can take a photo; the camera button is disabled (FEAT-001 FR-5)."
+  },
+  "pickPickerUnavailable": "We couldn't open the photo chooser. Try again or take a photo.",
+  "@pickPickerUnavailable": {
+    "description": "Neither the photo picker nor the file picker could start (FEAT-001 FR-3)."
+  },
+  "pickCameraNoPhoto": "The camera didn't return a photo. Please try again.",
+  "@pickCameraNoPhoto": {
+    "description": "The camera app returned without a usable photo (FEAT-001 FR-6)."
+  },
+  "pickLowSpace": "There isn't enough free space on this phone to take a photo. Free some space or choose a photo from the gallery.",
+  "@pickLowSpace": {
+    "description": "Too little free space to create the camera file (FEAT-001 FR-5)."
+  },
+  "pickCaptureLost": "The photo was lost while the camera was open. Please take it again.",
+  "@pickCaptureLost": {
+    "description": "Recovery of a camera photo after the app was restarted failed (Should, FEAT-001 FR-17)."
+  },
+  "pickItemNotOpenable": "We can't open that item. Choose a photo instead.",
+  "@pickItemNotOpenable": {
+    "description": "The chosen or shared item is not a photo the app may open, e.g. not a content link (FEAT-001 FR-8, FR-20)."
+  },
+  "pickSourceUnavailable": "We couldn't open this photo. If it is stored online, connect to the internet or choose a photo saved on this phone.",
+  "@pickSourceUnavailable": {
+    "description": "Pick-time variant of SOURCE_UNAVAILABLE: the photo could not be read, often an online-only photo while offline (FEAT-001 FR-14)."
   }
 }
