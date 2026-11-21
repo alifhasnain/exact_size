@@ -1,8 +1,8 @@
 ---
 id: FEAT-001
 title: Pick image from camera or gallery
-status: Proposed
-version: 0.2
+status: Approved
+version: 1.0
 updated: 2026-11-21
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-011, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-025]
 ---
@@ -270,3 +270,4 @@ Evidence is thin: `docs/research/competitors.md` has no finding on how rival too
 |---|---|---|
 | 0.1 | 2026-11-21 | First draft |
 | 0.2 | 2026-11-21 | OQ-1 and OQ-2 decided by the Product Owner (picker and camera strategies as proposed) |
+| 1.0 | 2026-11-21 | Approved by Product Owner |
