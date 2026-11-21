@@ -32,15 +32,24 @@ ParcelFileDescriptor openReadOnly(String uri) {
   }
 }
 
+/// A decoded bitmap and where the requested region sits inside it, in
+/// sampled pixels: the region decode starts on even coordinates (the HEIC
+/// region decoder returns nothing for an odd top row), so the bitmap can be
+/// one sampled pixel larger than asked.
+typedef DecodedRegion = ({Bitmap bitmap, int dx, int dy, int w, int h});
+
 /// Decodes [rect] (raw coordinates; null = whole image) of the open source at
 /// power-of-two [sample] on the path the probe chose (ADR-004 v1.1): `region`
 /// via `BitmapRegionDecoder`, `full` via `BitmapFactory` and an in-memory
 /// crop. Always asks for ARGB_8888 in sRGB; any other result is
 /// `UNSUPPORTED_INPUT` (FR-10). Java `OutOfMemoryError` is
 /// `OUT_OF_MEMORY_HANDLED`. The caller recycles and releases the bitmap.
-Bitmap decodeSampled(ParcelFileDescriptor pfd, SourceInfo info,
+DecodedRegion decodeSampled(ParcelFileDescriptor pfd, SourceInfo info,
     {required int sample, ({int x, int y, int w, int h})? rect, required bool premultiplied}) {
-  final r = rect ?? (x: 0, y: 0, w: info.rawWidth, h: info.rawHeight);
+  final want = rect ?? (x: 0, y: 0, w: info.rawWidth, h: info.rawHeight);
+  // Even origin; the end stays where it was.
+  final (ax, ay) = (want.x & ~1, want.y & ~1);
+  final r = (x: ax, y: ay, w: want.w + want.x - ax, h: want.h + want.y - ay);
   final srgb = ColorSpace.get(ColorSpace$Named.SRGB);
   final opts = BitmapFactory$Options()
     ..inSampleSize = sample
@@ -87,7 +96,15 @@ Bitmap decodeSampled(ParcelFileDescriptor pfd, SourceInfo info,
     if (!ok) throw const DecodeFailure(Reason.unsupportedInput);
     final out = bmp;
     bmp = null; // ownership to the caller
-    return out;
+    final dx = ((want.x - ax) ~/ sample).clamp(0, out.width - 1);
+    final dy = ((want.y - ay) ~/ sample).clamp(0, out.height - 1);
+    return (
+      bitmap: out,
+      dx: dx,
+      dy: dy,
+      w: (want.w ~/ sample).clamp(1, out.width - dx),
+      h: (want.h ~/ sample).clamp(1, out.height - dy),
+    );
   } on DecodeFailure {
     rethrow;
   } on Object catch (e) {

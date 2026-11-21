@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'crop_renderer_matrix.dart' as crop_renderer;
 import 'preview_decoder_matrix.dart' as preview_decoder;
 import 'source_probe_matrix.dart' as source_probe;
 
@@ -12,4 +13,5 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   group('source_probe', source_probe.main);
   group('preview_decoder', preview_decoder.main);
+  group('crop_renderer', crop_renderer.main);
 }

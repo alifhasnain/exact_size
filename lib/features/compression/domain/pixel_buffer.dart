@@ -18,6 +18,17 @@ abstract interface class PixelBuffer {
   /// writes change the buffer in place. Holds at least width × height × channels bytes.
   Uint8List get bytes;
 
+  /// Crop metadata from FEAT-002 (ADR-003): max(W/cropW, H/cropH) of the
+  /// rendered crop; 1.0 when not from a crop.
+  double get upscaleFactor;
+
+  /// Integer crop rectangle in oriented source space (after EXIF and manual
+  /// rotation); null when not from a crop. No path, file name or EXIF value.
+  ({int x, int y, int w, int h})? get cropRect;
+
+  /// Manual clockwise rotation only: 0, 90, 180 or 270 (FEAT-002 OQ-13).
+  int get rotationApplied;
+
   /// Called after the alpha channel was composited away in place: from now on
   /// the buffer holds width × height × 3 bytes of RGB (stride width × 3) and
   /// no transparency.

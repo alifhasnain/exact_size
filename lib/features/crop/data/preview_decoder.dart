@@ -84,7 +84,7 @@ class PreviewDecoder {
     try {
       final s = previewSampleSize(info.rawWidth, info.rawHeight);
       // Premultiplied: the engine reads raw rgba8888 as premultiplied.
-      bmp = decodeSampled(pfd, info, sample: s, premultiplied: true);
+      bmp = decodeSampled(pfd, info, sample: s, premultiplied: true).bitmap; // whole image: no offset
       final n = bmp.width * bmp.height * 4;
       out = malloc<Uint8>(n);
       final (w, h) = copyBitmapRgba(bmp, out, n);

@@ -32,6 +32,21 @@ final class NativePixelBuffer implements PixelBuffer {
     return NativePixelBuffer._(p, width, height, channels, hasTransparency, length, true);
   }
 
+  /// Takes ownership of [address], a `malloc` block of [byteLength] bytes
+  /// filled in another isolate (FEAT-002 renderer): this isolate frees it.
+  factory NativePixelBuffer.adopt({
+    required int address,
+    required int width,
+    required int height,
+    required int channels,
+    required bool hasTransparency,
+    required int byteLength,
+  }) {
+    _live++;
+    return NativePixelBuffer._(
+        Pointer<Uint8>.fromAddress(address), width, height, channels, hasTransparency, byteLength, true);
+  }
+
   /// Non-owning view at [address] (worker isolate). Never freed through this object.
   factory NativePixelBuffer.view({
     required int address,
@@ -64,6 +79,13 @@ final class NativePixelBuffer implements PixelBuffer {
 
   @override
   int get stride => width * channels;
+
+  @override
+  double upscaleFactor = 1.0;
+  @override
+  ({int x, int y, int w, int h})? cropRect;
+  @override
+  int rotationApplied = 0;
 
   int get address => pointer.address;
 

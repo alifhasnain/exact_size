@@ -22,6 +22,13 @@ class TestPixels implements PixelBuffer {
   int get stride => width * channels;
 
   @override
+  double get upscaleFactor => 1.0;
+  @override
+  ({int x, int y, int w, int h})? get cropRect => null;
+  @override
+  int get rotationApplied => 0;
+
+  @override
   void markAlphaRemoved() {
     channels = 3;
     hasTransparency = false;

@@ -152,7 +152,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `data/crop_memory_preflight.dart` reusing FEAT-004's reader: (decoded region × T04 per-format factor + output + transform buffer) × 2 against `MemAvailable` → `IMAGE_TOO_LARGE`; unreadable meminfo → check skipped.
 - **Done when:** `crop_memory_preflight_test.dart` passes with an injected reader: a 12 MP → 2 MP request with ample memory passes; a 24 MP target with low `MemAvailable` → `IMAGE_TOO_LARGE`; unreadable meminfo → no crash and no refusal.
 
-### - [ ] FEAT-002-T17 — `CropRenderer` pipeline producing the ADR-003 `PixelBuffer`
+### - [x] FEAT-002-T17 — `CropRenderer` pipeline producing the ADR-003 `PixelBuffer`
 - **Implements:** FR-1 (re-check), FR-7, FR-8, FR-9, FR-10, FR-13, FR-14, FR-16, FR-17, FR-19, FR-21, NFR-2 (single buffer) · **ADRs:** ADR-003, ADR-004, ADR-005
 - **Depends on:** T07, T12, T14, T16; FEAT-004-T16 (`PixelBuffer` type and isolate-runner pattern)
 - **Size:** M
