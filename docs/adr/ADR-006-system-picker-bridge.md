@@ -1,8 +1,8 @@
 ---
 id: ADR-006
 title: System picker and camera bridge — small Kotlin activity-result bridge in MainActivity over a MethodChannel
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-21
 links: [FEAT-001, FEAT-001-TECH, ADR-001, FEAT-002]
 ---
@@ -68,3 +68,4 @@ Proposed pins (Gradle, `android/app/build.gradle.kts`), exact versions:
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-21 | First draft |
+| 1.0 | 2026-11-21 | Approved by Product Owner |
