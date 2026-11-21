@@ -166,8 +166,10 @@ jobs:
           # One app build for all integration tests (integration_test/bundle.dart);
           # the memory profile runs alone so earlier tests do not inflate its RSS;
           # then AC-6.2 with networking off (FEAT-004-T25) and the decode matrix.
+          # Per-command time limits: a hang fails the step and keeps its log
+          # (a job cancelled at timeout-minutes keeps none).
           script: |
-            flutter test integration_test/bundle.dart --dart-define=EXPECTED_SDK_INT=28
-            flutter test integration_test/memory_profile_test.dart
-            bash tool/run_offline_test.sh
-            DEVICE=emulator-5554 LARGE_DIR=/tmp/large flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/decode_matrix.dart -d emulator-5554
+            timeout 1500 flutter test integration_test/bundle.dart --dart-define=EXPECTED_SDK_INT=28
+            timeout 600 flutter test integration_test/memory_profile_test.dart
+            timeout 600 bash tool/run_offline_test.sh
+            DEVICE=emulator-5554 LARGE_DIR=/tmp/large timeout 900 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/decode_matrix.dart -d emulator-5554
