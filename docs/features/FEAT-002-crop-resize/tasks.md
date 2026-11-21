@@ -124,7 +124,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** final JNIgen config and bindings in `packages/es_codec/lib/src/android/` for `BitmapRegionDecoder`, `BitmapFactory(.Options)`, `Bitmap`, `ExifInterface` (orientation only), `ContentResolver`/`ParcelFileDescriptor`, `Activity.setRecentsScreenshotEnabled`; `data/source_handle.dart` (redacted `toString`); `data/source_probe.dart`: open read-only (`"r"`), bounds-only decode, header sniff for animation (WebP `VP8X`/`ANIM`, PNG `acTL`, GIF), `ContainerCheck` first (T30), orientation via `ExifInterface` for JPEG/PNG/WebP and `HeifOrientation` for HEIC (T30), decode path `full` for GIF and `region` otherwise (T04), 200 MP ceiling and any T04 per-format threshold → `IMAGE_TOO_LARGE`; platform exception text never logged, mapped to `Reason`.
 - **Done when:** `source_probe_test.dart` (integration, emulator profile, both API levels) gives the expected `SourceInfo` or `Reason` for every T02 small fixture, including orientation 1–8, invalid values as 1, the `.jpg` text file → `CORRUPT_INPUT` or `UNSUPPORTED_INPUT`, the 200,000,001 px header → `IMAGE_TOO_LARGE` with no pixel decode; `SourceHandle.toString()` contains no URI text; each fixture's bytes and mtime are unchanged after probing; JPEG, PNG, WebP and HEIC go through the same code path.
 
-### - [ ] FEAT-002-T13 — `es_resample` (stb Catmull-Rom), goldens and visual chart — gate G2
+### - [x] FEAT-002-T13 — `es_resample` (stb Catmull-Rom), goldens and visual chart — gate G2
 - **Implements:** FR-8 (separate x/y scales), FR-9, FR-14 (alpha), AC-2.3, AC-5.6, AC-6.3, NFR-3, NFR-9 · **ADRs:** ADR-005
 - **Depends on:** T01, T04 (G1)
 - **Size:** M

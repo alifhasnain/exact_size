@@ -84,3 +84,4 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-21 | FEAT-002-TECH | Approved | 1.1 | Gate G1 results: ContainerCheck and HeifOrientation components, GIF on the full path, per-format memory factors, R4 updated, R12 (own parsers read untrusted bytes) added |
 | 2026-11-21 | FEAT-002-TASKS | Approved | 1.1 | New task T30 (ContainerCheck, HeifOrientation) before T12; T12 and T16 use the G1 results |
 | 2026-11-21 | FEAT-002 gate G1 | Passed: ADR-004 v1.1, FEAT-002-TECH v1.1 and FEAT-002-TASKS v1.1 approved (Product Owner) | — | T04 decision record in docs/CHANGELOG.md; T30 and T12 onwards may start |
+| 2026-11-21 | FEAT-002 gate G2 | Passed: Catmull-Rom accepted as the resampler (Product Owner) | — | T13 chart docs/features/FEAT-002-crop-resize/t13/resampler_chart.png: both filters anti-alias on reduction; Catmull-Rom slightly crisper on enlargement; no dark fringe on alpha edges |
