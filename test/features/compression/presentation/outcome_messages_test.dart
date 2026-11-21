@@ -121,9 +121,11 @@ void main() {
 
   test('new keys are translated or listed as untranslated in the other locales (for FEAT-019)', () {
     final untranslated = jsonDecode(File('docs/l10n/untranslated_messages.json').readAsStringSync()) as Map<String, dynamic>;
-    // Each key is either translated in app_<locale>.arb or still listed as untranslated.
+    // Each key is either translated (in app_<locale>.arb or its base language) or still listed as untranslated.
     for (final locale in ['ar', 'es', 'hi', 'id', 'pt', 'pt_BR']) {
-      final arb = jsonDecode(File('lib/l10n/app_$locale.arb').readAsStringSync()) as Map<String, dynamic>;
+      Map<String, dynamic> read(String l) => jsonDecode(File('lib/l10n/app_$l.arb').readAsStringSync()) as Map<String, dynamic>;
+      // A regional locale (pt_BR) falls back to its base language file.
+      final arb = {...read(locale.split('_').first), ...read(locale)};
       final pending = (untranslated[locale] as List?) ?? const [];
       for (final key in ['outcomeCantReachRange', 'noticePaddingAdded', 'targetChooseJpegOrPng']) {
         expect(arb.containsKey(key) || pending.contains(key), isTrue, reason: '$locale $key');
