@@ -134,7 +134,7 @@ class CropController extends Notifier<CropSession?> {
       target: t,
       crop: next,
       announcements: [
-        if (edge != Edge.none) EdgeAnnouncement(edge) else _areaState(updated),
+        if (edge != Edge.none) EdgeAnnouncement(edge) else areaState(updated),
         ?_upscaleChange(s, updated),
       ],
     );
@@ -157,7 +157,8 @@ class CropController extends Notifier<CropSession?> {
     return level == before.upscaleLevel ? null : UpscaleAnnouncement(level, after.upscaleFactor);
   }
 
-  static AreaStateAnnouncement _areaState(CropSession s) {
+  /// Zoom and position of the crop area, for its label and announcements.
+  static AreaStateAnnouncement areaState(CropSession s) {
     final (sw, sh) = CropMath.orientedSize(s.info, s.crop.quarterTurns);
     final c = s.crop;
     final ch = c.cw * s.target.height / s.target.width;

@@ -201,7 +201,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/crop_canvas.dart` built to the G3 design: preview `ui.Image` painted under one matrix (orientation × zoom/pan) inside a `RepaintBoundary`; dimmed outside; two-tone frame; checkerboard under alpha; frame layout with ≥ 24 dp margins and ≥ 48 dp short side, and the extreme-ratio touch band plus hint beyond about 6.5:1 (FR-4, OQ-14); drag and pinch through the T08 reducers, one gesture mode until all pointers lift; physical coordinates (no RTL mirroring of the canvas).
 - **Done when:** widget tests pass: 4000×3000 → 300×300 shows a square frame over the centred area; 3000×4000 → 300×80 shows a fully visible strip ≥ 48 dp high on a 360 dp-wide screen; 1000:10 shows the full-width band with the hint; a drag beyond the edge stops at the edge; the checkerboard shows under a transparent fixture; golden screenshots match the G3 design on synthetic images only.
 
-### - [ ] FEAT-002-T24 — Crop area semantics, Centre/Reset and upscale notice/dialog
+### - [x] FEAT-002-T24 — Crop area semantics, Centre/Reset and upscale notice/dialog
 - **Implements:** FR-5, FR-11, NFR-4, AC-5.1–5.4, AC-9.1, AC-9.2, AC-9.4 · **ADRs:** —
 - **Depends on:** T23, T10
 - **Size:** M

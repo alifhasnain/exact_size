@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:flutter/semantics.dart' show SemanticsService;
+import 'package:flutter/semantics.dart' show CustomSemanticsAction, SemanticsService;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -88,13 +88,30 @@ class _CropScreenState extends ConsumerState<CropScreen> {
     final s = session != null && identical(session.info, widget.info) && session.target == widget.target ? session : null;
     final canvas = s == null
         ? const ColoredBox(color: CropCanvas.background, child: SizedBox.expand())
-        : CropCanvas(
-            preview: widget.preview,
-            info: s.info,
-            target: s.target,
-            crop: s.crop,
-            onDrag: controller.drag,
-            onPinch: controller.pinch,
+        : Semantics(
+            // FR-5, AC-9.1: purpose and state, plus the non-gesture actions.
+            label: CropController.areaState(s).text(m, s.target),
+            customSemanticsActions: {
+              for (final (a, label) in [
+                (CropAction.moveLeft, l10n.cropButtonMoveLeft),
+                (CropAction.moveRight, l10n.cropButtonMoveRight),
+                (CropAction.moveUp, l10n.cropButtonMoveUp),
+                (CropAction.moveDown, l10n.cropButtonMoveDown),
+                (CropAction.zoomIn, l10n.cropButtonZoomIn),
+                (CropAction.zoomOut, l10n.cropButtonZoomOut),
+                (CropAction.centre, l10n.cropButtonCentre),
+                (CropAction.reset, l10n.cropButtonReset),
+              ])
+                CustomSemanticsAction(label: label): () => controller.perform(a),
+            },
+            child: CropCanvas(
+              preview: widget.preview,
+              info: s.info,
+              target: s.target,
+              crop: s.crop,
+              onDrag: controller.drag,
+              onPinch: controller.pinch,
+            ),
           );
 
     return Theme(

@@ -5,6 +5,7 @@ import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/crop/presentation/crop_canvas.dart';
 import 'package:exact_size/features/crop/presentation/crop_controller.dart';
 import 'package:exact_size/features/crop/presentation/crop_screen.dart';
+import 'package:flutter/semantics.dart' show CustomSemanticsAction, SemanticsAction;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -125,6 +126,94 @@ void main() {
       expect(tester.renderObject(canvasPaint.first), checker);
       await pumpScreen(tester, source(1600, 900), const Target(300, 80));
       expect(tester.renderObject(canvasPaint.first), isNot(checker));
+    });
+  });
+
+  group('T24 semantics, Centre/Reset, upscale notice and dialog', () {
+    testWidgets('crop area exposes the 8 actions; each equals the controller result', (tester) async {
+      final handle = tester.ensureSemantics();
+      final info = source(4000, 3000);
+      const t = Target(300, 300);
+      final c = await pumpScreen(tester, info, t);
+      final node = tester.getSemantics(find.bySemanticsLabel(RegExp('^Crop area, zoom')));
+      final actions = {
+        for (final id in node.getSemanticsData().customSemanticsActionIds!)
+          CustomSemanticsAction.getAction(id)!.label!: id,
+      };
+      expect(actions.keys, unorderedEquals(['Move left', 'Move right', 'Move up', 'Move down', 'Zoom in', 'Zoom out', 'Centre', 'Reset']));
+
+      final reference = ProviderContainer();
+      addTearDown(reference.dispose);
+      reference.read(cropControllerProvider.notifier).start(info, t);
+      final byLabel = {
+        'Move left': CropAction.moveLeft,
+        'Move right': CropAction.moveRight,
+        'Move up': CropAction.moveUp,
+        'Move down': CropAction.moveDown,
+        'Zoom in': CropAction.zoomIn,
+        'Zoom out': CropAction.zoomOut,
+        'Centre': CropAction.centre,
+        'Reset': CropAction.reset,
+      };
+      // Zoom in first so every move has room.
+      for (final label in ['Zoom in', ...byLabel.keys]) {
+        final id = tester.getSemantics(find.bySemanticsLabel(RegExp('^Crop area, zoom'))).id;
+        tester.binding.renderViews.first.owner!.semanticsOwner!.performAction(id, SemanticsAction.customAction, actions[label]);
+        await tester.pump();
+        reference.read(cropControllerProvider.notifier).perform(byLabel[label]!);
+        expect(c.read(cropControllerProvider)!.cropRect, reference.read(cropControllerProvider)!.cropRect, reason: label);
+      }
+      handle.dispose();
+    });
+
+    testWidgets('Centre and Reset are labelled and at least 48 dp', (tester) async {
+      await pumpScreen(tester, source(4000, 3000), const Target(300, 300));
+      for (final label in ['Centre', 'Reset']) {
+        final size = tester.getSize(find.widgetWithText(TextButton, label));
+        expect(size.width >= 48 && size.height >= 48, isTrue, reason: label);
+      }
+    });
+
+    testWidgets('200×200 at 300×300: notice with icon and text, Continue works', (tester) async {
+      CropSession? got;
+      await pumpScreen(tester, source(200, 200), const Target(300, 300), onContinue: (s) => got = s);
+      expect(find.textContaining('smaller than'), findsOneWidget);
+      expect(find.byIcon(Icons.info_outline), findsOneWidget);
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(got?.upscaleFactor, closeTo(1.5, 1e-9));
+    });
+
+    testWidgets('above 2.0 Continue asks first; both choices work', (tester) async {
+      var continued = 0, other = 0;
+      await pumpScreen(tester, source(100, 100), const Target(300, 300),
+          onContinue: (_) => continued++, onChooseAnother: () => other++);
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Continue anyway'));
+      await tester.pumpAndSettle();
+      expect((continued, other), (1, 0));
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Choose another photo'));
+      await tester.pumpAndSettle();
+      expect((continued, other), (1, 1));
+    });
+
+    testWidgets('zooming across 1.0 shows the notice and announces once', (tester) async {
+      final c = await pumpScreen(tester, source(400, 400), const Target(300, 300));
+      expect(find.textContaining('smaller than'), findsNothing);
+      await tester.tap(find.byTooltip('Zoom in')); // 400 → 320 px: 0.94
+      await tester.pumpAndSettle();
+      expect(find.textContaining('smaller than'), findsNothing);
+      await tester.tap(find.byTooltip('Zoom in')); // 256 px: 1.17
+      await tester.pumpAndSettle();
+      expect(find.textContaining('smaller than'), findsOneWidget);
+      expect(c.read(cropControllerProvider)!.announcements.whereType<UpscaleAnnouncement>(), hasLength(1));
+      final live = find.ancestor(of: find.textContaining('smaller than'), matching: find.byWidgetPredicate((w) => w is Semantics && (w.properties.liveRegion ?? false)));
+      expect(live, findsOneWidget);
     });
   });
 }
