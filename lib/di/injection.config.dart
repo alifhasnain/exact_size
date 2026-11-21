@@ -15,6 +15,7 @@ import 'package:exact_size/features/compression/data/compression_module.dart'
 import 'package:exact_size/features/compression/data/compression_service.dart'
     as _i99;
 import 'package:exact_size/features/compression/data/temp_files.dart' as _i630;
+import 'package:exact_size/features/pick/data/pick_module.dart' as _i408;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -26,6 +27,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final compressionModule = _$CompressionModule();
+    final pickModule = _$PickModule();
     await gh.singletonAsync<_i630.TempFiles>(
       () => compressionModule.tempFiles,
       preResolve: true,
@@ -33,8 +35,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i99.CompressionService>(
       () => compressionModule.compressionService(gh<_i630.TempFiles>()),
     );
+    await gh.singletonAsync<_i630.TempFiles>(
+      () => pickModule.cameraFiles,
+      instanceName: 'camera',
+      preResolve: true,
+    );
     return this;
   }
 }
 
 class _$CompressionModule extends _i1067.CompressionModule {}
+
+class _$PickModule extends _i408.PickModule {}

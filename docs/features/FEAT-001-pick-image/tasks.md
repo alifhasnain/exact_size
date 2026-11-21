@@ -54,7 +54,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/features/pick/domain/pick_types.dart` (`PickSource`, `PickOrigin`, `LaunchOutcome`, `PickMessage`, `PickedImage`, sealed `SystemPickResult` per tech section 4, all with redacted `toString`); `pick_rules.dart` (scheme `content` only, refuse `share && fromOwnApp`, `Reason` → `PickMessage` with the pick-time `sourceUnavailable`, camera-file delete decision per outcome). No Flutter, Riverpod or channel imports.
 - **Done when:** unit tests pass for: `content` accepted, `file`, `http`, empty and malformed refused; own-app share refused; every `Reason` maps to its message; delete decision for cancel, refusal, accept-with-previous and accept-without-previous; `toString` of every type contains no URI or file name (checked with a `[PLACEHOLDER]` URI string).
 
-### - [ ] FEAT-001-T04 — `TempFiles` folder parameter and `sweep(keep:)`
+### - [x] FEAT-001-T04 — `TempFiles` folder parameter and `sweep(keep:)`
 - **Implements:** FR-11 · **ADRs:** ADR-003 (unchanged contract)
 - **Depends on:** —
 - **Size:** S

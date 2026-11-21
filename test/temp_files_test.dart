@@ -70,4 +70,21 @@ void main() {
     expect(outputs(), isEmpty);
     expect(await TempFiles(cache).sweep(), 0, reason: 'nothing left to sweep');
   });
+
+  test('FEAT-001-T04: sweep(keep:) spares one file; camera and output folders stay apart', () async {
+    final camera = TempFiles(cache, folder: 'camera');
+    expect(camera.dir.path, isNot(files.dir.path));
+    for (final f in [camera, files]) {
+      f.dir.createSync(recursive: true);
+      for (final n in ['keep.jpg', 'x.jpg', 'y.jpg']) {
+        File('${f.dir.path}${Platform.pathSeparator}$n').writeAsBytesSync(Uint8List(4));
+      }
+    }
+    expect(await camera.sweep(keep: 'keep.jpg'), 2);
+    expect(camera.dir.listSync().map((e) => e.uri.pathSegments.last), ['keep.jpg']);
+    expect(files.dir.listSync(), hasLength(3), reason: 'the camera sweep never touches the output folder');
+    expect(await camera.sweep(), 1);
+    expect(camera.dir.listSync(), isEmpty);
+    expect(await files.sweep(), 3);
+  });
 }
