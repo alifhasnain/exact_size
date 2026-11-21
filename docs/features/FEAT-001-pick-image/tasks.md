@@ -96,7 +96,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** Gradle task in `android/app/build.gradle.kts` wired after `processReleaseMainManifest`: fail on `CAMERA`, `READ_EXTERNAL_STORAGE`, `READ_MEDIA_*`, `ACCESS_MEDIA_LOCATION`; on any FileProvider with our authority that is exported or whose paths file holds anything other than `camera/`; on a missing `IMAGE_CAPTURE` `queries` entry. Fails loudly, never strips with `tools:node="remove"`. CI runs it through its release build step [Assumption: the CI build job builds release; if not, add `gradlew :app:checkMergedManifest`].
 - **Done when:** the release build passes on the current tree; in the PR, three throwaway changes each fail it with a clear message (a dependency manifest line adding `CAMERA`, `exported="true"` on the provider, a second path in `camera_paths.xml`); CI runs it.
 
-### - [ ] FEAT-001-T10 — Kotlin bridge part 1: channel, gallery, pending slot, busy guard
+### - [x] FEAT-001-T10 — Kotlin bridge part 1: channel, gallery, pending slot, busy guard
 - **Implements:** FR-2, FR-3, FR-15, FR-19, NFR-6, NFR-7 · **ADRs:** ADR-006
 - **Depends on:** T01 (G1), T08
 - **Size:** M
