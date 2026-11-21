@@ -229,7 +229,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `presentation/crop_canvas.dart`: four handles per the G3 design; 48 dp hit areas pushed outward when the frame is under 96 dp in either dimension; handle gesture as one gesture mode; re-centre and re-fit on release without changing cropRect; `Semantics` labels per handle; physical positions in RTL.
 - **Done when:** widget tests pass: on a 300×80 frame the four hit areas are ≥ 48 dp and do not overlap; dragging out past the image edge stops at the edge with the opposite corner fixed; shrinking stops at the minimum and updates the notice; release re-fits the view and leaves cropRect unchanged; pinch during a handle drag is ignored; TalkBack labels read "Resize crop, top-left corner" etc.; in `ar` handles stay at the physical corners.
 
-### - [ ] FEAT-002-T28 — Rotate and nudge/zoom buttons (Should)
+### - [x] FEAT-002-T28 — Rotate and nudge/zoom buttons (Should)
 - **Implements:** FR-21, FR-27, AC-9.2, AC-12.1 · **ADRs:** ADR-004
 - **Depends on:** T24, T09
 - **Size:** S

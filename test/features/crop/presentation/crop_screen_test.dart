@@ -8,6 +8,7 @@ import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/presentation/recents_guard.dart';
 import '../../../../test_support/test_pixels.dart';
 import 'package:exact_size/features/crop/domain/crop_math.dart';
+import 'package:exact_size/features/crop/domain/crop_reducers.dart' show Edge;
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/crop/presentation/crop_canvas.dart';
 import 'package:exact_size/features/crop/presentation/crop_controller.dart';
@@ -493,6 +494,74 @@ void main() {
       expect(at(tester, 'top-left').dx, lessThan(at(tester, 'top-right').dx));
       expect(at(tester, 'top-left').dy, lessThan(at(tester, 'bottom-left').dy));
       semantics.dispose();
+    });
+  });
+
+  group('T28 rotate, move and zoom buttons', () {
+    const buttons = {
+      'Rotate clockwise': CropAction.rotateClockwise,
+      'Rotate counter-clockwise': CropAction.rotateCounterclockwise,
+      'Zoom in': CropAction.zoomIn,
+      'Zoom out': CropAction.zoomOut,
+      'Move left': CropAction.moveLeft,
+      'Move right': CropAction.moveRight,
+      'Move up': CropAction.moveUp,
+      'Move down': CropAction.moveDown,
+    };
+
+    testWidgets('each button equals its reducer; all are labelled and ≥ 48 dp', (tester) async {
+      final info = source(4000, 3000);
+      const t = Target(300, 80);
+      final c = await pumpScreen(tester, info, t);
+      final reference = ProviderContainer();
+      addTearDown(reference.dispose);
+      reference.read(cropControllerProvider.notifier).start(info, t);
+      for (final label in ['Zoom in', 'Zoom in', ...buttons.keys]) {
+        final f = find.byTooltip(label);
+        final size = tester.getSize(f);
+        expect(size.width >= 48 && size.height >= 48, isTrue, reason: label);
+        await tester.tap(f);
+        await tester.pumpAndSettle();
+        reference.read(cropControllerProvider.notifier).perform(buttons[label]!);
+        expect(c.read(cropControllerProvider)!.cropRect, reference.read(cropControllerProvider)!.cropRect, reason: label);
+      }
+    });
+
+    testWidgets('long-press repeats a move until released and stops at the edge', (tester) async {
+      final c = await pumpScreen(tester, source(4000, 3000), const Target(300, 300));
+      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.pumpAndSettle();
+      final g = await tester.startGesture(tester.getCenter(find.byTooltip('Move left')));
+      for (var i = 0; i < 40; i++) {
+        await tester.pump(const Duration(milliseconds: 120));
+      }
+      final session = c.read(cropControllerProvider)!;
+      expect(session.cropRect.x, 0, reason: 'repeated until the left edge');
+      expect(session.announcements.whereType<EdgeAnnouncement>().single.edge, Edge.left);
+      await g.up();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Move right'));
+      await tester.pumpAndSettle();
+      final moved = c.read(cropControllerProvider)!.cropRect;
+      await tester.pump(const Duration(seconds: 1));
+      expect(c.read(cropControllerProvider)!.cropRect, moved, reason: 'no repeat after release');
+    });
+
+    testWidgets('rotate keeps the frame ratio and shows no empty area', (tester) async {
+      final info = source(4000, 3000);
+      const t = Target(300, 80);
+      final c = await pumpScreen(tester, info, t);
+      for (final label in ['Rotate clockwise', 'Rotate clockwise', 'Rotate counter-clockwise']) {
+        await tester.tap(find.byTooltip(label));
+        await tester.pumpAndSettle();
+        final s = c.read(cropControllerProvider)!;
+        final (sw, sh) = CropMath.orientedSize(info, s.crop.quarterTurns);
+        final r = s.cropRect;
+        expect(r.x >= 0 && r.y >= 0 && r.x + r.w <= sw && r.y + r.h <= sh, isTrue, reason: '$label: inside the photo');
+        expect(r.w / r.h, closeTo(300 / 80, 300 / 80 / r.h + 1e-9), reason: '$label: ratio');
+        final f = canvasFrame(tester, t);
+        expect(f.width / f.height, closeTo(300 / 80, 1e-9));
+      }
     });
   });
 }

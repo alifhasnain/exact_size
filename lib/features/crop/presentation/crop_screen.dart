@@ -528,11 +528,16 @@ class _ToolButtonState extends State<_ToolButton> {
 
   @override
   Widget build(BuildContext context) {
-    final button = IconButton.filledTonal(
-      onPressed: widget.onPressed,
-      tooltip: widget.label,
-      constraints: const BoxConstraints.tightFor(width: 48, height: 48),
-      icon: Icon(widget.icon),
+    // A repeating key keeps long-press for itself: its tooltip shows on hover
+    // or focus only, and the label still reaches TalkBack.
+    final button = Tooltip(
+      message: widget.label,
+      triggerMode: widget.repeat ? TooltipTriggerMode.manual : TooltipTriggerMode.longPress,
+      child: IconButton.filledTonal(
+        onPressed: widget.onPressed,
+        constraints: const BoxConstraints.tightFor(width: 48, height: 48),
+        icon: Icon(widget.icon),
+      ),
     );
     if (!widget.repeat || widget.onPressed == null) return button;
     return GestureDetector(
