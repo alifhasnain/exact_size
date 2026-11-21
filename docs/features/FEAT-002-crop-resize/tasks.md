@@ -159,7 +159,7 @@ Module paths follow ADR-001: `lib/features/crop/{domain,data,presentation}`, nat
 - **Scope:** `data/crop_renderer.dart`: tech.md section 3 steps 1–9 in a worker isolate; re-open the URI read-only each render; bounds differ from probe → `SOURCE_UNAVAILABLE`; region decode at `sampleSize`; `es_resample` into a native W×H buffer; `es_orient` only if the transform is not identity (free the first buffer); `es_finish`; assert width, height, channels ∈ {3, 4}, stride → `INTERNAL_ERROR` and free on mismatch; `PixelBuffer` with `hasTransparency`, `upscaleFactor`, `cropRect`, `rotationApplied` (manual only), no orientation, path or EXIF field.
 - **Done when:** `crop_renderer_test.dart` (integration, emulator profile) passes: outputs are exactly 300×300, 300×80, 140×60 and 1×1 → 300×300 from the fixtures; a partly transparent PNG gives 4 channels and `hasTransparency` true, an opaque-alpha PNG gives false; orientation-6 source with 0 manual turns gives `rotationApplied` 0; one manual clockwise turn gives 90; a test-hook dimension mismatch returns `INTERNAL_ERROR` and nothing is handed off; the preview `ui.Image` is never an input (type check in the test).
 
-### - [ ] FEAT-002-T18 — Renderer errors, cancel, progress events and handover contract (unblocks FEAT-004-T27)
+### - [x] FEAT-002-T18 — Renderer errors, cancel, progress events and handover contract (unblocks FEAT-004-T27)
 - **Implements:** FR-6, FR-16, FR-18, FR-19, AC-4.3, AC-4.4, AC-7.5 · **ADRs:** ADR-003
 - **Depends on:** T17
 - **Size:** M

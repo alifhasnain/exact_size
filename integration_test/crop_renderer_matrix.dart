@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:exact_size/features/compression/data/compression_runner.dart' show CancelSignal;
 import 'package:exact_size/features/compression/data/native_pixel_buffer.dart';
+import 'package:exact_size/features/compression/domain/pixel_buffer.dart';
 import 'package:exact_size/features/crop/data/crop_renderer.dart';
 import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/data/source_probe.dart';
@@ -24,13 +26,20 @@ void main() {
     expect(File('${dir.path}/.ready').existsSync(), isTrue, reason: 'fixtures were not pushed');
   });
 
-  Future<(SourceInfo, RenderResult)> render(String name, Target t, {int turns = 0, CropRenderer renderer = const CropRenderer()}) async {
-    final h = SourceHandle(File('${dir.path}/$name').uri.toString());
+  Future<(SourceInfo, RenderResult)> render(String name, Target t,
+      {int turns = 0, CropRenderer renderer = const CropRenderer(), CancelSignal? cancel, List<RenderStep>? steps, String? path}) async {
+    final h = SourceHandle(File(path ?? '${dir.path}/$name').uri.toString());
     final info = ((await const SourceProbe().probe(h)) as ProbeOk).info;
     final crop = CropMath.initial(info, t, quarterTurns: turns);
     final rect = CropMath.toCropRect(crop, info, t);
-    return (info, await renderer.render(RenderRequest(src: h, info: info, cropRect: rect, quarterTurns: turns, target: t)));
+    return (
+      info,
+      await renderer.render(RenderRequest(src: h, info: info, cropRect: rect, quarterTurns: turns, target: t),
+          cancel: cancel, onProgress: steps?.add)
+    );
   }
+
+  Reason? reasonOf(RenderResult r) => r is RenderErr ? r.reason : null;
 
   NativePixelBuffer ok(RenderResult r, String why) {
     expect(r, isA<RenderOk>(), reason: '$why: ${r is RenderErr ? r.reason.code : ''}');
@@ -106,5 +115,84 @@ void main() {
     const req = RenderRequest;
     expect(req.toString(), isNot(contains('Image')));
     expect(ui.Image, isNot(RenderRequest));
+  });
+
+  // FEAT-002-T18: errors, cancel, progress, leaks, handover.
+
+  test('progress events arrive in step order; EXIF 6 includes the orient step', () async {
+    final steps = <RenderStep>[];
+    final (_, r) = await render('orient_6_exif.jpg', const Target(120, 80), steps: steps);
+    ok(r, 'progress').free();
+    expect(steps, RenderStep.values);
+  });
+
+  test('deleting the source after probing gives SOURCE_UNAVAILABLE', () async {
+    final copy = File('${dir.path}/../t18_deleted.jpg');
+    File('${dir.path}/orient_1_exif.jpg').copySync(copy.path);
+    final h = SourceHandle(copy.uri.toString());
+    final info = ((await const SourceProbe().probe(h)) as ProbeOk).info;
+    copy.deleteSync();
+    const t = Target(120, 80);
+    final rect = CropMath.toCropRect(CropMath.initial(info, t), info, t);
+    final r = await const CropRenderer().render(RenderRequest(src: h, info: info, cropRect: rect, quarterTurns: 0, target: t));
+    expect(reasonOf(r), Reason.sourceUnavailable);
+  });
+
+  test('cancel before start, after decode or after resample gives CANCELLED within one step', () async {
+    final pre = CancelSignal()..cancel();
+    final (_, a) = await render('orient_6_exif.jpg', const Target(120, 80), cancel: pre);
+    pre.dispose();
+    expect(reasonOf(a), Reason.cancelled);
+    for (final at in [RenderStep.opened, RenderStep.decoded, RenderStep.resampled, RenderStep.oriented]) {
+      final steps = <RenderStep>[];
+      final (_, r) = await render('orient_6_exif.jpg', const Target(120, 80), renderer: CropRenderer(debugCancelAfter: at), steps: steps);
+      expect(reasonOf(r), Reason.cancelled, reason: '$at');
+      expect(steps.last, at, reason: 'no step after the cancel');
+    }
+  });
+
+  test('a native allocation failure gives OUT_OF_MEMORY_HANDLED, no crash', () async {
+    final (_, r) = await render('orient_1_exif.jpg', const Target(120, 80), renderer: const CropRenderer(debugFailAllocation: true));
+    expect(reasonOf(r), Reason.outOfMemoryHandled);
+  });
+
+  test('leak counter is 0 after 100 mixed runs (success, failure, cancel)', () async {
+    final before = NativePixelBuffer.live;
+    for (var i = 0; i < 100; i++) {
+      final renderer = switch (i % 5) {
+        0 => const CropRenderer(),
+        1 => const CropRenderer(debugShapeMismatch: true),
+        2 => const CropRenderer(debugCancelAfter: RenderStep.resampled),
+        3 => const CropRenderer(debugFailAllocation: true),
+        _ => const CropRenderer(debugCancelAfter: RenderStep.oriented),
+      };
+      final (_, r) = await render(i.isEven ? 'orient_6_exif.jpg' : 'alpha_partial.png', const Target(60, 40), renderer: renderer);
+      if (r is RenderOk) (r.pixels as NativePixelBuffer).free();
+    }
+    expect(CropRenderer.liveNativeBlocks, 0);
+    expect(NativePixelBuffer.live, before);
+  });
+
+  test('handover contract: the consumer owns and frees the buffer; the producer keeps nothing', () async {
+    final before = NativePixelBuffer.live;
+    final (_, r) = await render('alpha_partial.png', const Target(90, 60));
+    final px = (r as RenderOk).pixels;
+    expect(NativePixelBuffer.live, before + 1);
+    // Fake FEAT-004 consumer: checks the ADR-003 shape, then frees.
+    void consume(PixelBuffer p) {
+      expect((p.width, p.height), (90, 60));
+      expect(p.channels, anyOf(3, 4));
+      expect(p.stride, p.width * p.channels);
+      expect(p.bytes.length, greaterThanOrEqualTo(p.height * p.stride));
+      expect(p.upscaleFactor, greaterThan(0));
+      expect(p.cropRect, isNotNull);
+      (p as NativePixelBuffer).free();
+    }
+
+    consume(px);
+    expect(NativePixelBuffer.live, before);
+    expect(CropRenderer.liveNativeBlocks, 0);
+    (px as NativePixelBuffer).free(); // a second free is a no-op
+    expect(NativePixelBuffer.live, before);
   });
 }

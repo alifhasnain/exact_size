@@ -32,6 +32,9 @@ final class CancelSignal {
 
   bool get isCancelled => !_disposed && _flag.value != 0;
 
+  /// Address of the shared flag, for worker isolates that poll it (FEAT-002 renderer).
+  int get flagAddress => _flag.address;
+
   /// Frees the flag; call once the run that used it has finished.
   void dispose() {
     if (_disposed) return;
