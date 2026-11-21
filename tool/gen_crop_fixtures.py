@@ -194,6 +194,7 @@ def small_set():
     files["truncated.jpg"] = (good[: len(good) // 2], "JPEG cut in half")
     p = bytearray(png(up)); i = p.find(b"IDAT"); p[i + 10:i + 30] = bytes(20)
     files["corrupt.png"] = (bytes(p), "PNG with zeroed IDAT bytes (bad CRC and data)")
+    files["zero_bytes.jpg"] = (b"", "Empty file named .jpg (0 bytes)")
     files["not_an_image.jpg"] = (b"This is a plain text file named .jpg, not an image.\n", "Text file with a .jpg name")
     files["claims_200000001px.png"] = (png_header_only(66666667, 3), "PNG header claiming 66,666,667 x 3 = 200,000,001 px, no pixel data")
 

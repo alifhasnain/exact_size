@@ -60,7 +60,8 @@ class SourceProbe {
     }
     try {
       final size = pfd.statSize;
-      if (size <= 0) return const ProbeErr(Reason.sourceUnavailable); // not a regular file
+      if (size == 0) return const ProbeErr(Reason.corruptInput); // empty file (FEAT-001 OQ-T1)
+      if (size < 0) return const ProbeErr(Reason.sourceUnavailable); // not a regular file
       final src = FdByteSource(pfd.fd, size);
       final container = checkContainer(src);
       if (container is ContainerError) return ProbeErr(container.reason);

@@ -33,7 +33,7 @@ void main() {
 
     test('every valid small fixture gets a format and a size', () {
       final names = Directory(dir).listSync().whereType<File>().map((f) => f.uri.pathSegments.last).toList()..sort();
-      const damaged = {'truncated.jpg', 'corrupt.png', 'not_an_image.jpg', 'claims_200000001px.png', 'MANIFEST.md'};
+      const damaged = {'truncated.jpg', 'corrupt.png', 'not_an_image.jpg', 'zero_bytes.jpg', 'claims_200000001px.png', 'MANIFEST.md'};
       for (final n in names.where((n) => !damaged.contains(n))) {
         final r = checkContainer(fixture(n));
         expect(r, isA<ContainerOk>(), reason: n);

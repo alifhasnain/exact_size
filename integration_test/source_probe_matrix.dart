@@ -26,7 +26,7 @@ void main() {
 
   /// Expected result per fixture; null orientation = don't check.
   Object expected(String n) {
-    if (n == 'not_an_image.jpg' || n == 'truncated.jpg' || n == 'corrupt.png') return Reason.corruptInput;
+    if (n == 'not_an_image.jpg' || n == 'truncated.jpg' || n == 'corrupt.png' || n == 'zero_bytes.jpg') return Reason.corruptInput;
     if (n == 'claims_200000001px.png') return Reason.imageTooLarge;
     final m = RegExp(r'^orient_(\d)').firstMatch(n);
     final orientation = switch (m?.group(1)) {

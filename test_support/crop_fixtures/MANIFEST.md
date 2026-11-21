@@ -30,6 +30,7 @@ is used. 12 MP takes about 10 s and 50 MP about 1 min on the dev PC.
 | `depth16.png` | 16-bit grayscale PNG | 201 | `56dcf3c862094a9d9812d8ae0a1a8c2e8de27e8d0c31a7bd8fb03b948957d7e1` |
 | `display_p3.png` | PNG tagged Display P3 (cHRM/gAMA) | 439 | `46f7f30edb4f5e22b812deb990c40307c9a1f8a65ea65e44695d6fa949043514` |
 | `gray.png` | 8-bit grayscale PNG | 260 | `cfe44e1f2e32d7de542da62e2f6a1b7c3df353507180bb392ce9a20d390370aa` |
+| `zero_bytes.jpg` | Empty file named .jpg (0 bytes) | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
 | `not_an_image.jpg` | Text file with a .jpg name | 52 | `8751c3fcb0e7b85ca86993a55bcb054e4e6695d9e91ce3357f5963d78a37e967` |
 | `orient_0_exif.jpg` | EXIF orientation 0 (invalid); treat as 1 | 2190 | `c47fdcc6218ad9e326b80780b0a8645a8555b99da2aa22298c45177cb6961d57` |
 | `orient_1.heic` | HEIC, no transform | 1775 | `666f18b686e569d90ad71cdd99ea2b4471bf0d8ae5e84feee8670df8695219c4` |
