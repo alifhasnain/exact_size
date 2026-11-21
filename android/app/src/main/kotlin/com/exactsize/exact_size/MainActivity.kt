@@ -3,12 +3,18 @@ package com.exactsize.exact_size
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.os.StatFs
+import android.provider.MediaStore
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.core.content.FileProvider
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
+import java.io.IOException
+import java.security.SecureRandom
 
 /**
  * FEAT-001 system picker bridge (ADR-006, tech.md section 4). Only enum names, booleans and the
@@ -19,7 +25,12 @@ class MainActivity : FlutterActivity() {
     private companion object {
         const val CHANNEL = "exactsize/system_picker"
         const val REQUEST_GALLERY = 4101
+        const val REQUEST_CAMERA = 4102
         const val KEY_OUTSTANDING = "exactsize.pick.outstanding"
+        const val KEY_PENDING_CAPTURE = "es.pendingCapture"
+
+        /** Below this much free cache space the camera is not started (FR-5, OQ-T3). */
+        const val MIN_FREE_BYTES = 32L * 1024 * 1024
 
         /** One pending result, cleared by takeResult (FR-15). Survives activity recreation. */
         var slot: Map<String, Any?>? = null
@@ -28,8 +39,12 @@ class MainActivity : FlutterActivity() {
     private var channel: MethodChannel? = null
     private var launchOutstanding = false
 
+    /** Random name of the camera file while the camera app is open (FR-11, FR-17 marker). */
+    private var pendingCapture: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         launchOutstanding = savedInstanceState?.getBoolean(KEY_OUTSTANDING) ?: false
+        pendingCapture = savedInstanceState?.getString(KEY_PENDING_CAPTURE)
         super.onCreate(savedInstanceState)
         // G1 finding (g): the launcher icon tapped while a picker or the camera runs in this task
         // would start a second MainActivity on top; finish it so the system UI stays in front.
@@ -40,6 +55,7 @@ class MainActivity : FlutterActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(KEY_OUTSTANDING, launchOutstanding)
+        pendingCapture?.let { outState.putString(KEY_PENDING_CAPTURE, it) }
         super.onSaveInstanceState(outState)
     }
 
@@ -65,6 +81,8 @@ class MainActivity : FlutterActivity() {
     private fun handle(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "launch" -> result.success(launch(call.argument<String>("source")))
+            "cameraAvailable" -> result.success(Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager) != null)
+            "pendingCaptureName" -> result.success(pendingCapture)
             "takeResult" -> {
                 val r = slot
                 slot = null
@@ -79,7 +97,8 @@ class MainActivity : FlutterActivity() {
         if (launchOutstanding) return "busy"
         return when (source) {
             "gallery" -> launchGallery()
-            else -> "unavailable" // camera: T11; files: FR-21 task
+            "camera" -> launchCamera()
+            else -> "unavailable" // files: FR-21 task
         }
     }
 
@@ -106,11 +125,62 @@ class MainActivity : FlutterActivity() {
         return "unavailable"
     }
 
+    private fun launchCamera(): String {
+        if (StatFs(cacheDir.path).availableBytes < MIN_FREE_BYTES) return "lowSpace"
+        val dir = File(cacheDir, "camera")
+        val name = randomHex(16) + ".jpg"
+        val file = File(dir, name)
+        try {
+            dir.mkdirs()
+            if (!file.createNewFile()) return "lowSpace"
+        } catch (_: IOException) {
+            return "lowSpace"
+        }
+        val uri = FileProvider.getUriForFile(this, "$packageName.camera", file)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            .putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        try {
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, REQUEST_CAMERA)
+        } catch (_: ActivityNotFoundException) {
+            file.delete()
+            return "unavailable"
+        }
+        pendingCapture = name
+        launchOutstanding = true
+        return "launched"
+    }
+
+    private fun randomHex(bytes: Int): String =
+        ByteArray(bytes).also { SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
+
     @Deprecated("FlutterActivity has no ActivityResultRegistry; ADR-006 uses startActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_GALLERY) return
+        when (requestCode) {
+            REQUEST_GALLERY -> galleryResult(resultCode, data)
+            REQUEST_CAMERA -> cameraResult(resultCode)
+            else -> return
+        }
+        channel?.invokeMethod("resultReady", null)
+    }
+
+    private fun cameraResult(resultCode: Int) {
+        launchOutstanding = false
+        val name = pendingCapture
+        pendingCapture = null
+        // The camera's own result extras (thumbnail) are never read; the file is the result.
+        slot = if (resultCode == RESULT_OK && name != null) {
+            val uri = FileProvider.getUriForFile(this, "$packageName.camera", File(File(cacheDir, "camera"), name))
+            mapOf("origin" to "camera", "outcome" to "captured", "uri" to uri.toString(), "fileName" to name)
+        } else {
+            mapOf("origin" to "camera", "outcome" to "cancelled", "fileName" to name)
+        }
+    }
+
+    private fun galleryResult(resultCode: Int, data: Intent?) {
         launchOutstanding = false
         // Only the result URI is read; extras (including any file name) are ignored (FR-19).
         val uri = if (resultCode == RESULT_OK) data?.data else null
@@ -119,6 +189,5 @@ class MainActivity : FlutterActivity() {
             uri == null -> mapOf("origin" to "gallery", "outcome" to "notOpenable")
             else -> mapOf("origin" to "gallery", "outcome" to "picked", "uri" to uri.toString())
         }
-        channel?.invokeMethod("resultReady", null)
     }
 }

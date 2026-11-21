@@ -103,7 +103,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `MainActivity.kt` (stays a `FlutterActivity` subclass): `MethodChannel('exactsize/system_picker')`; `launch(gallery)` with `isPhotoPickerAvailable` → `PickVisualMedia` `ImageOnly`, else or on `ActivityNotFoundException` → `ACTION_OPEN_DOCUMENT` `CATEGORY_OPENABLE` `image/*`, both fail → `unavailable`; `onActivityResult` → one pending slot (`Picked`/`Cancelled`), result extras never read; `takeResult` returns and clears the slot; `resultReady` sent when an engine is attached; `launchOutstanding` kept in the saved-state `Bundle` → `busy`. Every entry point catches `Throwable` and returns an enum code with a null message; no `android.util.Log`.
 - **Done when:** debug build runs on API 36.1; a debug-only manual check (picker opens, pick, cancel, double tap → one picker) passes; T05 Kotlin grep test passes; code review confirms no exception text crosses the channel.
 
-### - [ ] FEAT-001-T11 — Kotlin bridge part 2: camera, low space, marker
+### - [x] FEAT-001-T11 — Kotlin bridge part 2: camera, low space, marker
 - **Implements:** FR-4, FR-5, FR-6, FR-11, FR-15, FR-19 · **ADRs:** ADR-006
 - **Depends on:** T10
 - **Size:** M
