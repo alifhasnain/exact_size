@@ -59,3 +59,4 @@ The user is the **Product Owner** and makes every product decision.
 
 ## Budget (Claude Team Standard)
 Keep context small: read only the docs a stage needs, edit sections instead of rewriting files, keep chat summaries short and put detail in the docs.
+- impeccable runs lean (Product Owner, 2026-11-21, $25 plan): no image comps, no reviewer subagents, no multi-round critiques; one short design pass on Material 3, build in Flutter, verify with one emulator screenshot per key state.
