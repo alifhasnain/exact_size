@@ -116,4 +116,65 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - cropTargetTooLarge keeps "Essas" (for English "That").
      - The split between "celular" and "dispositivo" is kept.
   4. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
+- **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
+- **Status:** AI-reviewed only (no native speaker).
+
+## hi (hi-IN)
+
+- **Date:** 2026-11-21. Keys: all 65 untranslated.
+- **Models:** drafted by Claude Opus 5.5 (vendored skill `localize-hi`). Blind back-translation review of all keys by Claude Sonnet. Second blind review of the high-risk keys by Claude Haiku.
+- **Variant:** Modern Standard Hindi in Devanagari. Formal `आप` imperatives (-ें), with tech loanwords (फ़ाइल, ऐप, ज़ूम, स्टोरेज). The danda (।) ends sentences. JPEG, PNG and KB stay in Latin script. Digits 0–9 (Latin), because the numbers arrive already formatted from code and the Flutter `hi` locale uses Latin digits [Assumption].
+- **Glossary:**
+
+  | English | Hindi |
+  |---|---|
+  | phone | फ़ोन |
+  | device | डिवाइस |
+  | photo | फ़ोटो (feminine) |
+  | image | इमेज (feminine) |
+  | pixel dimensions | (पिक्सेल) माप |
+  | size (KB) | साइज़ |
+  | file size | फ़ाइल साइज़ |
+  | range | साइज़ रेंज |
+  | crop area | क्रॉप क्षेत्र |
+  | enlarge | बड़ा करना |
+  | soft / blurry | थोड़ी धुंधली / धुंधली |
+  | zoom in / zoom out | ज़ूम इन करें / ज़ूम आउट करें |
+  | move | खिसकाएँ |
+  | rotate clockwise / counter-clockwise | घड़ी की दिशा में / घड़ी की उल्टी दिशा में घुमाएँ |
+  | take a photo | फ़ोटो लें |
+  | photo picker | फ़ोटो चुनने की स्क्रीन |
+  | gallery | गैलरी |
+  | enter | डालें |
+  | try again | फिर से कोशिश करें |
+  | stored online | क्लाउड में सेव |
+  | whole number | बिना दशमलव वाली संख्या |
+  | padding | पैडिंग |
+  | px | पिक्सेल |
+
+- **Fixed after review (13):**
+  - outcomeCantReachRange, outcomeCantReachMax and outcomeImageTooLarge: "पिक्सेल माप", so they are not confused with KB.
+  - outcomeHintTryJpeg: "PNG फ़ाइल का साइज़".
+  - noticePaddingAdded: "फ़ाइल में".
+  - targetWholeNumbersOnly: "बिना दशमलव वाली संख्या".
+  - cropCancelled: "प्रक्रिया रद्द की गई".
+  - cropNoticeEnlarged: "px" → "पिक्सेल".
+  - cropButtonCentre: "बीच में लाएँ".
+  - cropAnnounceStrongEnlargement: "हम आपसे पूछेंगे".
+  - noticeNarrowRange: "साइज़ रेंज".
+  - noticeTransparencyFlattened: "सफ़ेद कर दिए गए हैं".
+  - cropConfirmEnlarge: "इसे {factor}× बड़ा करना पड़ेगा".
+- **High-risk keys (second review):** the same 12 as for es. The second review found no grammar errors.
+- **Open list (Product Owner to decide):**
+  1. **pickPrivacyNote:** "कभी इंटरनेट पर अपलोड नहीं होतीं" ("never uploaded to the internet") is an absolute claim, the same as in English, es and pt. The reviewer pointed out that the user later uploads the resized photo to the form themselves, so "never" can read as false. It suggested limiting the claim to the app. The final copy belongs to FEAT-016. This applies to every language.
+  2. **Reviewer suggestions not taken,** because they add or change meaning:
+     - pickCaptureLost: name a cause ("not saved" or "camera closed").
+     - outcomeWriteFailed: add "your original is safe".
+     - pickItemNotOpenable: drop "आइटम".
+     - cropConfirmEnlarge: "continue with this photo".
+  3. **Kept as in English, against a reviewer flag:**
+     - The split between इमेज and फ़ोटो is kept.
+     - The split between डिवाइस and फ़ोन is kept.
+     - "पैडिंग" is kept as a loanword.
+  4. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
 - **Status:** AI-reviewed only (no native speaker).
