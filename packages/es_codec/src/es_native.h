@@ -22,11 +22,15 @@
 ES_EXPORT int32_t es_bitmap_copy_rgba(void *java_vm, void *bitmap, uint8_t *out,
                                       int64_t out_len, int32_t *width, int32_t *height);
 
-// FEAT-002-T03 spike (ADR-005): stb_image_resize2 Catmull-Rom, 4 channels,
-// 8-bit, clamped edges, tightly packed. [alpha] 1 = straight RGBA (stb
-// premultiplies internally), 0 = opaque 4-channel. Returns 0, or -1 on failure.
-ES_EXPORT int32_t es_resize_rgba_catmull_rom(const uint8_t *in, int32_t in_w, int32_t in_h,
-                                             uint8_t *out, int32_t out_w, int32_t out_h,
-                                             int32_t alpha);
+// FEAT-002-T13 (ADR-005, FR-8, FR-9, FR-14): one stb_image_resize2 pass from
+// 4-channel 8-bit pixels at [in_stride] bytes per row to a tight
+// [out_w] x [out_h] x 4 buffer, separate x/y scales, clamped edges.
+// [alpha] 1 = straight RGBA (stb premultiplies internally, no dark fringe),
+// 0 = opaque 4-channel. [filter] 0 = Catmull-Rom (the pinned production
+// filter), 1 = Mitchell (comparison chart only). Returns 0, or -1 on bad
+// arguments or allocation failure.
+ES_EXPORT int32_t es_resample(const uint8_t *in, int32_t in_w, int32_t in_h, int32_t in_stride,
+                              uint8_t *out, int32_t out_w, int32_t out_h, int32_t alpha,
+                              int32_t filter);
 
 #endif

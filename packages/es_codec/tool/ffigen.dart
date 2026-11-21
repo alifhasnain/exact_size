@@ -35,7 +35,7 @@ Future<void> main() async {
   await _generate(
     root: root,
     header: 'src/es_native.h',
-    functions: {'es_bitmap_copy_rgba', 'es_resize_rgba_catmull_rom'},
+    functions: {'es_bitmap_copy_rgba', 'es_resample'},
     out: 'es_native',
     license: '''
 // Bindings for es_codec's own C code (src/es_native.h).

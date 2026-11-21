@@ -175,7 +175,7 @@ void main() {
     final src = malloc<Uint8>(bytes), dst = malloc<Uint8>(1633 * 1225 * 4);
     copyBitmapRgba(b, src, bytes);
     free(b);
-    resizeRgbaCatmullRom(src, bw, bh, dst, 1633, 1225, alpha: false);
+    resample(src, bw, bh, bw * 4, dst, 1633, 1225, alpha: false);
     final peak12 = (rssKb() - base) ~/ 1024;
     malloc
       ..free(src)

@@ -74,6 +74,7 @@ CLibrary codecLibrary(OS targetOS) => CLibrary(
     for (final s in _jpegSources) '$_ljt/$s',
     'src/es_stb_resize.c', // stb_image_resize2 (ADR-005, FEAT-002-T01)
     'src/es_bitmap.c', // Bitmap pixels via jnigraphics (FEAT-002-T03)
+    'src/es_crop.c', // es_resample (FEAT-002-T13)
   ],
   includes: [
     'third_party/libjpeg-turbo-config', // hand-written CMake-generated headers

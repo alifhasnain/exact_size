@@ -17,6 +17,7 @@ import 'app_start_test.dart' as app_start;
 import 'compression_runner_test.dart' as compression_runner;
 import 'corpus/corpus_test.dart' as corpus;
 import 'crop_spike_test.dart' as crop_spike;
+import 'es_resample_test.dart' as es_resample;
 import 'golden_determinism_test.dart' as golden_determinism;
 import 'interop_test.dart' as interop;
 import 'jpeg_spike_test.dart' as jpeg_spike;
@@ -29,6 +30,7 @@ void main() {
   group('app_start', app_start.main);
   group('compression_runner', compression_runner.main);
   group('crop_spike', crop_spike.main);
+  group('es_resample', es_resample.main);
   group('golden_determinism', golden_determinism.main);
   group('interop', interop.main);
   group('jpeg_spike', jpeg_spike.main);

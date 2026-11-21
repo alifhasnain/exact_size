@@ -42,18 +42,22 @@ external int es_bitmap_copy_rgba(
     ffi.Pointer<ffi.Uint8>,
     ffi.Int32,
     ffi.Int32,
+    ffi.Int32,
     ffi.Pointer<ffi.Uint8>,
+    ffi.Int32,
     ffi.Int32,
     ffi.Int32,
     ffi.Int32,
   )
 >(isLeaf: true)
-external int es_resize_rgba_catmull_rom(
+external int es_resample(
   ffi.Pointer<ffi.Uint8> in$,
   int in_w,
   int in_h,
+  int in_stride,
   ffi.Pointer<ffi.Uint8> out,
   int out_w,
   int out_h,
   int alpha,
+  int filter,
 );

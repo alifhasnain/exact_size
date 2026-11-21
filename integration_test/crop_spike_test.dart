@@ -136,7 +136,7 @@ void main() {
       final src = malloc<Uint8>(iw * ih * 4), dst = malloc<Uint8>(ow * oh * 4);
       try {
         src.asTypedList(iw * ih * 4).setAll(0, syntheticPhoto(iw, ih, channels: 4));
-        lines.add('stb $label RGBA: ${stats(time(20, () => resizeRgbaCatmullRom(src, iw, ih, dst, ow, oh, alpha: true)))}');
+        lines.add('stb $label RGBA: ${stats(time(20, () => resample(src, iw, ih, iw * 4, dst, ow, oh, alpha: true)))}');
       } finally {
         malloc.free(src);
         malloc.free(dst);

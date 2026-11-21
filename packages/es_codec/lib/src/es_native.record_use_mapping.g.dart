@@ -13,5 +13,5 @@
 /// Mapping from Dart function name to native symbol name.
 const recordUseMapping = {
   'es_bitmap_copy_rgba': 'es_bitmap_copy_rgba',
-  'es_resize_rgba_catmull_rom': 'es_resize_rgba_catmull_rom',
+  'es_resample': 'es_resample',
 };
