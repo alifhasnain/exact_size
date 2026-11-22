@@ -197,6 +197,10 @@ def small_set():
     files["zero_bytes.jpg"] = (b"", "Empty file named .jpg (0 bytes)")
     files["not_an_image.jpg"] = (b"This is a plain text file named .jpg, not an image.\n", "Text file with a .jpg name")
     files["claims_200000001px.png"] = (png_header_only(66666667, 3), "PNG header claiming 66,666,667 x 3 = 200,000,001 px, no pixel data")
+    # FEAT-001-T15 (AC-3.5): a video reaching the app, and a 250 MP image.
+    files["claims_250mp.png"] = (png_header_only(20000, 12500), "PNG header claiming 20,000 x 12,500 = 250 MP, no pixel data (FEAT-001-T15)")
+    files["video_ftyp_only.mp4"] = (struct.pack(">I", 24) + b"ftypisom" + struct.pack(">I", 512) + b"isomiso2",
+                                    "MP4 with only an ftyp box (brand isom), no media (FEAT-001-T15)")
 
     # Sizes and charts.
     for w, h in ((1, 1), (7, 7), (200, 200), (1000, 100)):

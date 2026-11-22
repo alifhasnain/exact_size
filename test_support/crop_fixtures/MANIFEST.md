@@ -24,13 +24,13 @@ is used. 12 MP takes about 10 s and 50 MP about 1 min on the dev PC.
 | `chart_diagonal.png` | Diagonal-line chart (aliasing check) | 1988 | `0abf65507ef6633b51f4da69ee7fa3bff8870ca77ae37919a18a4de0800c0924` |
 | `chart_zone_plate.png` | Zone plate (resampling check) | 126979 | `2b76adda866ba9fa508a4ef56a91d0ae189941746a46a7604b8f6d5849bd9e50` |
 | `claims_200000001px.png` | PNG header claiming 66,666,667 x 3 = 200,000,001 px, no pixel data | 45 | `42757ee05a1eacb9c78a76b978eeeb28e4a5d3f263b4d11d11909966cd65eeb5` |
+| `claims_250mp.png` | PNG header claiming 20,000 x 12,500 = 250 MP, no pixel data (FEAT-001-T15) | 45 | `574894e7ea8e96bdab1ec5229381c9494177fd01527a1a73aeec5a0220b3fd52` |
 | `cmyk.jpg` | CMYK JPEG (Adobe marker) | 3120 | `e6c3723844fae553358f71abf774fe4b0a6052a0858617ce8a3c3cb225bb2f01` |
 | `corrupt.png` | PNG with zeroed IDAT bytes (bad CRC and data) | 379 | `4cbe56dd1367f4c7e909db6e13ac5ebb1cb4e64f70e95687d9d54d36f16abb0d` |
 | `depth10.heic` | 10-bit HEIC | 1443 | `381e428fc1d74bf32a8ad3becc346ed579e16dc0eefa51e0be72d425ec559a32` |
 | `depth16.png` | 16-bit grayscale PNG | 201 | `56dcf3c862094a9d9812d8ae0a1a8c2e8de27e8d0c31a7bd8fb03b948957d7e1` |
 | `display_p3.png` | PNG tagged Display P3 (cHRM/gAMA) | 439 | `46f7f30edb4f5e22b812deb990c40307c9a1f8a65ea65e44695d6fa949043514` |
 | `gray.png` | 8-bit grayscale PNG | 260 | `cfe44e1f2e32d7de542da62e2f6a1b7c3df353507180bb392ce9a20d390370aa` |
-| `zero_bytes.jpg` | Empty file named .jpg (0 bytes) | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
 | `not_an_image.jpg` | Text file with a .jpg name | 52 | `8751c3fcb0e7b85ca86993a55bcb054e4e6695d9e91ce3357f5963d78a37e967` |
 | `orient_0_exif.jpg` | EXIF orientation 0 (invalid); treat as 1 | 2190 | `c47fdcc6218ad9e326b80780b0a8645a8555b99da2aa22298c45177cb6961d57` |
 | `orient_1.heic` | HEIC, no transform | 1775 | `666f18b686e569d90ad71cdd99ea2b4471bf0d8ae5e84feee8670df8695219c4` |
@@ -71,3 +71,5 @@ is used. 12 MP takes about 10 s and 50 MP about 1 min on the dev PC.
 | `size_7x7.png` | 7x7 pattern | 115 | `ef239c06af2e52a23d6afc7eba539463351b8a04b552512b795444e5c1e3dec6` |
 | `strip_strokes.png` | Thin-stroke strip, signature-like, synthetic | 1586 | `251ed8755c036150a2dc55ed7dbcd87920986f83091f6c3c247d4cb4a700d5b3` |
 | `truncated.jpg` | JPEG cut in half | 1077 | `320936651a46d4448c1e4068a831d9f8ba7bacfcba5db33b8b2a6027862ab40f` |
+| `video_ftyp_only.mp4` | MP4 with only an ftyp box (brand isom), no media (FEAT-001-T15) | 24 | `c8c5af84ac765d911a9ab05bc9a19d15d0b1bc5cf0654eff4469ce536410654e` |
+| `zero_bytes.jpg` | Empty file named .jpg (0 bytes) | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
