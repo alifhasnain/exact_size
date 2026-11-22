@@ -152,7 +152,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `lib/features/pick/presentation/pick_screen.dart` built to the G3 design: buttons call `PickController.launch`, camera disabled (not hidden) with the reason text, messages in a polite live region with icon and text, progress and Cancel after 500 ms; routing per OQ-4: when `current` changes, navigate to the next step (popping the crop screen and calling `CropController.end()` if one is open); start-over calls `release()`; app start lands on the screen OQ-4 names with nothing restored.
 - **Done when:** widget tests with `FakeSystemPicker` and a fake probe pass: one tap → one `launch`; disabled camera shows the reason and `Semantics` reports it unavailable; a refusal shows the message and both buttons stay enabled; progress appears at 500 ms and Cancel returns to idle; an accepted pick navigates once; golden screenshots match the G3 design (no photos on this screen).
 
-### - [ ] FEAT-001-T18 — Pick screen accessibility, 200% font and RTL
+### - [x] FEAT-001-T18 — Pick screen accessibility, 200% font and RTL
 - **Implements:** NFR-4, NFR-5, AC-7.1, AC-7.2, AC-7.4, AC-3.4 · **ADRs:** —
 - **Depends on:** T17, T07
 - **Size:** S

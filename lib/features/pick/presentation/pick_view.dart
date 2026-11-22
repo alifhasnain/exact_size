@@ -7,9 +7,10 @@ import 'pick_controller.dart';
 import 'pick_messages.dart';
 
 /// The pick screen's look (FEAT-001-T16 design, gate G3): the front of the ID
-/// photo booth. Stateless: it draws a [PickState] and reports taps; wiring,
-/// routing and focus restore are T17.
-class PickView extends StatelessWidget {
+/// photo booth. It draws a [PickState] and reports taps; [PickScreen] wires it.
+/// When a system screen or the opening step ends, focus returns to the button
+/// that was used (AC-7.1, T18).
+class PickView extends StatefulWidget {
   const PickView({
     super.key,
     required this.state,
@@ -26,7 +27,35 @@ class PickView extends StatelessWidget {
   final bool showFiles;
 
   @override
+  State<PickView> createState() => _PickViewState();
+}
+
+class _PickViewState extends State<PickView> {
+  final _focus = {for (final s in PickSource.values) s: FocusNode()};
+
+  @override
+  void didUpdateWidget(PickView old) {
+    super.didUpdateWidget(old);
+    final source = widget.state.lastSource;
+    if (old.state.phase != PickPhase.idle && widget.state.phase == PickPhase.idle && source != null) {
+      // After the frame: the keys come back only now if the opening step hid them.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _focus[source]!.requestFocus();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final node in _focus.values) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = widget.state;
     final l = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final opening = state.phase == PickPhase.opening && state.showProgress;
@@ -54,12 +83,13 @@ class PickView extends StatelessWidget {
                       const SizedBox(height: 32),
                       _Cabin(
                         child: opening
-                            ? _Opening(label: l.pickOpening, onCancel: onCancel)
+                            ? _Opening(label: l.pickOpening, onCancel: widget.onCancel)
                             : _Keys(
                                 state: state,
                                 l: l,
-                                showFiles: showFiles,
-                                onLaunch: onLaunch,
+                                showFiles: widget.showFiles,
+                                onLaunch: widget.onLaunch,
+                                focus: _focus,
                               ),
                       ),
                       const Spacer(),
@@ -109,11 +139,13 @@ class _Keys extends StatelessWidget {
     required this.l,
     required this.showFiles,
     required this.onLaunch,
+    required this.focus,
   });
   final PickState state;
   final AppLocalizations l;
   final bool showFiles;
   final void Function(PickSource) onLaunch;
+  final Map<PickSource, FocusNode> focus;
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +164,7 @@ class _Keys extends StatelessWidget {
             ),
           ),
         FilledButton.icon(
+          focusNode: focus[PickSource.camera],
           style: FilledButton.styleFrom(minimumSize: tall, textStyle: big),
           onPressed: state.cameraAvailable
               ? () => onLaunch(PickSource.camera)
@@ -159,6 +192,7 @@ class _Keys extends StatelessWidget {
           ),
         const SizedBox(height: 12),
         FilledButton.tonalIcon(
+          focusNode: focus[PickSource.gallery],
           style: FilledButton.styleFrom(minimumSize: tall, textStyle: big),
           onPressed: () => onLaunch(PickSource.gallery),
           icon: const Icon(Icons.photo_library_outlined),
@@ -167,6 +201,7 @@ class _Keys extends StatelessWidget {
         if (showFiles) ...[
           const SizedBox(height: 8),
           TextButton.icon(
+            focusNode: focus[PickSource.files],
             onPressed: () => onLaunch(PickSource.files),
             icon: const Icon(Icons.folder_open_outlined),
             label: Text(l.pickChooseFiles),
