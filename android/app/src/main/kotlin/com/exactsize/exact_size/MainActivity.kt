@@ -79,6 +79,22 @@ class MainActivity : FlutterActivity() {
         channel?.invokeMethod("resultReady", null)
     }
 
+    /**
+     * FR-12, best effort: the session ends when the activity finishes, so no camera file outlives it.
+     * Not for the duplicate launcher instance (a capture may be in progress). Process kills and
+     * force-stops never get here; the start-up sweep covers them. Nothing is logged.
+     */
+    override fun onDestroy() {
+        if (isFinishing && !duplicate) {
+            try {
+                File(cacheDir, "camera").listFiles()?.forEach { it.delete() }
+            } catch (_: Throwable) {
+                // best effort; the next start sweeps
+            }
+        }
+        super.onDestroy()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(KEY_OUTSTANDING, launchOutstanding)
         pendingCapture?.let { outState.putString(KEY_PENDING_CAPTURE, it) }

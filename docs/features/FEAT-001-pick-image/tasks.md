@@ -173,7 +173,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `MainActivity.kt`: `onResume` with the marker still set and no result delivered in this resume → `CaptureLost(name)` (tech section 3; ordering from G1 item b). Dart handling already exists from T13. Checklist rows added to the Test record: `am kill` after pressing home with the camera open, then capture → recovered and probed; same with the file deleted before return → capture-lost message and no file.
 - **Done when:** both rows pass on API 36.1 and API 28; a unit test covers `CaptureLost` with and without a file name; the camera folder is empty after the lost case.
 
-### - [ ] FEAT-001-T21 — Best-effort camera file delete on finish (Should)
+### - [x] FEAT-001-T21 — Best-effort camera file delete on finish (Should)
 - **Implements:** FR-12 · **ADRs:** ADR-006
 - **Depends on:** T11
 - **Size:** S
@@ -303,6 +303,14 @@ Defects found and fixed in T20:
 - **Duplicate launcher instance:** it finished at once (G1 finding g) but still ran Dart `main()` without the marker, and its start-up sweep deleted the capture in progress. It now answers every bridge call with an error, so the sweep skips.
 - **Sweep race after recreation:** `onActivityResult` cleared the marker before Dart asked for it, so the sweep deleted the just-captured file. `pendingCaptureName` now also returns the file of a camera result that hasn't been taken yet.
 - **Exists-then-length gap (T13 code):** the file could vanish between the two calls, giving an unhandled `PathNotFoundException` that printed an app-data path to logcat and stalled the controller's result queue. A single `stat()` call replaces them. Unexpected errors are now caught without printing, the attempt's file is deleted, and the screen shows "can't open this item".
+
+### T21 — 2026-11-23 (API 36.1 emulator, profile build)
+| # | Check | Image | Result |
+|---|---|---|---|
+| 1 | A camera file present, Back on the pick screen | API 36.1 | Pass: the activity finishes and the camera folder is empty (process still alive, so `onDestroy` ran). Observed: on Android 12+ Back does finish the root here, because Flutter handles Back itself and finishes the activity; the "back does not finish the root" hypothesis does not hold for this app |
+| 2 | Launcher icon while the gallery picker is open (duplicate instance finishes) | API 36.1 | Pass: the camera file is kept and the picker stays on top |
+| — | `am force-stop` or process kill | — | Not a finish; covered by the start-up sweep (T12) |
+| — | API 28 | — | Not run (no image; download declined at T19) |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-006 before starting a task.
