@@ -16,6 +16,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../test_support/fake_system_picker.dart';
+import '../../../../test_support/tolerant_golden_comparator.dart';
 
 const _info = SourceInfo(
     rawWidth: 40, rawHeight: 30, mime: 'image/jpeg', exifOrientation: 1, isAnimated: false, hasAlpha: false, decodePath: DecodePath.region);
@@ -141,6 +142,9 @@ void main() {
   });
 
   group('goldens (G3 design, t16/pick_screen_design.md)', () {
+    // Made on Windows, checked on Linux CI: see TolerantGoldenComparator.
+    setUpAll(useTolerantGoldens);
+
     testWidgets('idle', (tester) async {
       await pumpScreen(tester);
       await expectLater(find.byType(PickScreen), matchesGoldenFile('goldens/pick_idle.png'));
