@@ -180,7 +180,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `MainActivity.onDestroy` with `isFinishing` → delete everything in `<cache>/camera/`, `Throwable` caught, nothing logged.
 - **Done when:** checklist row: capture, then finish the activity (back on API 28; `adb shell am force-stop` is not a finish and is listed as covered by the sweep) → camera folder empty; the Android 12+ behaviour (back does not finish the root activity [Hypothesis]) is recorded on API 36.1 as observed.
 
-### - [ ] FEAT-001-T22 — "Choose from files" (Should)
+### - [x] FEAT-001-T22 — "Choose from files" (Should)
 - **Implements:** FR-21, AC-9.1 · **ADRs:** ADR-006
 - **Depends on:** T10, T13, T17 (G3 for the button)
 - **Size:** S
@@ -310,6 +310,14 @@ Defects found and fixed in T20:
 | 1 | A camera file present, Back on the pick screen | API 36.1 | Pass: the activity finishes and the camera folder is empty (process still alive, so `onDestroy` ran). Observed: on Android 12+ Back does finish the root here, because Flutter handles Back itself and finishes the activity; the "back does not finish the root" hypothesis does not hold for this app |
 | 2 | Launcher icon while the gallery picker is open (duplicate instance finishes) | API 36.1 | Pass: the camera file is kept and the picker stays on top |
 | — | `am force-stop` or process kill | — | Not a finish; covered by the start-up sweep (T12) |
+| — | API 28 | — | Not run (no image; download declined at T19) |
+
+### T22 — 2026-11-23 (API 36.1 emulator, profile build)
+| # | Check | Image | Result |
+|---|---|---|---|
+| 1 | Choose from files opens the document picker | API 36.1 | Pass: it opens on "Recent images", lists the image files only (the MP4 is not listed), and one tap returns one file |
+| 2 | Zero-byte file through the document picker (AC-3.5) | API 36.1 | Pass: corrupt-file message, log `CORRUPT_INPUT` and `CORRUPT` |
+| 3 | Valid image through the document picker | API 36.1 | Pass: hand-off at 120×80, log `ACCEPTED`, no copy in app storage (the only new files are Android's own compiled-code and profile files) |
 | — | API 28 | — | Not run (no image; download declined at T19) |
 
 ## Instructions for Claude Code

@@ -26,6 +26,7 @@ class MainActivity : FlutterActivity() {
         const val CHANNEL = "exactsize/system_picker"
         const val REQUEST_GALLERY = 4101
         const val REQUEST_CAMERA = 4102
+        const val REQUEST_FILES = 4103
         const val KEY_OUTSTANDING = "exactsize.pick.outstanding"
         const val KEY_PENDING_CAPTURE = "es.pendingCapture"
 
@@ -143,7 +144,8 @@ class MainActivity : FlutterActivity() {
         return when (source) {
             "gallery" -> launchGallery()
             "camera" -> launchCamera()
-            else -> "unavailable" // files: FR-21 task
+            "files" -> launchFiles()
+            else -> "unavailable"
         }
     }
 
@@ -168,6 +170,21 @@ class MainActivity : FlutterActivity() {
             }
         }
         return "unavailable"
+    }
+
+    /** FR-21: the document picker, images only, one selection; no fallback. */
+    private fun launchFiles(): String {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("image/*")
+        return try {
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, REQUEST_FILES)
+            launchOutstanding = true
+            "launched"
+        } catch (_: ActivityNotFoundException) {
+            "unavailable"
+        } catch (_: SecurityException) {
+            "unavailable"
+        }
     }
 
     private fun launchCamera(): String {
@@ -206,7 +223,8 @@ class MainActivity : FlutterActivity() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_GALLERY -> galleryResult(resultCode, data)
+            REQUEST_GALLERY -> galleryResult(resultCode, data, "gallery")
+            REQUEST_FILES -> galleryResult(resultCode, data, "files")
             REQUEST_CAMERA -> cameraResult(resultCode)
             else -> return
         }
@@ -232,14 +250,14 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun galleryResult(resultCode: Int, data: Intent?) {
+    private fun galleryResult(resultCode: Int, data: Intent?, origin: String) {
         launchOutstanding = false
         // Only the result URI is read; extras (including any file name) are ignored (FR-19).
         val uri = if (resultCode == RESULT_OK) data?.data else null
         slot = when {
-            resultCode != RESULT_OK -> mapOf("origin" to "gallery", "outcome" to "cancelled")
-            uri == null -> mapOf("origin" to "gallery", "outcome" to "notOpenable")
-            else -> mapOf("origin" to "gallery", "outcome" to "picked", "uri" to uri.toString())
+            resultCode != RESULT_OK -> mapOf("origin" to origin, "outcome" to "cancelled")
+            uri == null -> mapOf("origin" to origin, "outcome" to "notOpenable")
+            else -> mapOf("origin" to origin, "outcome" to "picked", "uri" to uri.toString())
         }
     }
 }

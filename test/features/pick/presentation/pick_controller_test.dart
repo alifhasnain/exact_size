@@ -126,6 +126,18 @@ void main() {
     expect(log, ['exactsize.pick outcome=ACCEPTED']);
   });
 
+  test('Choose from files: launch and a files result are handled like the gallery (FR-21, T22)', () async {
+    await start();
+    await ctl().launch(PickSource.files);
+    expect(picker.launches, [PickSource.files]);
+    expect(st().lastSource, PickSource.files);
+    picker.deliver(const Picked(uri: _uri, origin: PickOrigin.files));
+    await settle();
+    expect(st().current!.origin, PickOrigin.files);
+    expect(st().current!.cameraFile, isNull);
+    expect(log, ['exactsize.pick outcome=ACCEPTED']);
+  });
+
   test('resultReady twice gives one probe', () async {
     await start();
     picker.slot = const Picked(uri: _uri, origin: PickOrigin.gallery);

@@ -30,7 +30,6 @@ class PickScreen extends ConsumerWidget {
       state: ref.watch(pickControllerProvider),
       onLaunch: controller.launch,
       onCancel: controller.cancelOpening,
-      showFiles: false, // FR-21 (Should) is wired in T22
     );
   }
 }

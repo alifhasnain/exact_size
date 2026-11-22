@@ -81,6 +81,19 @@ void main() {
     expect(picker.launches, [PickSource.camera]);
   });
 
+  testWidgets('Choose from files: present, at least 48 dp, after gallery in TalkBack order, one tap one launch (T22)', (tester) async {
+    final handle = tester.ensureSemantics();
+    await pumpScreen(tester);
+    final files = find.ancestor(of: find.text('Choose from files'), matching: find.bySubtype<ButtonStyleButton>()).first;
+    expect(tester.getSize(files).height, greaterThanOrEqualTo(48));
+    final labels = [for (final n in tester.semantics.simulatedAccessibilityTraversal()) n.label];
+    expect(labels.indexOf('Choose from files'), greaterThan(labels.indexOf('Choose from gallery')));
+    await tester.tap(files);
+    await tester.pump();
+    expect(picker.launches, [PickSource.files]);
+    handle.dispose();
+  });
+
   testWidgets('no camera app: camera disabled, not hidden, with the reason; Semantics says unavailable', (tester) async {
     picker.camera = false;
     final handle = tester.ensureSemantics();
