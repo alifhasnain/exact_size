@@ -131,7 +131,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `pick_controller.dart`: 500 ms timer → `showProgress`; `cancelOpening()` bumps the generation, deletes the attempt's camera file, idle, no message; late `ProbeOk`/`ProbeErr` discarded; `SOURCE_UNAVAILABLE` → pick-time message. Log audit with a capturing sink.
 - **Done when:** fake-async unit tests pass: no progress at 499 ms, progress at 500 ms; Cancel then late Ok → no `current`, no file; Cancel then late Err → no message; every captured log line matches `^exactsize\.pick outcome=[A-Z_]+$` across the whole T13/T14 suite.
 
-### - [ ] FEAT-001-T15 — Pick data matrix on the emulator — gate G2
+### - [x] FEAT-001-T15 — Pick data matrix on the emulator — gate G2
 - **Implements:** FR-4, FR-6, FR-7, FR-8, FR-10, FR-11, FR-14, NFR-1, NFR-2, NFR-6, NFR-8, AC-3.1, AC-3.2, AC-3.5, AC-6.1, AC-6.2 · **ADRs:** ADR-004, ADR-006
 - **Depends on:** T02, T14
 - **Size:** M
