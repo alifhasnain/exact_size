@@ -256,6 +256,36 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 ## Test record
 _Filled in by T01, T19, T20, T21, T25 (one row per check and image: date, image, result). No URIs, paths or file names; use `[PLACEHOLDER]`._
 
+### T19 — 2026-11-22
+Images used:
+- **API 36.1:** the `Medium_Phone_API_36.1` emulator, 2 GB, Google Play image, profile build x86_64; one row on the release build.
+- **S23 Ultra (API 37):** used for the camera rows on Product Owner instruction, because the emulator's virtual-scene camera hangs the emulator. App uninstalled afterwards.
+- **API 28 AOSP and API 28 Google Play:** not run yet; no local image (see Open questions).
+
+Test images are synthetic only, pushed to the emulator's shared Pictures folder: the T02 arrow pattern 120×80, the 12 MP chart and the AC-3.5 set.
+
+| # | Check | Image | Result |
+|---|---|---|---|
+| 1 | Gallery pick: the photo picker opens with images only, allows one selection (a second tap swaps it), and shows no permission prompt; the photo is handed on | API 36.1 | Pass: hand-off at 120×80; app log `ACCEPTED` only |
+| 2 | Gallery cancel (Back) | API 36.1 | Pass: pick screen, no message, log `CANCELLED` |
+| 3 | Double tap on Choose from gallery | API 36.1 | Pass: one picker in the task, one result |
+| 4 | AC-3.5 set through the photo picker | API 36.1 | Pass: truncated JPEG and text-as-JPEG show the corrupt-file message, 250 MP header shows the too-large message. The undecodable HEIC opens on this API (N/A here; refused in CI API 28 by T15). The zero-byte file and the video are not offered by the image-only picker (N/A here; covered by T15). No file in app storage after any refusal |
+| 5 | No camera app (camera app disabled for user 0) | API 36.1 | Pass: Take a photo is disabled with the visible reason; a tap does nothing. After the camera app is re-enabled and the app resumes, the button is enabled again |
+| 6 | Low space (storage filled to 16 MiB free) | API 36.1 | Pass: low-space message, camera not launched, no camera file; space restored afterwards |
+| 7 | Don't keep activities during the gallery picker | API 36.1 | Pass: result delivered once (one `ACCEPTED`), hand-off shown |
+| 8 | `am kill` while idle, then relaunch | API 36.1 | Pass: starts on the pick screen, nothing restored, camera folder empty |
+| 9 | Airplane mode, local pick | API 36.1 | Pass: hand-off shown |
+| 10 | Back from the next step (start over) | API 36.1 | Pass: pick screen; camera folder empty |
+| 11 | No copies (AC-6.1): app storage listed after every row | API 36.1, S23 | Pass: no file except the one accepted capture before start-over |
+| 12 | Originals byte-identical (AC-6.6): SHA-256 and size after the run | API 36.1 | Pass: all 8 files match their pushed hashes; modification times unchanged |
+| 13 | Logcat clean (AC-6.3): app-process lines matching content URIs, shared-storage or app-data paths, `.jpg`, `.png` or the test file names | API 36.1, S23, release build | Pass: 0 lines from the app. The only app lines are enum outcomes. System loader lines under the app's process name only the installed APK path |
+| 14 | Merged manifest permissions (AC-6.4), release APK | build | Pass: no INTERNET, camera, storage or media permission; only the AndroidX dynamic-receiver permission (allowed in T09). Debug and profile builds add INTERNET for Flutter tooling only |
+| 15 | Release build starts from a launcher intent and picks | API 36.1 | Pass. Flutter logs an "intent verification" warning for external intents; a launcher start still works. To recheck for the share target (T24) |
+| 16 | Camera cancel | S23 | Pass: pick screen, no message, the empty camera file deleted, log `CANCELLED` |
+| 17 | Camera capture | S23 | Pass: hand-off at 4000×3000; exactly one file in the private camera folder; nothing new in DCIM or Pictures; start-over deletes it |
+| 18 | Don't keep activities during the camera | — | Not re-run: the developer setting would have to be changed on the Product Owner's phone. Covered by gate G1 item (b) on the S23 |
+| 19 | Timing, return from the system UI to hand-off (informational, NFR-1) | API 36.1, S23 | Small JPEG: median 320 ms (5 runs). 12 MP JPEG: median 458 ms (5 runs). Camera 12 MP on the S23: 436 ms (1 run) |
+
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-006 before starting a task.
 - Implement only the current task, in order; tick its checkbox and add a line to `docs/CHANGELOG.md` when done.
