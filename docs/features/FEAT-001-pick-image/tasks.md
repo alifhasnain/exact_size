@@ -145,7 +145,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** stop work and hand the Product Owner a non-visual checklist only (no layouts, colours or mock-ups from the developer): elements (Take a photo, Choose from gallery, Choose from files (Should), privacy line (Should), disabled-camera reason, message area with icon and text, "Opening your photo…" with Cancel), states from `PickState`, constraints (TalkBack order AC-7.1, ≥ 48 dp, 200% font with scroll, RTL mirroring with unmirrored camera and gallery icons, no colour-only information, focus back on the used button), the T06 strings, and PRD OQ-4 (photo first or target first, start-screen owner, where a pending start-up result is routed). The Product Owner decides OQ-4 and designs the screen with impeccable.
 - **Done when:** the OQ-4 decision is recorded in the PRD by the Product Owner (via `/approve` flow) and the impeccable design reference (file or link, no real photos) and its date are in the PR and `docs/CHANGELOG.md`; gate G3 is recorded. T17, T18 and the UI parts of T22 and T23 do not start before this.
 
-### - [ ] FEAT-001-T17 — Pick screen and flow hand-off
+### - [x] FEAT-001-T17 — Pick screen and flow hand-off
 - **Implements:** FR-1, FR-5, FR-9, FR-11 (start-over caller), FR-13, FR-16, NFR-4, AC-1.1–1.3, AC-2.5, AC-3.4, AC-4.2 · **ADRs:** ADR-001
 - **Depends on:** T16 (G3), T13, T14
 - **Size:** M
