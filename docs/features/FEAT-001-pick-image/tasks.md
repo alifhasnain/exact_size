@@ -159,7 +159,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** semantics order and labels, focus restore to `lastSource` after returning from a system UI, text scale 2.0 with scrolling, `Directionality.rtl` with unmirrored icons; fixes found by the tests.
 - **Done when:** widget tests pass: semantics order Take a photo → Choose from gallery → (files) → (privacy line); focus returns to the used button; at text scale 2.0 no overflow and every button ≥ 48 dp; in Arabic the order mirrors and the icons are not mirrored; each of the 6 locales renders every pick string without a missing-key fallback.
 
-### - [ ] FEAT-001-T19 — Emulator run and scripted checklist on three images — gate G4
+### - [x] FEAT-001-T19 — Emulator run and scripted checklist on three images — gate G4
 - **Implements:** FR-2, FR-3, FR-4, FR-5, FR-9, FR-13, FR-14, FR-15, FR-16, FR-18, FR-19, NFR-1, NFR-2, NFR-3, NFR-7, NFR-10, AC-1.4, AC-1.5, AC-2.1–2.6, AC-4.1, AC-5.1, AC-5.3, AC-5.4, AC-6.1, AC-6.3–6.6 · **ADRs:** ADR-006
 - **Depends on:** T09, T15, T18
 - **Size:** M
@@ -285,6 +285,10 @@ Test images are synthetic only, pushed to the emulator's shared Pictures folder:
 | 17 | Camera capture | S23 | Pass: hand-off at 4000×3000; exactly one file in the private camera folder; nothing new in DCIM or Pictures; start-over deletes it |
 | 18 | Don't keep activities during the camera | — | Not re-run: the developer setting would have to be changed on the Product Owner's phone. Covered by gate G1 item (b) on the S23 |
 | 19 | Timing, return from the system UI to hand-off (informational, NFR-1) | API 36.1, S23 | Small JPEG: median 320 ms (5 runs). 12 MP JPEG: median 458 ms (5 runs). Camera 12 MP on the S23: 436 ms (1 run) |
+
+**Gate G4:** passed on 2026-11-23 with a Product Owner waiver. The API 28 AOSP and API 28 Google Play manual rows were not run.
+- **Evidence accepted instead:** this record (API 36.1 and the S23) plus CI's automated API 28 jobs (bundle, pick bridge, T15 pick data matrix, crop and decode matrices).
+- **Results:** no crash or ANR; zero permission prompts; zero forbidden permissions; no copies; originals byte-identical; logcat clean; airplane mode works.
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-006 before starting a task.
