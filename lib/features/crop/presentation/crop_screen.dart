@@ -13,6 +13,7 @@ import '../data/crop_renderer.dart';
 import '../data/source_handle.dart';
 import '../domain/crop_types.dart';
 import '../domain/target_check.dart';
+import '../../../ui/booth.dart';
 import 'crop_canvas.dart';
 import 'crop_controller.dart';
 import 'crop_messages.dart';
@@ -215,11 +216,11 @@ class _CropScreenState extends ConsumerState<CropScreen> {
     return RecentsGuard(
       binding: widget.recentsBinding,
       child: Theme(
-        data: _Booth.theme(Theme.of(context)),
+        data: Booth.theme(Theme.of(context)),
         child: Stack(
           children: [
             Scaffold(
-              appBar: AppBar(title: _SpecCells(m.size(widget.target))),
+              appBar: AppBar(title: BoothSpecCell(m.size(widget.target))),
               body: SafeArea(
                 top: false,
                 child: LayoutBuilder(
@@ -278,78 +279,10 @@ class _Progress extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: 24,
           children: [
-            const CircularProgressIndicator(color: _Booth.flash),
+            const CircularProgressIndicator(color: Booth.flash),
             TextButton(onPressed: onCancel, child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           ],
         ),
-      ),
-    ),
-  );
-}
-
-/// The ID photo booth palette. Fixed in both app themes (the booth is the same
-/// booth day or night); every text pair meets WCAG AA.
-abstract final class _Booth {
-  static const curtain = Color(0xFF5A1622);
-  static const plate = Color(0xFF3E0D16);
-  static const notice = Color(0xFF762838);
-  static const key = Color(0xFFEFE7E2);
-  static const onKey = Color(0xFF3E0D16);
-  static const flash = Color(0xFFFFC547);
-  static const onFlash = Color(0xFF2B1600);
-  static const text = Color(0xFFFBF1F1);
-
-  static ThemeData theme(ThemeData base) {
-    final scheme = ColorScheme.fromSeed(seedColor: curtain, brightness: Brightness.dark).copyWith(
-      surface: curtain,
-      onSurface: text,
-      primary: flash,
-      onPrimary: onFlash,
-      secondaryContainer: key,
-      onSecondaryContainer: onKey,
-    );
-    final keyShape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
-    return base.copyWith(
-      colorScheme: scheme,
-      scaffoldBackgroundColor: curtain,
-      appBarTheme: const AppBarTheme(backgroundColor: curtain, foregroundColor: text, scrolledUnderElevation: 0),
-      iconButtonTheme: IconButtonThemeData(style: IconButton.styleFrom(shape: keyShape)),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: text, minimumSize: const Size(48, 48)),
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          minimumSize: const Size(64, 56),
-          shape: keyShape,
-          textStyle: base.textTheme.titleMedium,
-        ),
-      ),
-    );
-  }
-}
-
-/// The target size in an outlined cell, like a booth's price display, in
-/// condensed tabular figures.
-class _SpecCells extends StatelessWidget {
-  const _SpecCells(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-    decoration: BoxDecoration(
-      border: Border.all(color: _Booth.text.withValues(alpha: 0.6), width: 1.5),
-      borderRadius: BorderRadius.circular(6),
-    ),
-    child: Text(
-      text,
-      style: const TextStyle(
-        fontFamily: 'BarlowCondensed',
-        fontWeight: FontWeight.w600,
-        fontSize: 24,
-        letterSpacing: 1.5,
-        fontFeatures: [FontFeature.tabularFigures()],
-        color: _Booth.text,
       ),
     ),
   );
@@ -399,12 +332,12 @@ class _Panel extends StatelessWidget {
           Semantics(
             liveRegion: true,
             child: Column(
-              children: [for (final (icon, text) in notices) _Notice(icon: icon, text: text)],
+              children: [for (final (icon, text) in notices) BoothNotice(icon: icon, text: text)],
             ),
           ),
           // The control plate.
           DecoratedBox(
-            decoration: BoxDecoration(color: _Booth.plate, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(color: Booth.plate, borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
               child: Column(
@@ -473,31 +406,6 @@ class _Group extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(mainAxisSize: MainAxisSize.min, spacing: 8, children: children);
-}
-
-class _Notice extends StatelessWidget {
-  const _Notice({required this.icon, required this.text});
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(color: _Booth.notice, borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12,
-        children: [
-          Icon(icon, size: 20, color: _Booth.text),
-          Expanded(
-            child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _Booth.text)),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 /// 48 dp tonal key with a tooltip and label; long-press repeats (FR-27).
