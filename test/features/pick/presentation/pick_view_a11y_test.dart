@@ -4,6 +4,7 @@ import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_messages.dart';
 import 'package:exact_size/features/pick/presentation/pick_view.dart';
 import 'package:exact_size/l10n/app_localizations.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -97,6 +98,26 @@ void main() {
     }
     // The brand cell sits at the start edge, which is the right in RTL.
     expect(tester.getCenter(find.text(l.appTitle)).dx, greaterThan(180));
+  });
+
+  group('privacy line (FR-22, T23)', () {
+    for (final locale in const [Locale('en'), Locale('es'), Locale('pt', 'BR'), Locale('hi'), Locale('id'), Locale('ar')]) {
+      testWidgets('$locale: last in TalkBack order, unclipped at 200% text', (tester) async {
+        final handle = tester.ensureSemantics();
+        await pump(tester, const PickState(cameraAvailable: true), locale: locale, scale: 2, size: const Size(360, 640));
+        final line = lookupAppLocalizations(locale).pickPrivacyNote;
+        expect(tester.takeException(), isNull);
+        final labels = [for (final n in tester.semantics.simulatedAccessibilityTraversal()) n.label].where((l) => l.isNotEmpty).toList();
+        expect(labels.last, line, reason: '$labels');
+        await tester.scrollUntilVisible(find.text(line), 100);
+        final text = tester.renderObject<RenderParagraph>(find.text(line));
+        expect(text.didExceedMaxLines, isFalse);
+        final box = tester.getRect(find.text(line));
+        expect(box.left, greaterThanOrEqualTo(0));
+        expect(box.right, lessThanOrEqualTo(360));
+        handle.dispose();
+      });
+    }
   });
 
   group('every pick string in all 6 languages (AC-3.4, NFR-5)', () {

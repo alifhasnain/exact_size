@@ -187,7 +187,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** bridge `launch(files)` → `ACTION_OPEN_DOCUMENT` `image/*`, single, failure → `unavailable`; `PickSource.files` through the controller (origin `files`); button on the pick screen per the G3 design.
 - **Done when:** unit test: `files` result handled like gallery; widget test: button present, ≥ 48 dp, in TalkBack order; checklist row on API 36.1 and API 28: document picker opens filtered to images, one selection.
 
-### - [ ] FEAT-001-T23 — Privacy line (Should)
+### - [x] FEAT-001-T23 — Privacy line (Should)
 - **Implements:** FR-22 · **ADRs:** —
 - **Depends on:** T17 (G3)
 - **Size:** S
