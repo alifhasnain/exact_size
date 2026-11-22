@@ -31,6 +31,8 @@ void main() {
       expect(p({'origin': 'gallery', 'outcome': 'cancelled'}),
           isA<Cancelled>().having((r) => r.fileName, 'name', isNull).having((r) => r.origin, 'origin', PickOrigin.gallery));
       expect(p({'origin': 'camera', 'outcome': 'captureLost', 'fileName': name}), isA<CaptureLost>().having((r) => r.fileName, 'name', name));
+      // FR-17: onResume with the marker set always sends a name; a missing one still maps (T20).
+      expect(p({'origin': 'camera', 'outcome': 'captureLost'}), isA<CaptureLost>().having((r) => r.fileName, 'name', isNull));
       expect(p({'origin': 'files', 'outcome': 'notOpenable'}), isA<NotOpenable>().having((r) => r.origin, 'origin', PickOrigin.files));
     });
 

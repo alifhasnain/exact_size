@@ -153,7 +153,17 @@ class PickController extends Notifier<PickState> {
     } on PlatformException {
       return;
     }
-    if (result != null) await _handle(result);
+    if (result == null) return;
+    try {
+      await _handle(result);
+    } on Object {
+      // Never rethrown or printed: dart:io errors carry paths (NFR-6). The queue stays usable.
+      _generation++; // a pending progress timer must not fire
+      final file = _attemptFile;
+      _attemptFile = null;
+      await _delete(file);
+      _refuse(PickMessage.itemNotOpenable);
+    }
   }
 
   Future<void> _handle(SystemPickResult result) async {
@@ -172,9 +182,9 @@ class PickController extends Notifier<PickState> {
         if (!PickRules.acceptable(result)) return _refuse(PickMessage.itemNotOpenable);
         await _open(generation, result.uri, result.origin, null);
       case Captured(:final uri, :final fileName):
-        final file = _cameraFile(fileName);
-        final exists = await file.exists();
-        if (!PickRules.captureUsable(exists: exists, length: exists ? await file.length() : 0)) {
+        // One stat call: no gap between an exists check and a length read.
+        final stat = await _cameraFile(fileName).stat();
+        if (!PickRules.captureUsable(exists: stat.type != FileSystemEntityType.notFound, length: stat.size)) {
           await _delete(fileName);
           return _refuse(PickMessage.cameraNoPhoto);
         }

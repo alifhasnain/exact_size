@@ -166,7 +166,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `docs/features/FEAT-001-pick-image/checklist.md`-style steps kept in the Test record section below (adb commands, expected result, pass/fail per image) on API 36.1, API 28 AOSP and API 28 Google Play, 2 GB: gallery pick and cancel (photo picker or document picker), camera OK and cancel, no camera app (`adb shell pm disable-user` on the emulator camera [Assumption: allowed on emulator]) → disabled with reason, low space (fill the cache volume to below 32 MiB [Assumption: `fallocate` or `dd` available on the image]), "Don't keep activities" during picker and camera, `am kill` while idle → starts clean, double tap, the AC-3.5 set picked through the document picker after `adb push`, airplane mode (and a cloud-only item only if the image has a provider for it), storage listing after each pick (AC-6.1), original file `sha256sum` and `stat` before and after (AC-6.6), `adb logcat -d` grep for `content://`, `/data/`, `/storage/`, `.jpg`, `.png` and fixture names → zero (AC-6.3), merged manifest permissions (AC-6.4), 12 MP pick timing from return to hand-off (informational).
 - **Done when:** every row passes on the three images and is recorded below with date and image; timings recorded as informational. Any reliability, privacy or permission miss → gate G4.
 
-### - [ ] FEAT-001-T20 — Capture recovery after process death (Should)
+### - [x] FEAT-001-T20 — Capture recovery after process death (Should)
 - **Implements:** FR-17, AC-5.2 · **ADRs:** ADR-006
 - **Depends on:** T11, T13, T19
 - **Size:** S
@@ -289,6 +289,20 @@ Test images are synthetic only, pushed to the emulator's shared Pictures folder:
 **Gate G4:** passed on 2026-11-23 with a Product Owner waiver. The API 28 AOSP and API 28 Google Play manual rows were not run.
 - **Evidence accepted instead:** this record (API 36.1 and the S23) plus CI's automated API 28 jobs (bundle, pick bridge, T15 pick data matrix, crop and decode matrices).
 - **Results:** no crash or ANR; zero permission prompts; zero forbidden permissions; no copies; originals byte-identical; logcat clean; airplane mode works.
+
+### T20 — 2026-11-23 (S23 Ultra, API 37, profile build; app uninstalled afterwards)
+| # | Check | Image | Result |
+|---|---|---|---|
+| 1 | Camera open, Home, `am kill`, back in through the launcher, capture | S23 | Pass after the fixes below: the capture is recovered and probed, hand-off 4000×3000, one file. First runs failed: the capture was swept, and in one run "camera returned no photo" |
+| 2 | The same, with a write failure (empty capture file made unwritable) | S23 | The camera app reports a cancel: pick screen, no message, file deleted (cancel path, correct). The "lost" path (OK with an empty file after recreation, or no result by `onResume`) could not be produced on the device; it is covered by unit tests and code review |
+| 3 | The same, waiting 30 s before shooting (Samsung freezes, then unfreezes, the app process) | S23 | Pass: recovered and probed |
+| 4 | Launcher icon while the camera is open, process alive | S23 | Pass: the capture file is kept; a later cancel deletes it |
+| — | API 36.1 emulator and API 28 | — | Not run: the emulator's camera hangs it (the Product Owner directed camera rows to the S23), and there are no API 28 images (download declined at T19) |
+
+Defects found and fixed in T20:
+- **Duplicate launcher instance:** it finished at once (G1 finding g) but still ran Dart `main()` without the marker, and its start-up sweep deleted the capture in progress. It now answers every bridge call with an error, so the sweep skips.
+- **Sweep race after recreation:** `onActivityResult` cleared the marker before Dart asked for it, so the sweep deleted the just-captured file. `pendingCaptureName` now also returns the file of a camera result that hasn't been taken yet.
+- **Exists-then-length gap (T13 code):** the file could vanish between the two calls, giving an unhandled `PathNotFoundException` that printed an app-data path to logcat and stalled the controller's result queue. A single `stat()` call replaces them. Unexpected errors are now caught without printing, the attempt's file is deleted, and the screen shows "can't open this item".
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-006 before starting a task.

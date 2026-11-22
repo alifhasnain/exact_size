@@ -27,9 +27,17 @@ class _Probe extends SourceProbe {
 
   /// When set, probe waits for it (T14 timing and late answers).
   Completer<ProbeResult>? gate;
+
+  /// When set, probe throws it once (T20: an unexpected error must not stall the queue).
+  Object? throwOnce;
   @override
   Future<ProbeResult> probe(SourceHandle src) async {
     calls++;
+    final e = throwOnce;
+    if (e != null) {
+      throwOnce = null;
+      throw e;
+    }
     return gate != null ? gate!.future : next;
   }
 }
@@ -157,6 +165,33 @@ void main() {
     picker.deliver(const NotOpenable(origin: PickOrigin.files));
     await settle();
     expect(st().message, PickMessage.itemNotOpenable);
+  });
+
+  test('CaptureLost with and without a file name: message, folder empty (FR-17, T20)', () async {
+    await start();
+    final name = cam();
+    picker.deliver(CaptureLost(fileName: name));
+    await settle();
+    expect(st().message, PickMessage.captureLost);
+    picker.deliver(const CaptureLost());
+    await settle();
+    expect(st().message, PickMessage.captureLost);
+    expect(st().phase, PickPhase.idle);
+    expect(files.dir.listSync(), isEmpty);
+    expect(log, ['exactsize.pick outcome=CAPTURE_LOST', 'exactsize.pick outcome=CAPTURE_LOST']);
+  });
+
+  test('an unexpected error refuses quietly and the next result is still handled (T20)', () async {
+    await start();
+    probe.throwOnce = const FileSystemException('[PLACEHOLDER]', '/data/user/0/[PLACEHOLDER]');
+    picker.deliver(const Picked(uri: _uri, origin: PickOrigin.gallery));
+    await settle();
+    expect(st().message, PickMessage.itemNotOpenable);
+    expect(st().phase, PickPhase.idle);
+    picker.deliver(const Picked(uri: _uri, origin: PickOrigin.gallery));
+    await settle();
+    expect(st().current, isNotNull);
+    expect(log, ['exactsize.pick outcome=ITEM_NOT_OPENABLE', 'exactsize.pick outcome=ACCEPTED']);
   });
 
   test('file:// and own-app share are refused without probing (FR-8, FR-20)', () async {

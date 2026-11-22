@@ -42,15 +42,41 @@ class MainActivity : FlutterActivity() {
     /** Random name of the camera file while the camera app is open (FR-11, FR-17 marker). */
     private var pendingCapture: String? = null
 
+    /** The marker came back from the saved-state Bundle: this activity was recreated, possibly after process death (FR-17). */
+    private var captureRestored = false
+
+    /**
+     * A launcher start on top of a running picker or camera (G1 finding g). It finishes at once, but its
+     * Flutter engine still runs Dart main(); answering every call with an error keeps that Dart start from
+     * sweeping a capture the camera is still writing (T20 finding).
+     */
+    private var duplicate = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         launchOutstanding = savedInstanceState?.getBoolean(KEY_OUTSTANDING) ?: false
         pendingCapture = savedInstanceState?.getString(KEY_PENDING_CAPTURE)
-        super.onCreate(savedInstanceState)
+        captureRestored = pendingCapture != null
         // G1 finding (g): the launcher icon tapped while a picker or the camera runs in this task
         // would start a second MainActivity on top; finish it so the system UI stays in front.
-        if (!isTaskRoot && intent?.action == Intent.ACTION_MAIN && intent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
-            finish()
-        }
+        // Decided before super.onCreate, which configures the engine and its channel.
+        duplicate = !isTaskRoot && intent?.action == Intent.ACTION_MAIN && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+        super.onCreate(savedInstanceState)
+        if (duplicate) finish()
+    }
+
+    /**
+     * FR-17, AC-5.2: onActivityResult runs before onResume on return (gate G1 item b), so a marker
+     * still set here means the camera's result never arrived: report the capture as lost.
+     */
+    override fun onResume() {
+        super.onResume()
+        if (duplicate) return
+        val name = pendingCapture ?: return
+        pendingCapture = null
+        captureRestored = false
+        launchOutstanding = false
+        slot = mapOf("origin" to "camera", "outcome" to "captureLost", "fileName" to name)
+        channel?.invokeMethod("resultReady", null)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -79,10 +105,13 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun handle(call: MethodCall, result: MethodChannel.Result) {
+        if (duplicate) return result.error("duplicate", null, null)
         when (call.method) {
             "launch" -> result.success(launch(call.argument<String>("source")))
             "cameraAvailable" -> result.success(Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager) != null)
-            "pendingCaptureName" -> result.success(pendingCapture)
+            // Also the file of a camera result not yet taken: after recreation onActivityResult clears the
+            // marker before Dart main() asks, and the start-up sweep must not delete that capture (T20).
+            "pendingCaptureName" -> result.success(pendingCapture ?: slot?.get("fileName") as? String)
             "takeResult" -> {
                 val r = slot
                 slot = null
@@ -148,6 +177,7 @@ class MainActivity : FlutterActivity() {
             return "unavailable"
         }
         pendingCapture = name
+        captureRestored = false
         launchOutstanding = true
         return "launched"
     }
@@ -170,13 +200,19 @@ class MainActivity : FlutterActivity() {
     private fun cameraResult(resultCode: Int) {
         launchOutstanding = false
         val name = pendingCapture
+        val restored = captureRestored
         pendingCapture = null
+        captureRestored = false
         // The camera's own result extras (thumbnail) are never read; the file is the result.
-        slot = if (resultCode == RESULT_OK && name != null) {
-            val uri = FileProvider.getUriForFile(this, "$packageName.camera", File(File(cacheDir, "camera"), name))
-            mapOf("origin" to "camera", "outcome" to "captured", "uri" to uri.toString(), "fileName" to name)
-        } else {
-            mapOf("origin" to "camera", "outcome" to "cancelled", "fileName" to name)
+        val file = name?.let { File(File(cacheDir, "camera"), it) }
+        slot = when {
+            resultCode != RESULT_OK || file == null -> mapOf("origin" to "camera", "outcome" to "cancelled", "fileName" to name)
+            // Recovery after recreation failed: the file is gone or empty (FR-17).
+            restored && file.length() == 0L -> mapOf("origin" to "camera", "outcome" to "captureLost", "fileName" to name)
+            else -> {
+                val uri = FileProvider.getUriForFile(this, "$packageName.camera", file)
+                mapOf("origin" to "camera", "outcome" to "captured", "uri" to uri.toString(), "fileName" to name)
+            }
         }
     }
 
