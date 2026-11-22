@@ -1,9 +1,9 @@
 ---
 id: FEAT-001
 title: Pick image from camera or gallery
-status: Approved
-version: 1.0
-updated: 2026-11-21
+status: Under Discussion
+version: 1.1
+updated: 2026-11-22
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-011, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-025]
 ---
 
@@ -124,7 +124,7 @@ Evidence is thin: `docs/research/competitors.md` has no finding on how rival too
 3. The user picks or captures; the system UI returns a `content://` URI (camera: the private file's URI).
 4. FEAT-001 validates the scheme and, for the camera, that the file exists and is not empty (section 8).
 5. FEAT-001 calls `SourceProbe.probe`. After 500 ms of waiting it shows progress with Cancel (FR-13).
-6. On Ok it hands `PickedImage` (section 1) to the flow, which goes to the next step. Order of the target step and crop step is a flow decision outside this feature (OQ-4). The previous session image (and its camera file) is released only now.
+6. On Ok it hands `PickedImage` (section 1) to the flow, which goes to the next step. The flow is photo first (OQ-4, decided 2026-11-22): the next step is the target step (FEAT-005 manual entry or FEAT-011 preset), then crop. The previous session image (and its camera file) is released only now.
 7. On Err it shows the message on the pick screen, deletes any new camera file, keeps the previous image, and waits for another tap.
 
 **Alternate flows**
@@ -245,7 +245,7 @@ Evidence is thin: `docs/research/competitors.md` has no finding on how rival too
 ## 11. Dependencies
 - **FEAT-002** (hard, built): `SourceHandle`, `SourceProbe`, reason codes and messages (FEAT-002 section 8, tech sections 3 and 4).
 - **FEAT-004:** AC-5.2 ("when it is selected") is met by FR-7.
-- **FEAT-005 / FEAT-011:** supply the target; order versus pick is OQ-4. **FEAT-007:** its flow-end event must call FEAT-001's release (FR-11).
+- **FEAT-005 / FEAT-011:** supply the target in the step after pick (photo first, OQ-4). **FEAT-007:** its flow-end event must call FEAT-001's release (FR-11).
 - **FEAT-016:** privacy line, explainer and the cloud-only wording. **FEAT-018:** metadata stripping in the output. **FEAT-019:** 6-language strings. **FEAT-025:** ad SDK exposure, no data from this feature.
 - **ROADMAP row FEAT-001:** the dependency "Camera/photo permission strings" no longer applies under this design (no permission strings). Store disclosures remain. See OQ-9.
 - **ADR-001:** minimum Android 9, Flutter, JNIgen, enum-only log wrapper.
@@ -256,7 +256,7 @@ Evidence is thin: `docs/research/competitors.md` has no finding on how rival too
 - [x] **OQ-1 — decided 2026-11-21 (Product Owner): system photo picker with document-picker fallback, no storage permission.** (Was blocking.) Gallery strategy. Proposed: system photo picker with document-picker fallback, no storage permission. Alternative: request READ_MEDIA_IMAGES and build an in-app gallery (more control, a permission prompt, Play policy exposure, much more work). Recommend the proposal.
 - [x] **OQ-2 — decided 2026-11-21 (Product Owner): system camera intent into a private file, no CAMERA permission.** (Was blocking.) Camera strategy. Proposed: system camera intent into a private file, no CAMERA permission. Alternative: in-app camera (CameraX): a runtime permission, store disclosure, device bugs and a larger UI. Recommend the proposal. Trade-off: the camera UI and steps belong to the OEM app.
 - [ ] **OQ-3 (non-blocking).** Keep "Choose from files" (FR-21) and share target (FR-20, US-8) in R1 as Should, or move them to Next? Value rests on [Assumption] operator behaviour; effort about +0.3 pw [Assumption]. Under the current cut order Should items go after Could items.
-- [ ] **OQ-4 (blocking UI work, not the tech plan).** Screen order and ownership: photo first or target first, and who owns the start screen. No approved PRD defines it. Affects the "two taps" claim and where the pick UI lives. The pick UI also needs the Product Owner's go-ahead for impeccable design.
+- [x] **OQ-4 (blocking UI work, not the tech plan).** Screen order and ownership: photo first or target first, and who owns the start screen. **Decided by the Product Owner 2026-11-22: photo first.** The pick screen is the app's start screen and FEAT-001 owns it; an accepted image goes to the target step (FEAT-005 / FEAT-011), then crop; a result pending at start-up (FR-15, FR-17) and a share (FR-20) go the same way. Reason: one route for picked, shared and recovered photos, and the source size is known when the target is chosen. User preference between the orders is a [Hypothesis] (OQ-8 research gap). The pick UI still needs the impeccable design pass (gate G3, T16).
 - [ ] **OQ-5 (non-blocking).** The camera original is discarded when the session ends (privacy default). Alternative: offer "Save original to gallery". Recommend discard. Users may be surprised that a fresh photo is not in their gallery.
 - [ ] **OQ-6 (non-blocking).** Is process-death recovery of a camera capture (FR-17) Must or Should? Test with "Don't keep activities" and a forced kill on the 2 GB emulator; real frequency on phones is unknown [Hypothesis].
 - [ ] **OQ-7 (non-blocking).** A share arriving mid-flow: replace silently (proposed: fast, nothing is exported yet) or ask first.
@@ -271,3 +271,4 @@ Evidence is thin: `docs/research/competitors.md` has no finding on how rival too
 | 0.1 | 2026-11-21 | First draft |
 | 0.2 | 2026-11-21 | OQ-1 and OQ-2 decided by the Product Owner (picker and camera strategies as proposed) |
 | 1.0 | 2026-11-21 | Approved by Product Owner |
+| 1.1 | 2026-11-22 | OQ-4 decided by the Product Owner: photo first, pick screen is the start screen (owned by FEAT-001), next step is the target step; section 5 step 6 and section 11 updated (clarification, scope unchanged) |
