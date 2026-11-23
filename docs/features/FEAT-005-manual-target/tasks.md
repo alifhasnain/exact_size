@@ -98,7 +98,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - 10,000 validations finish in under 50 s total, i.e. ≤ 5 ms each (NFR-1, informational on CI hardware).
   - A test asserts that the messages carry `maxTargetSide`, `maxTargetPixels` and `maxKbLimit` values read from the shared constants (NFR-5). A grep test finds no `10000`, `24000000` or `10240` literal in `lib/features/target/`.
 
-### - [ ] FEAT-005-T05 — `targetHints` (photo line, "Use photo size", upscale, very small)
+### - [x] FEAT-005-T05 — `targetHints` (photo line, "Use photo size", upscale, very small)
 - **Implements:** FR-11, FR-12, FR-13 (logic) · **ADRs:** —
 - **Depends on:** T04
 - **Size:** S
