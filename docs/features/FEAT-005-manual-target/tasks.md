@@ -228,7 +228,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - `tester.testTextInput` setup shows learning, suggestions and autocorrect off. [Hypothesis: exact JSON keys; record them in the PR.]
   - `test/app_flow_test.dart` (T01) still passes.
 
-### - [ ] FEAT-005-T13 — Errors: reveal rules, all errors, focus and TalkBack announcement
+### - [x] FEAT-005-T13 — Errors: reveal rules, all errors, focus and TalkBack announcement
 - **Implements:** FR-7, FR-8 (invalid path), NFR-2 (announcement) · **ADRs:** —
 - **Depends on:** T12
 - **Size:** S

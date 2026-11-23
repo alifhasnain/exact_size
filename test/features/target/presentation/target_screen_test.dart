@@ -3,6 +3,7 @@ import 'package:exact_size/features/compression/domain/compression_result.dart';
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:exact_size/features/target/presentation/target_screen.dart';
+import 'package:flutter/services.dart' show SystemChannels;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -177,5 +178,110 @@ void main() {
     final f = tester.widget<TextField>(field('Width'));
     expect(f.restorationId, isNull);
     expect(f.spellCheckConfiguration, isNull);
+  });
+
+  group('errors (T13)', () {
+    const sizeMsg = 'Enter a width and height between 1 and 10,000 pixels.';
+    late List<String> announced;
+    Finder msg(String t) => find.byWidgetPredicate(
+        (w) => w is Text && w.data?.replaceAll(RegExp('[\u2068\u2069]'), '') == t);
+
+    setUp(() => announced = []);
+
+    Future<void> listen(WidgetTester tester) async {
+      tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, (msg) async {
+        final m = msg as Map;
+        if (m['type'] == 'announce') announced.add(((m['data'] as Map)['message'] as String).replaceAll(RegExp('[\u2068\u2069]'), ''));
+        return null;
+      });
+      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, null));
+    }
+
+    Future<void> fill(WidgetTester tester, {String w = '300', String h = '300', String min = '', String max = '100'}) async {
+      await tester.enterText(field('Width'), w);
+      await tester.enterText(field('Height'), h);
+      await tester.enterText(field('Minimum size'), min);
+      await tester.enterText(field('Maximum size'), max);
+    }
+
+    testWidgets('AC-2.2, AC-2.3: Min at or above Max shows the message at Min, nothing handed on', (tester) async {
+      await pump(tester);
+      for (final (min, max) in [('50', '20'), ('50', '50')]) {
+        await fill(tester, min: min, max: max);
+        await tapContinue(tester);
+        expect(find.text('Minimum must be smaller than maximum.'), findsOneWidget, reason: '$min/$max');
+        expect(specs, isEmpty);
+      }
+    });
+
+    testWidgets('AC-3.1: empty Width: size message, focus on Width, announced once, nothing handed on', (tester) async {
+      await listen(tester);
+      await pump(tester);
+      await fill(tester, w: '');
+      await tester.tap(field('Maximum size'));
+      await tester.pump();
+      await tapContinue(tester);
+      expect(msg(sizeMsg), findsOneWidget);
+      expect(tester.widget<TextField>(field('Width')).focusNode!.hasFocus, isTrue);
+      expect(announced, [sizeMsg]);
+      expect(specs, isEmpty);
+      await fill(tester, w: '0');
+      await tapContinue(tester);
+      expect(msg(sizeMsg), findsOneWidget);
+    });
+
+    testWidgets('AC-3.2: 6001 x 4000 is too large', (tester) async {
+      await pump(tester);
+      await fill(tester, w: '6001', h: '4000');
+      await tapContinue(tester);
+      expect(find.text('That size is too large for this app. Choose a smaller size.'), findsOneWidget);
+      expect(specs, isEmpty);
+    });
+
+    testWidgets('AC-3.3, AC-5.3: decimals in Max give the whole-number message', (tester) async {
+      await pump(tester);
+      for (final max in ['7.5', '7,5', '1,000', '٧٫٥']) {
+        await fill(tester, max: max);
+        await tapContinue(tester);
+        expect(find.text('Use whole numbers of KB.'), findsOneWidget, reason: max);
+      }
+      await fill(tester, w: '1.000');
+      await tapContinue(tester);
+      expect(find.text('Use whole numbers of pixels.'), findsOneWidget);
+      expect(specs, isEmpty);
+    });
+
+    testWidgets('AC-3.4: the error clears on the fixing keystroke', (tester) async {
+      await pump(tester);
+      await fill(tester, max: '1');
+      await tapContinue(tester);
+      expect(find.text('Enter a maximum size between 2 and 10,240.'), findsNothing);
+      expect(find.textContaining('Enter a maximum size between'), findsOneWidget);
+      await tester.enterText(field('Maximum size'), '12');
+      await tester.pump();
+      expect(find.textContaining('Enter a maximum size between'), findsNothing);
+    });
+
+    testWidgets('AC-3.5: every invalid field shows its own message at once', (tester) async {
+      await pump(tester);
+      await fill(tester, w: '1.5', h: '0', min: 'x', max: '1');
+      await tapContinue(tester);
+      expect(find.text('Use whole numbers of pixels.'), findsOneWidget);
+      expect(msg(sizeMsg), findsOneWidget);
+      expect(find.text('Enter a valid size in KB.'), findsOneWidget);
+      expect(find.textContaining('Enter a maximum size between'), findsOneWidget);
+      expect(find.byIcon(Icons.error_outline), findsNWidgets(4), reason: 'icon and text, not colour alone');
+    });
+
+    testWidgets('no error while typing in a fresh field; shown when the field is left', (tester) async {
+      await pump(tester);
+      await tester.tap(field('Width'));
+      await tester.enterText(field('Width'), '0');
+      await tester.pump();
+      expect(msg(sizeMsg), findsNothing);
+      await tester.tap(field('Height'));
+      await tester.pump();
+      expect(msg(sizeMsg), findsOneWidget);
+    });
   });
 }

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/semantics.dart' show SemanticsService;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -91,9 +94,12 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
     switch (ref.read(targetFormProvider).result) {
       case TargetInputValid(:final spec):
         widget.onContinue(spec);
-      case TargetInputInvalid(:final firstField):
+      case TargetInputInvalid(:final firstField, :final errors):
         _form.revealAll();
         _focus[firstField]?.requestFocus();
+        // Only the first message is announced (NFR-2); the others are read with their fields.
+        final text = TargetMessages(AppLocalizations.of(context)).error(errors[firstField]!);
+        unawaited(SemanticsService.sendAnnouncement(View.of(context), text, Directionality.of(context)));
     }
   }
 
