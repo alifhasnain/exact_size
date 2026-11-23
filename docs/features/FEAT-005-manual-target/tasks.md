@@ -52,7 +52,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - The existing `pick_screen_test.dart` and `pick_controller_test.dart` pass unchanged.
   - FEAT-001-T25's share drive (`flutter drive --driver test_driver/share_intent_driver.dart --target integration_test/pick_share_test.dart`) passes on API 36.1 and in the CI API 28 job. The result is recorded in the Test record.
 
-### - [ ] FEAT-005-T02 — Domain types: `TargetSpec`, `TargetInput`, `TargetField`, `TargetError`, results
+### - [x] FEAT-005-T02 — Domain types: `TargetSpec`, `TargetInput`, `TargetField`, `TargetError`, results
 - **Implements:** FR-2 (format default `jpeg`), FR-9, FR-14 (redaction) · **ADRs:** ADR-001, ADR-003
 - **Depends on:** —
 - **Size:** S
