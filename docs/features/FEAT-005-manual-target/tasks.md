@@ -116,7 +116,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - 15 px → `verySmall`, 16 px → not;
   - invalid W/H → no `enlarges` and no `verySmall`.
 
-### - [ ] FEAT-005-T06 — `targetFormProvider` / `TargetFormController`
+### - [x] FEAT-005-T06 — `targetFormProvider` / `TargetFormController`
 - **Implements:** FR-2 (default), FR-7 (reveal rules), FR-9 (`fill`), FR-10, FR-12 (`usePhotoSize`) · **ADRs:** ADR-001
 - **Depends on:** T04, T05
 - **Size:** S
