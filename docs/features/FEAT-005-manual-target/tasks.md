@@ -153,7 +153,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - `lib/features/target/presentation/target_messages.dart` maps `TargetError` through `CropMessages.target` and `OutcomeMessages.target`. Numbers and units go in U+2068/U+2069 isolates (as `CropMessages._iso`), formatted with `NumberFormat(localeName)`.
 - **Done when:** `flutter gen-l10n` passes. A unit test checks that every `TargetError` and hint has a non-empty English string. The existing "no literal numbers in ARB" tests pass with the new keys added to their scope. The PR lists the new keys.
 
-### - [ ] FEAT-005-T09 — Target screen design pass with the Product Owner (impeccable, lean) — gate G1
+### - [x] FEAT-005-T09 — Target screen design pass with the Product Owner (impeccable, lean) — gate G1
 - **Implements:** FR-16; prerequisite for FR-1–FR-3, FR-7, FR-8, FR-11–FR-13, NFR-2, NFR-4 (visual) · **ADRs:** —
 - **Depends on:** T06, T08
 - **Size:** M (developer side; the Product Owner's time is not counted)
