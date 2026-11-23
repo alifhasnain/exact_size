@@ -133,7 +133,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - `usePhotoSize` writes the oriented size, and does nothing when `canUsePhotoSize` is false;
   - a new container (process death) starts empty.
 
-### - [ ] FEAT-005-T07 — Target privacy static tests
+### - [x] FEAT-005-T07 — Target privacy static tests
 - **Implements:** FR-14, NFR-3, NFR-6 · **ADRs:** ADR-001
 - **Depends on:** T01, T02
 - **Size:** S
