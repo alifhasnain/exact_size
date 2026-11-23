@@ -1,17 +1,25 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:exact_size/app.dart';
+import 'package:exact_size/app_flow.dart';
 import 'package:exact_size/di/injection.dart';
 import 'package:exact_size/features/compression/data/temp_files.dart';
+import 'package:exact_size/features/compression/domain/compression_result.dart' show OutputFormat;
+import 'package:exact_size/features/crop/data/preview_decoder.dart';
 import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/data/source_probe.dart';
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/pick/data/pick_outcome_log.dart';
 import 'package:exact_size/features/pick/data/system_picker.dart';
 import 'package:exact_size/features/pick/domain/pick_types.dart';
+import 'package:exact_size/features/crop/presentation/crop_controller.dart';
+import 'package:exact_size/features/crop/presentation/crop_screen.dart';
 import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_screen.dart';
+import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -28,6 +36,24 @@ class _Probe extends SourceProbe {
   Future<ProbeResult> probe(SourceHandle src) async => const ProbeOk(_info);
 }
 
+/// Hands out pre-made previews, or waits on [gate], or answers [error].
+class _Decoder implements PreviewDecoder {
+  final previews = <ui.Image>[];
+  final handed = <ui.Image>[];
+  Completer<PreviewResult>? gate;
+  Reason? error;
+  @override
+  bool get debugForceOutOfMemory => false;
+  @override
+  Future<PreviewResult> decode(SourceHandle src, SourceInfo info) async {
+    if (gate != null) return gate!.future;
+    if (error != null) return PreviewErr(error!);
+    final image = previews.removeAt(0);
+    handed.add(image);
+    return PreviewOk(image, 1);
+  }
+}
+
 /// FEAT-005-T01 (R2, OQ-T5): the target route releases the image on pop only
 /// when that image is still current. A newer pick or share closes the route
 /// with popUntil and must keep the new image and its camera file.
@@ -35,6 +61,7 @@ void main() {
   late FakeSystemPicker picker;
   late Directory tmp;
   late TempFiles files;
+  late _Decoder decoder;
 
   setUp(() async {
     await getIt.reset();
@@ -47,6 +74,7 @@ void main() {
       ..registerSingleton<TempFiles>(files, instanceName: 'camera')
       ..registerSingleton<SourceProbe>(_Probe())
       ..registerSingleton(PickOutcomeLog((_) {}));
+    decoder = _Decoder();
   });
 
   tearDown(() => tmp.deleteSync(recursive: true));
@@ -74,7 +102,14 @@ void main() {
   }
 
   Future<ProviderContainer> pumpApp(WidgetTester tester) async {
-    await tester.pumpWidget(const ProviderScope(child: ExactSizeApp(locale: Locale('en'))));
+    tester.view
+      ..physicalSize = const Size(360, 800)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(ProviderScope(
+      overrides: [previewDecoderProvider.overrideWithValue(decoder)],
+      child: const ExactSizeApp(locale: Locale('en')),
+    ));
     await tester.pump();
     return ProviderScope.containerOf(tester.element(find.byType(PickScreen)));
   }
@@ -120,5 +155,95 @@ void main() {
     expect(files.dir.listSync(), isEmpty);
     expect(targetRoutes(tester), 0);
     expect(find.byType(PickScreen), findsOneWidget);
+  });
+
+  group('crop step (T10)', () {
+    const spec = TargetSpec(width: 30, height: 30, maxKb: 50, format: OutputFormat.jpeg);
+
+    Future<ui.Image> image(WidgetTester tester) async => (await tester.runAsync(() {
+          final r = ui.PictureRecorder();
+          Canvas(r).drawRect(const Rect.fromLTWH(0, 0, 40, 30), Paint()..color = const Color(0xFF8899AA));
+          return r.endRecording().toImage(40, 30);
+        }))!;
+
+    /// App with one gallery image on the target step; returns the container.
+    Future<ProviderContainer> onTargetStep(WidgetTester tester) async {
+      final c = await pumpApp(tester);
+      await deliver(tester, const Picked(uri: _uri, origin: PickOrigin.gallery));
+      return c;
+    }
+
+    void openCrop(WidgetTester tester, ProviderContainer c, TargetSpec s) => openCropStep(
+        tester.element(find.textContaining('Target step')), c.read(pickControllerProvider).current!, s);
+
+    testWidgets('progress at 500 ms, not 499; a decode error shows the reason; Choose another releases once',
+        (tester) async {
+      decoder.gate = Completer();
+      final c = await onTargetStep(tester);
+      final picked = c.read(pickControllerProvider).current;
+      openCrop(tester, c, spec);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 499));
+      expect(find.text('Opening your photo…'), findsNothing);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(find.text('Opening your photo…'), findsOneWidget);
+
+      decoder.gate!.complete(const PreviewErr(Reason.corruptInput));
+      await tester.pumpAndSettle();
+      expect(find.text('Opening your photo…'), findsNothing);
+      expect(find.text("We can't read this file. Choose another photo."), findsOneWidget);
+
+      final states = <PickState>[];
+      c.listen(pickControllerProvider, (_, next) => states.add(next));
+      await tester.tap(find.text('Choose another photo'));
+      await settle(tester);
+      expect(states.where((s) => s.current == null), hasLength(1), reason: 'one release, none from the T01 guard');
+      expect(c.read(pickControllerProvider).current, isNull);
+      expect(picked, isNotNull);
+      expect(c.read(cropControllerProvider), isNull);
+      expect(find.byType(PickScreen), findsOneWidget);
+      expect(targetRoutes(tester), 0);
+    });
+
+    testWidgets('the preview is disposed when the crop route goes', (tester) async {
+      decoder.previews.add(await image(tester));
+      final c = await onTargetStep(tester);
+      openCrop(tester, c, spec);
+      await tester.pumpAndSettle();
+      expect(find.byType(CropScreen), findsOneWidget);
+      expect(decoder.handed.single.debugDisposed, isFalse);
+      tester.state<NavigatorState>(find.byType(Navigator)).pop();
+      await tester.pumpAndSettle();
+      expect(decoder.handed.single.debugDisposed, isTrue);
+      expect(c.read(pickControllerProvider).current, isNotNull, reason: 'Back from crop keeps the photo');
+    });
+
+    testWidgets('re-entry with the same spec keeps the crop; a changed spec starts it again', (tester) async {
+      for (var i = 0; i < 3; i++) {
+        decoder.previews.add(await image(tester));
+      }
+      final c = await onTargetStep(tester);
+      final nav = tester.state<NavigatorState>(find.byType(Navigator));
+
+      openCrop(tester, c, spec);
+      await tester.pumpAndSettle();
+      final initial = c.read(cropControllerProvider)!.crop;
+      c.read(cropControllerProvider.notifier).drag(-6, 0);
+      final moved = c.read(cropControllerProvider)!.crop;
+      expect(moved, isNot(initial));
+      nav.pop();
+      await tester.pumpAndSettle();
+
+      openCrop(tester, c, spec);
+      await tester.pumpAndSettle();
+      expect(c.read(cropControllerProvider)!.crop, moved);
+      nav.pop();
+      await tester.pumpAndSettle();
+
+      openCrop(tester, c, const TargetSpec(width: 40, height: 20, maxKb: 50, format: OutputFormat.jpeg));
+      await tester.pumpAndSettle();
+      expect(c.read(cropControllerProvider)!.target.height, 20);
+      expect(c.read(cropControllerProvider)!.crop, isNot(moved));
+    });
   });
 }

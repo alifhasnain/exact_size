@@ -178,7 +178,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
     - OQ-7 = no: the "Use photo size" part of T14 is dropped and its key removed.
 - **Done when:** the design reference (file or link, synthetic content only) and its date are in the PR and `docs/CHANGELOG.md`. The Product Owner's answers (or "defaults") to OQ-1, OQ-3, OQ-7 and OQ-10 are recorded in the PRD through the Product Owner's flow. Gate G1 is recorded.
 
-### - [ ] FEAT-005-T10 — Crop step: preview decode, `CropScreen`, "Choose another photo"
+### - [x] FEAT-005-T10 — Crop step: preview decode, `CropScreen`, "Choose another photo"
 - **Implements:** FR-1 (hand-over to crop), FR-9, FR-10 (Back from crop) · **ADRs:** ADR-001
 - **Depends on:** T09 (G1), T01, T02
 - **Size:** M
