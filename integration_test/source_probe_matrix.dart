@@ -38,7 +38,7 @@ void main() {
     return (orientation: orientation);
   }
 
-  test('probe gives the expected SourceInfo or Reason for every fixture, original untouched', () async {
+  testWidgets('probe gives the expected SourceInfo or Reason for every fixture, original untouched', (_) async {
     final names = dir.listSync().whereType<File>().map((f) => f.uri.pathSegments.last).where((n) => !n.startsWith('.')).toList()
       ..sort();
     expect(names.length, greaterThanOrEqualTo(53));
@@ -83,7 +83,7 @@ void main() {
     }
   });
 
-  test('a missing file gives SOURCE_UNAVAILABLE; the handle never prints its URI', () async {
+  testWidgets('a missing file gives SOURCE_UNAVAILABLE; the handle never prints its URI', (_) async {
     final missing = SourceHandle(File('${dir.path}/[PLACEHOLDER]-missing.jpg').uri.toString());
     expect(await const SourceProbe().probe(missing), isA<ProbeErr>().having((e) => e.reason, 'reason', Reason.sourceUnavailable));
     expect(missing.toString(), isNot(contains('file:')));

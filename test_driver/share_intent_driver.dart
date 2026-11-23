@@ -107,7 +107,9 @@ Future<void> main() async {
   await Future<void>.delayed(const Duration(seconds: 2));
   accepted = await pickLines('ACCEPTED');
   if (accepted != 1) failures.add('cold share: $accepted ACCEPTED lines, expected 1');
-  final top = (await adb('dumpsys activity activities')).split('\n').firstWhere((l) => l.contains('topResumedActivity'), orElse: () => '');
+  final top = (await adb('dumpsys activity activities'))
+      .split('\n')
+      .firstWhere((l) => l.contains('topResumedActivity') || l.contains('mResumedActivity'), orElse: () => ''); // API 28 prints mResumedActivity
   if (!top.contains('$_package/.MainActivity')) failures.add('cold share: MainActivity is not on top');
 
   await adb('am force-stop $_package');

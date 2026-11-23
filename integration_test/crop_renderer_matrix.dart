@@ -55,7 +55,7 @@ void main() {
     return b.bytes.sublist(o, o + 3);
   }
 
-  test('outputs are exactly W×H (300×300, 300×80, 140×60, 1×1 → 300×300)', () async {
+  testWidgets('outputs are exactly W×H (300×300, 300×80, 140×60, 1×1 → 300×300)', (_) async {
     for (final (name, t) in [
       ('chart_zone_plate.png', const Target(300, 300)),
       ('strip_strokes.png', const Target(300, 80)),
@@ -76,7 +76,7 @@ void main() {
     }
   });
 
-  test('alpha: partly transparent PNG keeps 4 channels; opaque-alpha PNG becomes 3', () async {
+  testWidgets('alpha: partly transparent PNG keeps 4 channels; opaque-alpha PNG becomes 3', (_) async {
     final (_, a) = await render('alpha_partial.png', const Target(60, 40));
     final pa = ok(a, 'alpha_partial');
     expect((pa.channels, pa.hasTransparency), (4, true));
@@ -87,7 +87,7 @@ void main() {
     po.free();
   });
 
-  test('orientation: EXIF 1–8 JPEG and HEIC render upright; rotationApplied is manual only', () async {
+  testWidgets('orientation: EXIF 1–8 JPEG and HEIC render upright; rotationApplied is manual only', (_) async {
     for (var n = 1; n <= 8; n++) {
       for (final name in ['orient_${n}_exif.jpg', if (n > 1) 'orient_${n}_irot_only.heic' else 'orient_1.heic']) {
         final (info, r) = await render(name, const Target(120, 80));
@@ -105,14 +105,14 @@ void main() {
     b.free();
   });
 
-  test('a shape mismatch returns INTERNAL_ERROR and hands nothing off', () async {
+  testWidgets('a shape mismatch returns INTERNAL_ERROR and hands nothing off', (_) async {
     final before = NativePixelBuffer.live;
     final (_, r) = await render('orient_1_exif.jpg', const Target(120, 80), renderer: const CropRenderer(debugShapeMismatch: true));
     expect(r, isA<RenderErr>().having((e) => e.reason, 'reason', Reason.internalError));
     expect(NativePixelBuffer.live, before);
   });
 
-  test('the renderer takes no preview image', () {
+  testWidgets('the renderer takes no preview image', (_) async {
     // RenderRequest has no ui.Image field: the preview can't be a render input (FR-7).
     const req = RenderRequest;
     expect(req.toString(), isNot(contains('Image')));
@@ -121,14 +121,14 @@ void main() {
 
   // FEAT-002-T18: errors, cancel, progress, leaks, handover.
 
-  test('progress events arrive in step order; EXIF 6 includes the orient step', () async {
+  testWidgets('progress events arrive in step order; EXIF 6 includes the orient step', (_) async {
     final steps = <RenderStep>[];
     final (_, r) = await render('orient_6_exif.jpg', const Target(120, 80), steps: steps);
     ok(r, 'progress').free();
     expect(steps, RenderStep.values);
   });
 
-  test('deleting the source after probing gives SOURCE_UNAVAILABLE', () async {
+  testWidgets('deleting the source after probing gives SOURCE_UNAVAILABLE', (_) async {
     final copy = File('${dir.path}/../t18_deleted.jpg');
     File('${dir.path}/orient_1_exif.jpg').copySync(copy.path);
     final h = SourceHandle(copy.uri.toString());
@@ -140,7 +140,7 @@ void main() {
     expect(reasonOf(r), Reason.sourceUnavailable);
   });
 
-  test('cancel before start, after decode or after resample gives CANCELLED within one step', () async {
+  testWidgets('cancel before start, after decode or after resample gives CANCELLED within one step', (_) async {
     final pre = CancelSignal()..cancel();
     final (_, a) = await render('orient_6_exif.jpg', const Target(120, 80), cancel: pre);
     pre.dispose();
@@ -153,12 +153,12 @@ void main() {
     }
   });
 
-  test('a native allocation failure gives OUT_OF_MEMORY_HANDLED, no crash', () async {
+  testWidgets('a native allocation failure gives OUT_OF_MEMORY_HANDLED, no crash', (_) async {
     final (_, r) = await render('orient_1_exif.jpg', const Target(120, 80), renderer: const CropRenderer(debugFailAllocation: true));
     expect(reasonOf(r), Reason.outOfMemoryHandled);
   });
 
-  test('leak counter is 0 after 100 mixed runs (success, failure, cancel)', () async {
+  testWidgets('leak counter is 0 after 100 mixed runs (success, failure, cancel)', (_) async {
     final before = NativePixelBuffer.live;
     for (var i = 0; i < 100; i++) {
       final renderer = switch (i % 5) {
@@ -175,7 +175,7 @@ void main() {
     expect(NativePixelBuffer.live, before);
   });
 
-  test('handover contract: the consumer owns and frees the buffer; the producer keeps nothing', () async {
+  testWidgets('handover contract: the consumer owns and frees the buffer; the producer keeps nothing', (_) async {
     final before = NativePixelBuffer.live;
     final (_, r) = await render('alpha_partial.png', const Target(90, 60));
     final px = (r as RenderOk).pixels;
@@ -200,7 +200,7 @@ void main() {
 
   // FEAT-002-T20: privacy on the device.
 
-  test('renders (success, cancel, failure) write no files, leave the source untouched, log only enum names', () async {
+  testWidgets('renders (success, cancel, failure) write no files, leave the source untouched, log only enum names', (_) async {
     Future<Set<String>> listing() async {
       final out = <String>{};
       for (final d in [await getTemporaryDirectory(), await getApplicationCacheDirectory()]) {

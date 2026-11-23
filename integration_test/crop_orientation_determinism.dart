@@ -71,7 +71,7 @@ void main() {
     ],
   ];
 
-  test('all orientations (JPEG, HEIC by EXIF and by irot/imir) are upright and not mirrored in preview and render', () async {
+  testWidgets('all orientations (JPEG, HEIC by EXIF and by irot/imir) are upright and not mirrored in preview and render', (_) async {
     expect(fixtures, hasLength(23));
     for (final name in fixtures) {
       final (h, info) = await probe(name);
@@ -99,7 +99,7 @@ void main() {
     }
   });
 
-  test('same device, same OS build: two renders are byte-identical', () async {
+  testWidgets('same device, same OS build: two renders are byte-identical', (_) async {
     for (final name in ['orient_6_exif.jpg', 'orient_7_irot_only.heic', 'alpha_partial.png', 'chart_zone_plate.png']) {
       final (h, info) = await probe(name);
       const t = Target(97, 61);
@@ -111,7 +111,7 @@ void main() {
     }
   });
 
-  test('re-crops and mixed gestures ending in the same cropRect equal a fresh render', () async {
+  testWidgets('re-crops and mixed gestures ending in the same cropRect equal a fresh render', (_) async {
     final (h, info) = await probe('chart_diagonal.png');
     const t = Target(150, 100);
     final fresh = CropMath.initial(info, t);
@@ -131,7 +131,7 @@ void main() {
     b.free();
   });
 
-  test('four rotations equal no rotation; one turn equals the unrotated render turned 90°', () async {
+  testWidgets('four rotations equal no rotation; one turn equals the unrotated render turned 90°', (_) async {
     final (h, info) = await probe('orient_1_exif.jpg'); // 120×80
     const t = Target(120, 80);
     var s = CropMath.initial(info, t);

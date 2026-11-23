@@ -29,7 +29,7 @@ void main() {
     return (p.info, await PreviewDecoder(debugForceOutOfMemory: forceOom).decode(h, p.info));
   }
 
-  test('previews: long side ≤ 2048, first frame of animated files, unsupported variants refused', () async {
+  testWidgets('previews: long side ≤ 2048, first frame of animated files, unsupported variants refused', (_) async {
     final names = dir.listSync().whereType<File>().map((f) => f.uri.pathSegments.last).where((n) => !n.startsWith('.')).toList()
       ..sort();
     var large = 0;
@@ -64,7 +64,7 @@ void main() {
     print('PREVIEW large files checked: $large');
   });
 
-  test('a forced out-of-memory gives OUT_OF_MEMORY_HANDLED', () async {
+  testWidgets('a forced out-of-memory gives OUT_OF_MEMORY_HANDLED', (_) async {
     final (_, r) = await preview('orient_1_exif.jpg', forceOom: true);
     expect(r, isA<PreviewErr>().having((e) => e.reason, 'reason', Reason.outOfMemoryHandled));
   });

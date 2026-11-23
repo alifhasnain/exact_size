@@ -98,7 +98,7 @@ void main() {
     b?.release();
   }
 
-  test('decode matrix (small fixtures)', () {
+  testWidgets('decode matrix (small fixtures)', (_) async {
     final names = dir.listSync().map((e) => e.uri.pathSegments.last).where((n) => !n.startsWith('.') && !n.startsWith('large_')).toList()
       ..sort();
     for (final n in names) {
@@ -110,7 +110,7 @@ void main() {
     }
   }, timeout: const Timeout(Duration(minutes: 5)));
 
-  test('HEIC orientation: EXIF read by ExifInterface vs ImageDecoder oracle', () {
+  testWidgets('HEIC orientation: EXIF read by ExifInterface vs ImageDecoder oracle', (_) async {
     final names = dir.listSync().map((e) => e.uri.pathSegments.last).where((n) => n.endsWith('.heic') && n.startsWith('orient_')).toList()
       ..sort();
     for (final n in names) {
@@ -137,7 +137,7 @@ void main() {
     }
   });
 
-  test('large sources: bounds, region decode with inSampleSize, memory', () {
+  testWidgets('large sources: bounds, region decode with inSampleSize, memory', (_) async {
     final names = dir.listSync().map((e) => e.uri.pathSegments.last).where((n) => n.startsWith('large_')).toList()..sort();
     if (names.isEmpty) {
       markTestSkipped('no large set pushed (LARGE_DIR)');
@@ -158,7 +158,7 @@ void main() {
     }
   }, timeout: const Timeout(Duration(minutes: 20)));
 
-  test('NFR-2: 12 MP source to a 2 MP target, and a 24 MP target region', () {
+  testWidgets('NFR-2: 12 MP source to a 2 MP target, and a 24 MP target region', (_) async {
     final names = dir.listSync().map((e) => e.uri.pathSegments.last).toList();
     final twelve = names.where((n) => n.startsWith('large_12mp') && n.endsWith('baseline.jpg')).firstOrNull;
     final fifty = names.where((n) => n.startsWith('large_50mp') && n.endsWith('baseline.jpg')).firstOrNull;

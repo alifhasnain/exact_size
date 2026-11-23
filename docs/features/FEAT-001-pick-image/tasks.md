@@ -337,7 +337,7 @@ Defects found and fixed in T20:
 | 2 | AC-8.3: `cmd package query-activities` | API 36.1 | Pass: `SEND image/*` lists ShareTargetActivity, `SEND_MULTIPLE image/*` does not list the app |
 | 3 | Second warm share with the next step open | API 36.1 | Pass: one MainActivity in the history, the new image replaces the session |
 | 4 | Cold share (app force-stopped first) | API 36.1 | Pass: exactly one `ACCEPTED`, MainActivity on top |
-| 5 | Mid-flow (AC-8.4): camera file present, next step open, share arrives; old camera file deleted | S23 | Pending: needs the phone (the emulator camera hangs it). The crop screen is not reachable until FEAT-005, so the render-cancel part stays covered by the widget test (pick_screen_test: pop to start and `CropController.end()`) |
+| 5 | Mid-flow (AC-8.4): camera file present, next step open, share arrives; old camera file deleted | S23 Ultra, API 37, profile build | Pass: after a camera photo (next step at 4000×3000, one 5 MB file in the camera folder) a share of a synthetic MediaStore image replaced the session (next step at 120×80), the camera folder was empty, one MainActivity, two `ACCEPTED` lines and no other app log lines; one Back returned to the pick screen. The crop screen is not reachable until FEAT-005, so the render-cancel part stays covered by the widget test (pick_screen_test: pop to start and `CropController.end()`). Synthetic image and its media row deleted and app uninstalled afterwards |
 | 6 | CI API 28 job | API 28 | Pending: first CI run |
 
 ## Instructions for Claude Code

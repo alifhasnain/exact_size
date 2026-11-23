@@ -54,7 +54,7 @@ void main() {
 
   String outcome(PlanResult r) => r is ReadyToWrite ? 'READY' : (r as PlanFailed).failure.reason.code;
 
-  test('AC-5.1: JPEG, PNG, HEIC and WebP sources of the same size behave the same', () async {
+  testWidgets('AC-5.1: JPEG, PNG, HEIC and WebP sources of the same size behave the same', (_) async {
     const t = Target(600, 600);
     final names = [
       'large_12mp_4000x3000_baseline.jpg',
@@ -79,7 +79,7 @@ void main() {
     expect(outcomes.values.toSet(), {'READY'});
   });
 
-  test('hasTransparency travels with the buffer: PNG keeps alpha, JPEG flattens', () async {
+  testWidgets('hasTransparency travels with the buffer: PNG keeps alpha, JPEG flattens', (_) async {
     const t = Target(150, 100);
     final (alpha, _) = await produce(handle('alpha_partial.png')!, t);
     expect(alpha!.hasTransparency, isTrue);
@@ -94,7 +94,7 @@ void main() {
     (opaque as NativePixelBuffer).free(); // not handed over: the caller frees it
   });
 
-  test('AC-5.2: a corrupt file and an undecodable variant give a clear reason, no crash', () async {
+  testWidgets('AC-5.2: a corrupt file and an undecodable variant give a clear reason, no crash', (_) async {
     // Gate G1 (ADR-004 v1.1): corrupt → CORRUPT_INPUT; a format the device
     // cannot decode (10-bit HEIC) → UNSUPPORTED_INPUT. Nothing reaches FEAT-004.
     for (final (name, expected) in [
@@ -108,7 +108,7 @@ void main() {
     }
   });
 
-  test('AC-5.3: a 50 MP source completes or returns IMAGE_TOO_LARGE, no crash', () async {
+  testWidgets('AC-5.3: a 50 MP source completes or returns IMAGE_TOO_LARGE, no crash', (_) async {
     var ran = 0;
     for (final n in ['large_50mp_8164x6124_baseline.jpg', 'large_50mp_8164x6124.heic']) {
       final h = handle(n);
@@ -127,7 +127,7 @@ void main() {
     if (ran == 0) markTestSkipped('50 MP set not pushed (LARGE_DIR)');
   });
 
-  test('leak counters are 0 after the run', () {
+  testWidgets('leak counters are 0 after the run', (_) async {
     expect(NativePixelBuffer.live, 0);
     expect(CropRenderer.liveNativeBlocks, 0);
   });

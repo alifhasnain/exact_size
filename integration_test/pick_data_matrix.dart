@@ -41,7 +41,8 @@ void main() {
         for (final root in [cache, support])
           if (root.existsSync())
             for (final f in root.listSync(recursive: true).whereType<File>())
-              if (!f.path.startsWith(fixtures.path)) f.path,
+              // profileInstalled: AndroidX ProfileInstaller writes it at any moment after start; not image data.
+              if (!f.path.startsWith(fixtures.path) && !f.path.endsWith('profileInstalled')) f.path,
       };
 
   String randomName() {
@@ -108,7 +109,7 @@ void main() {
     }
   });
 
-  test('valid JPEG, PNG and WebP captures are accepted; each replaces the last (FR-10)', () async {
+  testWidgets('valid JPEG, PNG and WebP captures are accepted; each replaces the last (FR-10)', (_) async {
     String? previous;
     for (final f in ['orient_1_exif.jpg', 'size_200x200.png', 'animated.webp']) {
       final name = capture(f);
@@ -120,7 +121,7 @@ void main() {
     }
   });
 
-  test('AC-3.5 set is refused with the expected code; refused file gone, current kept (AC-3.1, AC-3.2)', () async {
+  testWidgets('AC-3.5 set is refused with the expected code; refused file gone, current kept (AC-3.1, AC-3.2)', (_) async {
     final kept = st().current?.cameraFile;
     expect(kept, isNotNull);
     const cases = {
@@ -144,7 +145,7 @@ void main() {
     }
   });
 
-  test('zero-byte file picked from the gallery path gives CORRUPT_INPUT (AC-3.5)', () async {
+  testWidgets('zero-byte file picked from the gallery path gives CORRUPT_INPUT (AC-3.5)', (_) async {
     final uri = Uri.file('${fixtures.path}/zero_bytes.jpg').toString();
     // file:// is refused before the probe (FR-8); the probe code is checked through
     // the own FileProvider instead, which the gallery path accepts as content://.
@@ -155,7 +156,7 @@ void main() {
     expectNoCopies();
   });
 
-  test('HEIC this API cannot decode is refused with UNSUPPORTED_INPUT, or N/A', () async {
+  testWidgets('HEIC this API cannot decode is refused with UNSUPPORTED_INPUT, or N/A', (_) async {
     final name = capture('depth10.heic');
     final code = await deliver(Captured(uri: '$_authority/camera/$name', fileName: name));
     // API 28 refuses bounds; API 36 reads bounds and fails later at decode (FEAT-002-T04).
@@ -165,7 +166,7 @@ void main() {
     expectNoCopies();
   });
 
-  test('path traversal through the FileProvider and an ungranted media URI give SOURCE_UNAVAILABLE', () async {
+  testWidgets('path traversal through the FileProvider and an ungranted media URI give SOURCE_UNAVAILABLE', (_) async {
     final kept = st().current;
     final out = Directory('${cache.path}/exactsize_out')..createSync(recursive: true);
     final target = File('${out.path}/${randomName()}');
@@ -184,14 +185,14 @@ void main() {
     expectNoCopies();
   });
 
-  test('release() leaves no image and an empty camera folder (FR-11)', () async {
+  testWidgets('release() leaves no image and an empty camera folder (FR-11)', (_) async {
     await c.read(pickControllerProvider.notifier).release();
     expect(st().current, isNull);
     expect(camera.dir.listSync(), isEmpty);
     expectNoCopies();
   });
 
-  test('12 MP JPEG from Captured to PickedImage, 20 runs (NFR-1, OQ-T6, informational)', () async {
+  testWidgets('12 MP JPEG from Captured to PickedImage, 20 runs (NFR-1, OQ-T6, informational)', (_) async {
     final large = fixtures.listSync().whereType<File>().map((f) => f.uri.pathSegments.last).where((n) => RegExp(r'^large_12mp_.*_baseline\.jpg$').hasMatch(n)).firstOrNull;
     if (large == null) {
       markTestSkipped('LARGE_DIR not pushed');
