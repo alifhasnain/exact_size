@@ -201,7 +201,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
 - **Scope:** `CropScreen.onContinue(pixels)` → `compressionController.start(spec.request(pixels))`. Ownership of the buffer moves (ADR-003). Then push `_AfterCropStandIn`: dev-only, not shipped, `shortcut:` comment naming FEAT-006. It shows the run state via `announcementFor`. Popping it calls `compressionController.cancel()`.
 - **Done when:** widget test with a fake compression controller: `start` is called once with a request carrying the spec's `minKb`, `maxKb` and `format` and the same buffer; pop calls `cancel()` once; the buffer is not freed by the flow (FEAT-004 owns it).
 
-### - [ ] FEAT-005-T12 — `TargetScreen`: fields, keyboard, focus order, format, hand-over
+### - [x] FEAT-005-T12 — `TargetScreen`: fields, keyboard, focus order, format, hand-over
 - **Implements:** FR-1, FR-2, FR-3, FR-4 (clean on blur), FR-8 (valid path), FR-9, FR-10, FR-14 (no restoration), NFR-6, NFR-8 (length cap) · **ADRs:** ADR-001
 - **Depends on:** T09 (G1), T06, T08, T10
 - **Size:** L

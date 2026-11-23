@@ -24,6 +24,7 @@ import 'package:exact_size/features/crop/presentation/crop_screen.dart';
 import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_screen.dart';
 import 'package:exact_size/features/target/domain/target_spec.dart';
+import 'package:exact_size/features/target/presentation/target_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -134,7 +135,7 @@ void main() {
     return ProviderScope.containerOf(tester.element(find.byType(PickScreen)));
   }
 
-  int targetRoutes(WidgetTester tester) => find.textContaining('Target step', skipOffstage: false).evaluate().length;
+  int targetRoutes(WidgetTester tester) => find.byType(TargetScreen, skipOffstage: false).evaluate().length;
 
   testWidgets('(a) a new pick or share mid-flow keeps the new image and its camera file', (tester) async {
     final c = await pumpApp(tester);
@@ -194,7 +195,7 @@ void main() {
     }
 
     void openCrop(WidgetTester tester, ProviderContainer c, TargetSpec s) => openCropStep(
-        tester.element(find.textContaining('Target step')), c.read(pickControllerProvider).current!, s);
+        tester.element(find.byType(TargetScreen)), c.read(pickControllerProvider).current!, s);
 
     testWidgets('progress at 500 ms, not 499; a decode error shows the reason; Choose another releases once',
         (tester) async {

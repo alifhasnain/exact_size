@@ -13,6 +13,7 @@ import 'features/crop/presentation/crop_screen.dart';
 import 'features/pick/domain/pick_types.dart';
 import 'features/pick/presentation/pick_controller.dart';
 import 'features/target/domain/target_spec.dart';
+import 'features/target/presentation/target_screen.dart';
 import 'l10n/app_localizations.dart';
 import 'ui/booth.dart';
 
@@ -57,11 +58,7 @@ class _TargetRoute extends ConsumerWidget {
         ref.read(pickControllerProvider.notifier).release();
         ref.read(cropControllerProvider.notifier).end();
       },
-      // shortcut: dev-only stand-in for the target screen, not shipped; T12 replaces it.
-      child: Scaffold(
-        appBar: AppBar(),
-        body: Center(child: Text('Target step (FEAT-005): ${image.info.rawWidth} x ${image.info.rawHeight}')),
-      ),
+      child: TargetScreen(info: image.info, onContinue: (spec) => openCropStep(context, image, spec)),
     );
   }
 }
