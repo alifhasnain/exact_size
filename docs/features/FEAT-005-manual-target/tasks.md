@@ -76,7 +76,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - `readNumber` returns `Empty`, `Whole(int)`, `NotWhole` or `NotNumber`. `Whole` matches `^[0-9]+$`; leading zeros are stripped before the 9-digit cap, and more than 9 significant digits gives 999,999,999. `NotWhole` is digits plus at least one `.`. Anything else is `NotNumber`.
 - **Done when:** a table unit test passes for `٣٠٠`, `۳۰۰`, `३००`, `৩০০` → 300; `0300` and `0000000000300` → 300; bidi-wrapped and NBSP/U+202F-padded `300` → 300; `7.5`, `7,5`, `1,000`, `1.000`, `1.000.000`, `٧٫٥`, `١٬٠٠٠` → `NotWhole`; `-5`, `+5`, `0x10`, `1e3`, `300x300`, `३०० px`, `KB` → `NotNumber`; 10, 20 and 40 digits → `Whole(999999999)`; `''` and whitespace-only → `Empty`. The cleaned text keeps leading zeros (OQ-T2).
 
-### - [ ] FEAT-005-T04 — `validateTargetInput`: per-field composition, section 9 table, fuzz, benchmark
+### - [x] FEAT-005-T04 — `validateTargetInput`: per-field composition, section 9 table, fuzz, benchmark
 - **Implements:** FR-5, FR-6, FR-8 (result and first field), FR-9, NFR-1, NFR-5, NFR-7, NFR-8 · **ADRs:** —
 - **Depends on:** T03
 - **Size:** M
