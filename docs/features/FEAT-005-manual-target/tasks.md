@@ -386,6 +386,7 @@ _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, r
 | 2026-11-23 | T01 | `test/app_flow_test.dart` (a) on the pre-fix tree | host | Fails as expected: the popUntil pop released B |
 | 2026-11-23 | T01 | `test/app_flow_test.dart` (a), (b) after the fix; pick tests unchanged | host | Pass |
 | 2026-11-23 | T01 | FEAT-001-T25 share drive (synthetic image) | Medium_Phone_API_36.1 | Pass (in-app test 1/1, AC-8.3, warm single instance, cold start) |
+| 2026-11-23 | T01 | FEAT-001-T25 share drive and full emulator job (with T02–T08) | CI run 45222201595, API 28 | Pass (all three jobs green) |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001 and ADR-003 before starting a task.
