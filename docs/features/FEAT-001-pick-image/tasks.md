@@ -201,7 +201,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** `ShareTargetActivity.kt` (exported, `Theme.NoDisplay`, filter `SEND` + `DEFAULT` + `image/*`, no `SEND_MULTIPLE`) forwarding the stream URI with its grant to `MainActivity` (`NEW_TASK | SINGLE_TOP`); `MainActivity.onCreate`/`onNewIntent`: ignore `FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY` and `es.shareConsumed`; `Picked(uri, share, fromOwnApp)` via `resolveContentProvider`; missing stream → `NotOpenable(share)`; the intent MIME type is never trusted; manifest entry; T09 check extended to allow only this one exported activity filter.
 - **Done when:** unit tests: share `file://`, own authority and missing stream → `itemNotOpenable`; T05 grep test covers `ShareTargetActivity.kt`; T09 still passes.
 
-### - [ ] FEAT-001-T25 — Share target tests: cold, warm, refused, mid-flow (Should)
+### - [x] FEAT-001-T25 — Share target tests: cold, warm, refused, mid-flow (Should)
 - **Implements:** FR-20, AC-8.1–8.5 · **ADRs:** ADR-006
 - **Depends on:** T24, T17
 - **Size:** M
@@ -338,7 +338,7 @@ Defects found and fixed in T20:
 | 3 | Second warm share with the next step open | API 36.1 | Pass: one MainActivity in the history, the new image replaces the session |
 | 4 | Cold share (app force-stopped first) | API 36.1 | Pass: exactly one `ACCEPTED`, MainActivity on top |
 | 5 | Mid-flow (AC-8.4): camera file present, next step open, share arrives; old camera file deleted | S23 Ultra, API 37, profile build | Pass: after a camera photo (next step at 4000×3000, one 5 MB file in the camera folder) a share of a synthetic MediaStore image replaced the session (next step at 120×80), the camera folder was empty, one MainActivity, two `ACCEPTED` lines and no other app log lines; one Back returned to the pick screen. The crop screen is not reachable until FEAT-005, so the render-cancel part stays covered by the widget test (pick_screen_test: pop to start and `CropController.end()`). Synthetic image and its media row deleted and app uninstalled afterwards |
-| 6 | CI API 28 job | API 28 | Pending: first CI run |
+| 6 | CI API 28 job (run 45200898069) | API 28 | Pass: same results as rows 1–4. The first run (45197411399) failed only on the cold-start check, because API 28's dumpsys prints `mResumedActivity` instead of `topResumedActivity`; the share itself was accepted once. The "Some tests failed" line after the cold start is expected: the cold-started app runs the test file again with no driver to serve it |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-006 before starting a task.
