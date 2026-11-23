@@ -34,6 +34,7 @@ void main() {
       // FR-17: onResume with the marker set always sends a name; a missing one still maps (T20).
       expect(p({'origin': 'camera', 'outcome': 'captureLost'}), isA<CaptureLost>().having((r) => r.fileName, 'name', isNull));
       expect(p({'origin': 'files', 'outcome': 'notOpenable'}), isA<NotOpenable>().having((r) => r.origin, 'origin', PickOrigin.files));
+      expect(p({'origin': 'share', 'outcome': 'notOpenable'}), isA<NotOpenable>().having((r) => r.origin, 'origin', PickOrigin.share));
     });
 
     test('malformed payloads become NotOpenable; bad camera names are dropped', () {

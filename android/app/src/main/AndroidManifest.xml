@@ -29,6 +29,21 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- FEAT-001 (FR-20): share target for one image. No UI; forwards to MainActivity in the
+             app's own task. SEND only: no SEND_MULTIPLE (AC-8.3). -->
+        <activity
+            android:name=".ShareTargetActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
         <!-- FEAT-001 (ADR-006): the camera app writes into cache/camera/ through this provider.
              Not exported; access only through a per-intent URI grant. -->
         <provider

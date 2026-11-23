@@ -194,7 +194,7 @@ Module paths follow ADR-001: `lib/features/pick/{domain,data,presentation}`; nat
 - **Scope:** the T06 privacy string on the pick screen per the G3 design; FEAT-016 owns the final copy (only the ARB value changes later).
 - **Done when:** widget test finds the line last in semantics order, unclipped at text scale 2.0 and in all 6 locales.
 
-### - [ ] FEAT-001-T24 — Share target hand-in (Should)
+### - [x] FEAT-001-T24 — Share target hand-in (Should)
 - **Implements:** FR-20, AC-8.2, AC-8.3, AC-8.5, NFR-6 · **ADRs:** ADR-006
 - **Depends on:** T01 (G1 item h passed), T10, T13
 - **Size:** M
@@ -319,6 +319,26 @@ Defects found and fixed in T20:
 | 2 | Zero-byte file through the document picker (AC-3.5) | API 36.1 | Pass: corrupt-file message, log `CORRUPT_INPUT` and `CORRUPT` |
 | 3 | Valid image through the document picker | API 36.1 | Pass: hand-off at 120×80, log `ACCEPTED`, no copy in app storage (the only new files are Android's own compiled-code and profile files) |
 | — | API 28 | — | Not run (no image; download declined at T19) |
+
+### T24 — 2026-11-23 (API 36.1 emulator, release and profile builds)
+| # | Check | Image | Result |
+|---|---|---|---|
+| 1 | Release build with the merged-manifest check | API 36.1 | Pass. A throwaway `SEND_MULTIPLE` action on the share filter fails the build with "Exported activity … is not allowed" |
+| 2 | Cold share from the shell, granted MediaStore image (URI as intent data and stream extra) | API 36.1 | Pass: the trampoline forwards the grant, the app opens on its own task, hand-off at 120×80, log `ACCEPTED` |
+| 3 | Cold share, stream extra only (the shell grants nothing) | API 36.1 | Pass: "We couldn't open this photo…", log `SOURCE_UNAVAILABLE` (AC-8.5). The system's media provider logs its own SecurityException line with the numeric content URI; that is the system's log, outside the app |
+| 4 | Cold share of a `file://` stream | API 36.1 | Pass: "We can't open that item…", log `ITEM_NOT_OPENABLE` (AC-8.2) |
+| 5 | Flutter's "Intent verification failed … IGNORED in release builds" warning (T19 row 15) | — | No effect on the share. Flutter's check (`IntentUtils.isIntentSelfSent`) only gates Flutter's own launch extras (cached engine, entrypoint, initial route) and a deep-link route from the intent data. The forwarded URI travels in our own extra `es.shareUri`, which Kotlin reads directly, and never in the intent data, so it cannot become a Flutter route. On API 34+ the trampoline has our UID, so the forward counts as self-sent and no warning is logged |
+| — | Finding | — | G1 finding 2 ("the shell cannot grant MediaStore URIs") holds only for the stream extra: `am start` grants URIs in the intent data, so `-d <uri>` gives the app a real grant. T25 uses that instead of a test sender app |
+
+### T25 — 2026-11-23 (API 36.1 emulator, profile build)
+| # | Check | Image | Result |
+|---|---|---|---|
+| 1 | `share_intent_driver` + `pick_share_test`: warm `file://`, no grant, granted MediaStore, no stream | API 36.1 | Pass: `ITEM_NOT_OPENABLE`, `SOURCE_UNAVAILABLE`, `ACCEPTED` (origin share, no copy, hand-off at 120×80), `ITEM_NOT_OPENABLE` with the current image kept; one log line per share |
+| 2 | AC-8.3: `cmd package query-activities` | API 36.1 | Pass: `SEND image/*` lists ShareTargetActivity, `SEND_MULTIPLE image/*` does not list the app |
+| 3 | Second warm share with the next step open | API 36.1 | Pass: one MainActivity in the history, the new image replaces the session |
+| 4 | Cold share (app force-stopped first) | API 36.1 | Pass: exactly one `ACCEPTED`, MainActivity on top |
+| 5 | Mid-flow (AC-8.4): camera file present, next step open, share arrives; old camera file deleted | S23 | Pending: needs the phone (the emulator camera hangs it). The crop screen is not reachable until FEAT-005, so the render-cancel part stays covered by the widget test (pick_screen_test: pop to start and `CropController.end()`) |
+| 6 | CI API 28 job | API 28 | Pending: first CI run |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-006 before starting a task.

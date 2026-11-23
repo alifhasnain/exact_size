@@ -102,6 +102,17 @@ abstract class CheckMergedManifest : DefaultTask() {
         val capture = root.all("queries").flatMap { it.all("action") }.any { it.a("name") == "android.media.action.IMAGE_CAPTURE" }
         if (!capture) problems += "The <queries> entry for android.media.action.IMAGE_CAPTURE is missing (FEAT-001 FR-5)."
 
+        // FEAT-001-T24 (FR-20, AC-8.3): only the launcher and the single-image share target are exported.
+        for (act in root.all("activity").filter { it.a("exported") == "true" }) {
+            val filters = act.all("intent-filter").map { f -> f.all("action").map { it.a("name") }.toSet() to f.all("data").map { it.a("mimeType") }.toSet() }
+            val allowed = when (act.a("name").substringAfterLast('.')) {
+                "MainActivity" -> filters == listOf(setOf("android.intent.action.MAIN") to emptySet<String>())
+                "ShareTargetActivity" -> filters == listOf(setOf("android.intent.action.SEND") to setOf("image/*"))
+                else -> false
+            }
+            if (!allowed) problems += "Exported activity ${act.a("name")} with filters $filters is not allowed: only MainActivity (launcher) and ShareTargetActivity (one SEND image/* filter, no SEND_MULTIPLE) may be exported (FEAT-001 FR-20, AC-8.3)."
+        }
+
         if (problems.isNotEmpty()) throw GradleException("checkMergedManifest failed:\n- " + problems.joinToString("\n- "))
         logger.lifecycle("checkMergedManifest: OK")
     }

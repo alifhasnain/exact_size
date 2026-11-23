@@ -2,6 +2,7 @@ package com.exactsize.exact_size
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.StatFs
 import android.provider.MediaStore
@@ -29,6 +30,7 @@ class MainActivity : FlutterActivity() {
         const val REQUEST_FILES = 4103
         const val KEY_OUTSTANDING = "exactsize.pick.outstanding"
         const val KEY_PENDING_CAPTURE = "es.pendingCapture"
+        const val KEY_SHARE_CONSUMED = "es.shareConsumed"
 
         /** Below this much free cache space the camera is not started (FR-5, OQ-T3). */
         const val MIN_FREE_BYTES = 32L * 1024 * 1024
@@ -53,16 +55,58 @@ class MainActivity : FlutterActivity() {
      */
     private var duplicate = false
 
+    /** A forwarded share was already put in the slot; recreation must not deliver it again (FR-20). */
+    private var shareConsumed = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         launchOutstanding = savedInstanceState?.getBoolean(KEY_OUTSTANDING) ?: false
         pendingCapture = savedInstanceState?.getString(KEY_PENDING_CAPTURE)
         captureRestored = pendingCapture != null
+        shareConsumed = savedInstanceState?.getBoolean(KEY_SHARE_CONSUMED) ?: false
         // G1 finding (g): the launcher icon tapped while a picker or the camera runs in this task
         // would start a second MainActivity on top; finish it so the system UI stays in front.
         // Decided before super.onCreate, which configures the engine and its channel.
         duplicate = !isTaskRoot && intent?.action == Intent.ACTION_MAIN && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
         super.onCreate(savedInstanceState)
-        if (duplicate) finish()
+        if (duplicate) finish() else if (!shareConsumed) takeShare(intent) // cold start; Dart's build takes the slot
+    }
+
+    /** Warm share (FR-20): ShareTargetActivity reached the running instance (singleTop). */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (!duplicate && takeShare(intent)) channel?.invokeMethod("resultReady", null)
+    }
+
+    /**
+     * Puts a share forwarded by ShareTargetActivity in the slot. Ignored when the intent is replayed
+     * from recents. Own-provider URIs are flagged so Dart refuses them (AC-8.2); a missing stream is
+     * notOpenable. Returns whether the slot changed.
+     */
+    private fun takeShare(intent: Intent?): Boolean {
+        if (intent?.action != ShareTargetActivity.ACTION) return false
+        if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) return false
+        shareConsumed = true
+        val uri = try {
+            intent.getStringExtra(ShareTargetActivity.EXTRA_URI)?.let(Uri::parse)
+        } catch (_: Throwable) {
+            null
+        }
+        slot = if (uri == null) {
+            mapOf("origin" to "share", "outcome" to "notOpenable")
+        } else {
+            mapOf("origin" to "share", "outcome" to "picked", "uri" to uri.toString(), "fromOwnApp" to isOwnProvider(uri))
+        }
+        return true
+    }
+
+    private fun isOwnProvider(uri: Uri): Boolean {
+        val authority = uri.authority ?: return false
+        return try {
+            @Suppress("DEPRECATION")
+            packageManager.resolveContentProvider(authority, 0)?.packageName == packageName
+        } catch (_: Throwable) {
+            false
+        }
     }
 
     /**
@@ -99,6 +143,7 @@ class MainActivity : FlutterActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(KEY_OUTSTANDING, launchOutstanding)
         pendingCapture?.let { outState.putString(KEY_PENDING_CAPTURE, it) }
+        outState.putBoolean(KEY_SHARE_CONSUMED, shareConsumed)
         super.onSaveInstanceState(outState)
     }
 
