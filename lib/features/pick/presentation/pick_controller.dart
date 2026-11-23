@@ -84,6 +84,7 @@ class PickController extends Notifier<PickState> {
     final ready = _picker.resultReady.listen((_) => _drain());
     final lifecycle = AppLifecycleListener(onResume: _refreshCamera);
     ref.onDispose(() {
+      _generation++; // late probe answers and progress timers are dropped
       ready.cancel();
       lifecycle.dispose();
     });
@@ -102,6 +103,7 @@ class PickController extends Notifier<PickState> {
     } on PlatformException {
       outcome = LaunchOutcome.unavailable;
     }
+    if (!ref.mounted) return;
     switch (outcome) {
       case LaunchOutcome.launched:
       case LaunchOutcome.busy: // a launch is still outstanding; its result will arrive
@@ -141,7 +143,7 @@ class PickController extends Notifier<PickState> {
     } on PlatformException {
       available = false;
     }
-    state = state.copyWith(cameraAvailable: available);
+    if (ref.mounted) state = state.copyWith(cameraAvailable: available);
   }
 
   void _drain() => _queue = _queue.then((_) => _takeAndHandle());
@@ -153,7 +155,7 @@ class PickController extends Notifier<PickState> {
     } on PlatformException {
       return;
     }
-    if (result == null) return;
+    if (result == null || !ref.mounted) return;
     try {
       await _handle(result);
     } on Object {
@@ -162,7 +164,7 @@ class PickController extends Notifier<PickState> {
       final file = _attemptFile;
       _attemptFile = null;
       await _delete(file);
-      _refuse(PickMessage.itemNotOpenable);
+      if (ref.mounted) _refuse(PickMessage.itemNotOpenable);
     }
   }
 

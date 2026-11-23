@@ -107,6 +107,17 @@ void main() {
     expect(st().phase, PickPhase.idle);
   });
 
+  test('disposed while the camera check or a launch is pending: no state write after dispose', () async {
+    final own = ProviderContainer();
+    own.read(pickControllerProvider); // camera check in flight
+    picker.nextLaunch = LaunchOutcome.lowSpace;
+    final launch = own.read(pickControllerProvider.notifier).launch(PickSource.gallery);
+    own.dispose();
+    await launch;
+    await pumpEventQueue();
+    expect(log, isEmpty, reason: 'no refusal logged after dispose');
+  });
+
   test('a result waiting before Dart ran is handled once at build (FR-15)', () async {
     picker.slot = const Picked(uri: _uri, origin: PickOrigin.gallery);
     await start();
@@ -212,6 +223,12 @@ void main() {
     await settle();
     expect(st().message, PickMessage.itemNotOpenable);
     picker.deliver(const Picked(uri: _uri, origin: PickOrigin.share, fromOwnApp: true));
+    await settle();
+    expect(st().message, PickMessage.itemNotOpenable);
+    picker.deliver(const Picked(uri: 'file:///sdcard/[PLACEHOLDER].jpg', origin: PickOrigin.share));
+    await settle();
+    expect(st().message, PickMessage.itemNotOpenable);
+    picker.deliver(const NotOpenable(origin: PickOrigin.share)); // share without a stream (T24)
     await settle();
     expect(st().message, PickMessage.itemNotOpenable);
     expect(probe.calls, 0);
