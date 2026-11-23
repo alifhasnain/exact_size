@@ -139,7 +139,9 @@ class _Booth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Theme(
-        data: Booth.theme(Theme.of(context)),
+        data: Booth.theme(Theme.of(context)).copyWith(
+          textTheme: Theme.of(context).textTheme.apply(bodyColor: Booth.text, displayColor: Booth.text),
+        ),
         child: Scaffold(
           appBar: AppBar(),
           body: SafeArea(

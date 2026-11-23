@@ -71,7 +71,9 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
   void _clean(TargetField f) {
     final c = _text[f]!;
     final cleaned = cleanNumberText(c.text);
-    if (cleaned != c.text) c.value = TextEditingValue(text: cleaned, selection: TextSelection.collapsed(offset: cleaned.length));
+    if (cleaned != c.text) {
+      c.value = TextEditingValue(text: cleaned, selection: TextSelection.collapsed(offset: cleaned.length));
+    }
     _form.setText(f, cleaned);
   }
 
@@ -118,46 +120,62 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
     final state = ref.watch(targetFormProvider);
     final errors = state.visibleErrors;
     int? whole(String t) => switch (readNumber(cleanNumberText(t))) {
-          Whole(:final value) => value,
-          _ => null,
-        };
+      Whole(:final value) => value,
+      _ => null,
+    };
     final w = whole(state.input.width), h = whole(state.input.height);
     final hints = targetHints(widget.info, width: w, height: h);
-    final theme = Booth.theme(Theme.of(context));
+    final booth = Booth.theme(Theme.of(context));
+    // The base text theme is the light app's; on the booth every text is light (WCAG AA pairs).
+    final theme = booth.copyWith(textTheme: booth.textTheme.apply(bodyColor: Booth.text, displayColor: Booth.text));
 
-    Widget field(TargetField f, String label, String unit, {String? helper}) => TextField(
-          controller: _text[f],
-          focusNode: _focus[f],
-          keyboardType: TextInputType.number,
-          textInputAction: f == TargetField.maxKb ? TextInputAction.done : TextInputAction.next,
-          autocorrect: false,
-          enableSuggestions: false,
-          enableIMEPersonalizedLearning: false,
-          autofillHints: null,
-          inputFormatters: [LengthLimitingTextInputFormatter(32)],
-          textDirection: TextDirection.ltr,
-          style: const TextStyle(
-            fontFamily: 'BarlowCondensed',
-            fontWeight: FontWeight.w600,
-            fontSize: 24,
-            fontFeatures: [FontFeature.tabularFigures()],
-          ),
-          decoration: InputDecoration(
-            labelText: label,
-            suffixText: unit,
-            helperText: helper,
-            filled: true,
-            border: const OutlineInputBorder(),
-          ),
-          onChanged: (t) => _form.setText(f, t),
-          onEditingComplete: () {}, // focus moves in onSubmitted only
-          onSubmitted: (_) => _next(f),
-        );
+    Widget textField(TargetField f, String label, String unit, {String? helper}) => TextField(
+      controller: _text[f],
+      focusNode: _focus[f],
+      keyboardType: TextInputType.number,
+      textInputAction: f == TargetField.maxKb ? TextInputAction.done : TextInputAction.next,
+      autocorrect: false,
+      enableSuggestions: false,
+      enableIMEPersonalizedLearning: false,
+      autofillHints: null,
+      inputFormatters: [LengthLimitingTextInputFormatter(32)],
+      textDirection: TextDirection.ltr,
+      style: const TextStyle(
+        color: Booth.text,
+        fontFamily: 'BarlowCondensed',
+        fontWeight: FontWeight.w600,
+        fontSize: 24,
+        fontFeatures: [FontFeature.tabularFigures()],
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: unit,
+        helperText: helper,
+        filled: true,
+        border: const OutlineInputBorder(),
+      ),
+      onChanged: (t) => _form.setText(f, t),
+      onEditingComplete: () {}, // focus moves in onSubmitted only
+      onSubmitted: (_) => _next(f),
+    );
+
+    // One TalkBack node per field: label, unit, optional (helper) or required, value and error (AC-6.2).
+    // The visible error line is excluded from semantics so it is not read twice.
+    Widget field(TargetField f, String label, String unit, {String? helper}) => MergeSemantics(
+      child: Semantics(
+        isRequired: f != TargetField.minKb,
+        hint: switch (errors[f]) {
+          null => null,
+          final e => m.error(e),
+        },
+        child: textField(f, label, unit, helper: helper),
+      ),
+    );
 
     Widget error(TargetField f) => switch (errors[f]) {
-          null => const SizedBox.shrink(),
-          final e => _ErrorLine(m.error(e)),
-        };
+      null => const SizedBox.shrink(),
+      final e => ExcludeSemantics(child: _ErrorLine(m.error(e))),
+    };
 
     return Theme(
       data: theme,
@@ -186,17 +204,23 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: 12,
                     children: [
-                      LayoutBuilder(builder: (context, box) {
-                        final w = field(TargetField.width, l.targetLabelWidth, l.targetUnitPx);
-                        final h = field(TargetField.height, l.targetLabelHeight, l.targetUnitPx);
-                        final narrow = box.maxWidth < 280 || MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-                        if (narrow) return Column(spacing: 12, children: [w, h]);
-                        return Row(spacing: 8, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Expanded(child: w),
-                          const Padding(padding: EdgeInsets.only(top: 16), child: Text('×')),
-                          Expanded(child: h),
-                        ]);
-                      }),
+                      LayoutBuilder(
+                        builder: (context, box) {
+                          final w = field(TargetField.width, l.targetLabelWidth, l.targetUnitPx);
+                          final h = field(TargetField.height, l.targetLabelHeight, l.targetUnitPx);
+                          final narrow = box.maxWidth < 280 || MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+                          if (narrow) return Column(spacing: 12, children: [w, h]);
+                          return Row(
+                            spacing: 8,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(child: w),
+                              const Padding(padding: EdgeInsets.only(top: 16), child: Text('×')),
+                              Expanded(child: h),
+                            ],
+                          );
+                        },
+                      ),
                       error(TargetField.width),
                       error(TargetField.height),
                       field(TargetField.minKb, l.targetLabelMin, l.targetUnitKb, helper: l.targetOptional),
@@ -248,11 +272,13 @@ class _ErrorLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          const Icon(Icons.error_outline, size: 20, color: Booth.text),
-          Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Booth.text))),
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    spacing: 8,
+    children: [
+      const Icon(Icons.error_outline, size: 20, color: Booth.text),
+      Expanded(
+        child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Booth.text)),
+      ),
+    ],
+  );
 }
