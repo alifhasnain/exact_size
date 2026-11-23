@@ -10,6 +10,7 @@ import '../../../ui/booth.dart';
 import '../../compression/domain/compression_result.dart';
 import '../../crop/domain/crop_types.dart';
 import '../domain/number_text.dart';
+import '../domain/target_hints.dart';
 import '../domain/target_input.dart';
 import '../domain/target_spec.dart';
 import 'target_form_controller.dart';
@@ -89,6 +90,13 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
     }
   }
 
+  void _usePhotoSize() {
+    _form.usePhotoSize(widget.info);
+    final input = ref.read(targetFormProvider).input;
+    _text[TargetField.width]!.text = input.width;
+    _text[TargetField.height]!.text = input.height;
+  }
+
   void _continue() {
     TargetScreen.fields.forEach(_clean);
     switch (ref.read(targetFormProvider).result) {
@@ -109,6 +117,12 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
     final m = TargetMessages(l);
     final state = ref.watch(targetFormProvider);
     final errors = state.visibleErrors;
+    int? whole(String t) => switch (readNumber(cleanNumberText(t))) {
+          Whole(:final value) => value,
+          _ => null,
+        };
+    final w = whole(state.input.width), h = whole(state.input.height);
+    final hints = targetHints(widget.info, width: w, height: h);
     final theme = Booth.theme(Theme.of(context));
 
     Widget field(TargetField f, String label, String unit, {String? helper}) => TextField(
@@ -156,6 +170,15 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 16,
               children: [
+                // Photo line (FR-12); a FEAT-011 preset row would go just below it (OQ-10).
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  children: [
+                    Text(m.photoSize(hints), style: theme.textTheme.bodyLarge),
+                    if (hints.canUsePhotoSize) TextButton(onPressed: _usePhotoSize, child: Text(l.targetUsePhotoSize)),
+                  ],
+                ),
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(color: Booth.plate, borderRadius: BorderRadius.circular(16)),
@@ -192,6 +215,19 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
                         onSelectionChanged: (s) => _form.setFormat(s.single),
                       ),
                       error(TargetField.format),
+                    ],
+                  ),
+                ),
+                // Non-blocking hints (FR-11, FR-13): never stop Continue.
+                Semantics(
+                  liveRegion: true,
+                  container: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (hints.enlarges && w != null && h != null)
+                        BoothNotice(icon: Icons.info_outline, text: m.enlarged(Target(w, h))),
+                      if (hints.verySmall) BoothNotice(icon: Icons.info_outline, text: m.verySmall),
                     ],
                   ),
                 ),

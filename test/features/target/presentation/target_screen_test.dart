@@ -20,7 +20,7 @@ void main() {
   String text(WidgetTester tester, String label) => tester.widget<TextField>(field(label)).controller!.text;
 
   /// The target screen on a phone; Continue pushes a fake crop route.
-  Future<ValueNotifier<Locale>> pump(WidgetTester tester, {ProviderContainer? container}) async {
+  Future<ValueNotifier<Locale>> pump(WidgetTester tester, {ProviderContainer? container, SourceInfo info = _info}) async {
     tester.view
       ..physicalSize = const Size(1080, 2400)
       ..devicePixelRatio = 3;
@@ -36,7 +36,7 @@ void main() {
           locale: l,
           home: Builder(
             builder: (context) => TargetScreen(
-              info: _info,
+              info: info,
               onContinue: (spec) {
                 specs.add(spec);
                 Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const Scaffold(body: Text('crop'))));
@@ -51,7 +51,10 @@ void main() {
   }
 
   Future<void> tapContinue(WidgetTester tester) async {
-    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+    final button = find.widgetWithText(FilledButton, 'Continue');
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    await tester.tap(button);
     await tester.pumpAndSettle();
   }
 
@@ -282,6 +285,55 @@ void main() {
       await tester.tap(field('Height'));
       await tester.pump();
       expect(msg(sizeMsg), findsOneWidget);
+    });
+  });
+
+  group('photo line and hints (T14)', () {
+    SourceInfo src(int w, int h, {int exif = 1}) => SourceInfo(
+        rawWidth: w, rawHeight: h, mime: 'image/jpeg', exifOrientation: exif, isAnimated: false, hasAlpha: false, decodePath: DecodePath.region);
+    Finder plain(String t) => find.byWidgetPredicate(
+        (w) => w is Text && w.data?.replaceAll(RegExp('[\u2068\u2069]'), '') == t);
+
+    testWidgets('AC-7.1: a 200x200 photo with a 300x300 target shows the enlarge notice; Continue hands on', (tester) async {
+      await pump(tester, info: src(200, 200));
+      await tester.enterText(field('Width'), '300');
+      await tester.enterText(field('Height'), '300');
+      await tester.enterText(field('Maximum size'), '50');
+      await tester.pump();
+      expect(plain('This photo is smaller than 300×300 px, so it will be enlarged and may look soft.'), findsOneWidget);
+      await tapContinue(tester);
+      expect(specs, hasLength(1));
+    });
+
+    testWidgets('AC-7.2: 10x10 shows the very-small notice; no notice for a fitting size', (tester) async {
+      await pump(tester);
+      await tester.enterText(field('Width'), '10');
+      await tester.enterText(field('Height'), '10');
+      await tester.pump();
+      expect(find.text('Very small image. Check the size on your form.'), findsOneWidget);
+      await tester.enterText(field('Width'), '300');
+      await tester.enterText(field('Height'), '300');
+      await tester.pump();
+      expect(find.text('Very small image. Check the size on your form.'), findsNothing);
+      expect(find.byIcon(Icons.info_outline), findsNothing);
+    });
+
+    testWidgets('AC-7.3: Use photo size fills 4000 x 3000; a 12,000-wide photo hides it', (tester) async {
+      await pump(tester);
+      await tester.tap(find.text('Use photo size'));
+      await tester.pump();
+      expect([text(tester, 'Width'), text(tester, 'Height')], ['4000', '3000']);
+      await tester.pumpWidget(const SizedBox());
+      await pump(tester, info: src(12000, 1000));
+      expect(find.text('Use photo size'), findsNothing);
+    });
+
+    testWidgets('AC-7.4: EXIF 6 shows the size as seen, 3000×4000', (tester) async {
+      await pump(tester, info: src(4000, 3000, exif: 6));
+      expect(plain('Your photo: 3,000×4,000 px'), findsOneWidget);
+      await tester.tap(find.text('Use photo size'));
+      await tester.pump();
+      expect([text(tester, 'Width'), text(tester, 'Height')], ['3000', '4000']);
     });
   });
 }

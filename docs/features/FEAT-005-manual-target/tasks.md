@@ -243,7 +243,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - AC-3.5 (all messages at once);
   - no error while typing in a fresh field.
 
-### - [ ] FEAT-005-T14 — Photo line, "Use photo size" and non-blocking hints
+### - [x] FEAT-005-T14 — Photo line, "Use photo size" and non-blocking hints
 - **Implements:** FR-11, FR-12, FR-13 (UI) · **ADRs:** —
 - **Depends on:** T13
 - **Size:** S
