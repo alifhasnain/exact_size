@@ -35,6 +35,8 @@ dev_dependencies:
   crypto: 3.0.8 # SHA-256 of golden outputs (FEAT-004-T22); already in the lock file
   integration_test:
     sdk: flutter
+  flutter_driver: # share driver needs its own driver loop (FEAT-001-T25)
+    sdk: flutter
 
 flutter:
   uses-material-design: true

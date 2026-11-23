@@ -5,6 +5,7 @@
 // Kept out on purpose (they run on their own in CI):
 //  - offline_test.dart needs --dart-define=OFFLINE=true and networking off;
 //  - memory_profile_test.dart measures RSS, which earlier tests would inflate.
+//  - pick_share_test.dart needs test_driver/share_intent_driver.dart to fire the shares.
 //
 // test/integration_bundle_test.dart fails when a new *_test.dart file is not
 // listed here.

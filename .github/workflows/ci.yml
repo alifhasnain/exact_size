@@ -156,4 +156,5 @@ jobs:
             DEVICE=emulator-5554 LARGE_DIR=/tmp/large timeout 900 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/decode_matrix.dart -d emulator-5554
             DEVICE=emulator-5554 LARGE_DIR=/tmp/large timeout 900 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/crop_data_matrix.dart -d emulator-5554
             DEVICE=emulator-5554 LARGE_DIR=/tmp/large timeout 900 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/pick_data_matrix.dart -d emulator-5554
+            DEVICE=emulator-5554 timeout 900 flutter drive --driver test_driver/share_intent_driver.dart --target integration_test/pick_share_test.dart -d emulator-5554
             if [ "${{ github.event_name }}" = workflow_dispatch ]; then DEVICE=emulator-5554 LARGE_DIR=/tmp/large timeout 2400 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/crop_g5_profile.dart -d emulator-5554; fi

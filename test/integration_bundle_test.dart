@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// file missing from it would silently never run on the emulator.
 void main() {
   test('integration_test/bundle.dart imports every *_test.dart file', () {
-    const runOnTheirOwn = {'offline_test.dart', 'memory_profile_test.dart'};
+    const runOnTheirOwn = {'offline_test.dart', 'memory_profile_test.dart', 'pick_share_test.dart'};
     final bundle = File('integration_test/bundle.dart').readAsStringSync();
     final missing = Directory('integration_test')
         .listSync(recursive: true)
