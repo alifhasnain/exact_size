@@ -1,9 +1,9 @@
 ---
 id: FEAT-001
 title: Pick image from camera or gallery
-status: Approved
+status: Implemented
 version: 1.1
-updated: 2026-11-22
+updated: 2026-11-23
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-011, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-025]
 ---
 
