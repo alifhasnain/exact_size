@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'features/compression/presentation/compression_providers.dart';
+import 'features/compression/presentation/outcome_messages.dart';
 import 'features/crop/data/crop_renderer.dart';
 import 'features/crop/data/preview_decoder.dart';
 import 'features/crop/presentation/crop_controller.dart';
@@ -111,8 +113,11 @@ class _CropStepState extends ConsumerState<_CropStep> {
           info: widget.image.info,
           target: widget.spec.dimensions,
           render: ref.read(cropRenderProvider),
-          // shortcut: the buffer is not handed on yet; T11 wires compression.
-          onContinue: (_) {},
+          onContinue: (pixels) {
+            // The buffer moves to FEAT-004 with the request (ADR-003); the flow never frees it.
+            ref.read(compressionControllerProvider.notifier).start(widget.spec.request(pixels));
+            Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const _AfterCropStandIn()));
+          },
           onChooseAnother: () => _chooseAnother(context, ref),
         ),
       PreviewErr(:final reason) => _Booth(children: [
@@ -153,4 +158,21 @@ class _Booth extends StatelessWidget {
           ),
         ),
       );
+}
+
+// shortcut: dev-only stand-in for the result screen, not shipped; FEAT-006 replaces it.
+// Shows the compression run state; leaving it cancels the run or drops its unexported result.
+class _AfterCropStandIn extends ConsumerWidget {
+  const _AfterCropStandIn();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = announcementFor(ref.watch(compressionControllerProvider), OutcomeMessages(AppLocalizations.of(context)));
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) ref.read(compressionControllerProvider.notifier).cancel();
+      },
+      child: _Booth(children: [Text('Result (FEAT-006): ${text ?? ''}', textAlign: TextAlign.center)]),
+    );
+  }
 }

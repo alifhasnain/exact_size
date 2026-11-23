@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:exact_size/app.dart';
 import 'package:exact_size/app_flow.dart';
 import 'package:exact_size/di/injection.dart';
 import 'package:exact_size/features/compression/data/temp_files.dart';
+import 'package:exact_size/features/compression/domain/compression_request.dart';
 import 'package:exact_size/features/compression/domain/compression_result.dart' show OutputFormat;
+import 'package:exact_size/features/compression/domain/pixel_buffer.dart';
+import 'package:exact_size/features/compression/presentation/compression_providers.dart';
 import 'package:exact_size/features/crop/data/preview_decoder.dart';
 import 'package:exact_size/features/crop/data/source_handle.dart';
 import 'package:exact_size/features/crop/data/source_probe.dart';
@@ -21,10 +25,12 @@ import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_screen.dart';
 import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../test_support/fake_system_picker.dart';
+import '../test_support/test_pixels.dart';
 
 const _info = SourceInfo(
     rawWidth: 40, rawHeight: 30, mime: 'image/jpeg', exifOrientation: 1, isAnimated: false, hasAlpha: false, decodePath: DecodePath.region);
@@ -37,6 +43,20 @@ class _Probe extends SourceProbe {
 }
 
 /// Hands out pre-made previews, or waits on [gate], or answers [error].
+/// Records starts and cancels instead of compressing (T11).
+class _FakeCompression extends CompressionController {
+  final requests = <CompressionRequest>[];
+  var cancels = 0;
+  @override
+  Future<void> start(CompressionRequest request) async {
+    requests.add(request);
+    state = CompressionRunning(pass: 0, maxPasses: 8, minKb: request.minKb, maxKb: request.maxKb);
+  }
+
+  @override
+  Future<void> cancel() async => cancels++;
+}
+
 class _Decoder implements PreviewDecoder {
   final previews = <ui.Image>[];
   final handed = <ui.Image>[];
@@ -101,13 +121,13 @@ void main() {
     await settle(tester);
   }
 
-  Future<ProviderContainer> pumpApp(WidgetTester tester) async {
+  Future<ProviderContainer> pumpApp(WidgetTester tester, {List<Override> overrides = const []}) async {
     tester.view
       ..physicalSize = const Size(360, 800)
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(ProviderScope(
-      overrides: [previewDecoderProvider.overrideWithValue(decoder)],
+      overrides: [previewDecoderProvider.overrideWithValue(decoder), ...overrides],
       child: const ExactSizeApp(locale: Locale('en')),
     ));
     await tester.pump();
@@ -167,8 +187,8 @@ void main() {
         }))!;
 
     /// App with one gallery image on the target step; returns the container.
-    Future<ProviderContainer> onTargetStep(WidgetTester tester) async {
-      final c = await pumpApp(tester);
+    Future<ProviderContainer> onTargetStep(WidgetTester tester, {List<Override> overrides = const []}) async {
+      final c = await pumpApp(tester, overrides: overrides);
       await deliver(tester, const Picked(uri: _uri, origin: PickOrigin.gallery));
       return c;
     }
@@ -244,6 +264,39 @@ void main() {
       await tester.pumpAndSettle();
       expect(c.read(cropControllerProvider)!.target.height, 20);
       expect(c.read(cropControllerProvider)!.crop, isNot(moved));
+    });
+
+    testWidgets('Continue hands the same buffer to compression once with the spec; leaving the stand-in cancels (T11)',
+        (tester) async {
+      decoder.previews.add(await image(tester));
+      final compression = _FakeCompression();
+      final rendered = <PixelBuffer>[];
+      final c = await onTargetStep(tester, overrides: [
+        compressionControllerProvider.overrideWith(() => compression),
+        cropRenderProvider.overrideWithValue((req, cancel) async {
+          final p = TestPixels(req.target.width, req.target.height, 3, Uint8List(req.target.width * req.target.height * 3),
+              hasTransparency: false);
+          rendered.add(p);
+          return RenderOk(p);
+        }),
+      ]);
+      const withMin = TargetSpec(width: 30, height: 30, minKb: 20, maxKb: 50, format: OutputFormat.png);
+      openCrop(tester, c, withMin);
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+
+      expect(compression.requests, hasLength(1));
+      final r = compression.requests.single;
+      expect(r.pixels, same(rendered.single), reason: 'the buffer moves, not copied (ADR-003)');
+      expect((r.minKb, r.maxKb, r.format), (20, 50, OutputFormat.png));
+      expect(find.textContaining('Result (FEAT-006)'), findsOneWidget);
+
+      tester.state<NavigatorState>(find.byType(Navigator)).pop();
+      await tester.pumpAndSettle();
+      expect(compression.cancels, 1);
+      expect(compression.requests, hasLength(1));
+      expect(find.byType(CropScreen), findsOneWidget, reason: 'back on crop');
     });
   });
 }

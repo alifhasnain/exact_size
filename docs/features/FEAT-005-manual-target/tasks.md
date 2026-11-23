@@ -194,7 +194,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - the preview is disposed on pop;
   - a changed spec re-inits the crop, the same spec keeps it.
 
-### - [ ] FEAT-005-T11 — Crop → compression hand-off and dev-only stand-in
+### - [x] FEAT-005-T11 — Crop → compression hand-off and dev-only stand-in
 - **Implements:** FR-9 (`TargetSpec.request`) · **ADRs:** ADR-003
 - **Depends on:** T10
 - **Size:** S
