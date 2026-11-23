@@ -1,1 +1,91 @@
-{}
+{
+  "ar": [
+    "targetPixelsNotWhole",
+    "targetLabelWidth",
+    "targetLabelHeight",
+    "targetLabelMin",
+    "targetLabelMax",
+    "targetOptional",
+    "targetUnitPx",
+    "targetUnitKb",
+    "targetFormatLabel",
+    "targetPhotoSize",
+    "targetUsePhotoSize",
+    "targetHintVerySmall"
+  ],
+
+  "es": [
+    "targetPixelsNotWhole",
+    "targetLabelWidth",
+    "targetLabelHeight",
+    "targetLabelMin",
+    "targetLabelMax",
+    "targetOptional",
+    "targetUnitPx",
+    "targetUnitKb",
+    "targetFormatLabel",
+    "targetPhotoSize",
+    "targetUsePhotoSize",
+    "targetHintVerySmall"
+  ],
+
+  "hi": [
+    "targetPixelsNotWhole",
+    "targetLabelWidth",
+    "targetLabelHeight",
+    "targetLabelMin",
+    "targetLabelMax",
+    "targetOptional",
+    "targetUnitPx",
+    "targetUnitKb",
+    "targetFormatLabel",
+    "targetPhotoSize",
+    "targetUsePhotoSize",
+    "targetHintVerySmall"
+  ],
+
+  "id": [
+    "targetPixelsNotWhole",
+    "targetLabelWidth",
+    "targetLabelHeight",
+    "targetLabelMin",
+    "targetLabelMax",
+    "targetOptional",
+    "targetUnitPx",
+    "targetUnitKb",
+    "targetFormatLabel",
+    "targetPhotoSize",
+    "targetUsePhotoSize",
+    "targetHintVerySmall"
+  ],
+
+  "pt": [
+    "targetPixelsNotWhole",
+    "targetLabelWidth",
+    "targetLabelHeight",
+    "targetLabelMin",
+    "targetLabelMax",
+    "targetOptional",
+    "targetUnitPx",
+    "targetUnitKb",
+    "targetFormatLabel",
+    "targetPhotoSize",
+    "targetUsePhotoSize",
+    "targetHintVerySmall"
+  ],
+
+  "pt_BR": [
+    "targetPixelsNotWhole",
+    "targetLabelWidth",
+    "targetLabelHeight",
+    "targetLabelMin",
+    "targetLabelMax",
+    "targetOptional",
+    "targetUnitPx",
+    "targetUnitKb",
+    "targetFormatLabel",
+    "targetPhotoSize",
+    "targetUsePhotoSize",
+    "targetHintVerySmall"
+  ]
+}

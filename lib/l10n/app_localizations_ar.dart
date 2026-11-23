@@ -288,4 +288,43 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get pickSourceUnavailable =>
       'تعذّر فتح هذه الصورة. إذا كانت محفوظة في التخزين السحابي، فاتصل بالإنترنت أو اختر صورة محفوظة على هذا الهاتف.';
+
+  @override
+  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+
+  @override
+  String get targetLabelWidth => 'Width';
+
+  @override
+  String get targetLabelHeight => 'Height';
+
+  @override
+  String get targetLabelMin => 'Minimum size';
+
+  @override
+  String get targetLabelMax => 'Maximum size';
+
+  @override
+  String get targetOptional => 'Optional';
+
+  @override
+  String get targetUnitPx => 'px';
+
+  @override
+  String get targetUnitKb => 'KB';
+
+  @override
+  String get targetFormatLabel => 'Format';
+
+  @override
+  String targetPhotoSize(String size) {
+    return 'Your photo: $size px';
+  }
+
+  @override
+  String get targetUsePhotoSize => 'Use photo size';
+
+  @override
+  String get targetHintVerySmall =>
+      'Very small image. Check the size on your form.';
 }

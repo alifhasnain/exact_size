@@ -291,6 +291,45 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get pickSourceUnavailable =>
       'Não conseguimos abrir esta foto. Se ela estiver salva na nuvem, conecte-se à internet ou escolha uma foto salva neste celular.';
+
+  @override
+  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+
+  @override
+  String get targetLabelWidth => 'Width';
+
+  @override
+  String get targetLabelHeight => 'Height';
+
+  @override
+  String get targetLabelMin => 'Minimum size';
+
+  @override
+  String get targetLabelMax => 'Maximum size';
+
+  @override
+  String get targetOptional => 'Optional';
+
+  @override
+  String get targetUnitPx => 'px';
+
+  @override
+  String get targetUnitKb => 'KB';
+
+  @override
+  String get targetFormatLabel => 'Format';
+
+  @override
+  String targetPhotoSize(String size) {
+    return 'Your photo: $size px';
+  }
+
+  @override
+  String get targetUsePhotoSize => 'Use photo size';
+
+  @override
+  String get targetHintVerySmall =>
+      'Very small image. Check the size on your form.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

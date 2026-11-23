@@ -291,4 +291,43 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get pickSourceUnavailable =>
       'हम यह फ़ोटो नहीं खोल पाए। अगर यह क्लाउड में सेव है, तो इंटरनेट से कनेक्ट करें या इस फ़ोन में सेव की गई फ़ोटो चुनें।';
+
+  @override
+  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+
+  @override
+  String get targetLabelWidth => 'Width';
+
+  @override
+  String get targetLabelHeight => 'Height';
+
+  @override
+  String get targetLabelMin => 'Minimum size';
+
+  @override
+  String get targetLabelMax => 'Maximum size';
+
+  @override
+  String get targetOptional => 'Optional';
+
+  @override
+  String get targetUnitPx => 'px';
+
+  @override
+  String get targetUnitKb => 'KB';
+
+  @override
+  String get targetFormatLabel => 'Format';
+
+  @override
+  String targetPhotoSize(String size) {
+    return 'Your photo: $size px';
+  }
+
+  @override
+  String get targetUsePhotoSize => 'Use photo size';
+
+  @override
+  String get targetHintVerySmall =>
+      'Very small image. Check the size on your form.';
 }

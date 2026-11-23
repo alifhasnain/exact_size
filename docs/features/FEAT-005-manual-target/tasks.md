@@ -143,7 +143,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - `lib/features/target/domain/` imports no `package:material_ui`, `package:flutter*` or `package:flutter_riverpod`.
 - **Done when:** the test passes on the current tree. The PR shows it failing when a forbidden token is added to a scratch file in each scanned location.
 
-### - [ ] FEAT-005-T08 — English strings and `TargetMessages`
+### - [x] FEAT-005-T08 — English strings and `TargetMessages`
 - **Implements:** FR-5 (new pixel message), FR-15, NFR-4 (isolates, locale numbers), NFR-5 · **ADRs:** ADR-001
 - **Depends on:** T02, T05
 - **Size:** S

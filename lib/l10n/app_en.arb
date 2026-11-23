@@ -385,5 +385,59 @@
   "pickSourceUnavailable": "We couldn't open this photo. If it is stored online, connect to the internet or choose a photo saved on this phone.",
   "@pickSourceUnavailable": {
     "description": "Pick-time variant of SOURCE_UNAVAILABLE: the photo could not be read, often an online-only photo while offline (FEAT-001 FR-14)."
+  },
+  "targetPixelsNotWhole": "Use whole numbers of pixels.",
+  "@targetPixelsNotWhole": {
+    "description": "FEAT-005 target step (PRD section 8): width or height has a decimal point or comma. Pixels are whole numbers."
+  },
+  "targetLabelWidth": "Width",
+  "@targetLabelWidth": {
+    "description": "FEAT-005 target step: label of the width field (pixels)."
+  },
+  "targetLabelHeight": "Height",
+  "@targetLabelHeight": {
+    "description": "FEAT-005 target step: label of the height field (pixels)."
+  },
+  "targetLabelMin": "Minimum size",
+  "@targetLabelMin": {
+    "description": "FEAT-005 target step: label of the optional minimum file size field (KB)."
+  },
+  "targetLabelMax": "Maximum size",
+  "@targetLabelMax": {
+    "description": "FEAT-005 target step: label of the required maximum file size field (KB)."
+  },
+  "targetOptional": "Optional",
+  "@targetOptional": {
+    "description": "FEAT-005 target step: helper text under the minimum size field; empty means no minimum."
+  },
+  "targetUnitPx": "px",
+  "@targetUnitPx": {
+    "description": "FEAT-005 target step: unit shown after the width and height fields (pixels). Use the short form your forms use."
+  },
+  "targetUnitKb": "KB",
+  "@targetUnitKb": {
+    "description": "FEAT-005 target step: unit shown after the file size fields (kilobytes). Use the short form your forms use."
+  },
+  "targetFormatLabel": "Format",
+  "@targetFormatLabel": {
+    "description": "FEAT-005 target step: label of the JPEG / PNG choice."
+  },
+  "targetPhotoSize": "Your photo: {size} px",
+  "@targetPhotoSize": {
+    "description": "FEAT-005 target step FR-12: oriented size of the chosen photo. size is a formatted pixel size like '4000×3000' wrapped in bidi isolates.",
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "example": "4000×3000"
+      }
+    }
+  },
+  "targetUsePhotoSize": "Use photo size",
+  "@targetUsePhotoSize": {
+    "description": "FEAT-005 target step FR-12: button that fills width and height with the photo's own size."
+  },
+  "targetHintVerySmall": "Very small image. Check the size on your form.",
+  "@targetHintVerySmall": {
+    "description": "FEAT-005 target step FR-13: non-blocking notice when width or height is below the small-size hint threshold."
   }
 }

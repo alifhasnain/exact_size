@@ -502,6 +502,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn\'t open this photo. If it is stored online, connect to the internet or choose a photo saved on this phone.'**
   String get pickSourceUnavailable;
+
+  /// FEAT-005 target step (PRD section 8): width or height has a decimal point or comma. Pixels are whole numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Use whole numbers of pixels.'**
+  String get targetPixelsNotWhole;
+
+  /// FEAT-005 target step: label of the width field (pixels).
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get targetLabelWidth;
+
+  /// FEAT-005 target step: label of the height field (pixels).
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get targetLabelHeight;
+
+  /// FEAT-005 target step: label of the optional minimum file size field (KB).
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum size'**
+  String get targetLabelMin;
+
+  /// FEAT-005 target step: label of the required maximum file size field (KB).
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum size'**
+  String get targetLabelMax;
+
+  /// FEAT-005 target step: helper text under the minimum size field; empty means no minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get targetOptional;
+
+  /// FEAT-005 target step: unit shown after the width and height fields (pixels). Use the short form your forms use.
+  ///
+  /// In en, this message translates to:
+  /// **'px'**
+  String get targetUnitPx;
+
+  /// FEAT-005 target step: unit shown after the file size fields (kilobytes). Use the short form your forms use.
+  ///
+  /// In en, this message translates to:
+  /// **'KB'**
+  String get targetUnitKb;
+
+  /// FEAT-005 target step: label of the JPEG / PNG choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get targetFormatLabel;
+
+  /// FEAT-005 target step FR-12: oriented size of the chosen photo. size is a formatted pixel size like '4000×3000' wrapped in bidi isolates.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photo: {size} px'**
+  String targetPhotoSize(String size);
+
+  /// FEAT-005 target step FR-12: button that fills width and height with the photo's own size.
+  ///
+  /// In en, this message translates to:
+  /// **'Use photo size'**
+  String get targetUsePhotoSize;
+
+  /// FEAT-005 target step FR-13: non-blocking notice when width or height is below the small-size hint threshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Very small image. Check the size on your form.'**
+  String get targetHintVerySmall;
 }
 
 class _AppLocalizationsDelegate

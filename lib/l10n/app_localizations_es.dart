@@ -287,4 +287,43 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get pickSourceUnavailable =>
       'No pudimos abrir esta foto. Si está guardada en la nube, conéctate a internet o elige una foto guardada en este celular.';
+
+  @override
+  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+
+  @override
+  String get targetLabelWidth => 'Width';
+
+  @override
+  String get targetLabelHeight => 'Height';
+
+  @override
+  String get targetLabelMin => 'Minimum size';
+
+  @override
+  String get targetLabelMax => 'Maximum size';
+
+  @override
+  String get targetOptional => 'Optional';
+
+  @override
+  String get targetUnitPx => 'px';
+
+  @override
+  String get targetUnitKb => 'KB';
+
+  @override
+  String get targetFormatLabel => 'Format';
+
+  @override
+  String targetPhotoSize(String size) {
+    return 'Your photo: $size px';
+  }
+
+  @override
+  String get targetUsePhotoSize => 'Use photo size';
+
+  @override
+  String get targetHintVerySmall =>
+      'Very small image. Check the size on your form.';
 }
