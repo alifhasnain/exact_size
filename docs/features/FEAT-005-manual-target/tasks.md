@@ -39,7 +39,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
 
 ## Tasks
 
-### - [ ] FEAT-005-T01 — Flow fix: guarded release on the target route (R2, OQ-T5)
+### - [x] FEAT-005-T01 — Flow fix: guarded release on the target route (R2, OQ-T5)
 - **Implements:** FR-1 (one target step per accepted image), NFR-8 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** M
@@ -380,6 +380,12 @@ The task total is 0.5 d above tech's 6.0 d, inside tech's 1.0–1.5 pw range. Th
 
 ## Test record
 _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, result). Synthetic images only. No target values, URIs, paths or file names in rows or screenshots' captions; use `[PLACEHOLDER]` for anything sensitive._
+
+| Date | Task | Check | Device / run | Result |
+|---|---|---|---|---|
+| 2026-11-23 | T01 | `test/app_flow_test.dart` (a) on the pre-fix tree | host | Fails as expected: the popUntil pop released B |
+| 2026-11-23 | T01 | `test/app_flow_test.dart` (a), (b) after the fix; pick tests unchanged | host | Pass |
+| 2026-11-23 | T01 | FEAT-001-T25 share drive (synthetic image) | Medium_Phone_API_36.1 | Pass (in-app test 1/1, AC-8.3, warm single instance, cold start) |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001 and ADR-003 before starting a task.
