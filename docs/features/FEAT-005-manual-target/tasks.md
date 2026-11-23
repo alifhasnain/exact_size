@@ -65,7 +65,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - Imports only crop and compression domain types; no Flutter or Riverpod.
 - **Done when:** unit tests pass. `dimensions` and `request` map every field. `firstField` follows W, H, Min, Max for every subset of fields. `toString` of a spec and an input built from synthetic test numbers (for example 4321 and 987) contains neither number.
 
-### - [ ] FEAT-005-T03 — `cleanNumberText` and `readNumber`
+### - [x] FEAT-005-T03 — `cleanNumberText` and `readNumber`
 - **Implements:** FR-4, NFR-4 (native digits), NFR-7, NFR-8 · **ADRs:** —
 - **Depends on:** T02
 - **Size:** S
