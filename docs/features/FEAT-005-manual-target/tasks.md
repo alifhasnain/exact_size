@@ -292,7 +292,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - `flutter gen-l10n` reports no untranslated FEAT-005 keys.
   - A widget test renders the target screen in all 6 locales without a missing-key fallback.
 
-### - [ ] FEAT-005-T17 — Emulator drive `target_flow.dart` and CI line
+### - [x] FEAT-005-T17 — Emulator drive `target_flow.dart` and CI line
 - **Implements:** FR-1, FR-10, FR-14, NFR-2, NFR-4, NFR-7, NFR-9 · **ADRs:** ADR-001, ADR-003
 - **Depends on:** T11, T15, T16
 - **Size:** M
@@ -396,7 +396,13 @@ _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, r
 | 2026-11-24 | T18 | NFR-8 10,000-character input into Width | same | Pass: no crash, field holds 32 characters |
 | 2026-11-24 | T18 | Keyboard on number fields | same (AOSP LatinIME; Gboard not installed) | Number pad, no suggestion strip (G2 screenshots). Gboard row not observed |
 | 2026-11-24 | T18 | Android accessibility of the fields (uiautomator) | same | Label and unit reach Android as the field hint once filled ("Width / px"); full TalkBack row pending |
-| — | T18 | Pending (need phone settings changed): TalkBack, font scale 200% in en/ar/hi, airplane mode full flow, rotation with values and an error, native-digit input from Arabic/Hindi keyboard layouts | — | Waiting for Product Owner |
+| 2026-11-24 | T18 | R7 / NFR-2: Continue with all fields empty, accessibility events captured with `uiautomator events` | Realme 2 Pro, API 36, profile build | Pass: exactly 1 TYPE_ANNOUNCEMENT ("Enter a width and height between 1 and 10,000 pixels."), focus moved to Width, its node reads "Width / px, <error>". TalkBack speech itself was not listened to |
+| 2026-11-24 | T18 | Font scale 200% (system setting, then restored to 0.85) in en, ar, hi (per-app locale), keyboard open | same | Pass: no clipping; scrolling with the keyboard open reaches Continue in all three. ar labels stay English until T16 |
+| 2026-11-24 | T18 | AC-8.2 rotation (rotation lock, user_rotation 1, then restored) with values and an error showing | same | Pass: values and the Height error kept in landscape and back; same process (no restart) |
+| 2026-11-24 | T18 | NFR-3 airplane mode (enabled, then restored): full flow share → target 300×300, max 60 KB → crop → Continue → stand-in | same | Pass: stand-in shows Done, 58.5 KB |
+| 2026-11-24 | T18 | Native-digit input from Arabic/Hindi keyboard layouts (R1) | same (AOSP LatinIME, no Arabic/Hindi layout; adb cannot type them) | Not tested on device; native-digit reading covered by unit and widget tests (AC-5.1/5.2) |
+| 2026-11-24 | T18 | Settings after the run | same | font_scale 0.85, auto-rotate on, user_rotation 0, airplane off, accessibility off: all as found; app uninstalled, synthetic image deleted |
+| 2026-11-24 | T17 | `target_flow.dart` and the share drive in CI | CI run 45401648479, API 28 | Pass (all three jobs green) |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001 and ADR-003 before starting a task.
