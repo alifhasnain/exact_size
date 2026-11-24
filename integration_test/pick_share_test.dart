@@ -5,6 +5,7 @@ import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_view.dart';
 import 'package:exact_size/main.dart' as app;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,7 +51,9 @@ void main() {
     expect(s.current!.cameraFile, isNull, reason: 'shared images are never copied');
     expect(s.message, isNull);
     await tester.pumpAndSettle();
-    expect(find.textContaining('120 x 80'), findsOneWidget);
+    // The target step's photo line (FEAT-005), size in bidi isolates.
+    expect(find.byWidgetPredicate((w) => w is Text && (w.data ?? '').replaceAll(RegExp('[\u2068\u2069]'), '').contains('120×80')),
+        findsOneWidget);
 
     // A share without a stream: refused; the current image stays (AC-3.3).
     final current = s.current;
