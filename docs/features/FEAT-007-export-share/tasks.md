@@ -42,7 +42,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 
 ## Tasks
 
-### - [ ] FEAT-007-T01 — Platform spike on the real phone and CI API 28 — gate G0
+### - [x] FEAT-007-T01 — Platform spike on the real phone and CI API 28 — gate G0
 - **Implements:** verification for FR-5, FR-6, FR-7, FR-13, FR-15, FR-16, FR-17, NFR-7 · **ADRs:** ADR-007
 - **Depends on:** —
 - **Size:** M
@@ -353,6 +353,17 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-24 | T01 | H1: pending row (IS_PENDING=1, Pictures/ExactSize) absent from a plain query; present after IS_PENDING=0 | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T01 | Duplicate DISPLAY_NAME on API 29+: system rename at publish, form `<base> (1).jpg`; first file's bytes untouched; names distinct | Realme 2 Pro, API 36 | Pass (rename confirmed; the read-back name does not match the FR-4 pattern, see T02) |
+| 2026-11-24 | T01 | Owner-filtered pending query (QUERY_ARG_MATCH_PENDING=MATCH_ONLY, RELATIVE_PATH + OWNER_PACKAGE_NAME + name LIKE) returns only the planted row; unfiltered pending query returns no foreign row | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T01 | H5: OpenableColumns.DISPLAY_NAME of the `.share` FileProvider URI equals the file name (also the last path segment) | Realme 2 Pro, API 36; CI API 28 run 45425662314 | Pass on both, after one fix: a second `<provider>` with the same class `androidx.core.content.FileProvider` is bound to the first one's authority (SecurityException "authority does not match"); the share provider needs its own subclass (for example `ShareFileProvider : FileProvider()`). T04 uses a subclass; the manifest check counts providers by authority |
+| 2026-11-24 | T01 | EXTRA_EXCLUDE_COMPONENTS: ExactSize's share target absent from the system chooser (com.android.intentresolver) with the extra, present without it (control), over the whole scrolled list; checked by uiautomator text count only, no image, no labels read | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T01 | H2: after the storage grant, checkSelfPermission(READ_EXTERNAL_STORAGE) is GRANTED and a file written by another uid in Download is readable | CI API 28 runs 45425662314, 45441011208 | Confirmed (expected; privacy flag 1, accepted with OQ-1 = A) |
+| 2026-11-24 | T01 | API 28: WRITE granted alone (pm grant WRITE only, READ denied) gives no write access: mkdir in Pictures fails, Pictures not writable | CI API 28 run 45423218228 | Observed. The real dialog grants the storage group (READ is implied), so the app is unaffected; every CI test that uses pm grant must grant WRITE and READ (T07, T09, T11, T22) |
+| 2026-11-24 | T01 | API 28 grant while the process runs (pm grant WRITE + READ after start, the dialog case): no access before; write, mkdir, `.part` write and rename work about 2 s later in the same process, no restart | CI API 28 run 45441011208 | Pass |
+| 2026-11-24 | T01 | API 28: leading-dot `.part` not indexed by a media scan of the sibling final file; Files.move without REPLACE_EXISTING throws FileAlreadyExistsException and leaves the existing file untouched; scanFile callback 13–27 ms | CI API 28 runs 45425662314, 45441011208 | Pass. Note: a scan aimed directly at the `.part` file does index it, so T07 never scans the `.part`, only the final file |
+| 2026-11-24 | T01 | R8: save-as completed after "Don't keep activities" recreation leaves no empty document | — | Not run in the spike (needs a developer setting changed on the Product Owner's phone and the system save dialog, which shows personal files). Deferred to T08, whose Done when already holds this manual check; mitigation in tech R3/R8 unchanged |
+| 2026-11-24 | T01 | Gate G0 | — | Passed for every automatable item; no hypothesis failed. One fix carried into T04 (FileProvider subclass), one into the CI tasks (grant WRITE and READ), one PRD point into T02 (API 29+ rename form). R8 deferred to T08. Spike code deleted (branch never merged) |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-007, ADR-006 and ADR-001 before starting a task.
