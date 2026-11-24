@@ -390,6 +390,13 @@ _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, r
 | 2026-11-24 | T15 | G2 screenshots: empty, valid, error, ar RTL, 200% font (synthetic size only, demo build) | Realme 2 Pro, API 36 (local emulator data corrupted) | Taken; RTL unit/digit collision found and fixed; Product Owner passed gate G2 on 2026-11-24 |
 | 2026-11-24 | T15 | FEAT-001-T25 share drive after the target screen replaced the placeholder | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T17 | `target_flow.dart` (en, ar, hi at 200%: empty start, errors block Continue, crop opens after the real decode, Back keeps values, changed size re-inits crop, real render and compression READY, stand-in pop drops the result, only the accepted capture left in storage, new photo keeps values with errors hidden, Back empties the camera folder); 9 screenshots under build/, not committed | Realme 2 Pro, API 36 (local emulator data corrupted) | Pass (3/3) |
+| 2026-11-24 | T18 | AC-8.3: values typed, Home, `am kill`, relaunch: pick screen; next shared photo opens an empty target step | Realme 2 Pro, API 36, profile build, synthetic image shared via `am start` (no picker) | Pass |
+| 2026-11-24 | T18 | FR-14 logcat for the app process, grepped for the typed test values, `content://`, `/data/`, `/storage/` | same | Pass: 0 app-written lines; 5 system loader lines name the app's own install path |
+| 2026-11-24 | T18 | FR-14 storage listing of files/, cache/, shared_prefs/ after the flow | same | Pass: only AndroidX `files/profileInstalled`; no preferences file |
+| 2026-11-24 | T18 | NFR-8 10,000-character input into Width | same | Pass: no crash, field holds 32 characters |
+| 2026-11-24 | T18 | Keyboard on number fields | same (AOSP LatinIME; Gboard not installed) | Number pad, no suggestion strip (G2 screenshots). Gboard row not observed |
+| 2026-11-24 | T18 | Android accessibility of the fields (uiautomator) | same | Label and unit reach Android as the field hint once filled ("Width / px"); full TalkBack row pending |
+| — | T18 | Pending (need phone settings changed): TalkBack, font scale 200% in en/ar/hi, airplane mode full flow, rotation with values and an error, native-digit input from Arabic/Hindi keyboard layouts | — | Waiting for Product Owner |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001 and ADR-003 before starting a task.
