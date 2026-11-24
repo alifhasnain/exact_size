@@ -289,22 +289,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'No pudimos abrir esta foto. Si está guardada en la nube, conéctate a internet o elige una foto guardada en este celular.';
 
   @override
-  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+  String get targetPixelsNotWhole => 'Usa números enteros de píxeles.';
 
   @override
-  String get targetLabelWidth => 'Width';
+  String get targetLabelWidth => 'Ancho';
 
   @override
-  String get targetLabelHeight => 'Height';
+  String get targetLabelHeight => 'Alto';
 
   @override
-  String get targetLabelMin => 'Minimum size';
+  String get targetLabelMin => 'Tamaño mínimo';
 
   @override
-  String get targetLabelMax => 'Maximum size';
+  String get targetLabelMax => 'Tamaño máximo';
 
   @override
-  String get targetOptional => 'Optional';
+  String get targetOptional => 'Opcional';
 
   @override
   String get targetUnitPx => 'px';
@@ -313,17 +313,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get targetUnitKb => 'KB';
 
   @override
-  String get targetFormatLabel => 'Format';
+  String get targetFormatLabel => 'Formato';
 
   @override
   String targetPhotoSize(String size) {
-    return 'Your photo: $size px';
+    return 'Tu foto: $size px';
   }
 
   @override
-  String get targetUsePhotoSize => 'Use photo size';
+  String get targetUsePhotoSize => 'Usar las dimensiones de la foto';
 
   @override
   String get targetHintVerySmall =>
-      'Very small image. Check the size on your form.';
+      'La imagen quedará muy pequeña. Revisa las dimensiones que pide tu formulario.';
 }

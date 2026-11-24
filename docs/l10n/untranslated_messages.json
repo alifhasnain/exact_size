@@ -14,21 +14,6 @@
     "targetHintVerySmall"
   ],
 
-  "es": [
-    "targetPixelsNotWhole",
-    "targetLabelWidth",
-    "targetLabelHeight",
-    "targetLabelMin",
-    "targetLabelMax",
-    "targetOptional",
-    "targetUnitPx",
-    "targetUnitKb",
-    "targetFormatLabel",
-    "targetPhotoSize",
-    "targetUsePhotoSize",
-    "targetHintVerySmall"
-  ],
-
   "hi": [
     "targetPixelsNotWhole",
     "targetLabelWidth",

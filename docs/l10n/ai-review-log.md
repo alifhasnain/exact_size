@@ -63,6 +63,7 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - The split between "celular" and "dispositivo" is kept.
   4. **English wording not yet confirmed by the Product Owner:** cropCancelled, cropHintLimitedPrecision, cropAnnounceNoEnlargement and cropAnnounceStrongEnlargement. Retranslate them if the English wording changes.
 - **Open list decision:** the Product Owner accepted it as logged on 2026-11-21. The translation stays as it is.
+- **2026-11-24, FEAT-005 target step (12 keys):** targetPixelsNotWhole, targetLabelWidth/Height/Min/Max, targetOptional, targetUnitPx, targetUnitKb, targetFormatLabel, targetPhotoSize, targetUsePhotoSize, targetHintVerySmall. Drafted by Claude Opus 5.5 (`localize-es`), blind back-translation review by Claude Sonnet. New glossary: width / height = Ancho / Alto; minimum / maximum size = Tamaño mínimo / máximo (KB unit beside the field); use photo size = Usar las dimensiones de la foto (pixel size keeps "dimensiones"); units px and KB kept. Fixed after review (1): targetHintVerySmall was a bare fragment that could read as "your photo is small"; now "La imagen quedará muy pequeña. Revisa las dimensiones que pide tu formulario." Not taken: "Tamaño mínimo del archivo" (longer; the KB unit beside the field already disambiguates, as in English). No high-risk keys. Open list: none.
 - **Status:** AI-reviewed only (no native speaker).
 
 ## pt (pt-BR)
