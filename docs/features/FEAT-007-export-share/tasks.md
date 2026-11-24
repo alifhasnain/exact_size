@@ -180,7 +180,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** `open()` calls `bridge.open(saved.ref, mime)` (also after save-as, OQ-T3); `false` → the no-viewer message. If T02 approved PRD 1.1: add `ExportOutcome.openNoViewer` (`OPEN_NO_VIEWER`) and log it. If the Product Owner declined: show the message from a non-logged UI state and log nothing.
 - **Done when:** unit tests pass: no `saved` → `open()` does nothing; viewer present → no message; no viewer → the no-viewer message, Save and Share still work; the log line is `OPEN_NO_VIEWER` (approved case) or absent (declined case); the T03 code-list test matches the PRD version in force.
 
-### - [ ] FEAT-007-T15 — Export privacy static tests and log audit
+### - [x] FEAT-007-T15 — Export privacy static tests and log audit
 - **Implements:** FR-3 (no codec), FR-8, FR-27, FR-28, NFR-3, NFR-5 · **ADRs:** ADR-007
 - **Depends on:** T14
 - **Size:** S

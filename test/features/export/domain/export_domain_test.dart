@@ -75,12 +75,25 @@ void main() {
     final lib = Directory('lib').listSync(recursive: true).whereType<File>().where((f) => f.path.endsWith('.dart'));
     String norm(File f) => f.path.replaceAll(r'\', '/');
 
-    test('every ExportName.generate call site passes Random.secure()', () {
+    test('every ExportName.generate call site passes Random.secure() or a field set to it', () {
       for (final f in lib) {
-        for (final line in f.readAsLinesSync().where((l) => l.contains('ExportName.generate('))) {
-          expect(line, contains('Random.secure()'), reason: norm(f));
+        final src = f.readAsStringSync();
+        for (final line in src.split('\n').where((l) => l.contains('ExportName.generate('))) {
+          final arg = RegExp(r'ExportName\.generate\(.*,\s*([\w.()]+)\)').firstMatch(line)?[1];
+          final ok = arg == 'Random.secure()' || (arg != null && RegExp('\\b${RegExp.escape(arg)}\\s*=\\s*Random\\.secure\\(\\)').hasMatch(src));
+          expect(ok, isTrue, reason: '${norm(f)}: $line');
         }
       }
+    });
+
+    test('the call-site rule refuses a plain Random', () {
+      bool ok(String src) {
+        final arg = RegExp(r'ExportName\.generate\(.*,\s*([\w.()]+)\)').firstMatch(src)?[1];
+        return arg == 'Random.secure()' || (arg != null && RegExp('\\b${RegExp.escape(arg)}\\s*=\\s*Random\\.secure\\(\\)').hasMatch(src));
+      }
+
+      expect(ok('final r = Random(1);\nExportName.generate(1, 1, f, r)'), isFalse);
+      expect(ok('final _s = Random.secure();\nExportName.generate(1, 1, f, _s)'), isTrue);
     });
 
     test('no Random( in lib/features/export and no Flutter, Riverpod, get_it or channel import in its domain', () {
