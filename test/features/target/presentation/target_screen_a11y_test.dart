@@ -138,6 +138,7 @@ void main() {
     await tester.pump();
     final w = tester.widget<TextField>(fields()[0]);
     expect(w.textDirection, TextDirection.ltr);
+    expect(w.textAlign, TextAlign.right, reason: 'digits away from the unit at the RTL start (phone check: "px1.5")');
     expect(w.controller!.text, '300');
     // The photo line wraps its size in isolates so the digits keep their order.
     expect(

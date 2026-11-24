@@ -140,6 +140,8 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
       autofillHints: null,
       inputFormatters: [LengthLimitingTextInputFormatter(32)],
       textDirection: TextDirection.ltr,
+      // Digits stay LTR; in RTL they sit at the right edge so the unit (at the start, left) never touches them.
+      textAlign: Directionality.of(context) == TextDirection.rtl ? TextAlign.right : TextAlign.left,
       style: const TextStyle(
         color: Booth.text,
         fontFamily: 'BarlowCondensed',
