@@ -4,17 +4,23 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ComponentName
+import android.content.ContentValues
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.os.StatFs
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -32,6 +38,9 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
         const val REQUEST_SAVE_AS = 4104
         const val REQUEST_WRITE = 4105
         private const val SCAN_WAIT_MS = 2000L
+        private const val CHUNK = 64 * 1024
+        private const val FOLDER = "ExactSize"
+        private const val SPACE_MARGIN = 1024L * 1024
     }
 
     private val channel = MethodChannel(messenger, CHANNEL)
@@ -61,7 +70,14 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
 
     private fun handle(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "save", "saveAs" -> result.success(mapOf("outcome" to "failed")) // T06-T08
+            "save" -> {
+                val src = call.argument<String>("src"); val name = call.argument<String>("name")
+                val mime = call.argument<String>("mime"); val bytes = call.argument<Number>("bytes")?.toLong()
+                if (src == null || name == null || mime == null || bytes == null) return result.success(mapOf("outcome" to "failed"))
+                if (Build.VERSION.SDK_INT >= 29) background(result) { saveMediaStore(src, name, mime, bytes) }
+                else result.success(mapOf("outcome" to "failed")) // API 28: T07
+            }
+            "saveAs" -> result.success(mapOf("outcome" to "failed")) // T08
             "sweepIncomplete" -> result.success(null) // T09
             "itemExists" -> background(result) { itemExists(call.argument<String>("ref")) }
             "open" -> open(call.argument<String>("ref"), call.argument<String>("mime"), result)
@@ -80,6 +96,77 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
             }
             main.post { out.fold({ result.success(it) }, { result.error("internalError", null, null) }) }
         }
+    }
+
+    /**
+     * FR-6, API 29+: pending MediaStore row in Pictures/ExactSize, chunked copy, size check, publish.
+     * The row is deleted on any failure, so no partial item is ever visible (FR-3, NFR-6). MediaStore
+     * renames a taken name itself (T01 spike), so nameTaken is never returned here; the stored name
+     * is read back (FR-11, FR-13). Blocking: runs on the background thread.
+     */
+    private fun saveMediaStore(src: String, name: String, mime: String, bytes: Long): Map<String, String> {
+        val source = File(src)
+        if (!source.isFile || source.length() != bytes) return mapOf("outcome" to "fileMissing")
+        val resolver = activity.contentResolver
+        val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val uri = try {
+            resolver.insert(collection, ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, mime)
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/$FOLDER")
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            })
+        } catch (_: Throwable) {
+            null
+        } ?: return failure(bytes)
+        try {
+            resolver.openFileDescriptor(uri, "w")!!.use { pfd ->
+                FileOutputStream(pfd.fileDescriptor).use { out ->
+                    FileInputStream(source).use { input -> copy(input, out) }
+                    out.flush()
+                    out.fd.sync()
+                }
+            }
+            val written = resolver.openFileDescriptor(uri, "r")!!.use { it.statSize }
+            if (written != bytes) {
+                delete(uri)
+                return mapOf("outcome" to "failed")
+            }
+            resolver.update(uri, ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }, null, null)
+            val stored = resolver.query(uri, arrayOf(MediaStore.MediaColumns.DISPLAY_NAME), null, null, null)
+                ?.use { if (it.moveToFirst()) it.getString(0) else null } ?: name
+            return mapOf("outcome" to "saved", "name" to stored, "ref" to uri.toString())
+        } catch (_: Throwable) {
+            delete(uri)
+            return failure(bytes)
+        }
+    }
+
+    private fun copy(input: FileInputStream, out: FileOutputStream) {
+        val buf = ByteArray(CHUNK)
+        while (true) {
+            val n = input.read(buf)
+            if (n < 0) break
+            out.write(buf, 0, n)
+        }
+    }
+
+    private fun delete(uri: Uri) {
+        try {
+            activity.contentResolver.delete(uri, null, null)
+        } catch (_: Throwable) {
+            // best effort; the start-up sweep removes a pending row left behind (FR-16)
+        }
+    }
+
+    /** FR-14: noSpace when shared storage is nearly full, else failed. */
+    private fun failure(bytes: Long): Map<String, String> {
+        val free = try {
+            StatFs(Environment.getExternalStorageDirectory().path).availableBytes
+        } catch (_: Throwable) {
+            Long.MAX_VALUE
+        }
+        return mapOf("outcome" to if (free < bytes + SPACE_MARGIN) "noSpace" else "failed")
     }
 
     /** FR-12: a content URI (API 29+, save-as) is queried; an API 28 path is checked on disk. False on any error. */

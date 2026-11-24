@@ -98,7 +98,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - Stubs for `save`, `saveAs`, `sweepIncomplete` return `failed` / null until T06–T09.
 - **Done when:** the release build passes. The Kotlin grep test (extended in `test/features/pick/pick_privacy_test.dart` or a new `test/features/export/export_kotlin_grep_test.dart`) passes for `ExportBridge.kt`: no `Log.`, `println`, `printStackTrace`, `READ_EXTERNAL_STORAGE`, and every `catch` returns without reading `.message`. The existing pick bridge drive (`integration_test/pick_bridge_test.dart`) still passes on the Realme 2 Pro.
 
-### - [ ] FEAT-007-T06 — Kotlin `save` on API 29+ (MediaStore, pending, verify, publish)
+### - [x] FEAT-007-T06 — Kotlin `save` on API 29+ (MediaStore, pending, verify, publish)
 - **Implements:** FR-2 (native length check), FR-3, FR-5, FR-6, FR-11 (read-back name), FR-13 (system rename), FR-14, NFR-1, NFR-6 · **ADRs:** ADR-007
 - **Depends on:** T05
 - **Size:** M
@@ -353,6 +353,8 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-24 | T06 | API 29+ save of a synthetic 700x700 JPEG (> 300 KB): outcome saved, read-back name as requested, content URI ref; bytes and SHA-256 equal the source; exactly one new file in the folder, no .pending-* entry; itemExists true; file deleted after | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T06 | Length mismatch (+1, 0) and missing source return fileMissing and create nothing | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T01 | H1: pending row (IS_PENDING=1, Pictures/ExactSize) absent from a plain query; present after IS_PENDING=0 | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T01 | Duplicate DISPLAY_NAME on API 29+: system rename at publish, form `<base> (1).jpg`; first file's bytes untouched; names distinct | Realme 2 Pro, API 36 | Pass (rename confirmed; the read-back name does not match the FR-4 pattern, see T02) |
 | 2026-11-24 | T01 | Owner-filtered pending query (QUERY_ARG_MATCH_PENDING=MATCH_ONLY, RELATIVE_PATH + OWNER_PACKAGE_NAME + name LIKE) returns only the planted row; unfiltered pending query returns no foreign row | Realme 2 Pro, API 36 | Pass |
