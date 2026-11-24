@@ -128,6 +128,7 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
             // Device tests only (debuggable builds): plant or count unfinished saves (FEAT-007-T09).
             "debugPlantIncomplete" -> if (debuggable()) background(result) { plantIncomplete(); null } else result.notImplemented()
             "debugCountIncomplete" -> if (debuggable()) background(result) { incomplete().size } else result.notImplemented()
+            "debugShareDisplayName" -> if (debuggable()) background(result) { shareDisplayName(call.argument<String>("path")!!) } else result.notImplemented()
             "itemExists" -> background(result) { itemExists(call.argument<String>("ref")) }
             "open" -> open(call.argument<String>("ref"), call.argument<String>("mime"), result)
             "share" -> result.success(share(call.argument<String>("path"), call.argument<String>("mime")))
@@ -356,6 +357,13 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
         return exactSizeDir().listFiles()?.filter { it.isFile && PART.matches(it.name) } ?: emptyList()
     }
 
+    /** Debug only: the display name a receiving app reads for a share copy (FR-5, H5). */
+    private fun shareDisplayName(path: String): String? {
+        val uri = FileProvider.getUriForFile(activity, "${activity.packageName}.share", File(path))
+        return activity.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            ?.use { if (it.moveToFirst()) it.getString(0) else null }
+    }
+
     /** Debug only: an unfinished save as a kill would leave it, with synthetic bytes. */
     private fun plantIncomplete() {
         val stamp = System.nanoTime().toString(36).takeLast(6).padStart(6, '0')
@@ -399,15 +407,17 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
         return mapOf("outcome" to if (free < bytes + SPACE_MARGIN) "noSpace" else "failed")
     }
 
-    /** FR-12: a content URI (API 29+, save-as) is queried; an API 28 path is checked on disk. False on any error. */
+    /**
+     * FR-12: the saved bytes are still there. A content URI is opened for reading (a stale MediaStore row
+     * after a file-manager delete on API 28 does not count); an API 28 path is checked on disk. False on any error.
+     */
     private fun itemExists(ref: String?): Boolean {
         if (ref.isNullOrEmpty()) return false
         return try {
             if (ref.startsWith("/")) {
                 File(ref).isFile
             } else {
-                activity.contentResolver.query(Uri.parse(ref), arrayOf(MediaStore.MediaColumns._ID), null, null, null)
-                    ?.use { it.moveToFirst() } ?: false
+                activity.contentResolver.openFileDescriptor(Uri.parse(ref), "r")?.use { true } ?: false
             }
         } catch (_: Throwable) {
             false
