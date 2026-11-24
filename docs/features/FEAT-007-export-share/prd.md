@@ -1,7 +1,7 @@
 ---
 id: FEAT-007
 title: Export and share
-status: Under Discussion
+status: Approved
 version: 1.1
 updated: 2026-11-24
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-010, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-023, FEAT-025, FEAT-027]
@@ -255,3 +255,4 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | 0.1 | 2026-11-24 | First draft |
 | 1.0 | 2026-11-24 | Approved by Product Owner; OQ-1 = A (permission on API 28), OQ-3 = FEAT-007 first |
 | 1.1 | 2026-11-24 | Clarification (FEAT-007-T02, Product Owner choice): new info code `OPEN_NO_VIEWER` in sections 5, 8 and 10; FR-13 accepts the API 29+ system conflict rename seen in the T01 spike. No scope change |
+| 1.1 | 2026-11-24 | Approved by Product Owner |

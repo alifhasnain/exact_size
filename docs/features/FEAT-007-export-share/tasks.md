@@ -57,7 +57,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - Save-as result after "Don't keep activities": does an empty document stay (R8).
 - **Done when:** each item above has one Test record row (pass/fail per API level, no URIs, paths or file names). Any failed item has a written proposal to the Product Owner. Gate G0 is recorded. Spike code is deleted.
 
-### - [ ] FEAT-007-T02 — Product Owner PRD clarification for `OPEN_NO_VIEWER`
+### - [x] FEAT-007-T02 — Product Owner PRD clarification for `OPEN_NO_VIEWER`
 - **Implements:** FR-15, FR-27 (log code list) · **ADRs:** —
 - **Depends on:** —
 - **Size:** S (Product Owner time; developer side only prepares the change)
