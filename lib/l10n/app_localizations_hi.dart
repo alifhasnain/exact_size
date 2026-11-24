@@ -293,41 +293,42 @@ class AppLocalizationsHi extends AppLocalizations {
       'हम यह फ़ोटो नहीं खोल पाए। अगर यह क्लाउड में सेव है, तो इंटरनेट से कनेक्ट करें या इस फ़ोन में सेव की गई फ़ोटो चुनें।';
 
   @override
-  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+  String get targetPixelsNotWhole =>
+      'पिक्सेल में बिना दशमलव वाली संख्या डालें।';
 
   @override
-  String get targetLabelWidth => 'Width';
+  String get targetLabelWidth => 'चौड़ाई';
 
   @override
-  String get targetLabelHeight => 'Height';
+  String get targetLabelHeight => 'ऊँचाई';
 
   @override
-  String get targetLabelMin => 'Minimum size';
+  String get targetLabelMin => 'न्यूनतम साइज़';
 
   @override
-  String get targetLabelMax => 'Maximum size';
+  String get targetLabelMax => 'अधिकतम साइज़';
 
   @override
-  String get targetOptional => 'Optional';
+  String get targetOptional => 'वैकल्पिक';
 
   @override
-  String get targetUnitPx => 'px';
+  String get targetUnitPx => 'पिक्सेल';
 
   @override
   String get targetUnitKb => 'KB';
 
   @override
-  String get targetFormatLabel => 'Format';
+  String get targetFormatLabel => 'फ़ॉर्मेट';
 
   @override
   String targetPhotoSize(String size) {
-    return 'Your photo: $size px';
+    return 'आपकी फ़ोटो: $size पिक्सेल';
   }
 
   @override
-  String get targetUsePhotoSize => 'Use photo size';
+  String get targetUsePhotoSize => 'फ़ोटो का माप इस्तेमाल करें';
 
   @override
   String get targetHintVerySmall =>
-      'Very small image. Check the size on your form.';
+      'इमेज बहुत छोटी बनेगी। अपने आवेदन फ़ॉर्म में दिया गया माप जाँचें।';
 }

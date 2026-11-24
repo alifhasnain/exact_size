@@ -180,6 +180,7 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - "पैडिंग" is kept as a loanword.
   4. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
 - **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
+- **2026-11-24, FEAT-005 target step (12 keys):** targetPixelsNotWhole, targetLabelWidth/Height/Min/Max, targetOptional, targetUnitPx, targetUnitKb, targetFormatLabel, targetPhotoSize, targetUsePhotoSize, targetHintVerySmall. Drafted by Claude Opus 5.5 (`localize-hi`), blind back-translation review by Claude Sonnet. New glossary: width / height = चौड़ाई / ऊँचाई; minimum / maximum size = न्यूनतम / अधिकतम साइज़; optional = वैकल्पिक; format = फ़ॉर्मेट; use photo size = फ़ोटो का माप इस्तेमाल करें; px unit = पिक्सेल (as logged), KB in Latin script. Fixed after review (2): targetFormatLabel spelling फ़ॉर्मैट → फ़ॉर्मेट (more common UI spelling); targetHintVerySmall "अपने फ़ॉर्म" → "अपने आवेदन फ़ॉर्म", so it cannot read as this screen's input form. Not taken: उपयोग करें for इस्तेमाल करें (normal in app UIs). No back-translation drift. No high-risk keys. Open list: none.
 - **Status:** AI-reviewed only (no native speaker).
 
 ## id (Bahasa Indonesia)
