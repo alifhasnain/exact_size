@@ -257,7 +257,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - AC-7.3: 4000×3000 fill; a 12,000-wide source hides the button.
   - AC-7.4: EXIF 6 shows 3000×4000.
 
-### - [ ] FEAT-005-T15 — Accessibility, 200% font, RTL, goldens — gate G2
+### - [x] FEAT-005-T15 — Accessibility, 200% font, RTL, goldens — gate G2
 - **Implements:** FR-16 (verification), NFR-2, NFR-4 · **ADRs:** —
 - **Depends on:** T14
 - **Size:** M
@@ -387,7 +387,7 @@ _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, r
 | 2026-11-23 | T01 | `test/app_flow_test.dart` (a), (b) after the fix; pick tests unchanged | host | Pass |
 | 2026-11-23 | T01 | FEAT-001-T25 share drive (synthetic image) | Medium_Phone_API_36.1 | Pass (in-app test 1/1, AC-8.3, warm single instance, cold start) |
 | 2026-11-23 | T01 | FEAT-001-T25 share drive and full emulator job (with T02–T08) | CI run 45222201595, API 28 | Pass (all three jobs green) |
-| 2026-11-24 | T15 | G2 screenshots: empty, valid, error, ar RTL, 200% font (synthetic size only, demo build) | Realme 2 Pro, API 36 (local emulator data corrupted) | Taken; RTL unit/digit collision found and fixed; awaiting Product Owner review |
+| 2026-11-24 | T15 | G2 screenshots: empty, valid, error, ar RTL, 200% font (synthetic size only, demo build) | Realme 2 Pro, API 36 (local emulator data corrupted) | Taken; RTL unit/digit collision found and fixed; Product Owner passed gate G2 on 2026-11-24 |
 | 2026-11-24 | T15 | FEAT-001-T25 share drive after the target screen replaced the placeholder | Realme 2 Pro, API 36 | Pass |
 
 ## Instructions for Claude Code
