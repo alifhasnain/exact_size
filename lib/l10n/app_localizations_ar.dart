@@ -290,41 +290,41 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّر فتح هذه الصورة. إذا كانت محفوظة في التخزين السحابي، فاتصل بالإنترنت أو اختر صورة محفوظة على هذا الهاتف.';
 
   @override
-  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+  String get targetPixelsNotWhole => 'أدخل عددًا صحيحًا بوحدة البكسل.';
 
   @override
-  String get targetLabelWidth => 'Width';
+  String get targetLabelWidth => 'العرض';
 
   @override
-  String get targetLabelHeight => 'Height';
+  String get targetLabelHeight => 'الارتفاع';
 
   @override
-  String get targetLabelMin => 'Minimum size';
+  String get targetLabelMin => 'الحد الأدنى للحجم';
 
   @override
-  String get targetLabelMax => 'Maximum size';
+  String get targetLabelMax => 'الحد الأقصى للحجم';
 
   @override
-  String get targetOptional => 'Optional';
+  String get targetOptional => 'اختياري';
 
   @override
-  String get targetUnitPx => 'px';
+  String get targetUnitPx => 'بكسل';
 
   @override
   String get targetUnitKb => 'KB';
 
   @override
-  String get targetFormatLabel => 'Format';
+  String get targetFormatLabel => 'صيغة الملف';
 
   @override
   String targetPhotoSize(String size) {
-    return 'Your photo: $size px';
+    return 'صورتك: $size بكسل';
   }
 
   @override
-  String get targetUsePhotoSize => 'Use photo size';
+  String get targetUsePhotoSize => 'استخدام أبعاد الصورة';
 
   @override
   String get targetHintVerySmall =>
-      'Very small image. Check the size on your form.';
+      'ستكون الصورة صغيرة جدًا. تحقّق من الأبعاد المطلوبة في النموذج الإلكتروني.';
 }

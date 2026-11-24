@@ -309,6 +309,7 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - "file" instead of "item" in pickItemNotOpenable.
   5. **English wording not yet confirmed by the Product Owner:** the same four keys as for es, plus pickCaptureLost (see id).
 - **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
+- **2026-11-24, FEAT-005 target step (12 keys):** targetPixelsNotWhole, targetLabelWidth/Height/Min/Max, targetOptional, targetUnitPx, targetUnitKb, targetFormatLabel, targetPhotoSize, targetUsePhotoSize, targetHintVerySmall. Drafted by Claude Opus 5.5 (`localize-ar`), blind back-translation review by Claude Sonnet. Digits: Western 0–9 (checked in code on 2026-11-21; unchanged). No bidi marks in the strings; the photo size in targetPhotoSize gets U+2068/U+2069 isolates in code (CropMessages.size), covered by a widget test. New glossary: width / height = العرض / الارتفاع; minimum / maximum size = الحد الأدنى / الأقصى للحجم; optional = اختياري; file format = صيغة الملف; use photo size = استخدام أبعاد الصورة (masdar button); px unit = بكسل, KB in Latin script. Fixed after review (1): targetFormatLabel "الصيغة" → "صيغة الملف" ("الصيغة" alone can read as formula or wording). Not taken: "أبعاد صورتك" in targetPhotoSize (the English says "Your photo"); dropping the shadda in تحقّق (the logged strings already use shadda, e.g. تعذّر). No back-translation drift. No high-risk keys. Open list: none.
 - **Status:** AI-reviewed only (no native speaker).
 
 ## Notes across languages

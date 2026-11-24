@@ -292,25 +292,25 @@ class AppLocalizationsId extends AppLocalizations {
       'Kami tidak dapat membuka foto ini. Jika foto tersimpan di cloud, sambungkan ponsel ke internet atau pilih foto yang tersimpan di ponsel ini.';
 
   @override
-  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+  String get targetPixelsNotWhole => 'Gunakan bilangan bulat untuk piksel.';
 
   @override
-  String get targetLabelWidth => 'Width';
+  String get targetLabelWidth => 'Lebar';
 
   @override
-  String get targetLabelHeight => 'Height';
+  String get targetLabelHeight => 'Tinggi';
 
   @override
-  String get targetLabelMin => 'Minimum size';
+  String get targetLabelMin => 'Ukuran minimum';
 
   @override
-  String get targetLabelMax => 'Maximum size';
+  String get targetLabelMax => 'Ukuran maksimum';
 
   @override
-  String get targetOptional => 'Optional';
+  String get targetOptional => 'Opsional';
 
   @override
-  String get targetUnitPx => 'px';
+  String get targetUnitPx => 'piksel';
 
   @override
   String get targetUnitKb => 'KB';
@@ -320,13 +320,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String targetPhotoSize(String size) {
-    return 'Your photo: $size px';
+    return 'Foto Anda: $size piksel';
   }
 
   @override
-  String get targetUsePhotoSize => 'Use photo size';
+  String get targetUsePhotoSize => 'Gunakan dimensi foto';
 
   @override
   String get targetHintVerySmall =>
-      'Very small image. Check the size on your form.';
+      'Gambar akan sangat kecil. Periksa dimensi yang diminta formulir Anda.';
 }
