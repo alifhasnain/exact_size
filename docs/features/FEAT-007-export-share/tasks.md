@@ -210,7 +210,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - Define the G2 screenshots: ready, saved, error, permission-denied layout (forced in a demo build on API 36), ar RTL, 200% font.
 - **Done when:** the design reference (file or link, synthetic content only) and its date are in the PR and `docs/CHANGELOG.md`. The Product Owner's answers (or "defaults") are recorded through the Product Owner's flow. Gate G1 is recorded.
 
-### - [ ] FEAT-007-T18 — `ExportPanel`
+### - [x] FEAT-007-T18 — `ExportPanel`
 - **Implements:** FR-1 (panel content), FR-9, FR-10, FR-11, FR-12 (busy look), FR-15, FR-19, FR-20, FR-21, FR-26, NFR-2 · **ADRs:** ADR-001
 - **Depends on:** T17 (G1)
 - **Size:** M
