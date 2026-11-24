@@ -42,35 +42,5 @@
     "targetPhotoSize",
     "targetUsePhotoSize",
     "targetHintVerySmall"
-  ],
-
-  "pt": [
-    "targetPixelsNotWhole",
-    "targetLabelWidth",
-    "targetLabelHeight",
-    "targetLabelMin",
-    "targetLabelMax",
-    "targetOptional",
-    "targetUnitPx",
-    "targetUnitKb",
-    "targetFormatLabel",
-    "targetPhotoSize",
-    "targetUsePhotoSize",
-    "targetHintVerySmall"
-  ],
-
-  "pt_BR": [
-    "targetPixelsNotWhole",
-    "targetLabelWidth",
-    "targetLabelHeight",
-    "targetLabelMin",
-    "targetLabelMax",
-    "targetOptional",
-    "targetUnitPx",
-    "targetUnitKb",
-    "targetFormatLabel",
-    "targetPhotoSize",
-    "targetUsePhotoSize",
-    "targetHintVerySmall"
   ]
 }

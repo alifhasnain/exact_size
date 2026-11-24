@@ -293,22 +293,22 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não conseguimos abrir esta foto. Se ela estiver salva na nuvem, conecte-se à internet ou escolha uma foto salva neste celular.';
 
   @override
-  String get targetPixelsNotWhole => 'Use whole numbers of pixels.';
+  String get targetPixelsNotWhole => 'Use números inteiros de pixels.';
 
   @override
-  String get targetLabelWidth => 'Width';
+  String get targetLabelWidth => 'Largura';
 
   @override
-  String get targetLabelHeight => 'Height';
+  String get targetLabelHeight => 'Altura';
 
   @override
-  String get targetLabelMin => 'Minimum size';
+  String get targetLabelMin => 'Tamanho mínimo';
 
   @override
-  String get targetLabelMax => 'Maximum size';
+  String get targetLabelMax => 'Tamanho máximo';
 
   @override
-  String get targetOptional => 'Optional';
+  String get targetOptional => 'Opcional';
 
   @override
   String get targetUnitPx => 'px';
@@ -317,19 +317,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get targetUnitKb => 'KB';
 
   @override
-  String get targetFormatLabel => 'Format';
+  String get targetFormatLabel => 'Formato';
 
   @override
   String targetPhotoSize(String size) {
-    return 'Your photo: $size px';
+    return 'Sua foto: $size px';
   }
 
   @override
-  String get targetUsePhotoSize => 'Use photo size';
+  String get targetUsePhotoSize => 'Usar as dimensões da foto';
 
   @override
   String get targetHintVerySmall =>
-      'Very small image. Check the size on your form.';
+      'A imagem ficará muito pequena. Confira as dimensões que seu formulário pede.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

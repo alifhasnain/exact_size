@@ -65,5 +65,17 @@
   "pickLowSpace": "Não há espaço livre suficiente neste celular para tirar uma foto. Libere espaço ou escolha uma foto da galeria.",
   "pickCaptureLost": "A foto se perdeu enquanto a câmera estava aberta. Tire a foto novamente.",
   "pickItemNotOpenable": "Não conseguimos abrir esse item. Escolha uma foto.",
-  "pickSourceUnavailable": "Não conseguimos abrir esta foto. Se ela estiver salva na nuvem, conecte-se à internet ou escolha uma foto salva neste celular."
+  "pickSourceUnavailable": "Não conseguimos abrir esta foto. Se ela estiver salva na nuvem, conecte-se à internet ou escolha uma foto salva neste celular.",
+  "targetPixelsNotWhole": "Use números inteiros de pixels.",
+  "targetLabelWidth": "Largura",
+  "targetLabelHeight": "Altura",
+  "targetLabelMin": "Tamanho mínimo",
+  "targetLabelMax": "Tamanho máximo",
+  "targetOptional": "Opcional",
+  "targetUnitPx": "px",
+  "targetUnitKb": "KB",
+  "targetFormatLabel": "Formato",
+  "targetPhotoSize": "Sua foto: {size} px",
+  "targetUsePhotoSize": "Usar as dimensões da foto",
+  "targetHintVerySmall": "A imagem ficará muito pequena. Confira as dimensões que seu formulário pede."
 }

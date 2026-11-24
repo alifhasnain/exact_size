@@ -118,6 +118,7 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
      - The split between "celular" and "dispositivo" is kept.
   4. **English wording not yet confirmed by the Product Owner:** the same four keys as for es.
 - **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
+- **2026-11-24, FEAT-005 target step (12 keys, in `app_pt.arb`):** targetPixelsNotWhole, targetLabelWidth/Height/Min/Max, targetOptional, targetUnitPx, targetUnitKb, targetFormatLabel, targetPhotoSize, targetUsePhotoSize, targetHintVerySmall. Drafted by Claude Opus 5.5 (`localize-pt`, pt-BR), blind back-translation review by Claude Sonnet. New glossary: width / height = Largura / Altura; minimum / maximum size = Tamanho mínimo / máximo; use photo size = Usar as dimensões da foto; units px and KB kept. targetHintVerySmall drafted as "A imagem ficará muito pequena. Confira as dimensões que seu formulário pede." (clearer than a bare fragment, as for es). The review found no errors. Not taken: "A foto" instead of "A imagem" in targetHintVerySmall, because the English says "image" there (the output, not the source photo). No back-translation drift. No high-risk keys. Open list: none.
 - **Status:** AI-reviewed only (no native speaker).
 
 ## hi (hi-IN)
