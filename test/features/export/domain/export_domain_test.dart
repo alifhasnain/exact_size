@@ -12,7 +12,9 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ExportName', () {
     test('10,000 names match FR-4, fit 40 characters and never repeat', () {
-      final rnd = Random.secure();
+      // Seeded so the no-repeat check is deterministic: with Random.secure() a repeat among 10,000
+      // draws from 36^6 tokens happens in about 2% of runs (birthday bound). The app uses secure.
+      final rnd = Random(20261124);
       final seen = <String>{};
       for (var i = 0; i < 10000; i++) {
         final n = ExportName.generate(999999, 999999, i.isEven ? OutputFormat.jpeg : OutputFormat.png, rnd);

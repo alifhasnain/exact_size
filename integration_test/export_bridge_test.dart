@@ -71,6 +71,29 @@ void main() {
     expect(own().difference(before), isEmpty);
   });
 
+  testWidgets('sweep removes a planted unfinished save and keeps a completed file (FR-16)', (t) async {
+    final sdk = int.parse((await run(t, () => Process.run('getprop', ['ro.build.version.sdk'])))!.stdout.toString().trim());
+    if (sdk < 30) return; // API 28 in CI through the T11 driver (needs pm grant); no API 29 device
+    final src = await source(t);
+    final before = own();
+    final name = 'exactsize-700x700-t09${(DateTime.now().millisecondsSinceEpoch % 1000).toString().padLeft(3, '0')}.jpg';
+    final r = await save(t, {'src': src.path, 'name': name, 'mime': 'image/jpeg', 'bytes': src.lengthSync()});
+    expect(r['outcome'], 'saved');
+    final hash = sha256.convert(File('${folder.path}/$name').readAsBytesSync());
+    try {
+      await run(t, () => ch.invokeMethod<void>('debugPlantIncomplete'));
+      await run(t, () => ch.invokeMethod<void>('debugPlantIncomplete'));
+      expect(await run(t, () => ch.invokeMethod<int>('debugCountIncomplete')), 2);
+      await run(t, () => ch.invokeMethod<void>('sweepIncomplete'));
+      expect(await run(t, () => ch.invokeMethod<int>('debugCountIncomplete')), 0);
+      expect(sha256.convert(File('${folder.path}/$name').readAsBytesSync()), hash);
+    } finally {
+      for (final n in own().difference(before)) {
+        File('${folder.path}/$n').deleteSync();
+      }
+    }
+  });
+
   // Manual (FEAT-007-T08): needs a person, or adb taps, on the system save dialog.
   if (const bool.fromEnvironment('SAVE_AS')) {
     testWidgets('save-as: saved with equal length, then cancelled (manual)', (t) async {

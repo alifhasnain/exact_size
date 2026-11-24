@@ -4,13 +4,16 @@ import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ClipData
+import android.content.ContentResolver
 import android.content.ComponentName
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
@@ -47,6 +50,11 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
         private const val CHUNK = 64 * 1024
         private const val FOLDER = "ExactSize"
         private const val SPACE_MARGIN = 1024L * 1024
+
+        /** Every MediaStore collection query here is limited to our own items in our own folder (FR-8, FR-16). */
+        private val SWEEP_SELECTION = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaStore.MediaColumns.OWNER_PACKAGE_NAME} = ? AND " +
+            "${MediaStore.MediaColumns.DISPLAY_NAME} LIKE 'exactsize-%'"
+        private val PART = Regex("""^\.exactsize-.+\.(jpg|png)\.part$""")
     }
 
     private val channel = MethodChannel(messenger, CHANNEL)
@@ -116,7 +124,10 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
                 if (src == null || name == null || mime == null || bytes == null) return result.success(mapOf("outcome" to "failed"))
                 saveAs(src, name, mime, bytes, result)
             }
-            "sweepIncomplete" -> result.success(null) // T09
+            "sweepIncomplete" -> background(result) { sweepIncomplete(); null }
+            // Device tests only (debuggable builds): plant or count unfinished saves (FEAT-007-T09).
+            "debugPlantIncomplete" -> if (debuggable()) background(result) { plantIncomplete(); null } else result.notImplemented()
+            "debugCountIncomplete" -> if (debuggable()) background(result) { incomplete().size } else result.notImplemented()
             "itemExists" -> background(result) { itemExists(call.argument<String>("ref")) }
             "open" -> open(call.argument<String>("ref"), call.argument<String>("mime"), result)
             "share" -> result.success(share(call.argument<String>("path"), call.argument<String>("mime")))
@@ -203,7 +214,7 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
     private fun writeLegacy(src: String, name: String, mime: String, bytes: Long): Map<String, String> {
         val source = File(src)
         if (!source.isFile || source.length() != bytes) return mapOf("outcome" to "fileMissing")
-        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), FOLDER)
+        val dir = exactSizeDir()
         val target = File(dir, name)
         val part = File(dir, ".$name.part")
         try {
@@ -284,6 +295,80 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
             DocumentsContract.deleteDocument(activity.contentResolver, doc)
         } catch (_: Throwable) {
             // best effort
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun exactSizeDir() = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), FOLDER)
+
+    /**
+     * FR-16: removes this app's unfinished saves left by a kill: pending MediaStore rows (API 29+) or
+     * `.part` files (API 28, only when WRITE is already granted; never asks). Completed files are never
+     * touched. Runs on the save thread, so a Save tapped at launch waits for it. Logs nothing.
+     */
+    private fun sweepIncomplete() {
+        val resolver = activity.contentResolver
+        val args = arrayOf("${Environment.DIRECTORY_PICTURES}/$FOLDER/", activity.packageName)
+        when {
+            Build.VERSION.SDK_INT >= 30 -> {
+                val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                val query = Bundle().apply {
+                    putString(ContentResolver.QUERY_ARG_SQL_SELECTION, SWEEP_SELECTION)
+                    putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, args)
+                    putInt(MediaStore.QUERY_ARG_MATCH_PENDING, MediaStore.MATCH_ONLY)
+                }
+                deleteRows(collection, resolver.query(collection, arrayOf(MediaStore.MediaColumns._ID), query, null))
+            }
+            Build.VERSION.SDK_INT == 29 -> {
+                @Suppress("DEPRECATION")
+                val collection = MediaStore.setIncludePending(MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY))
+                deleteRows(collection, resolver.query(collection, arrayOf(MediaStore.MediaColumns._ID),
+                    "$SWEEP_SELECTION AND ${MediaStore.MediaColumns.IS_PENDING} = 1", args, null))
+            }
+            activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ->
+                exactSizeDir().listFiles()?.filter { it.isFile && PART.matches(it.name) }?.forEach { it.delete() }
+        }
+    }
+
+    private fun deleteRows(collection: Uri, cursor: android.database.Cursor?) {
+        for (uri in ids(collection, cursor)) delete(uri)
+    }
+
+    private fun ids(collection: Uri, cursor: android.database.Cursor?): List<Uri> {
+        val ids = mutableListOf<Uri>()
+        cursor?.use { while (it.moveToNext()) ids += android.content.ContentUris.withAppendedId(collection, it.getLong(0)) }
+        return ids
+    }
+
+    private fun debuggable() = (activity.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+
+    /** Debug only: what the sweep would remove (API 30+ pending rows, API 28 `.part` files). */
+    private fun incomplete(): List<Any> {
+        if (Build.VERSION.SDK_INT >= 30) {
+            val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            val query = Bundle().apply {
+                putString(ContentResolver.QUERY_ARG_SQL_SELECTION, SWEEP_SELECTION)
+                putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, arrayOf("${Environment.DIRECTORY_PICTURES}/$FOLDER/", activity.packageName))
+                putInt(MediaStore.QUERY_ARG_MATCH_PENDING, MediaStore.MATCH_ONLY)
+            }
+            return ids(collection, activity.contentResolver.query(collection, arrayOf(MediaStore.MediaColumns._ID), query, null))
+        }
+        return exactSizeDir().listFiles()?.filter { it.isFile && PART.matches(it.name) } ?: emptyList()
+    }
+
+    /** Debug only: an unfinished save as a kill would leave it, with synthetic bytes. */
+    private fun plantIncomplete() {
+        val stamp = System.nanoTime().toString(36).takeLast(6).padStart(6, '0')
+        if (Build.VERSION.SDK_INT >= 29) {
+            val uri = activity.contentResolver.insert(MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, "exactsize-1x1-$stamp.jpg")
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/$FOLDER")
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }) ?: return
+            activity.contentResolver.openOutputStream(uri, "w")?.use { it.write(ByteArray(1024) { i -> i.toByte() }) }
+        } else {
+            exactSizeDir().apply { mkdirs() }.let { File(it, ".exactsize-1x1-$stamp.jpg.part").writeBytes(ByteArray(1024) { i -> i.toByte() }) }
         }
     }
 

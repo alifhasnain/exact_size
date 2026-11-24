@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-24 | T09 | Sweep on API 30+: two planted pending rows (debug-only hook) counted, sweepIncomplete removes both; a completed file saved next to them keeps its SHA-256; file deleted after | Realme 2 Pro, API 36 | Pass (API 28 `.part` rows and the revoked-permission case run in CI with T11) |
 | 2026-11-24 | T08 | Save-as through the system dialog (Save tapped by adb on the button found by element id; no screenshot, no file names read): outcome saved, read-back name follows FR-4, saved length equals the source (378,472 bytes); no permission dialog. The dialog's default location was the storage root, not Downloads; the file was deleted after | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T08 | Save-as dialog closed with Back: outcome cancelled, nothing saved | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T08 | "Don't keep activities" recreation check | — | Waived (Product Owner decision 2026-11-24, R8 skipped); orphan-document deletion is in the code |
