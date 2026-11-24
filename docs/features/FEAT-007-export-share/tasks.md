@@ -155,14 +155,14 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - CI: add `DEVICE=emulator-5554 timeout 900 flutter drive --driver test_driver/export_driver.dart --target integration_test/export_bridge_test.dart -d emulator-5554` to the `script:` block of `.github/workflows/ci.yml`.
 - **Done when:** the target passes on the Realme 2 Pro and in the CI API 28 job, and the offline run passes on the Realme 2 Pro. Results (pass/fail per check, no URIs, paths or file names) are in the Test record. `Pictures/ExactSize` on the phone holds no file from the run afterwards.
 
-### - [ ] FEAT-007-T12 — `ExportController`: Save path (FR-2 check, busy guard, retries, idempotent Save, progress)
+### - [x] FEAT-007-T12 — `ExportController`: Save path (FR-2 check, busy guard, retries, idempotent Save, progress)
 - **Implements:** FR-2, FR-9, FR-11 (state), FR-12, FR-13, FR-14, FR-24 (progress), NFR-1 (timer), NFR-9 · **ADRs:** ADR-001
 - **Depends on:** T10
 - **Size:** M
 - **Scope:** `lib/features/export/presentation/export_controller.dart`: `NotifierProvider.autoDispose.family<ExportController, ExportState, ExportInput>` (tech 4.2). `save()` per tech 4.3 "Save (any API level)": busy → return; `saved != null` → `itemExists` → `ALREADY_SAVED` or save again; FR-2 check → `FILE_MISSING`; up to 5 names on `BridgeNameTaken`, then `SAVE_FAILED`; `SAVED` with read-back name; errors keep the temp file; `showProgress` after 500 ms; log the code. No persistence.
 - **Done when:** unit tests with `FakeExportBridge` and `TempFiles` on a temp dir pass: missing file and wrong length → `FILE_MISSING` and no bridge call; success → `SAVED`, `saved.displayName` = read-back name; `nameTaken` ×1 then success (2 calls, 2 different names); ×5 → `SAVE_FAILED`; each of `noSpace`, `saveFailed`, `permissionDenied` keeps the temp file and leaves Save retryable; two `save()` calls during one slow fake save → one bridge call; repeat Save with `itemExists` true → `ALREADY_SAVED`, no bridge save; false → a second save; `showProgress` false at 499 ms, true at 500 ms (fake async); a new `ProviderContainer` starts with empty state.
 
-### - [ ] FEAT-007-T13 — `ExportController`: Share, Save as, leave, `needsLeaveConfirm`
+### - [x] FEAT-007-T13 — `ExportController`: Share, Save as, leave, `needsLeaveConfirm`
 - **Implements:** FR-2, FR-10, FR-17 (Dart side), FR-19, FR-20, FR-22, FR-23, FR-24, FR-25 · **ADRs:** ADR-001
 - **Depends on:** T12
 - **Size:** M
@@ -173,7 +173,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - `leave()`: await an in-flight save; delete the share copy; `CompressionController.cancel()`. The caller then runs `release()`, `end()`, `popUntil(isFirst)` (T19).
 - **Done when:** unit tests pass: two Shares → one copy, two bridge calls, no shared-storage save; share failure → `SHARE_FAILED`, temp kept; after a successful Share `message` is null; save-as cancel → no message, nothing saved; save-as success counts as saved for `needsLeaveConfirm`; `leave()` during a slow fake save waits for it, then the share copy and the temp file are gone and `cancel()` was called once; `needsLeaveConfirm` true only when nothing was saved or shared.
 
-### - [ ] FEAT-007-T14 — `ExportController.open` and the no-viewer outcome — Should
+### - [x] FEAT-007-T14 — `ExportController.open` and the no-viewer outcome — Should
 - **Implements:** FR-15, FR-27 · **ADRs:** ADR-007
 - **Depends on:** T02, T13
 - **Size:** S
