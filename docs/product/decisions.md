@@ -117,3 +117,4 @@ Append-only. Written by `/approve`; one row per Product Owner decision.
 | 2026-11-24 | FEAT-007-TASKS | Note | 1.0 | Gate G0 (T01) passed. R8 check (save-as after "Don't keep activities" recreation) skipped by the Product Owner, in T01 and T08; the orphan-document mitigation stays in code |
 | 2026-11-24 | FEAT-007 | Approved | 1.1 | PRD 1.1 clarification re-approved: OPEN_NO_VIEWER info code; FR-13 accepts the API 29+ system conflict rename. Closes FEAT-007-T02 |
 | 2026-11-25 | FEAT-007-TASKS | Gate G1 passed | 1.0 | T17 lean design (t17/export_design.md) accepted: "Build it". PRD OQ-5 (confirm on Back only when nothing saved or shared), OQ-6 (keep "Choose where to save" and Open), OQ-9 (show the chat hint now) = defaults. Offline run on the Realme allowed (change and restore) |
+| 2026-11-25 | FEAT-007-TASKS | Gate G2 passed | 1.0 | Product Owner accepted the six T20 phone screenshots (ready, saved, error, permission denied, ar RTL, 200% font) with no fixes |

@@ -224,7 +224,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** `lib/features/export/presentation/result_screen.dart` per tech 4.5 and the G1 design. `_CropStep.onContinue` pushes `ResultScreen(spec:)`; delete `_AfterCropStandIn` and its `shortcut:` comment. Running: progress + Cancel → `cancel()` and pop to crop. Failure: `OutcomeMessages.failure(...)` + Back. Success: ready line from `spec.dimensions`, `s.sizeBytes`, `s.format` (not recomputed) + `ExportPanel` + Done. `PopScope(canPop: false)` on success: back or Done → FR-23 dialog if `needsLeaveConfirm` → `leave()` → `release()`, `end()`, `popUntil(isFirst)`. **Update callers of the stand-in:** the T11 test in `test/app_flow_test.dart` and `integration_test/target_flow.dart` (expects READY on the stand-in and its pop) now target `ResultScreen`.
 - **Done when:** widget tests pass: no Save/Share while running or after a failure (FR-1); back with nothing saved shows the dialog, Stay keeps the screen, Leave runs leave once; back after a save leaves without a dialog; leave during a slow fake save waits, then the temp file is gone, `release()` and `end()` ran once and the pick screen is on top; `test/app_flow_test.dart` passes; `target_flow.dart` passes on the Realme 2 Pro; `grep -r _AfterCropStandIn lib test integration_test` finds nothing.
 
-### - [ ] FEAT-007-T20 — Accessibility, 200% font, RTL, goldens — gate G2
+### - [x] FEAT-007-T20 — Accessibility, 200% font, RTL, goldens — gate G2
 - **Implements:** NFR-2, NFR-4, FR-1, FR-30 (isolates) · **ADRs:** —
 - **Depends on:** T19
 - **Size:** M
@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T20 | Gate G2: six phone screenshots (ready, saved, error, permission denied forced, ar RTL with English text until T21, 200% font) from integration_test/result_screen_demo.dart with a fake bridge; not committed | Realme 2 Pro, API 36; Product Owner | Passed |
 | 2026-11-25 | T19 | target_flow.dart (en, ar, hi at 200%): real flow to the result screen, panel shown on success, Done asks "Leave without saving?", Leave drops the result and the capture, a new photo keeps the values | Realme 2 Pro, API 36 | Pass |
 | 2026-11-25 | T17 | Gate G1: lean design t17/export_design.md (2026-11-24) accepted ("Build it"); PRD OQ-5, OQ-6, OQ-9 = defaults | Product Owner | Passed |
 | 2026-11-25 | T11 | export_bridge_test.dart (driver-less, 7 tests) with airplane mode on and Wi-Fi off; settings restored as found (mobile data left off as it was) | Realme 2 Pro, API 36 | Pass |
