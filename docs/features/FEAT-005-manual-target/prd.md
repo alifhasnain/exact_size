@@ -1,9 +1,9 @@
 ---
 id: FEAT-005
 title: Manual target entry (W×H, KB min/max, format)
-status: Approved
-version: 1.0
-updated: 2026-11-23
+status: Implemented
+version: 1.1
+updated: 2026-11-24
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-001, FEAT-002, FEAT-004, FEAT-006, FEAT-008, FEAT-010, FEAT-011, FEAT-012, FEAT-014, FEAT-015, FEAT-016, FEAT-019, FEAT-027]
 ---
 
@@ -215,16 +215,16 @@ Existing messages are reused unchanged. One new string is proposed (marked NEW);
 
 ## 12. Open questions
 No question blocks approval. OQ-1, OQ-3, OQ-7, OQ-10 should be answered before the design pass; the stated default applies if the Product Owner does not answer.
-- [ ] **OQ-1 (non-blocking, before design) Remember the last target?** A: nothing kept. B (default here): kept in memory for the session. C: saved on the device across launches. Trade-off: C saves repeat users and operators from retyping, but a stale prefilled target can be exported by mistake, adds storage, and overlaps FEAT-012 (saved presets, local only). Process death is lost under A and B.
+- [x] **OQ-1 (non-blocking, before design) Remember the last target?** A: nothing kept. B (default here): kept in memory for the session. C: saved on the device across launches. Trade-off: C saves repeat users and operators from retyping, but a stale prefilled target can be exported by mistake, adds storage, and overlaps FEAT-012 (saved presets, local only). Process death is lost under A and B. **Decided 2026-11-24 at gate G1 (Product Owner): B, session memory only (default).**
 - [ ] **OQ-2 (non-blocking) Print size or mm/cm and DPI input?** Out of R1. Visa and passport forms often give mm at a DPI [Hypothesis]; it needs its own backlog row (no row added here). FEAT-010 only writes DPI metadata.
-- [ ] **OQ-3 (non-blocking, before design) Default format.** Proposed: JPEG preselected, since most photo and signature forms ask for it [Hypothesis; no research source]. Alternative: no preselection, forcing a choice and one more tap.
+- [x] **OQ-3 (non-blocking, before design) Default format.** Proposed: JPEG preselected, since most photo and signature forms ask for it [Hypothesis; no research source]. Alternative: no preselection, forcing a choice and one more tap. **Decided 2026-11-24 at gate G1 (Product Owner): JPEG preselected (default).**
 - [ ] **OQ-4 (non-blocking) Unit label.** Proposed: "KB", as forms write it [Fact](docs/research/competitors.md, Gap 1: "20kb–50 kb"). Not "kB" or "KiB". Forms that state MB must be typed in KB (for example 2 MB as 2000 is the safe value under the FEAT-004 rule); an MB entry is not in R1.
 - [ ] **OQ-5 (non-blocking) Which numerals to display.** Western 0–9 in all 6 languages (ar decided; hi, id, es, pt assumed).
 - [ ] **OQ-6 (non-blocking) Allow minimum = maximum?** Default: rejected, as FEAT-004 requires min < max. Allowing it needs a FEAT-004 change request.
-- [ ] **OQ-7 (non-blocking, before design) KB-only forms.** FEAT-002 needs a width and height, with no keep-original-size mode. Proposed: "Use photo size" button (Should). Alternative: the user types a size.
+- [x] **OQ-7 (non-blocking, before design) KB-only forms.** FEAT-002 needs a width and height, with no keep-original-size mode. Proposed: "Use photo size" button (Should). Alternative: the user types a size. **Decided 2026-11-24 at gate G1 (Product Owner): "Use photo size" shown (default).**
 - [ ] **OQ-8 (non-blocking, Stage 6) Field-level errors.** `validateTarget` returns the first problem without saying which field; options: validate fields separately in FEAT-005, or a FEAT-004 change request adding the field. Also the 20-digit finding in section 9 (FR-4(d) avoids it).
 - [ ] **OQ-9 (non-blocking) Effort.** The roadmap gives 0.5 pw. I think it is low: FEAT-002 and FEAT-004 were each 2 to 3 times over their first estimates [Fact](docs/roadmap.md, Stage 6 re-estimate). Rough breakdown in days [Assumption]: model, cleaning and validation 1.0; screen with errors, hints, RTL, 200% font 1.5; impeccable pass 0.5; flow wiring and session state 0.5; en strings and tests 1.5; slack 0.5. About 1.0 pw (range 0.8–1.3), existing validators already saved. Effect if accepted: R1 25.8 to 26.3 pw; RICE 40,000 to 20,000. Roadmap not edited; Product Owner decides.
-- [ ] **OQ-10 (non-blocking, before design) Screen shape with FEAT-011.** Preset list on this screen, or a preset screen before it. Decide in one design pass for both; FEAT-005 ships first and must work alone.
+- [x] **OQ-10 (non-blocking, before design) Screen shape with FEAT-011.** Preset list on this screen, or a preset screen before it. Decide in one design pass for both; FEAT-005 ships first and must work alone. **Decided 2026-11-24 at gate G1 (Product Owner): FEAT-005 screen works alone, with room for a FEAT-011 preset row (default).**
 - [ ] **OQ-11 (non-blocking) Bengali digits (U+09E6–09EF)?** Cheap to accept; the market is global and the brief names no Bengali UI. Proposed: yes (Could).
 - [ ] **OQ-12 (non-blocking) Small-target threshold.** 16 px is [Assumption]; also whether an extreme-aspect notice is wanted.
 - [ ] **OQ-13 (non-blocking) Re-pick with a stale target.** In a dual flow (photo, then signature) a prefilled photo target could be reused for the signature. Mitigation under OQ-1 B: values are visible and editable; a "clear all" action is a possible addition.
@@ -235,3 +235,4 @@ No question blocks approval. OQ-1, OQ-3, OQ-7, OQ-10 should be answered before t
 |---|---|---|
 | 0.1 | 2026-11-23 | First draft |
 | 1.0 | 2026-11-23 | Approved by Product Owner |
+| 1.1 | 2026-11-24 | Gate G1 answers recorded for OQ-1, OQ-3, OQ-7 and OQ-10 (all defaults; clarification, scope unchanged). Implemented (Product Owner /approve) |
