@@ -15,7 +15,9 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.StatFs
+import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import androidx.core.content.FileProvider
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
@@ -55,6 +57,9 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
     private var waitingForWrite: (() -> Unit)? = null
     private var deniedWrite: (() -> Unit)? = null
 
+    /** The save-as call waiting for the system dialog; lost with the activity (FR-25, risk R8). */
+    private var waitingForDocument: ((Uri?) -> Unit)? = null
+
     init {
         channel.setMethodCallHandler { call, result ->
             try {
@@ -71,7 +76,19 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
     }
 
     /** Forwarded by MainActivity; true when the request code was ours. */
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean = requestCode == REQUEST_SAVE_AS
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        if (requestCode != REQUEST_SAVE_AS) return false
+        val doc = if (resultCode == Activity.RESULT_OK) data?.data else null
+        val next = waitingForDocument
+        waitingForDocument = null
+        if (next != null) {
+            next(doc)
+        } else if (doc != null) {
+            // R8: a result with no waiting call (the activity was recreated): remove the empty document.
+            io.execute { deleteDocument(doc) }
+        }
+        return true
+    }
 
     /** Forwarded by MainActivity; true when the request code was ours. */
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray): Boolean {
@@ -93,7 +110,12 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
                 if (Build.VERSION.SDK_INT >= 29) background(result) { saveMediaStore(src, name, mime, bytes) }
                 else saveLegacy(src, name, mime, bytes, result)
             }
-            "saveAs" -> result.success(mapOf("outcome" to "failed")) // T08
+            "saveAs" -> {
+                val src = call.argument<String>("src"); val name = call.argument<String>("name")
+                val mime = call.argument<String>("mime"); val bytes = call.argument<Number>("bytes")?.toLong()
+                if (src == null || name == null || mime == null || bytes == null) return result.success(mapOf("outcome" to "failed"))
+                saveAs(src, name, mime, bytes, result)
+            }
             "sweepIncomplete" -> result.success(null) // T09
             "itemExists" -> background(result) { itemExists(call.argument<String>("ref")) }
             "open" -> open(call.argument<String>("ref"), call.argument<String>("mime"), result)
@@ -208,6 +230,61 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
         }
         val uri = try { scan(target.path, mime) } catch (_: Throwable) { null }
         return mapOf("outcome" to "saved", "name" to name, "ref" to (uri?.toString() ?: target.path))
+    }
+
+    /**
+     * FR-10 (Should): the system save-as dialog with the FR-4 name; no permission on any version.
+     * The copy is checked by size; on failure the created document is deleted (best effort).
+     * Closing the dialog answers cancelled, which shows no message.
+     */
+    private fun saveAs(src: String, name: String, mime: String, bytes: Long, result: MethodChannel.Result) {
+        val source = File(src)
+        if (!source.isFile || source.length() != bytes) return result.success(mapOf("outcome" to "fileMissing"))
+        if (waitingForDocument != null) return result.success(mapOf("outcome" to "failed"))
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(mime).putExtra(Intent.EXTRA_TITLE, name)
+        waitingForDocument = { doc ->
+            if (doc == null) result.success(mapOf("outcome" to "cancelled"))
+            else background(result) { writeDocument(source, doc, bytes) }
+        }
+        try {
+            @Suppress("DEPRECATION")
+            activity.startActivityForResult(intent, REQUEST_SAVE_AS)
+        } catch (_: Throwable) {
+            waitingForDocument = null
+            result.success(mapOf("outcome" to "failed"))
+        }
+    }
+
+    private fun writeDocument(source: File, doc: Uri, bytes: Long): Map<String, String> {
+        val resolver = activity.contentResolver
+        return try {
+            resolver.openFileDescriptor(doc, "w")!!.use { pfd ->
+                FileOutputStream(pfd.fileDescriptor).use { out ->
+                    FileInputStream(source).use { input -> copy(input, out) }
+                    out.flush()
+                    out.fd.sync()
+                }
+            }
+            val written = resolver.openFileDescriptor(doc, "r")!!.use { it.statSize }
+            if (written != bytes) {
+                deleteDocument(doc)
+                return mapOf("outcome" to "failed")
+            }
+            val shown = resolver.query(doc, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { if (it.moveToFirst()) it.getString(0) else null } ?: ""
+            mapOf("outcome" to "saved", "name" to shown, "ref" to doc.toString())
+        } catch (_: Throwable) {
+            deleteDocument(doc)
+            failure(bytes)
+        }
+    }
+
+    private fun deleteDocument(doc: Uri) {
+        try {
+            DocumentsContract.deleteDocument(activity.contentResolver, doc)
+        } catch (_: Throwable) {
+            // best effort
+        }
     }
 
     private fun copy(input: FileInputStream, out: FileOutputStream) {

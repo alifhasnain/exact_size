@@ -70,4 +70,20 @@ void main() {
     }
     expect(own().difference(before), isEmpty);
   });
+
+  // Manual (FEAT-007-T08): needs a person, or adb taps, on the system save dialog.
+  if (const bool.fromEnvironment('SAVE_AS')) {
+    testWidgets('save-as: saved with equal length, then cancelled (manual)', (t) async {
+      final src = await source(t);
+      // ignore: avoid_print
+      print('T08 source bytes=${src.lengthSync()}');
+      for (final step in ['save', 'cancel']) {
+        final r = (await run(t, () => ch.invokeMapMethod<Object?, Object?>('saveAs',
+            {'src': src.path, 'name': '${'exactsize-700x700-t08$step'.substring(0, 24)}.jpg', 'mime': 'image/jpeg', 'bytes': src.lengthSync()})))!;
+        // ignore: avoid_print
+        print('T08 $step outcome=${r['outcome']} nameIsFr4=${r['name'] == null ? null : RegExp(r'^exactsize-700x700-t08[a-z]{3}\.jpg$').hasMatch(r['name'] as String)}');
+        expect(r['outcome'], step == 'save' ? 'saved' : 'cancelled');
+      }
+    }, timeout: const Timeout(Duration(minutes: 4)));
+  }
 }

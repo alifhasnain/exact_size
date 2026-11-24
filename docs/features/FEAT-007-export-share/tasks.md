@@ -112,7 +112,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** tech section 4.3 "Kotlin save on API 28" steps 1–6: `checkSelfPermission`; if missing, `requestPermissions` once and hold the pending `Result` in the bridge instance; denied (including "don't ask again") → `permissionDenied`; no stored "asked" flag, no rationale. `Pictures/ExactSize/.<name>.part` → copy → sync → verify → `Files.move` without `REPLACE_EXISTING` (`FileAlreadyExistsException` → delete part → `nameTaken`); final or part exists up front → `nameTaken`. `scanFile` with a 2 s wait; `ref` = scanned URI or the path. Errors delete `part`.
 - **Done when:** in the CI API 28 job (driver runs `pm grant`), the T11 checks for byte equality, one visible file, no `.part` left and a pre-made colliding final file kept untouched with `nameTaken` returned all pass. With `pm revoke` plus `pm set-permission-flags ... user-fixed` the call returns `permissionDenied` at once with no dialog (AC-2.4) and writes nothing. The Kotlin grep test fails on any `listFiles` call outside the `Pictures/ExactSize` directory.
 
-### - [ ] FEAT-007-T08 — Kotlin `saveAs` (system save-as dialog) — Should
+### - [x] FEAT-007-T08 — Kotlin `saveAs` (system save-as dialog) — Should
 - **Implements:** FR-10, FR-14 · **ADRs:** ADR-007
 - **Depends on:** T05
 - **Size:** S
@@ -353,6 +353,9 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-24 | T08 | Save-as through the system dialog (Save tapped by adb on the button found by element id; no screenshot, no file names read): outcome saved, read-back name follows FR-4, saved length equals the source (378,472 bytes); no permission dialog. The dialog's default location was the storage root, not Downloads; the file was deleted after | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T08 | Save-as dialog closed with Back: outcome cancelled, nothing saved | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T08 | "Don't keep activities" recreation check | — | Waived (Product Owner decision 2026-11-24, R8 skipped); orphan-document deletion is in the code |
 | 2026-11-24 | T06 | API 29+ save of a synthetic 700x700 JPEG (> 300 KB): outcome saved, read-back name as requested, content URI ref; bytes and SHA-256 equal the source; exactly one new file in the folder, no .pending-* entry; itemExists true; file deleted after | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T06 | Length mismatch (+1, 0) and missing source return fileMissing and create nothing | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T01 | H1: pending row (IS_PENDING=1, Pictures/ExactSize) absent from a plain query; present after IS_PENDING=0 | Realme 2 Pro, API 36 | Pass |
