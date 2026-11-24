@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'features/compression/presentation/compression_providers.dart';
-import 'features/compression/presentation/outcome_messages.dart';
 import 'features/crop/data/crop_renderer.dart';
 import 'features/crop/data/preview_decoder.dart';
 import 'features/crop/presentation/crop_controller.dart';
 import 'features/crop/presentation/crop_messages.dart';
 import 'features/crop/presentation/crop_screen.dart';
+import 'features/export/presentation/result_screen.dart';
 import 'features/pick/domain/pick_types.dart';
 import 'features/pick/presentation/pick_controller.dart';
 import 'features/target/domain/target_spec.dart';
@@ -17,7 +17,7 @@ import 'features/target/presentation/target_screen.dart';
 import 'l10n/app_localizations.dart';
 import 'ui/booth.dart';
 
-/// Pick → target step → crop → compression (FEAT-005 tech plan; OQ-4, photo first).
+/// Pick → target step → crop → compression → result and export (FEAT-005 tech plan, OQ-4 photo first; FEAT-007 tech 4.5).
 
 /// Seams for tests: the preview decode and the crop render.
 final previewDecoderProvider = Provider<PreviewDecoder>((_) => const PreviewDecoder());
@@ -113,7 +113,8 @@ class _CropStepState extends ConsumerState<_CropStep> {
           onContinue: (pixels) {
             // The buffer moves to FEAT-004 with the request (ADR-003); the flow never frees it.
             ref.read(compressionControllerProvider.notifier).start(widget.spec.request(pixels));
-            Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const _AfterCropStandIn()));
+            Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (_) => ResultScreen(size: widget.spec.dimensions, onStartOver: () => _chooseAnother(context, ref))));
           },
           onChooseAnother: () => _chooseAnother(context, ref),
         ),
@@ -157,21 +158,4 @@ class _Booth extends StatelessWidget {
           ),
         ),
       );
-}
-
-// shortcut: dev-only stand-in for the result screen, not shipped; FEAT-006 replaces it.
-// Shows the compression run state; leaving it cancels the run or drops its unexported result.
-class _AfterCropStandIn extends ConsumerWidget {
-  const _AfterCropStandIn();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = announcementFor(ref.watch(compressionControllerProvider), OutcomeMessages(AppLocalizations.of(context)));
-    return PopScope(
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) ref.read(compressionControllerProvider.notifier).cancel();
-      },
-      child: _Booth(children: [Text('Result (FEAT-006): ${text ?? ''}', textAlign: TextAlign.center)]),
-    );
-  }
 }

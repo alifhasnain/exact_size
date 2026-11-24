@@ -217,7 +217,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** `lib/features/export/presentation/export_panel.dart`, built to the G1 design: `ExportPanel(success:, size:)` watches `exportControllerProvider(ExportInput(...))`. Save, Share, "Choose where to save" (only after `PERMISSION_DENIED`, OQ-T2), Open (after a save), the message in a `Semantics(liveRegion: true)` region announced once, the privacy line, the hint near Share, progress after 500 ms. Self-contained so FEAT-006 can embed it unchanged.
 - **Done when:** widget tests with `FakeExportBridge` pass: Save → saved message with folder and name, announced once; `PERMISSION_DENIED` → message plus Share and "Choose where to save" enabled; a successful Share shows no message (AC-3.5); share failure → `SHARE_FAILED` text; Save tapped twice while busy → one bridge call, Save shown inactive (with text or icon, not colour alone); Open hidden before a save; the privacy line and hint present; no image widget in the tree.
 
-### - [ ] FEAT-007-T19 — `ResultScreen`, `app_flow.dart` swap, leave handling, stand-in removed
+### - [x] FEAT-007-T19 — `ResultScreen`, `app_flow.dart` swap, leave handling, stand-in removed
 - **Implements:** FR-1, FR-22, FR-23, FR-24, FR-25, FR-29 · **ADRs:** ADR-001
 - **Depends on:** T18
 - **Size:** M
@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T19 | target_flow.dart (en, ar, hi at 200%): real flow to the result screen, panel shown on success, Done asks "Leave without saving?", Leave drops the result and the capture, a new photo keeps the values | Realme 2 Pro, API 36 | Pass |
 | 2026-11-25 | T17 | Gate G1: lean design t17/export_design.md (2026-11-24) accepted ("Build it"); PRD OQ-5, OQ-6, OQ-9 = defaults | Product Owner | Passed |
 | 2026-11-25 | T11 | export_bridge_test.dart (driver-less, 7 tests) with airplane mode on and Wi-Fi off; settings restored as found (mobile data left off as it was) | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T11 | export_bridge_test.dart with export_driver.dart (8 tests): save bytes/SHA, one file, itemExists after deletion, fileMissing cases, 100 distinct FR-4 names, share guard and FR-4 display name, own share URI marked as own, sweep | Realme 2 Pro, API 36 | Pass; folder empty after |

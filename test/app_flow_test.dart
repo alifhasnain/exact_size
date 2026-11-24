@@ -21,6 +21,8 @@ import 'package:exact_size/features/pick/data/system_picker.dart';
 import 'package:exact_size/features/pick/domain/pick_types.dart';
 import 'package:exact_size/features/crop/presentation/crop_controller.dart';
 import 'package:exact_size/features/crop/presentation/crop_screen.dart';
+import 'package:exact_size/features/export/presentation/export_panel.dart';
+import 'package:exact_size/features/export/presentation/result_screen.dart';
 import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_screen.dart';
 import 'package:exact_size/features/target/domain/target_spec.dart';
@@ -267,7 +269,7 @@ void main() {
       expect(c.read(cropControllerProvider)!.crop, isNot(moved));
     });
 
-    testWidgets('Continue hands the same buffer to compression once with the spec; leaving the stand-in cancels (T11)',
+    testWidgets('Continue hands the same buffer to compression once with the spec; leaving the running result screen cancels (T11, FEAT-007-T19)',
         (tester) async {
       decoder.previews.add(await image(tester));
       final compression = _FakeCompression();
@@ -285,13 +287,15 @@ void main() {
       openCrop(tester, c, withMin);
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500)); // route transition; the result spinner never settles
 
       expect(compression.requests, hasLength(1));
       final r = compression.requests.single;
       expect(r.pixels, same(rendered.single), reason: 'the buffer moves, not copied (ADR-003)');
       expect((r.minKb, r.maxKb, r.format), (20, 50, OutputFormat.png));
-      expect(find.textContaining('Result (FEAT-006)'), findsOneWidget);
+      expect(find.byType(ResultScreen), findsOneWidget);
+      expect(find.byType(ExportPanel), findsNothing, reason: 'no Save or Share while running (FR-1)');
 
       tester.state<NavigatorState>(find.byType(Navigator)).pop();
       await tester.pumpAndSettle();

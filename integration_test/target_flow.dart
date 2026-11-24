@@ -8,6 +8,9 @@ import 'package:exact_size/features/compression/domain/compression_result.dart';
 import 'package:exact_size/features/compression/presentation/compression_providers.dart';
 import 'package:exact_size/features/crop/presentation/crop_controller.dart';
 import 'package:exact_size/features/crop/presentation/crop_screen.dart';
+import 'package:exact_size/features/export/presentation/export_panel.dart';
+import 'package:exact_size/features/export/presentation/result_screen.dart';
+import 'package:exact_size/l10n/app_localizations.dart';
 import 'package:exact_size/features/pick/data/system_picker.dart';
 import 'package:exact_size/features/pick/domain/pick_types.dart';
 import 'package:exact_size/features/pick/presentation/pick_screen.dart';
@@ -22,7 +25,7 @@ import '../test_support/fake_system_picker.dart';
 
 /// FEAT-005-T17 (FR-1, FR-10, FR-14, NFR-2, NFR-4, NFR-7, NFR-9): the real app
 /// flow pick → target → crop → compression on a pushed synthetic fixture. Only
-/// the system picker is faked: a capture is copied into the camera folder and
+/// the system picker is faked (FEAT-007-T19: ends on the result screen and leaves through Done): a capture is copied into the camera folder and
 /// delivered through the app's own FileProvider URI, as in pick_data_matrix.
 /// en, ar and hi at text scale 2.0, one screenshot per state (empty, error,
 /// valid; saved by the driver under build/target_flow/). App storage holds no
@@ -162,26 +165,31 @@ void main() {
       await waitFor(tester, () => c.read(compressionControllerProvider) is CompressionDone, 'compression finishes',
           seconds: 60);
       final done = c.read(compressionControllerProvider) as CompressionDone;
-      expect(done.result, isA<CompressionSuccess>(), reason: 'READY on the stand-in');
+      expect(done.result, isA<CompressionSuccess>(), reason: 'READY on the result screen');
       expect(done.maxKb, 60);
-
-      // Leaving the stand-in drops the unexported result and its temp file (FR-14).
-      tester.state<NavigatorState>(find.byType(Navigator)).pop();
       await tester.pumpAndSettle();
-      await waitFor(tester, () => c.read(compressionControllerProvider) is CompressionIdle, 'result dropped');
-      expect(storage().difference(baseline), {'${camera.dir.path}/$first'}, reason: 'only the accepted capture');
+      expect(find.byType(ResultScreen), findsOneWidget);
+      expect(find.byType(ExportPanel), findsOneWidget, reason: 'FEAT-007 panel on success');
+      await shot(tester, '${locale}_result');
+
+      // Done with nothing saved asks first (FEAT-007 FR-23); Leave drops the result and its temp
+      // file (FR-22) and starts over on the pick screen, which releases the capture (FEAT-001 FR-11).
+      final l = lookupAppLocalizations(Locale(locale));
+      await tester.ensureVisible(find.text(l.exportDone));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l.exportDone));
+      await tester.pumpAndSettle();
+      expect(find.text(l.exportLeaveTitle), findsOneWidget);
+      await tester.tap(find.text(l.exportLeave));
+      await waitFor(tester, () => find.byType(PickScreen).evaluate().isNotEmpty && c.read(compressionControllerProvider) is CompressionIdle,
+          'result dropped, back on the pick screen');
+      await waitFor(tester, () => storage().difference(baseline).isEmpty, 'temp file and capture gone');
 
       // A new photo: values kept, errors hidden (FR-10).
-      tester.state<NavigatorState>(find.byType(Navigator)).pop(); // back to the target step
-      await tester.pumpAndSettle();
-      await type(tester, ['0', '200', '', '60']);
-      await tapContinue(tester);
-      await tester.pumpAndSettle();
       final second = capture();
       picker.deliver(Captured(uri: '$_authority/camera/$second', fileName: second));
-      await waitFor(tester, () => File('${camera.dir.path}/$first').existsSync() == false, 'previous capture deleted');
-      await tester.pumpAndSettle();
-      expect(find.byType(TargetScreen), findsOneWidget);
+      await waitFor(tester, () => find.byType(TargetScreen).evaluate().isNotEmpty, 'target step opens for the new photo');
+      expect(text(tester, 0), '400');
       expect(text(tester, 1), '200');
       expect(find.byIcon(Icons.error_outline), findsNothing, reason: 'errors hidden for the new photo');
 
