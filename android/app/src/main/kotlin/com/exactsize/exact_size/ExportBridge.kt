@@ -1,11 +1,13 @@
 package com.exactsize.exact_size
 
+import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ComponentName
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -21,6 +23,8 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.file.FileAlreadyExistsException
+import java.nio.file.Files
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -47,6 +51,10 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
     private val io: ExecutorService = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
+    /** API 28: the save call waiting for the permission dialog; lost with the activity (FR-25). */
+    private var waitingForWrite: (() -> Unit)? = null
+    private var deniedWrite: (() -> Unit)? = null
+
     init {
         channel.setMethodCallHandler { call, result ->
             try {
@@ -66,7 +74,15 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean = requestCode == REQUEST_SAVE_AS
 
     /** Forwarded by MainActivity; true when the request code was ours. */
-    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray): Boolean = requestCode == REQUEST_WRITE
+    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray): Boolean {
+        if (requestCode != REQUEST_WRITE) return false
+        val granted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+        val next = if (granted) waitingForWrite else deniedWrite
+        waitingForWrite = null
+        deniedWrite = null
+        next?.invoke()
+        return true
+    }
 
     private fun handle(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -75,7 +91,7 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
                 val mime = call.argument<String>("mime"); val bytes = call.argument<Number>("bytes")?.toLong()
                 if (src == null || name == null || mime == null || bytes == null) return result.success(mapOf("outcome" to "failed"))
                 if (Build.VERSION.SDK_INT >= 29) background(result) { saveMediaStore(src, name, mime, bytes) }
-                else result.success(mapOf("outcome" to "failed")) // API 28: T07
+                else saveLegacy(src, name, mime, bytes, result)
             }
             "saveAs" -> result.success(mapOf("outcome" to "failed")) // T08
             "sweepIncomplete" -> result.success(null) // T09
@@ -140,6 +156,58 @@ class ExportBridge(private val activity: Activity, messenger: BinaryMessenger) {
             delete(uri)
             return failure(bytes)
         }
+    }
+
+    /**
+     * FR-7, API 28: the permission is checked and, if missing, asked for inside this call, once per
+     * call; no "asked before" flag is kept. After "don't ask again" the platform denies at once
+     * (AC-2.4). Never asks for the read permission: the dialog grants the storage group.
+     */
+    private fun saveLegacy(src: String, name: String, mime: String, bytes: Long, result: MethodChannel.Result) {
+        val go = { background(result) { writeLegacy(src, name, mime, bytes) } }
+        if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) return go()
+        if (waitingForWrite != null) return result.success(mapOf("outcome" to "failed")) // a request is already showing
+        waitingForWrite = go
+        deniedWrite = { result.success(mapOf("outcome" to "permissionDenied")) }
+        activity.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE)
+    }
+
+    /**
+     * API 28 write: `.part` file (leading dot, non-media extension) in Pictures/ExactSize, size check,
+     * rename without replace (an existing file is never overwritten, FR-13), media scan of the final
+     * file only (a scan aimed at the `.part` would index it; T01 spike). Touches only this folder (FR-8).
+     */
+    @Suppress("DEPRECATION")
+    private fun writeLegacy(src: String, name: String, mime: String, bytes: Long): Map<String, String> {
+        val source = File(src)
+        if (!source.isFile || source.length() != bytes) return mapOf("outcome" to "fileMissing")
+        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), FOLDER)
+        val target = File(dir, name)
+        val part = File(dir, ".$name.part")
+        try {
+            if (!dir.isDirectory && !dir.mkdirs()) return failure(bytes)
+            if (target.exists() || part.exists()) return mapOf("outcome" to "nameTaken")
+            FileOutputStream(part).use { out ->
+                FileInputStream(source).use { input -> copy(input, out) }
+                out.flush()
+                out.fd.sync()
+            }
+            if (part.length() != bytes) {
+                part.delete()
+                return mapOf("outcome" to "failed")
+            }
+            try {
+                Files.move(part.toPath(), target.toPath())
+            } catch (_: FileAlreadyExistsException) {
+                part.delete()
+                return mapOf("outcome" to "nameTaken")
+            }
+        } catch (_: Throwable) {
+            part.delete()
+            return failure(bytes)
+        }
+        val uri = try { scan(target.path, mime) } catch (_: Throwable) { null }
+        return mapOf("outcome" to "saved", "name" to name, "ref" to (uri?.toString() ?: target.path))
     }
 
     private fun copy(input: FileInputStream, out: FileOutputStream) {
