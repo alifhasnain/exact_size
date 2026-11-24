@@ -1,8 +1,8 @@
 ---
 id: FEAT-007
 title: Export and share
-status: Approved
-version: 1.0
+status: Under Discussion
+version: 1.1
 updated: 2026-11-24
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-010, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-023, FEAT-025, FEAT-027]
 ---
@@ -120,7 +120,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 - **Save again (FR-12):** checks the saved item exists; shows "Already saved" or saves again.
 - **Leave while saving (FR-24):** the leave action waits for the write to finish or fail.
 
-**Error flows:** `NO_SPACE`, `SAVE_FAILED`, `PERMISSION_DENIED`, `FILE_MISSING`, `SHARE_FAILED`. In all of them the result is kept (except `FILE_MISSING`), no partial file stays, and the user can retry or use the other action. Success and info codes: `SAVED`, `ALREADY_SAVED`, `SHARE_OPENED`, `SAVE_CANCELLED` (save-as dialog closed).
+**Error flows:** `NO_SPACE`, `SAVE_FAILED`, `PERMISSION_DENIED`, `FILE_MISSING`, `SHARE_FAILED`. In all of them the result is kept (except `FILE_MISSING`), no partial file stays, and the user can retry or use the other action. Success and info codes: `SAVED`, `ALREADY_SAVED`, `SHARE_OPENED`, `SAVE_CANCELLED` (save-as dialog closed), `OPEN_NO_VIEWER` (Open tapped, no app can open the file; Save and Share still work).
 
 **Behaviour until FEAT-006 exists (FR-29).** FEAT-007 builds the export area as a self-contained panel that takes one `CompressionSuccess` plus the output size and shows Save, Share, messages and the privacy note. It also builds a minimal result screen that replaces the dev stand-in for Phase A testing: progress with Cancel while running (existing behaviour), the existing failure message from the FEAT-004 outcome messages with a way back, and on success the line "Ready: [W] × [H] px, [SIZE] KB, [FORMAT]" plus the panel. The numbers come from FEAT-004's result and are not recomputed (FEAT-004 FR-19). The screen shows no image preview and makes no "meets spec" claim; both belong to FEAT-006. When FEAT-006 ships it takes over the screen and embeds the panel, so FEAT-007 needs no change. If FEAT-006 is built first, FEAT-007 is only the panel. Whether to build 007 before 006 is OQ-3.
 
@@ -139,7 +139,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | FR-10 | The system should offer "Choose where to save" after a refusal on API 28 (and may offer it as a secondary action on every version): it opens the system save-as dialog with the FR-4 name and the right MIME, needs no permission, and writes through the URI the user picks. Closing the dialog changes nothing and shows no message. | US-2, US-4 | Should |
 | FR-11 | After a verified save the system shall show "Saved to [FOLDER] as [FILENAME]." as a live region that stays until the user leaves the screen. [FILENAME] is read back from the saved item, so a system conflict rename is shown. After a save-as save, only the name is shown. | US-1, US-7 | Must |
 | FR-12 | While a save runs, further Save taps shall be ignored. After a successful save of the current result, Save shall check that the saved item still exists: if yes, show `ALREADY_SAVED` and create nothing; if not, save again. | US-5 | Must |
-| FR-13 | Save shall never overwrite or delete an existing file. If the chosen name is taken it shall draw a new TOKEN (at most 5 tries, then `SAVE_FAILED`). | US-6 | Must |
+| FR-13 | Save shall never overwrite or delete an existing file. If the chosen name is taken it shall draw a new TOKEN (at most 5 tries, then `SAVE_FAILED`). On API 29+ the system may instead rename a taken name itself (observed form `<name> (1).<ext>`, FEAT-007-T01 spike); Save then keeps the system name, reads it back and shows it (FR-11). FR-4 and AC-6.2 apply to the name ExactSize requests; a system-added suffix is accepted (odds about 1 in 2 billion per save). | US-6 | Must |
 | FR-14 | On a low-space or any other write error the system shall delete the partial output (pending item or `.part` file), keep the temp file, show `NO_SPACE` or `SAVE_FAILED`, and leave Save retryable. | US-4 | Must |
 | FR-15 | After a save the system should offer Open, which opens the saved item in a viewer app with a read grant. If no app can handle it, a short message is shown. | US-7 | Should |
 | FR-16 | At app start the system shall remove incomplete items it created in shared storage (pending MediaStore items, `.part` files) and nothing else; it shall never remove a completed file. On API 28 it does this only if the permission is already granted and shall never ask for it at start. | US-8 | Must |
@@ -182,7 +182,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | Share intent | One stream, one file, read-only grant, ExactSize excluded (FR-17) | "Couldn't open the share menu. Try again, or save the file instead." (`SHARE_FAILED`) |
 | Saved again | Saved item still resolves (FR-12) | Info: "Already saved as [FILENAME] in [FOLDER]." (`ALREADY_SAVED`) |
 | Success | Item complete and length verified | "Saved to [FOLDER] as [FILENAME]." (`SAVED`) |
-| Open | A viewer app exists (FR-15) | "No app on this phone can open this file. You can still share it." |
+| Open | A viewer app exists (FR-15) | "No app on this phone can open this file. You can still share it." (`OPEN_NO_VIEWER`) |
 | Leave | Nothing saved or shared (FR-23) | "Leave without saving? This file will be deleted." Buttons: "Stay", "Leave" |
 | Share hint (Should) | Shown near Share (FR-21) | "Some chat apps shrink photos. For a form, save the file and choose it in the upload window." |
 
@@ -220,7 +220,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
   - **Retention:** ExactSize keeps nothing after the flow ends and has no history or recents in R1. Saved copies stay until the user deletes them; the app never deletes a saved file. FEAT-023 recents would need its own review [Fact](docs/roadmap.md, FEAT-023 row).
   - **Consent:** no data is collected, so no consent screen is needed. Each export is a user action on one file. FR-26 states plainly where a copy goes.
   - **Privacy flags raised proactively.** (1) On API 28 the write permission may implicitly include reading all shared storage (H2). This conflicts with FEAT-001's "no broad storage access" stance, so FR-8 forbids any read or listing beyond ExactSize's own items, and OQ-1 offers a no-permission alternative. (2) A saved ID photo or signature in the gallery can be seen by other apps and cloud sync (H7); OQ-2 covers the folder choice and FR-26 the notice. (3) The file name is readable by the portal and the receiving app, so FR-4 bans personal data in it and the token is random, never derived from the image or device. (4) Share targets such as messaging and cloud-drive apps upload what they receive; that is the user's choice, stated in FR-26. (5) If FEAT-006 shows the image on the same screen, the recents-thumbnail rule applies [Fact](docs/features/FEAT-002-crop-resize/prd.md, FR-26). (6) Children's privacy: FEAT-007 collects nothing from under-13 users; the ad SDK is separate (FEAT-025) and must receive no file, name or path (FR-28).
-  - **What is logged:** only enum outcome codes (`SAVED`, `ALREADY_SAVED`, `NO_SPACE`, `SAVE_FAILED`, `PERMISSION_DENIED`, `FILE_MISSING`, `SHARE_OPENED`, `SHARE_FAILED`, `SAVE_CANCELLED`) through the shared wrapper. Never the file name, URI, path, size, MIME, folder or platform exception text, in debug or release builds and crash reports (FR-27). Nothing that identifies the file or the user.
+  - **What is logged:** only enum outcome codes (`SAVED`, `ALREADY_SAVED`, `NO_SPACE`, `SAVE_FAILED`, `PERMISSION_DENIED`, `FILE_MISSING`, `SHARE_OPENED`, `SHARE_FAILED`, `SAVE_CANCELLED`, `OPEN_NO_VIEWER`) through the shared wrapper. Never the file name, URI, path, size, MIME, folder or platform exception text, in debug or release builds and crash reports (FR-27). Nothing that identifies the file or the user.
   - **Play Data safety and permissions [Hypothesis, verify before release]:** FEAT-007 sends nothing off the device, so it adds no "data collected" entry; a share chosen by the user through the system chooser is a user-initiated transfer to the user's own choice of app, which Google's Data safety rules may treat differently from developer sharing. `WRITE_EXTERNAL_STORAGE` capped at API 28 should not need the Play photo and video permission declaration, which targets the READ_MEDIA permissions. The ad SDK (FEAT-025) is the main exposure, so the store label must not say "no data collected" unless the ad SDK is accounted for [Fact](docs/roadmap.md, FEAT-016 row). The in-app explainer (FEAT-016) should say that copies in the gallery or in a receiving app are outside the app's control.
   - **Markets:** the launch is global [Fact](docs/product/vision.md). ExactSize processes on-device and transmits nothing, so exposure under local data-protection law is probably low [Hypothesis]; no market-specific law was checked for this draft (OQ-10).
   - Examples and tests use synthetic images and `[PLACEHOLDER]` values such as `exactsize-300x300-[TOKEN].jpg`; never real people's photos or signatures.
@@ -254,3 +254,4 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 |---|---|---|
 | 0.1 | 2026-11-24 | First draft |
 | 1.0 | 2026-11-24 | Approved by Product Owner; OQ-1 = A (permission on API 28), OQ-3 = FEAT-007 first |
+| 1.1 | 2026-11-24 | Clarification (FEAT-007-T02, Product Owner choice): new info code `OPEN_NO_VIEWER` in sections 5, 8 and 10; FR-13 accepts the API 29+ system conflict rename seen in the T01 spike. No scope change |
