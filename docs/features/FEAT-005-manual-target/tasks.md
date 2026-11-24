@@ -276,7 +276,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - The five screenshots are in the PR (not committed unless the Product Owner asks).
   - Gate G2 is recorded.
 
-### - [ ] FEAT-005-T16 — Translate FEAT-005 strings (es, pt, hi, id, ar)
+### - [x] FEAT-005-T16 — Translate FEAT-005 strings (es, pt, hi, id, ar)
 - **Implements:** FR-15, NFR-4 · **ADRs:** —
 - **Depends on:** T08, T15 (strings final after G1/G2)
 - **Size:** M (not counted in the tech estimate: FEAT-019 work)
