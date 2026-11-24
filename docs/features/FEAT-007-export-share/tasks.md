@@ -64,7 +64,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** tech.md proposes an `OPEN_NO_VIEWER` outcome code for the FR-15 "No app can open this file" message (tech OQ-T4); PRD sections 5 and 10 do not list it, and FR-27 allows only the listed codes. Prepare a one-line PRD clarification (section 5 info codes and section 10 log list, version 1.1, Change log line) and give it to the Product Owner. Do not edit the Approved PRD status yourself; the Product Owner's flow sets it Under Discussion and `/approve` re-approves it. The Product Owner may fold Open items 2 and 3 into the same edit.
 - **Done when:** PRD version 1.1 (minor) listing `OPEN_NO_VIEWER` is Approved by the Product Owner through `/approve`, **or** the Product Owner declines in writing, in which case T14 shows the message and logs nothing for it.
 
-### - [ ] FEAT-007-T03 — Domain: `ExportName`, `ExportOutcome`, `SavedItem`, `BridgeSave`, `ExportInput`
+### - [x] FEAT-007-T03 — Domain: `ExportName`, `ExportOutcome`, `SavedItem`, `BridgeSave`, `ExportInput`
 - **Implements:** FR-4, FR-27 (redaction), NFR-5 (secure random) · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** S
