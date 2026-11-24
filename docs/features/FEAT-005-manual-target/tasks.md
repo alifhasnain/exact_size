@@ -305,7 +305,7 @@ PRD OQ-1, OQ-3, OQ-7 and OQ-10 are answered by the Product Owner at gate G1. If 
   - Re-run FEAT-001-T25's share drive (`share_intent_driver.dart` + `pick_share_test.dart`), now with `TargetScreen` as the next step.
 - **Done when:** `target_flow.dart` passes on API 36.1 and in the CI API 28 job. The share drive passes on both. The results (pass/fail per check, no URIs, paths or file names) are in the Test record.
 
-### - [ ] FEAT-005-T18 — Emulator run and scripted checklist — gate G3
+### - [x] FEAT-005-T18 — Emulator run and scripted checklist — gate G3
 - **Implements:** FR-3, FR-10, FR-14, NFR-2, NFR-3, NFR-6, NFR-8, NFR-9 · **ADRs:** —
 - **Depends on:** T17
 - **Size:** S
@@ -403,6 +403,7 @@ _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, r
 | 2026-11-24 | T18 | Native-digit input from Arabic/Hindi keyboard layouts (R1) | same (AOSP LatinIME, no Arabic/Hindi layout; adb cannot type them) | Not tested on device; native-digit reading covered by unit and widget tests (AC-5.1/5.2) |
 | 2026-11-24 | T18 | Settings after the run | same | font_scale 0.85, auto-rotate on, user_rotation 0, airplane off, accessibility off: all as found; app uninstalled, synthetic image deleted |
 | 2026-11-24 | T17 | `target_flow.dart` and the share drive in CI | CI run 45401648479, API 28 | Pass (all three jobs green) |
+| 2026-11-24 | T18 | Gate G3: CI API 28 for bundle.dart, the share drive and target_flow.dart after T16 | CI run 45405133674 | Pass; Product Owner accepted G3 on the Realme 2 Pro results with the two noted limits |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001 and ADR-003 before starting a task.
