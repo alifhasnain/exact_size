@@ -191,7 +191,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - Kotlin grep rules from T05, T07, T09 collected in one place.
 - **Done when:** the test passes on the current tree. The PR shows it failing once per rule when a forbidden token is added to a scratch file in each scanned location.
 
-### - [ ] FEAT-007-T16 — English strings and `ExportMessages`
+### - [x] FEAT-007-T16 — English strings and `ExportMessages`
 - **Implements:** FR-11, FR-21, FR-26, FR-30, NFR-4 · **ADRs:** ADR-001
 - **Depends on:** T03
 - **Size:** S

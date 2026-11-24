@@ -574,6 +574,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Very small image. Check the size on your form.'**
   String get targetHintVerySmall;
+
+  /// FEAT-007 button: saves the finished file to the phone's gallery (FR-6, FR-7).
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get exportSave;
+
+  /// FEAT-007 button: opens the system share menu to send the finished file to another app (FR-17).
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exportShare;
+
+  /// FEAT-007 button (FR-10): opens the system dialog to save the file in a folder the user picks. Shown after the gallery permission was refused.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to save'**
+  String get exportSaveAs;
+
+  /// FEAT-007 button (FR-15): opens the saved file in a photo viewer app.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get exportOpen;
+
+  /// FEAT-007 result screen button: leaves the result and goes back to choosing a photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get exportDone;
+
+  /// FEAT-007 FR-29 result line. width and height are formatted pixel counts, size is a formatted file size like '48.2 KB', format is JPEG or PNG. All arrive wrapped in bidi isolates. Keep the × sign and px unit as your language writes them.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: {width} × {height} px, {size}, {format}'**
+  String exportReady(String width, String height, String size, String format);
+
+  /// FEAT-007 SAVED (FR-11). folder is the gallery folder path and fileName the saved file name; both are shown left to right and never translated.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to {folder} as {fileName}.'**
+  String exportSaved(String folder, String fileName);
+
+  /// FEAT-007 SAVED after 'Choose where to save' (FR-11): only the name is known. fileName is never translated.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved as {fileName}.'**
+  String exportSavedAs(String fileName);
+
+  /// FEAT-007 ALREADY_SAVED (FR-12): Save tapped again for the same file. folder and fileName are never translated.
+  ///
+  /// In en, this message translates to:
+  /// **'Already saved as {fileName} in {folder}.'**
+  String exportAlreadySaved(String fileName, String folder);
+
+  /// FEAT-007 ALREADY_SAVED when the earlier save went to a folder the user picked (folder unknown). fileName is never translated.
+  ///
+  /// In en, this message translates to:
+  /// **'Already saved as {fileName}.'**
+  String exportAlreadySavedAs(String fileName);
+
+  /// FEAT-007 NO_SPACE (FR-14): the phone's storage is full.
+  ///
+  /// In en, this message translates to:
+  /// **'There isn\'t enough free space on this phone to save the file. Free some space and try again.'**
+  String get exportNoSpace;
+
+  /// FEAT-007 SAVE_FAILED (FR-14): saving failed for another reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the file. Try again, or share it instead.'**
+  String get exportSaveFailed;
+
+  /// FEAT-007 PERMISSION_DENIED (FR-9): Android 9 storage permission refused. Keep the app name ExactSize.
+  ///
+  /// In en, this message translates to:
+  /// **'ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it.'**
+  String get exportPermissionDenied;
+
+  /// FEAT-007 FILE_MISSING (FR-2): the finished file was removed before it could be saved or shared.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is no longer available. Please create it again.'**
+  String get exportFileMissing;
+
+  /// FEAT-007 SHARE_FAILED (FR-20): the system share menu could not be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the share menu. Try again, or save the file instead.'**
+  String get exportShareFailed;
+
+  /// FEAT-007 OPEN_NO_VIEWER (FR-15): Open was tapped but no viewer app is installed.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this phone can open this file. You can still share it.'**
+  String get exportNoViewer;
+
+  /// FEAT-007 FR-26: one plain privacy line in the export area.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving puts a copy in your gallery. Sharing gives a copy to the app you choose.'**
+  String get exportPrivacy;
+
+  /// FEAT-007 FR-21: hint near Share; chat apps may recompress the photo, so a form upload should use the saved file.
+  ///
+  /// In en, this message translates to:
+  /// **'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.'**
+  String get exportShareHint;
+
+  /// FEAT-007 FR-23: title of the dialog shown on Back when the file was neither saved nor shared.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave without saving?'**
+  String get exportLeaveTitle;
+
+  /// FEAT-007 FR-23: body of the leave dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'This file will be deleted.'**
+  String get exportLeaveBody;
+
+  /// FEAT-007 FR-23: leave dialog button that keeps the result screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get exportStay;
+
+  /// FEAT-007 FR-23: leave dialog button that deletes the file and goes back.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get exportLeave;
+
+  /// FEAT-007 FR-24: progress label shown when saving takes longer than half a second.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get exportSaving;
 }
 
 class _AppLocalizationsDelegate

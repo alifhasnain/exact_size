@@ -326,4 +326,91 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get targetHintVerySmall =>
       'La imagen quedará muy pequeña. Revisa las dimensiones que pide tu formulario.';
+
+  @override
+  String get exportSave => 'Save';
+
+  @override
+  String get exportShare => 'Share';
+
+  @override
+  String get exportSaveAs => 'Choose where to save';
+
+  @override
+  String get exportOpen => 'Open';
+
+  @override
+  String get exportDone => 'Done';
+
+  @override
+  String exportReady(String width, String height, String size, String format) {
+    return 'Ready: $width × $height px, $size, $format';
+  }
+
+  @override
+  String exportSaved(String folder, String fileName) {
+    return 'Saved to $folder as $fileName.';
+  }
+
+  @override
+  String exportSavedAs(String fileName) {
+    return 'Saved as $fileName.';
+  }
+
+  @override
+  String exportAlreadySaved(String fileName, String folder) {
+    return 'Already saved as $fileName in $folder.';
+  }
+
+  @override
+  String exportAlreadySavedAs(String fileName) {
+    return 'Already saved as $fileName.';
+  }
+
+  @override
+  String get exportNoSpace =>
+      'There isn\'t enough free space on this phone to save the file. Free some space and try again.';
+
+  @override
+  String get exportSaveFailed =>
+      'Couldn\'t save the file. Try again, or share it instead.';
+
+  @override
+  String get exportPermissionDenied =>
+      'ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it.';
+
+  @override
+  String get exportFileMissing =>
+      'This file is no longer available. Please create it again.';
+
+  @override
+  String get exportShareFailed =>
+      'Couldn\'t open the share menu. Try again, or save the file instead.';
+
+  @override
+  String get exportNoViewer =>
+      'No app on this phone can open this file. You can still share it.';
+
+  @override
+  String get exportPrivacy =>
+      'Saving puts a copy in your gallery. Sharing gives a copy to the app you choose.';
+
+  @override
+  String get exportShareHint =>
+      'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.';
+
+  @override
+  String get exportLeaveTitle => 'Leave without saving?';
+
+  @override
+  String get exportLeaveBody => 'This file will be deleted.';
+
+  @override
+  String get exportStay => 'Stay';
+
+  @override
+  String get exportLeave => 'Leave';
+
+  @override
+  String get exportSaving => 'Saving…';
 }
