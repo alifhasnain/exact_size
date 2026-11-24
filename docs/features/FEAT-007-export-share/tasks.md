@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T22 | tool/export_reliability.dart: 20 kills during a 50 MB save (4 landed inside the copy); after every restart no unfinished save left and every visible file has the blob hash; timing median 108 ms for 1 MB (min 62, max 819); low space skipped (real device) | Realme 2 Pro, API 36 | Pass (CI API 28 run pending) |
 | 2026-11-25 | T20 | Gate G2: six phone screenshots (ready, saved, error, permission denied forced, ar RTL with English text until T21, 200% font) from integration_test/result_screen_demo.dart with a fake bridge; not committed | Realme 2 Pro, API 36; Product Owner | Passed |
 | 2026-11-25 | T19 | target_flow.dart (en, ar, hi at 200%): real flow to the result screen, panel shown on success, Done asks "Leave without saving?", Leave drops the result and the capture, a new photo keeps the values | Realme 2 Pro, API 36 | Pass |
 | 2026-11-25 | T17 | Gate G1: lean design t17/export_design.md (2026-11-24) accepted ("Build it"); PRD OQ-5, OQ-6, OQ-9 = defaults | Product Owner | Passed |

@@ -13,6 +13,7 @@ import 'package:integration_test/common.dart';
 ///   deny           API 28: waits for the permission dialog and denies it (Back)
 ///   denyforever    API 28: waits for the dialog, ticks "Don't ask again" and denies
 ///   nodialog       answers none when no permission dialog is in front
+///   count          number of entries in Pictures/ExactSize, read by the shell
 /// The dialog is the emulator's system UI (no personal data); buttons are found by resource id.
 /// It deletes the .part afterwards. Synthetic data only; nothing printed holds a URI or name.
 ///
@@ -74,6 +75,7 @@ Future<String> handle(String request) async {
     await adb('mkdir -p /sdcard/Pictures/ExactSize && echo synthetic > $_part');
     return 'done';
   }
+  if (request == 'count') return (await adb('ls -A /sdcard/Pictures/ExactSize 2>/dev/null | wc -l')).trim();
   if (request == 'checkpart') return (await adb('[ -f $_part ] && echo present || echo absent')).trim();
   return 'unknown';
 }

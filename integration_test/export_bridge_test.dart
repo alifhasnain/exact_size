@@ -82,7 +82,7 @@ void main() {
     testWidgets('API 28 without the permission: denied, then "never ask again", then refused at once; the sweep keeps a .part (FR-9, AC-2.4, FR-16)', (t) async {
       final src = await source(t, side: 50);
       Future<BridgeSave?> attempt() => run(t, () => bridge.save(src: src.path, name: name(50, 50), mime: 'image/jpeg', bytes: src.lengthSync()));
-      final before = own();
+      final before = await ask(t, 'count'); // the app cannot list the folder without the permission
       for (final step in ['deny', 'denyforever']) {
         await request(t, step); // the driver answers the system dialog this save opens
         expect(await attempt(), isA<BridgeSaveError>().having((e) => e.outcome, 'outcome', ExportOutcome.permissionDenied), reason: step);
@@ -92,7 +92,7 @@ void main() {
           .timeout(const Duration(seconds: 10))); // a dialog would hang the call
       expect(r, isA<BridgeSaveError>().having((e) => e.outcome, 'outcome', ExportOutcome.permissionDenied));
       expect(await ask(t, 'nodialog'), 'none');
-      expect(own().difference(before), isEmpty);
+      expect(await ask(t, 'count'), before, reason: 'nothing written');
       expect(await ask(t, 'plant'), 'done');
       await run(t, bridge.sweepIncomplete);
       expect(await ask(t, 'checkpart'), 'present');
