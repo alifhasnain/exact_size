@@ -139,7 +139,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - `test_support/fake_export_bridge.dart` for T12–T14.
 - **Done when:** unit tests pass with a mocked channel (`TestDefaultBinaryMessenger`): every tech 4.1 outcome maps correctly; `{outcome: 'garbage'}`, a missing key, `null` and a `PlatformException` with a `[PLACEHOLDER]` message all map to failure and the message text appears nowhere in captured logs; `ShareCopies` on a temp dir copies with equal length, refuses a length mismatch, deletes and sweeps; `ExportOutcomeLog` output matches `^exactsize\.export outcome=[A-Z_]+$`. App start on the Realme 2 Pro shows no exception from the new sweeps.
 
-### - [ ] FEAT-007-T11 — Bridge drive target, offline run and CI line (integration/CI task)
+### - [x] FEAT-007-T11 — Bridge drive target, offline run and CI line (integration/CI task)
 - **Implements:** FR-3, FR-4, FR-5, FR-6, FR-7, FR-12 (`itemExists`), FR-13, FR-16, FR-18, FR-28, NFR-3, NFR-7 · **ADRs:** ADR-007
 - **Depends on:** T10
 - **Size:** M
@@ -198,7 +198,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** `lib/l10n/app_en.arb`, each key with an `@` description and ICU placeholders, no concatenation: Save, Share, Choose where to save, Open, Done, the ready line (`{width}`, `{height}`, `{size}`, `{format}`), every PRD section 8 message (`SAVED` with `{folder}`/`{fileName}`, save-as name-only variant, `ALREADY_SAVED`, `NO_SPACE`, `SAVE_FAILED`, `PERMISSION_DENIED`, `FILE_MISSING`, `SHARE_FAILED`, no-viewer), the FR-26 privacy line, the FR-21 hint, the leave dialog (title, Stay, Leave), the progress label. `lib/features/export/presentation/export_messages.dart` maps outcomes to strings; folder and file name wrapped in U+2066/U+2069 LTR isolates in code (never in the ARB), numbers through `NumberFormat(localeName)` with the existing `_iso` pattern.
 - **Done when:** `flutter gen-l10n` passes. A unit test checks every `ExportOutcome` that shows a message has a non-empty English string, and that the rendered `SAVED` text wraps `exactsize-300x300-[TOKEN].jpg` in an LTR isolate. The existing "no literal numbers in ARB" test passes with the new keys in scope. The PR lists the new keys.
 
-### - [ ] FEAT-007-T17 — Export panel and result screen design pass with the Product Owner (impeccable, lean) — gate G1
+### - [x] FEAT-007-T17 — Export panel and result screen design pass with the Product Owner (impeccable, lean) — gate G1
 - **Implements:** prerequisite for FR-1, FR-9–FR-12, FR-15, FR-19–FR-21, FR-23, FR-26, FR-29, NFR-2, NFR-4 (visual) · **ADRs:** —
 - **Depends on:** T13, T14, T16
 - **Size:** M (developer side; the Product Owner's time is not counted)
@@ -353,6 +353,10 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T17 | Gate G1: lean design t17/export_design.md (2026-11-24) accepted ("Build it"); PRD OQ-5, OQ-6, OQ-9 = defaults | Product Owner | Passed |
+| 2026-11-25 | T11 | export_bridge_test.dart (driver-less, 7 tests) with airplane mode on and Wi-Fi off; settings restored as found (mobile data left off as it was) | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T11 | export_bridge_test.dart with export_driver.dart (8 tests): save bytes/SHA, one file, itemExists after deletion, fileMissing cases, 100 distinct FR-4 names, share guard and FR-4 display name, own share URI marked as own, sweep | Realme 2 Pro, API 36 | Pass; folder empty after |
+| 2026-11-24 | T07, T09, T11 | Same target on API 28 with the driver granting WRITE+READ mid-run: save, 100 saves, nameTaken leaves the existing file untouched with no .part, share checks, .part sweep keeps the completed file | CI API 28 run 45451588279 | Pass. The revoked-permission run did not start (the CI line's pm revoke failed: flutter drive had uninstalled the app); line removed, the reinstalled app starts without the grant; rerun at the next push |
 | 2026-11-24 | T09 | Sweep on API 30+: two planted pending rows (debug-only hook) counted, sweepIncomplete removes both; a completed file saved next to them keeps its SHA-256; file deleted after | Realme 2 Pro, API 36 | Pass (API 28 `.part` rows and the revoked-permission case run in CI with T11) |
 | 2026-11-24 | T08 | Save-as through the system dialog (Save tapped by adb on the button found by element id; no screenshot, no file names read): outcome saved, read-back name follows FR-4, saved length equals the source (378,472 bytes); no permission dialog. The dialog's default location was the storage root, not Downloads; the file was deleted after | Realme 2 Pro, API 36 | Pass |
 | 2026-11-24 | T08 | Save-as dialog closed with Back: outcome cancelled, nothing saved | Realme 2 Pro, API 36 | Pass |

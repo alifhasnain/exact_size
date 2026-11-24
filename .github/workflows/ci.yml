@@ -148,7 +148,7 @@ jobs:
           # (FEAT-002-T04), the crop data matrix (FEAT-002-T12 probe, T15 preview) and
           # the pick data matrix (FEAT-001-T15, gate G2), the share drive (FEAT-001-T25)
           # the target flow (FEAT-005-T17), and the export bridge granted, then with the
-          # storage permission revoked: the driver denies the real dialog, then with "Don't ask again" (FEAT-007-T11).
+          # storage permission not granted (flutter drive reinstalls the app, so it starts without it): the driver denies the real dialog, then with "Don't ask again" (FEAT-007-T11).
           # Per-command time limits: a hang fails the step and keeps its log
           # (a job cancelled at timeout-minutes keeps none).
           script: |
@@ -161,6 +161,5 @@ jobs:
             DEVICE=emulator-5554 timeout 900 flutter drive --driver test_driver/share_intent_driver.dart --target integration_test/pick_share_test.dart -d emulator-5554
             DEVICE=emulator-5554 timeout 900 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/target_flow.dart -d emulator-5554
             DEVICE=emulator-5554 timeout 900 flutter drive --driver test_driver/export_driver.dart --target integration_test/export_bridge_test.dart --dart-define=EXPORT_DRIVER=true -d emulator-5554
-            adb shell pm revoke com.exactsize.exact_size android.permission.WRITE_EXTERNAL_STORAGE; adb shell pm revoke com.exactsize.exact_size android.permission.READ_EXTERNAL_STORAGE
             DEVICE=emulator-5554 timeout 900 flutter drive --driver test_driver/export_driver.dart --target integration_test/export_bridge_test.dart --dart-define=EXPORT_DRIVER=true --dart-define=EXPORT_MODE=revoked -d emulator-5554
             if [ "${{ github.event_name }}" = workflow_dispatch ]; then DEVICE=emulator-5554 LARGE_DIR=/tmp/large timeout 2400 flutter drive --driver test_driver/push_fixtures_driver.dart --target integration_test/crop_g5_profile.dart -d emulator-5554; fi
