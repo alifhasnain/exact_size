@@ -9,6 +9,8 @@ import 'package:material_ui/material_ui.dart';
 import 'app.dart';
 import 'di/injection.dart';
 import 'features/compression/data/temp_files.dart';
+import 'features/export/data/export_bridge.dart';
+import 'features/export/data/share_copies.dart';
 import 'features/pick/data/system_picker.dart';
 
 Future<void> main() async {
@@ -23,6 +25,10 @@ Future<void> main() async {
   // FEAT-001 FR-11, FR-17: remove camera files from earlier runs, except one the camera app
   // may still be writing (marker kept by the bridge across activity recreation).
   unawaited(_sweepCameraFiles());
+  // FEAT-007 FR-16: share copies from earlier runs, and this app's unfinished saves in shared
+  // storage (pending rows or .part files; never asks for a permission).
+  unawaited(getIt<ShareCopies>().sweep());
+  unawaited(getIt<ExportBridge>().sweepIncomplete());
   runApp(const ProviderScope(child: ExactSizeApp()));
 }
 

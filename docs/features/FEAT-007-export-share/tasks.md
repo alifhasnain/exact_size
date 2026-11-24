@@ -126,7 +126,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** tech section 4.4 on the same executor as `save`: API 30+ `MATCH_ONLY` pending query with `RELATIVE_PATH`, `OWNER_PACKAGE_NAME`, `DISPLAY_NAME LIKE 'exactsize-%'`; API 29 `setIncludePending`; API 28 only if WRITE is already granted, delete only `^\.exactsize-.+\.(jpg|png)\.part$` in `Pictures/ExactSize`. Never requests a permission, never touches a completed file. **Logs nothing** (the tech's `sweep=done/skipped` lines are not in the PRD log list; Open items 2). `lib/main.dart` wiring is added in T10.
 - **Done when:** the T11 drive check plants a pending row (API 36) and a `.part` file (API 28), calls `sweepIncomplete`, and finds both gone while a completed file next to them keeps its SHA-256. With WRITE revoked on API 28 the planted `.part` stays and no dialog appears. The Kotlin grep test fails on a MediaStore query in `ExportBridge.kt` without `RELATIVE_PATH` and `OWNER_PACKAGE_NAME` in its selection.
 
-### - [ ] FEAT-007-T10 — Dart data layer: `AndroidExportBridge`, `ShareCopies`, `ExportOutcomeLog`, DI, `main.dart` sweeps
+### - [x] FEAT-007-T10 — Dart data layer: `AndroidExportBridge`, `ShareCopies`, `ExportOutcomeLog`, DI, `main.dart` sweeps
 - **Implements:** FR-3 (share copy length check), FR-5, FR-16 (wiring), FR-27, FR-28, NFR-9 · **ADRs:** ADR-007, ADR-001
 - **Depends on:** T03, T09
 - **Size:** M
