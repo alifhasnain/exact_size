@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FEAT-007 (FR-18, ADR-007): the only folder the share FileProvider exposes (app cache, exactsize_share/). -->
+<paths>
+    <cache-path name="share" path="exactsize_share/" />
+</paths>

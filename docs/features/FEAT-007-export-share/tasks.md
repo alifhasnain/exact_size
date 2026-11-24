@@ -75,7 +75,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - No Flutter, Riverpod, get_it or channel imports.
 - **Done when:** unit tests pass: 10,000 generated names all match the regex, are ≤ 40 characters and contain no repeat; 1×1 and 999999×999999 both valid; jpeg → `jpg`/`image/jpeg`, png → `png`/`image/png`; a grep test finds `Random.secure()` at every `ExportName.generate` call site in `lib/` and no `Random(` elsewhere in `lib/features/export/`; `toString` of each type built from `[PLACEHOLDER]`-style synthetic values contains neither the name, the ref nor the size; `ExportOutcome.values.map((o) => o.code)` equals the PRD section 5 list.
 
-### - [ ] FEAT-007-T04 — Manifest, share FileProvider and `checkMergedManifest` rules
+### - [x] FEAT-007-T04 — Manifest, share FileProvider and `checkMergedManifest` rules
 - **Implements:** FR-8, FR-18, NFR-5, NFR-8 (permission set) · **ADRs:** ADR-007
 - **Depends on:** T01 (G0)
 - **Size:** S

@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- FEAT-001: no uses-permission. The camera is used through the camera app (IMAGE_CAPTURE),
-         so the device does not need its own camera. -->
+    <!-- FEAT-001: the camera is used through the camera app (IMAGE_CAPTURE), so the device does
+         not need its own camera and the app asks for no camera permission. -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!-- FEAT-007 (FR-7, FR-8, ADR-007): Android 9 only, asked when the user taps Save. API 29+ saves
+         through MediaStore with no permission. checkMergedManifest refuses a higher maxSdkVersion. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <application
         android:label="exact_size"
         android:name="${applicationName}"
@@ -54,6 +57,17 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/camera_paths" />
+        </provider>
+        <!-- FEAT-007 (FR-5, FR-18, ADR-007): the share copy in cache/exactsize_share/ through its own
+             FileProvider class. Not exported; one read grant per share intent. -->
+        <provider
+            android:name=".ShareFileProvider"
+            android:authorities="${applicationId}.share"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/share_paths" />
         </provider>
         <!-- FEAT-001: asks Google Play services to install the backported photo picker on
              devices without the platform one (developer.android.com/training/data-storage/shared/photopicker). -->
