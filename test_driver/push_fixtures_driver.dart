@@ -39,5 +39,17 @@ Future<void> main() async {
     "run-as $_package sh -c 'rm -rf files/fixtures && mkdir -p files/fixtures && cp $_tmp/* files/fixtures/ && touch files/fixtures/.ready'",
   ]);
   await adb(['shell', 'rm -rf $_tmp']);
-  await integrationDriver();
+  await integrationDriver(responseDataCallback: _saveScreenshots);
+}
+
+/// Writes screenshots taken with `binding.takeScreenshot` to
+/// `build/<target>/<name>.png` (FEAT-005-T17), then the usual response file.
+/// Synthetic content only; never committed.
+Future<void> _saveScreenshots(Map<String, dynamic>? data) async {
+  final shots = (data?['screenshots'] as List<dynamic>?) ?? const [];
+  for (final s in shots.cast<Map<String, dynamic>>()) {
+    final f = File('build/screenshots/${s['screenshotName']}.png')..createSync(recursive: true);
+    f.writeAsBytesSync((s['bytes'] as List<dynamic>).cast<int>());
+  }
+  await writeResponseData(data?..remove('screenshots'));
 }

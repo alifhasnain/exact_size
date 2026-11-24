@@ -389,6 +389,7 @@ _Filled in by T01, T15, T17 and T18 (one row per check and image: date, image, r
 | 2026-11-23 | T01 | FEAT-001-T25 share drive and full emulator job (with T02–T08) | CI run 45222201595, API 28 | Pass (all three jobs green) |
 | 2026-11-24 | T15 | G2 screenshots: empty, valid, error, ar RTL, 200% font (synthetic size only, demo build) | Realme 2 Pro, API 36 (local emulator data corrupted) | Taken; RTL unit/digit collision found and fixed; Product Owner passed gate G2 on 2026-11-24 |
 | 2026-11-24 | T15 | FEAT-001-T25 share drive after the target screen replaced the placeholder | Realme 2 Pro, API 36 | Pass |
+| 2026-11-24 | T17 | `target_flow.dart` (en, ar, hi at 200%: empty start, errors block Continue, crop opens after the real decode, Back keeps values, changed size re-inits crop, real render and compression READY, stand-in pop drops the result, only the accepted capture left in storage, new photo keeps values with errors hidden, Back empties the camera folder); 9 screenshots under build/, not committed | Realme 2 Pro, API 36 (local emulator data corrupted) | Pass (3/3) |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001 and ADR-003 before starting a task.
