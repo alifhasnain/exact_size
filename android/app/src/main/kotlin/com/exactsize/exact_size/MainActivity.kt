@@ -40,6 +40,9 @@ class MainActivity : FlutterActivity() {
     }
 
     private var channel: MethodChannel? = null
+
+    /** FEAT-007 export bridge (ADR-007), alive with the Flutter engine. */
+    private var export: ExportBridge? = null
     private var launchOutstanding = false
 
     /** Random name of the camera file while the camera app is open (FR-11, FR-17 marker). */
@@ -158,11 +161,15 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+        // A duplicate launcher instance finishes at once; it must not sweep or save (FEAT-001 T20 finding).
+        if (!duplicate) export = ExportBridge(this, flutterEngine.dartExecutor.binaryMessenger)
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         channel?.setMethodCallHandler(null)
         channel = null
+        export?.dispose()
+        export = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 
@@ -267,6 +274,7 @@ class MainActivity : FlutterActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
+        if (export?.onActivityResult(requestCode, resultCode, data) == true) return
         when (requestCode) {
             REQUEST_GALLERY -> galleryResult(resultCode, data, "gallery")
             REQUEST_FILES -> galleryResult(resultCode, data, "files")
@@ -274,6 +282,11 @@ class MainActivity : FlutterActivity() {
             else -> return
         }
         channel?.invokeMethod("resultReady", null)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        export?.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     private fun cameraResult(resultCode: Int) {

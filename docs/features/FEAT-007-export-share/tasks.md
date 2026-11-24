@@ -85,7 +85,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - `checkMergedManifest` rules 1–5: WRITE needs `maxSdkVersion` ≤ 28; `MANAGE_EXTERNAL_STORAGE` banned (existing bans kept); `.share` provider exists, not exported, only `@xml/share_paths` with exactly one path; every FileProvider is one of our two authorities; no exported provider. Fails, never strips.
 - **Done when:** `./gradlew :app:assembleRelease` passes with the check on. A negative check (test manifest or Gradle test fixture) fails for each of: WRITE uncapped, WRITE capped at 29, a third FileProvider, `.share` exported, a second path in `share_paths.xml`. The merged-manifest permission list is pasted into the PR (evidence for NFR-8). The camera provider checks are unchanged.
 
-### - [ ] FEAT-007-T05 — `ExportBridge.kt` foundation: channel, `MainActivity` wiring, `share`, `itemExists`, `open`
+### - [x] FEAT-007-T05 — `ExportBridge.kt` foundation: channel, `MainActivity` wiring, `share`, `itemExists`, `open`
 - **Implements:** FR-15 (native), FR-17, FR-18, FR-20, FR-27 (native side) · **ADRs:** ADR-007, ADR-006
 - **Depends on:** T04
 - **Size:** M
