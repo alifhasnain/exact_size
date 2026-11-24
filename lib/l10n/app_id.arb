@@ -65,5 +65,17 @@
   "pickLowSpace": "Ruang penyimpanan di ponsel ini tidak cukup untuk mengambil foto. Kosongkan sebagian ruang penyimpanan atau pilih foto dari galeri.",
   "pickCaptureLost": "Foto hilang saat kamera terbuka. Silakan ambil foto lagi.",
   "pickItemNotOpenable": "Kami tidak dapat membuka item itu. Sebagai gantinya, pilih foto.",
-  "pickSourceUnavailable": "Kami tidak dapat membuka foto ini. Jika foto tersimpan di cloud, sambungkan ponsel ke internet atau pilih foto yang tersimpan di ponsel ini."
+  "pickSourceUnavailable": "Kami tidak dapat membuka foto ini. Jika foto tersimpan di cloud, sambungkan ponsel ke internet atau pilih foto yang tersimpan di ponsel ini.",
+  "targetPixelsNotWhole": "Gunakan bilangan bulat untuk piksel.",
+  "targetLabelWidth": "Lebar",
+  "targetLabelHeight": "Tinggi",
+  "targetLabelMin": "Ukuran minimum",
+  "targetLabelMax": "Ukuran maksimum",
+  "targetOptional": "Opsional",
+  "targetUnitPx": "piksel",
+  "targetUnitKb": "KB",
+  "targetFormatLabel": "Format",
+  "targetPhotoSize": "Foto Anda: {size} piksel",
+  "targetUsePhotoSize": "Gunakan dimensi foto",
+  "targetHintVerySmall": "Gambar akan sangat kecil. Periksa dimensi yang diminta formulir Anda."
 }

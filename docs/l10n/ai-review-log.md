@@ -247,6 +247,8 @@ There is no native reviewer (Product Owner decision 2026-11-21). Every language 
 - **Open list decision:** the Product Owner accepted it as logged on 2026-11-21.
 - **Status:** AI-reviewed only (no native speaker).
 
+- **2026-11-24, FEAT-005 target step (12 keys):** targetPixelsNotWhole, targetLabelWidth/Height/Min/Max, targetOptional, targetUnitPx, targetUnitKb, targetFormatLabel, targetPhotoSize, targetUsePhotoSize, targetHintVerySmall. Drafted by Claude Opus 5.5 (`localize-id`), blind back-translation review by Claude Sonnet. New glossary: width / height = Lebar / Tinggi; minimum / maximum size = Ukuran minimum / maksimum; optional = Opsional; use photo size = Gunakan dimensi foto; px unit = piksel (as in the existing crop strings), KB kept. The review found no errors and no Malaysian terms; no back-translation drift. Not taken: "Periksalah" (optional softer form). No high-risk keys. Open list: none.
+
 ## ar (Modern Standard Arabic)
 
 - **Date:** 2026-11-21. Keys: all 65 untranslated.
