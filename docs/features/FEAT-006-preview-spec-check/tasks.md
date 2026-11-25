@@ -98,7 +98,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** the 17 keys of tech 4.5 in `lib/l10n/app_en.arb` with `@` descriptions and ICU placeholders, English text from PRD section 8, no concatenation. `lib/features/preview/presentation/check_messages.dart`: row labels, target texts (`kbRange`, `checkUpToKb`), measured KB through `achievedKb(bytes, sizeDirection)` (reused, not copied), `checkPixels`, `previewAlt`, `checkRowSentence`; numbers, `px`, `KB` and format names wrapped in the existing LRI/FSI isolates in code (never in the ARB), Western digits.
 - **Done when:** `flutter gen-l10n` passes. `test/features/preview/presentation/check_messages_test.dart` passes: 50 KB max with 50,001 B reads "50.1 KB" and with 50,020 B reads above 50.0 (AC-3.2); 20 KB min with 20,000 B reads "19.5 KB" (FR-6); max-only 100 KB target reads "Up to 100 KB" (AC-1.3); `previewAlt(300, 300, JPEG)` renders "Preview of your new file, 300 × 300 px, JPEG." with the numbers isolated (AC-4.6); the row sentence matches "[LABEL]: target [TARGET], this file [MEASURED], [STATUS]." (AC-8.2); no English value of a new key contains "accept", "approve" or "guarantee" (FR-7). The existing "no literal numbers in ARB" test passes with the new keys. The PR lists the keys.
 
-### - [ ] FEAT-006-T07 — `SpecCheckController`: sequence and states
+### - [x] FEAT-006-T07 — `SpecCheckController`: sequence and states
 - **Implements:** FR-1, FR-10 (delete and log), FR-11, FR-14 (OOM → placeholder, log), NFR-6 · **ADRs:** ADR-001, ADR-004
 - **Depends on:** T03, T04
 - **Size:** M
