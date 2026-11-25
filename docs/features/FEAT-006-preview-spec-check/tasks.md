@@ -51,7 +51,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 
 ## Tasks
 
-### - [ ] FEAT-006-T01 — Spike: cache `file://` decode, 24 MP memory, timing — gate G0
+### - [x] FEAT-006-T01 — Spike: cache `file://` decode, 24 MP memory, timing — gate G0
 - **Implements:** verification for FR-13, FR-14, NFR-1, NFR-7 · **ADRs:** ADR-004, ADR-001
 - **Depends on:** —
 - **Size:** M
@@ -267,6 +267,18 @@ _Filled in by T01, T10, T12, T14, T15, T16 and T17 (one row per check and device
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T01 | H1: `PreviewDecoder.decode` of a `file://` URI in app cache (`exactsize_out`), region path, synthetic 2 MP JPEG and PNG: `PreviewOk` 20/20 each; 24 MP JPEG and PNG also `PreviewOk` | Realme 2 Pro, API 36, profile build | Pass |
+| 2026-11-25 | T01 | H3: 20 x (measure in `Isolate.run` + decode), 2 MP, cap = physical short side (1080): JPEG median 48.5 ms, p95 90 ms (max 159); PNG median 90.5 ms, p95 142 ms (max 147). Measure alone: JPEG median 4 ms, PNG median 7 ms (gate 500 ms / 1.5 s) | Realme 2 Pro, API 36, profile build | Pass |
+| 2026-11-25 | T01 | H2: 24 MP (6000x4000) JPEG, cap 2048 (sample 4, 1500x1000): TOTAL PSS 103.6 MB before, 114.4-114.5 MB while the image is held = steady extra 10.8 MB. Cap 1080 (sample 8, 750x500, a quarter of those pixels): +0.1 MB at the first held sample, then a GC of leftover fixture-generation garbage pulled PSS below the baseline, so the cap-2048 figure is the upper bound. PNG 24 MP, cap 1080: decoded (sample 8), same GC effect. Gate 24 MB | Realme 2 Pro, API 36, profile build | Pass |
+| 2026-11-25 | T01 | H2 peak: not measurable on this phone. `dumpsys meminfo` takes about 1 s per sample and the 24 MP decodes took 125-242 ms, so no sample fell inside a decode. A second run read `VmHWM` in the app process, but the kernel refused the high-water reset (`clear_refs`), so the mark (338 MB) comes from generating the 24 MP fixtures in the test, not from the decode. Upper estimate [Hypothesis] from the buffers that exist at once (native bitmap, malloc copy, transferred bytes, Dart copy, engine buffer, `ui.Image`): about 6 x the preview bytes, so about 36 MB at cap 2048 and about 9 MB at cap 1080. Memory was not handed back within 4 s of `dispose` (PSS level until a later GC). Reported only, not gated (tech section 10) | Realme 2 Pro, API 36, profile build | Recorded (estimate) |
+| 2026-11-25 | T01 | H4: `checkContainer` on 10,240,000-byte files (noisy pixels, padded to the exact length), 5 runs inside an isolate: JPEG median 47 ms; PNG median 296 ms (max 302). PNG is over the tech [Hypothesis] of 100 ms because every chunk CRC is checked (files up to 64 MB). Reported only | Realme 2 Pro, API 36, profile build | Recorded (PNG over hypothesis) |
+| 2026-11-25 | T01 | Second run (same build, same day): H1 20/20 both formats; H3 JPEG median 50.5 ms, p95 58 ms; PNG median 92.5 ms, p95 105 ms; H4 JPEG median 66.5 ms, PNG median 410 ms | Realme 2 Pro, API 36, profile build | Pass (H3); PNG H4 over hypothesis again |
+| 2026-11-25 | T01 | H1: `file://` URI in app cache, region path, synthetic 2 MP JPEG and PNG: `PreviewOk` 20/20 each | CI API 28 emulator, profile build, run 45652574957 (slim spike workflow, H2 skipped) | Pass |
+| 2026-11-25 | T01 | H3: 20 x (measure + decode), 2 MP: JPEG median 8.5 ms, p95 28 ms; PNG median 20 ms, p95 31 ms. The emulator screen's short side is 320 px, so the cap there is 320 (a smaller preview than any phone): CI numbers show the path works on API 28; the Realme numbers are the timing evidence | CI API 28 emulator, run 45652574957 | Pass |
+| 2026-11-25 | T01 | H4: `checkContainer` on 10,240,000-byte files: JPEG median 11 ms; PNG median 107.5 ms | CI API 28 emulator, run 45652574957 | Recorded |
+| 2026-11-25 | T01 | Local 2 GB API 36 emulator H3 row: not run, the emulator is not running and its data was recorded as corrupted (Open items 1); the Realme and CI API 28 numbers stand in | Realme 2 Pro, API 36, profile build | Gap, see Open items 1 |
+| 2026-11-25 | T01 | Cleanup: spike fixtures deleted by the test teardown; test build uninstalled (package absent afterwards) | Realme 2 Pro, API 36, profile build | Done |
+| 2026-11-25 | T01 | Gate G0: passed. `file://` decode works on API 36 and API 28; 2 MP measure + decode at most 92.5 ms median and 142 ms p95 (Realme, gate 500 ms / 1.5 s); steady extra at a 24 MP output 10.8 MB at cap 2048, so at most that at cap = short side (gate 24 MB). Recorded, not gated: peak (estimate only, see above) and the 10 MB PNG `checkContainer` time of 0.3-0.4 s on the Realme (tech [Hypothesis] was 100 ms; it adds to the time to verdict for large PNG outputs only, still far inside NFR-1). No fallback needed. Spike branch deleted, never merged | Realme 2 Pro and CI API 28 | Pass |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-004, ADR-007 and ADR-001 before starting a task.
