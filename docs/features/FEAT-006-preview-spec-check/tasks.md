@@ -70,7 +70,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** `lib/features/preview/domain/` per tech 4.1 and 4.2: `MeasuredOutput {bytes, width, height, format, hasAlpha}` with redacted `toString`; sealed `MeasureResult` (`Measured`, `Unreadable`); `OutputMeasurer` interface; `SpecCheck {pixels, size, format, window, sizeDirection, meets}` with redacted `toString`; `checkSpec(MeasuredOutput, TargetSpec)` using `ByteWindow.fromKb(minKb:, maxKb:)` and only width, height, minKb, maxKb, format. No Flutter, Riverpod, get_it or `dart:io` imports.
 - **Done when:** `test/features/preview/domain/spec_check_test.dart` passes: floor and ceiling meet, floor − 1 and ceiling + 1 fail with `tooSmall` / `tooBig` (AC-2.2); width ± 1 and height ± 1 fail `pixels`; format swap fails `format`; 49–50 KB at 49,500 B meets with `window.narrow` true (AC-2.3); max-only target has floor 0; a generated set of at least 10,000 cases (random targets incl. narrow and max-only, sizes at window edges ± 1) agrees 100% with `ByteWindow.contains` and exact pixel and format equality (NFR-5); `toString` of both types built from synthetic values contains no number from the input. A grep test finds no `1024` or `1000` literal in `lib/features/preview/` (one window definition, FR-4) and no forbidden import in `domain/`.
 
-### - [ ] FEAT-006-T03 — `FileOutputMeasurer`, `SpecCheckLog`, DI
+### - [x] FEAT-006-T03 — `FileOutputMeasurer`, `SpecCheckLog`, DI
 - **Implements:** FR-2, FR-11 (measure side), FR-19 (enum-only log), NFR-1 (off the UI thread), NFR-6 · **ADRs:** ADR-004, ADR-001
 - **Depends on:** T02
 - **Size:** M

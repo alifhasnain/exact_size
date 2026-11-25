@@ -24,6 +24,10 @@ import 'package:exact_size/features/export/data/share_copies.dart' as _i277;
 import 'package:exact_size/features/pick/data/pick_module.dart' as _i408;
 import 'package:exact_size/features/pick/data/pick_outcome_log.dart' as _i940;
 import 'package:exact_size/features/pick/data/system_picker.dart' as _i727;
+import 'package:exact_size/features/preview/data/preview_module.dart' as _i943;
+import 'package:exact_size/features/preview/data/spec_check_log.dart' as _i351;
+import 'package:exact_size/features/preview/domain/measured_output.dart'
+    as _i14;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -37,6 +41,7 @@ extension GetItInjectableX on _i174.GetIt {
     final compressionModule = _$CompressionModule();
     final exportModule = _$ExportModule();
     final pickModule = _$PickModule();
+    final previewModule = _$PreviewModule();
     await gh.singletonAsync<_i630.TempFiles>(
       () => compressionModule.tempFiles,
       preResolve: true,
@@ -48,6 +53,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i727.SystemPicker>(() => pickModule.systemPicker);
     gh.lazySingleton<_i54.SourceProbe>(() => pickModule.sourceProbe);
     gh.lazySingleton<_i940.PickOutcomeLog>(() => pickModule.pickOutcomeLog);
+    gh.lazySingleton<_i14.OutputMeasurer>(() => previewModule.outputMeasurer);
+    gh.lazySingleton<_i351.SpecCheckLog>(() => previewModule.specCheckLog);
     await gh.singletonAsync<_i630.TempFiles>(
       () => exportModule.shareFiles,
       instanceName: 'share',
@@ -74,3 +81,5 @@ class _$CompressionModule extends _i1067.CompressionModule {}
 class _$ExportModule extends _i750.ExportModule {}
 
 class _$PickModule extends _i408.PickModule {}
+
+class _$PreviewModule extends _i943.PreviewModule {}
