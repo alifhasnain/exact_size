@@ -333,90 +333,90 @@ class AppLocalizationsHi extends AppLocalizations {
       'इमेज बहुत छोटी बनेगी। अपने आवेदन फ़ॉर्म में दिया गया माप जाँचें।';
 
   @override
-  String get exportSave => 'Save';
+  String get exportSave => 'सेव करें';
 
   @override
-  String get exportShare => 'Share';
+  String get exportShare => 'शेयर करें';
 
   @override
-  String get exportSaveAs => 'Choose where to save';
+  String get exportSaveAs => 'सेव करने की जगह चुनें';
 
   @override
-  String get exportOpen => 'Open';
+  String get exportOpen => 'खोलें';
 
   @override
-  String get exportDone => 'Done';
+  String get exportDone => 'हो गया';
 
   @override
   String exportReady(String width, String height, String size, String format) {
-    return 'Ready: $width × $height px, $size, $format';
+    return 'इमेज तैयार है: $width × $height पिक्सेल, $size, $format';
   }
 
   @override
   String exportSaved(String folder, String fileName) {
-    return 'Saved to $folder as $fileName.';
+    return 'फ़ाइल $folder में $fileName नाम से सेव हो गई।';
   }
 
   @override
   String exportSavedAs(String fileName) {
-    return 'Saved as $fileName.';
+    return 'फ़ाइल $fileName नाम से सेव हो गई।';
   }
 
   @override
   String exportAlreadySaved(String fileName, String folder) {
-    return 'Already saved as $fileName in $folder.';
+    return 'यह फ़ाइल पहले ही $folder में $fileName नाम से सेव हो चुकी है।';
   }
 
   @override
   String exportAlreadySavedAs(String fileName) {
-    return 'Already saved as $fileName.';
+    return 'यह फ़ाइल पहले ही $fileName नाम से सेव हो चुकी है।';
   }
 
   @override
   String get exportNoSpace =>
-      'There isn\'t enough free space on this phone to save the file. Free some space and try again.';
+      'फ़ाइल सेव करने के लिए इस फ़ोन में पर्याप्त खाली जगह नहीं है। थोड़ी जगह खाली करें और फिर से कोशिश करें।';
 
   @override
   String get exportSaveFailed =>
-      'Couldn\'t save the file. Try again, or share it instead.';
+      'फ़ाइल सेव नहीं हो सकी। फिर से कोशिश करें या इसके बजाय फ़ाइल शेयर करें।';
 
   @override
   String get exportPermissionDenied =>
-      'ExactSize needs the Storage permission to save to your gallery. Turn it on in Settings. You can also share the file or choose where to save it.';
+      'गैलरी में सेव करने के लिए ExactSize को स्टोरेज की अनुमति चाहिए। इसे सेटिंग में चालू करें। आप फ़ाइल शेयर भी कर सकते हैं या सेव करने की जगह चुन सकते हैं।';
 
   @override
   String get exportFileMissing =>
-      'The new file is no longer available. Your gallery photos stay as they are. Choose the photo again to make a new one.';
+      'नई फ़ाइल अब नहीं मिल रही है। आपकी गैलरी की फ़ोटो में कोई बदलाव नहीं हुआ है। नई फ़ाइल बनाने के लिए फ़ोटो फिर से चुनें।';
 
   @override
   String get exportShareFailed =>
-      'Couldn\'t open the share menu. Try again, or save the file instead.';
+      'शेयर मेन्यू नहीं खुल सका। फिर से कोशिश करें या इसके बजाय फ़ाइल सेव करें।';
 
   @override
   String get exportNoViewer =>
-      'No app on this phone can open this file. You can still share it.';
+      'इस फ़ोन पर ऐसा कोई ऐप नहीं है जो यह फ़ाइल खोल सके। आप फिर भी इसे शेयर कर सकते हैं।';
 
   @override
   String get exportPrivacy =>
-      'Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.';
+      'सेव करने पर एक कॉपी आपकी गैलरी में या आपके चुने हुए फ़ोल्डर में जाती है। शेयर करने पर एक कॉपी आपके चुने हुए ऐप को मिलती है।';
 
   @override
   String get exportShareHint =>
-      'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.';
+      'कुछ चैट ऐप फ़ोटो को छोटा कर देते हैं। आवेदन फ़ॉर्म के लिए फ़ाइल सेव करें और अपलोड करते समय वही फ़ाइल चुनें।';
 
   @override
-  String get exportLeaveTitle => 'Leave without saving?';
+  String get exportLeaveTitle => 'सेव किए बिना वापस जाएँ?';
 
   @override
   String get exportLeaveBody =>
-      'The new file will be deleted. Your gallery photos stay as they are.';
+      'नई फ़ाइल हटा दी जाएगी। आपकी गैलरी की फ़ोटो में कोई बदलाव नहीं होगा।';
 
   @override
-  String get exportStay => 'Stay';
+  String get exportStay => 'यहीं रहें';
 
   @override
-  String get exportLeave => 'Leave';
+  String get exportLeave => 'वापस जाएँ';
 
   @override
-  String get exportSaving => 'Saving…';
+  String get exportSaving => 'सेव हो रही है…';
 }

@@ -25,32 +25,6 @@
     "exportSaving"
   ],
 
-  "hi": [
-    "exportSave",
-    "exportShare",
-    "exportSaveAs",
-    "exportOpen",
-    "exportDone",
-    "exportReady",
-    "exportSaved",
-    "exportSavedAs",
-    "exportAlreadySaved",
-    "exportAlreadySavedAs",
-    "exportNoSpace",
-    "exportSaveFailed",
-    "exportPermissionDenied",
-    "exportFileMissing",
-    "exportShareFailed",
-    "exportNoViewer",
-    "exportPrivacy",
-    "exportShareHint",
-    "exportLeaveTitle",
-    "exportLeaveBody",
-    "exportStay",
-    "exportLeave",
-    "exportSaving"
-  ],
-
   "id": [
     "exportSave",
     "exportShare",
