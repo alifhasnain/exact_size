@@ -328,89 +328,89 @@ class AppLocalizationsEs extends AppLocalizations {
       'La imagen quedará muy pequeña. Revisa las dimensiones que pide tu formulario.';
 
   @override
-  String get exportSave => 'Save';
+  String get exportSave => 'Guardar';
 
   @override
-  String get exportShare => 'Share';
+  String get exportShare => 'Compartir';
 
   @override
-  String get exportSaveAs => 'Choose where to save';
+  String get exportSaveAs => 'Elegir dónde guardar';
 
   @override
-  String get exportOpen => 'Open';
+  String get exportOpen => 'Abrir';
 
   @override
-  String get exportDone => 'Done';
+  String get exportDone => 'Listo';
 
   @override
   String exportReady(String width, String height, String size, String format) {
-    return 'Ready: $width × $height px, $size, $format';
+    return 'Imagen lista: $width × $height px, $size, $format';
   }
 
   @override
   String exportSaved(String folder, String fileName) {
-    return 'Saved to $folder as $fileName.';
+    return 'Se guardó en $folder como $fileName.';
   }
 
   @override
   String exportSavedAs(String fileName) {
-    return 'Saved as $fileName.';
+    return 'Se guardó como $fileName.';
   }
 
   @override
   String exportAlreadySaved(String fileName, String folder) {
-    return 'Already saved as $fileName in $folder.';
+    return 'Ya se guardó como $fileName en $folder.';
   }
 
   @override
   String exportAlreadySavedAs(String fileName) {
-    return 'Already saved as $fileName.';
+    return 'Ya se guardó como $fileName.';
   }
 
   @override
   String get exportNoSpace =>
-      'There isn\'t enough free space on this phone to save the file. Free some space and try again.';
+      'No hay suficiente espacio libre en este celular para guardar el archivo. Libera espacio e inténtalo de nuevo.';
 
   @override
   String get exportSaveFailed =>
-      'Couldn\'t save the file. Try again, or share it instead.';
+      'No pudimos guardar el archivo. Inténtalo de nuevo o compártelo.';
 
   @override
   String get exportPermissionDenied =>
-      'ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it.';
+      'ExactSize necesita tu permiso para guardar en tu galería. Aún puedes compartir el archivo o elegir dónde guardarlo.';
 
   @override
   String get exportFileMissing =>
-      'This file is no longer available. Please create it again.';
+      'Este archivo ya no está disponible. Vuelve a crearlo.';
 
   @override
   String get exportShareFailed =>
-      'Couldn\'t open the share menu. Try again, or save the file instead.';
+      'No pudimos abrir el menú para compartir. Inténtalo de nuevo o guarda el archivo.';
 
   @override
   String get exportNoViewer =>
-      'No app on this phone can open this file. You can still share it.';
+      'Ninguna app de este celular puede abrir este archivo. Aún puedes compartirlo.';
 
   @override
   String get exportPrivacy =>
-      'Saving puts a copy in your gallery. Sharing gives a copy to the app you choose.';
+      'Al guardar, se crea una copia en tu galería. Al compartir, la app que elijas recibe una copia.';
 
   @override
   String get exportShareHint =>
-      'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.';
+      'Algunas apps de chat comprimen las fotos. Para un formulario, guarda el archivo y elígelo en el selector de archivos.';
 
   @override
-  String get exportLeaveTitle => 'Leave without saving?';
+  String get exportLeaveTitle => '¿Salir sin guardar?';
 
   @override
-  String get exportLeaveBody => 'This file will be deleted.';
+  String get exportLeaveBody => 'Este archivo se eliminará.';
 
   @override
-  String get exportStay => 'Stay';
+  String get exportStay => 'Quedarse';
 
   @override
-  String get exportLeave => 'Leave';
+  String get exportLeave => 'Salir';
 
   @override
-  String get exportSaving => 'Saving…';
+  String get exportSaving => 'Guardando…';
 }
