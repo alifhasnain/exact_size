@@ -332,92 +332,92 @@ class AppLocalizationsPt extends AppLocalizations {
       'A imagem ficará muito pequena. Confira as dimensões que seu formulário pede.';
 
   @override
-  String get exportSave => 'Save';
+  String get exportSave => 'Salvar';
 
   @override
-  String get exportShare => 'Share';
+  String get exportShare => 'Compartilhar';
 
   @override
-  String get exportSaveAs => 'Choose where to save';
+  String get exportSaveAs => 'Escolher onde salvar';
 
   @override
-  String get exportOpen => 'Open';
+  String get exportOpen => 'Abrir';
 
   @override
-  String get exportDone => 'Done';
+  String get exportDone => 'Concluído';
 
   @override
   String exportReady(String width, String height, String size, String format) {
-    return 'Ready: $width × $height px, $size, $format';
+    return 'Imagem pronta: $width × $height px, $size, $format';
   }
 
   @override
   String exportSaved(String folder, String fileName) {
-    return 'Saved to $folder as $fileName.';
+    return 'Arquivo salvo em $folder como $fileName.';
   }
 
   @override
   String exportSavedAs(String fileName) {
-    return 'Saved as $fileName.';
+    return 'Arquivo salvo como $fileName.';
   }
 
   @override
   String exportAlreadySaved(String fileName, String folder) {
-    return 'Already saved as $fileName in $folder.';
+    return 'Este arquivo já foi salvo como $fileName em $folder.';
   }
 
   @override
   String exportAlreadySavedAs(String fileName) {
-    return 'Already saved as $fileName.';
+    return 'Este arquivo já foi salvo como $fileName.';
   }
 
   @override
   String get exportNoSpace =>
-      'There isn\'t enough free space on this phone to save the file. Free some space and try again.';
+      'Não há espaço livre suficiente neste celular para salvar o arquivo. Libere espaço e tente novamente.';
 
   @override
   String get exportSaveFailed =>
-      'Couldn\'t save the file. Try again, or share it instead.';
+      'Não foi possível salvar o arquivo. Tente novamente ou compartilhe-o.';
 
   @override
   String get exportPermissionDenied =>
-      'ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it.';
+      'O ExactSize precisa da sua permissão para salvar na galeria. Você ainda pode compartilhar o arquivo ou escolher onde salvá-lo.';
 
   @override
   String get exportFileMissing =>
-      'This file is no longer available. Choose the photo again to make a new one.';
+      'Este arquivo não está mais disponível. Escolha a foto novamente para criar um novo arquivo.';
 
   @override
   String get exportShareFailed =>
-      'Couldn\'t open the share menu. Try again, or save the file instead.';
+      'Não foi possível abrir o menu de compartilhamento. Tente novamente ou salve o arquivo.';
 
   @override
   String get exportNoViewer =>
-      'No app on this phone can open this file. You can still share it.';
+      'Nenhum app neste celular consegue abrir este arquivo. Você ainda pode compartilhá-lo.';
 
   @override
   String get exportPrivacy =>
-      'Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.';
+      'Ao salvar, uma cópia vai para sua galeria ou para uma pasta que você escolher. Ao compartilhar, o app que você escolher recebe uma cópia.';
 
   @override
   String get exportShareHint =>
-      'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.';
+      'Alguns apps de chat comprimem as fotos. Para enviar em um formulário, salve o arquivo e selecione-o no seletor de arquivos.';
 
   @override
-  String get exportLeaveTitle => 'Leave without saving?';
+  String get exportLeaveTitle => 'Sair sem salvar?';
 
   @override
   String get exportLeaveBody =>
-      'The new file will be deleted. Your gallery photos stay as they are.';
+      'O novo arquivo será excluído. As fotos da sua galeria não serão alteradas.';
 
   @override
-  String get exportStay => 'Stay';
+  String get exportStay => 'Ficar';
 
   @override
-  String get exportLeave => 'Leave';
+  String get exportLeave => 'Sair';
 
   @override
-  String get exportSaving => 'Saving…';
+  String get exportSaving => 'Salvando…';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
