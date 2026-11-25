@@ -238,7 +238,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** the Product Owner types `/l10n-translate <lang>` for es, pt, hi, id and ar, one language at a time. Only the vendored `localize-*` skills and the CLAUDE.md variants (pt-BR, es-419, MSA with Western digits). Only app strings go to the model, never user data, file names or paths. Keys, ICU syntax and placeholder names stay identical to `app_en.arb`; no bidi marks in placeholders. Status is `AI-reviewed only`; never write "native-quality" or "native-reviewed". Keep the permission, failure and privacy messages short and plain.
 - **Done when:** all five `app_*.arb` files contain every FEAT-007 key; the mechanical checks pass; `docs/l10n/ai-review-log.md` has one entry per language with status `AI-reviewed only`; `flutter gen-l10n` reports no untranslated FEAT-007 keys; a widget test renders the result screen and panel in all 6 locales without a missing-key fallback.
 
-### - [ ] FEAT-007-T22 — Reliability drive: kill test, low space, timing, CI line
+### - [x] FEAT-007-T22 — Reliability drive: kill test, low space, timing, CI line
 - **Implements:** FR-14, FR-16, NFR-1, NFR-6, NFR-7 · **ADRs:** ADR-007
 - **Depends on:** T11
 - **Size:** M
@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T22 | tool/export_reliability.dart: 20 kills during a 50 MB save (8 landed inside the copy); no unfinished save left and every visible file has the blob hash; low space (emulator): NO_SPACE with no entry left, then SAVED after freeing space; timing median 26 ms for 1 MB (min 19, max 704) | CI API 28 run 45627164359 | Pass; job green |
 | 2026-11-25 | T07, T09 | Revoked-permission run on API 28 (EXPORT_MODE=revoked): the driver denies the real permission dialog, then denies it with "Don't ask again"; the next save returns permissionDenied at once with no dialog (AC-2.4) and writes nothing (entry count unchanged); the sweep without the permission keeps a planted .part (FR-16). The granted run passed again (save, 100 names, nameTaken keeps the existing file, no .part, sweep keeps the completed file). "User-fixed" comes from the real "Don't ask again" tick instead of pm set-permission-flags (T01: flutter drive reinstalls the app) | CI API 28 run 45463961493 | Pass |
 | 2026-11-25 | T22 | Rerun after the fix (kill timed on the device, ~10 ms after "saving" instead of ~300 ms host polling): 20 kills during a 50 MB save (18 landed inside the copy); no unfinished save left and every visible file has the blob hash; timing median 104 ms for 1 MB (min 49, max 852); low space skipped (real device) | Realme 2 Pro, API 36 | Pass |
 | 2026-11-25 | T22 | tool/export_reliability.dart: 20 kills during a 50 MB save (4 landed inside the copy); after every restart no unfinished save left and every visible file has the blob hash; timing median 108 ms for 1 MB (min 62, max 819); low space skipped (real device) | Realme 2 Pro, API 36 | Pass (CI API 28 run pending) |
