@@ -105,7 +105,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** `lib/features/preview/presentation/spec_check_controller.dart`: `NotifierProvider.autoDispose.family<…, SpecCheckState, TargetSpec>`; sealed `SpecCheckState` (`CheckIdle`, `Checking`, `CheckMeets(success, measured, check, ui.Image?)`, `CheckMismatch`, `CheckUnreadable`); steps 1–5 of tech 4.3, including `CompressionController.cancel()` on mismatch and `maxSide: min(physicalShortestSide, 2048)`. `test_support/fake_output_measurer.dart` and a fake preview decoder for the seam.
 - **Done when:** controller tests pass with the fakes and a fake compression state: `CheckIdle` until `CompressionDone(success)`; then `Checking`, then `CheckMeets(image)` in one transition with `SPEC_MEETS` logged once; `measure` receives `expectedBytes == success.sizeBytes`; width + 1 → `CheckMismatch`, `cancel()` called once, temp file gone, no decode call, `SPEC_MISMATCH fields=DIMENSIONS` (and `SIZE`, `FORMAT` cases); `Unreadable` → `CheckUnreadable` + `SPEC_UNREADABLE`; `PreviewErr(outOfMemoryHandled)` → `CheckMeets(null)` + `SPEC_MEETS` + `PREVIEW_UNAVAILABLE`; any other `PreviewErr` → `CheckUnreadable`; the `Idle` that follows `cancel()` or `leave()` does not reset the state.
 
-### - [ ] FEAT-006-T08 — `SpecCheckController`: resume, leave while measuring, image disposal
+### - [x] FEAT-006-T08 — `SpecCheckController`: resume, leave while measuring, image disposal
 - **Implements:** FR-12, FR-19 (decoded copy released), AC-6.2 · **ADRs:** ADR-001
 - **Depends on:** T07
 - **Size:** M

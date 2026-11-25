@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../compression/domain/compression_result.dart' show CompressionSuccess, OutputFormat;
@@ -61,11 +62,14 @@ class SpecCheckController extends Notifier<SpecCheckState> {
   final TargetSpec spec;
 
   var _started = false;
+  var _rechecking = false;
   ui.Image? _image; // the preview held by the current state
 
   @override
   SpecCheckState build() {
     ref.onDispose(() => _image?.dispose());
+    final lifecycle = AppLifecycleListener(onResume: _onResume); // FR-12
+    ref.onDispose(lifecycle.dispose);
     // Once started, later run states are ignored: the Idle after cancel() or leave() resets nothing.
     ref.listen(compressionControllerProvider, (_, next) => _onRun(next));
     final now = ref.read(compressionControllerProvider);
@@ -82,10 +86,25 @@ class SpecCheckController extends Notifier<SpecCheckState> {
     }
   }
 
-  Future<void> _check(CompressionSuccess s) async {
+  /// FR-12: back from the background while the result is shown, measure once more. A file that
+  /// still matches is equal by construction (bytes == sizeBytes), so nothing is redrawn.
+  Future<void> _onResume() async {
+    final s = state;
+    if (s is! CheckMeets || _rechecking) return;
+    _rechecking = true;
+    try {
+      await _measure(s.success);
+    } finally {
+      _rechecking = false;
+    }
+  }
+
+  /// Steps 2 and 3: the matching measurement, or null after moving to unreadable or mismatch
+  /// (or when the controller was disposed meanwhile).
+  Future<(MeasuredOutput, SpecCheck)?> _measure(CompressionSuccess s) async {
     final log = ref.read(specCheckLogProvider);
     final r = await ref.read(outputMeasurerProvider).measure(s.tempFilePath, expectedBytes: s.sizeBytes);
-    if (!ref.mounted) return;
+    if (!ref.mounted) return null;
     final MeasuredOutput m;
     switch (r) {
       case Measured(:final output):
@@ -93,7 +112,7 @@ class SpecCheckController extends Notifier<SpecCheckState> {
       case Unreadable():
         log.outcome(SpecOutcome.unreadable);
         _set(CheckUnreadable(s));
-        return;
+        return null;
     }
     final c = checkSpec(m, spec);
     if (!c.meets) {
@@ -104,8 +123,16 @@ class SpecCheckController extends Notifier<SpecCheckState> {
       });
       _set(CheckMismatch(m, c));
       await ref.read(compressionControllerProvider.notifier).cancel(); // the single deleter (FR-10)
-      return;
+      return null;
     }
+    return (m, c);
+  }
+
+  Future<void> _check(CompressionSuccess s) async {
+    final log = ref.read(specCheckLogProvider);
+    final v = await _measure(s);
+    if (v == null) return;
+    final (m, c) = v;
     final p = await ref.read(resultPreviewDecoderProvider).decode(
           SourceHandle(Uri.file(s.tempFilePath).toString()),
           SourceInfo(

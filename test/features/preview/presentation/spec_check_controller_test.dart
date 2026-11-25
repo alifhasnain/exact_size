@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:exact_size/features/compression/domain/compression_result.dart';
@@ -9,6 +10,7 @@ import 'package:exact_size/features/preview/domain/measured_output.dart';
 import 'package:exact_size/features/preview/presentation/preview_providers.dart';
 import 'package:exact_size/features/preview/presentation/spec_check_controller.dart';
 import 'package:exact_size/features/target/domain/target_spec.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -43,6 +45,7 @@ void main() {
   late List<String> logs;
   late List<SpecCheckState> states;
   late ProviderContainer container;
+  var disposed = false;
 
   MeasuredOutput out({int w = 300, int h = 300, int bytes = 48200, OutputFormat f = OutputFormat.jpeg}) =>
       MeasuredOutput(bytes: bytes, width: w, height: h, format: f, hasAlpha: false);
@@ -53,12 +56,19 @@ void main() {
     }
   }
 
-  Future<void> start(WidgetTester tester, {CompressionRunState? initial, PreviewResult? preview, MeasureResult? measured}) async {
+  Future<void> start(WidgetTester tester,
+      {CompressionRunState? initial,
+      PreviewResult? preview,
+      MeasureResult? measured,
+      Completer<MeasureResult>? measureGate,
+      Completer<PreviewResult>? decodeGate}) async {
     tmp = Directory.systemTemp.createTempSync('spec_check_test');
     final file = File('${tmp.path}/0123456789abcdef.jpg')..writeAsBytesSync(List.filled(48200, 1));
     success = CompressionSuccess(tempFilePath: file.path, sizeBytes: 48200, format: OutputFormat.jpeg);
     measurer = FakeOutputMeasurer(measured ?? Measured(out()));
-    decoder = FakePreviewDecoder(preview ?? PreviewOk(await createTestImage(width: 30, height: 30), 1));
+    decoder = FakePreviewDecoder(preview ?? PreviewOk(await createTestImage(width: 30, height: 30), 1))..gate = decodeGate;
+    measurer.gate = measureGate;
+    disposed = false;
     compression = _FakeCompression(initial ?? CompressionDone(success, maxKb: 50));
     logs = [];
     states = [];
@@ -74,7 +84,7 @@ void main() {
   }
 
   tearDown(() {
-    container.dispose();
+    if (!disposed) container.dispose();
     if (tmp.existsSync()) tmp.deleteSync(recursive: true);
   });
 
@@ -158,6 +168,120 @@ void main() {
       expect(identical(container.read(specCheckControllerProvider(spec)), meets), isTrue);
       expect(measurer.calls, hasLength(1));
       expect(meets.preview!.debugDisposed, isFalse);
+    });
+  });
+
+  // FEAT-006-T08: resume (FR-12), leave while measuring, image disposal (FR-19, AC-6.2).
+  void resume(WidgetTester tester) {
+    for (final st in [AppLifecycleState.inactive, AppLifecycleState.hidden, AppLifecycleState.paused,
+        AppLifecycleState.hidden, AppLifecycleState.inactive, AppLifecycleState.resumed]) {
+      tester.binding.handleAppLifecycleStateChanged(st);
+    }
+  }
+
+  testWidgets('resume after the file was deleted: CheckUnreadable, image disposed', (tester) async {
+    await tester.runAsync(() async {
+      await start(tester);
+      final image = (states.last as CheckMeets).preview!;
+      measurer.result = const Unreadable();
+      resume(tester);
+      await settle();
+      expect(states.last, isA<CheckUnreadable>());
+      expect(image.debugDisposed, isTrue);
+      expect(logs.last, 'exactsize.preview outcome=SPEC_UNREADABLE');
+    });
+  });
+
+  testWidgets('resume after an off-by-one replacement: CheckMismatch, image disposed', (tester) async {
+    await tester.runAsync(() async {
+      await start(tester);
+      final image = (states.last as CheckMeets).preview!;
+      measurer.result = Measured(out(w: 301));
+      resume(tester);
+      await settle();
+      expect(states.last, isA<CheckMismatch>());
+      expect(image.debugDisposed, isTrue);
+      expect(compression.cancels, 1);
+    });
+  });
+
+  testWidgets('resume with the file unchanged: measured once more, same state instance', (tester) async {
+    await tester.runAsync(() async {
+      await start(tester);
+      final meets = states.last;
+      final count = states.length;
+      resume(tester);
+      await settle();
+      expect(measurer.calls, hasLength(2));
+      expect(states, hasLength(count), reason: 'no redraw');
+      expect(identical(container.read(specCheckControllerProvider(spec)), meets), isTrue);
+      expect((meets as CheckMeets).preview!.debugDisposed, isFalse);
+    });
+  });
+
+  testWidgets('resume in Checking, CheckMismatch or CheckUnreadable does nothing', (tester) async {
+    await tester.runAsync(() async {
+      final gate = Completer<MeasureResult>();
+      await start(tester, measureGate: gate);
+      expect(states.last, isA<Checking>());
+      resume(tester);
+      await settle();
+      expect(measurer.calls, hasLength(1));
+      gate.complete(Measured(out(w: 301)));
+      await settle();
+      expect(states.last, isA<CheckMismatch>());
+      resume(tester);
+      await settle();
+      expect(measurer.calls, hasLength(1));
+    });
+    container.dispose();
+    disposed = true;
+    if (tmp.existsSync()) tmp.deleteSync(recursive: true);
+    await tester.runAsync(() async {
+      await start(tester, measured: const Unreadable());
+      resume(tester);
+      await settle();
+      expect(measurer.calls, hasLength(1));
+    });
+  });
+
+  testWidgets('leaving while measuring: nothing is set afterwards', (tester) async {
+    await tester.runAsync(() async {
+      final gate = Completer<MeasureResult>();
+      await start(tester, measureGate: gate);
+      final count = states.length;
+      container.dispose();
+      disposed = true;
+      gate.complete(Measured(out()));
+      await settle();
+      expect(states, hasLength(count));
+      expect(decoder.calls, isEmpty);
+      expect(logs, isEmpty);
+    });
+  });
+
+  testWidgets('leaving while decoding: the late image is disposed', (tester) async {
+    await tester.runAsync(() async {
+      final gate = Completer<PreviewResult>();
+      await start(tester, decodeGate: gate);
+      expect(states.last, isA<Checking>());
+      container.dispose();
+      disposed = true;
+      final late = await createTestImage(width: 20, height: 20);
+      gate.complete(PreviewOk(late, 1));
+      await settle();
+      expect(late.debugDisposed, isTrue);
+      expect(states.last, isA<Checking>());
+    });
+  });
+
+  testWidgets('disposing in CheckMeets disposes the image', (tester) async {
+    await tester.runAsync(() async {
+      await start(tester);
+      final image = (states.last as CheckMeets).preview!;
+      container.dispose();
+      disposed = true;
+      expect(image.debugDisposed, isTrue);
     });
   });
 }
