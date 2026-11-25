@@ -250,7 +250,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
   - Driver deletes every file the run created.
 - **Done when:** 20/20 kills per API level leave no visible partial file and every visible file matches its hash; the low-space check passes in CI; the timing median per device is in the Test record; the CI API 28 job is green.
 
-### - [ ] FEAT-007-T23 — Real-phone run and scripted checklist (Realme 2 Pro, API 36) — gate G3
+### - [x] FEAT-007-T23 — Real-phone run and scripted checklist (Realme 2 Pro, API 36) — gate G3
 - **Implements:** FR-9, FR-10, FR-15, FR-17, FR-21, FR-22, FR-25, FR-27, NFR-2, NFR-3, NFR-7, NFR-8 (evidence) · **ADRs:** —
 - **Depends on:** T21, T22
 - **Size:** M
@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T23 | Gate G3: Product Owner accepted the real phone (Realme 2 Pro, API 36) in place of the latest-API emulator and the API 28 permission-dialog gap, and waived the "CI API 28 green" condition ("skip these checks consider them done"). At that time CI run 45645022263 (commit 52615f4) was still running; the run before it (45638925079) failed on cross-platform golden drift (fixed in 52615f4) and one pick_share_test step that passed in the two runs before | Product Owner | Passed (CI condition waived) |
 | 2026-11-25 | T23 | AC-1.1, AC-2.5: synthetic image shared in with `am start` (FEAT-005 T18 style), Use photo size, max 50 KB, Continue, Continue, Save: no permission dialog (focus stayed on MainActivity), message "Saved to Pictures/ExactSize as [NAME].jpg." with folder and name each in an LTR isolate; Open appears | Realme 2 Pro, API 36, profile build | Pass |
 | 2026-11-25 | T23 | AC-1.3: system file picker (DocumentsUI, OPEN_DOCUMENT image/*) lists the file under Recent images and in Images > ExactSize ("[NAME].jpg, 2.64 kB") | Realme 2 Pro, API 36, profile build | Pass |
 | 2026-11-25 | T23 | H7: stock gallery (LineageOS Glimpse) shows an "ExactSize" album | Realme 2 Pro, API 36, profile build | Pass |
