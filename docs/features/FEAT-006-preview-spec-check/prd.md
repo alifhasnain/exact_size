@@ -1,8 +1,8 @@
 ---
 id: FEAT-006
 title: Preview with "meets spec" check
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-25
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-010, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-019, FEAT-025, FEAT-027]
 ---
@@ -235,3 +235,4 @@ First-try success (99%) is measured in pre-release device tests, not production 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-25 | First draft |
+| 1.0 | 2026-11-25 | Approved by Product Owner; open questions OQ-1 to OQ-10 stay at their proposed defaults |
