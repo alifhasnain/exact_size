@@ -1,8 +1,8 @@
 ---
 id: FEAT-006-TECH
 title: Preview with "meets spec" check — Technical Plan
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-25
 links: [FEAT-006, ADR-001, ADR-004, ADR-007, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-019]
 ---
@@ -233,3 +233,4 @@ The matches, mismatch, unreadable and preview-unavailable states are a real scre
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-25 | First draft |
+| 1.0 | 2026-11-25 | Approved by Product Owner; OQ-T1 to OQ-T7 at their proposed defaults; no new ADR |
