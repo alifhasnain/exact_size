@@ -40,7 +40,7 @@ void main() {
   test('AC-4.6: alt text holds technical values only, numbers isolated', () {
     final alt = msg.previewAlt(300, 300, OutputFormat.jpeg);
     expect(plain(alt), 'Preview of your new file, 300 × 300 px, JPEG.');
-    expect(alt, contains('\u20663,'.replaceAll(',', '')), reason: 'width opens an LTR isolate');
+    expect(alt, contains('\u2066300'), reason: 'width opens an LTR isolate');
     expect(RegExp('[0-9]').hasMatch(alt.replaceAll(RegExp('\u2066[^\u2069]*\u2069'), '')), isFalse);
   });
 

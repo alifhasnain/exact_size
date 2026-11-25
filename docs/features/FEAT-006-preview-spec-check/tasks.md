@@ -91,7 +91,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** `ResultScreen({required TargetSpec spec, required VoidCallback onStartOver})`, `size` becomes `spec.dimensions` everywhere inside; `lib/app_flow.dart` passes `widget.spec`; `integration_test/result_screen_demo.dart` same one-line change. FEAT-007 test edit 1 only (constructor argument). Behaviour unchanged, so the 7 result goldens stay.
 - **Done when:** a new `test/app_flow_test.dart` case shows the pushed `ResultScreen.spec` equals the spec entered (width, height, minKb, maxKb, format) for a min+max and a max-only target; the whole FEAT-007 suite passes with a diff limited to `size:` → `spec:`; goldens unchanged.
 
-### - [ ] FEAT-006-T06 — English strings and `CheckMessages`
+### - [x] FEAT-006-T06 — English strings and `CheckMessages`
 - **Implements:** FR-5, FR-6, FR-7 (wording), FR-16, FR-23, NFR-4 · **ADRs:** ADR-001
 - **Depends on:** T02
 - **Size:** M
