@@ -1,7 +1,7 @@
 ---
 id: FEAT-007
 title: Export and share
-status: Under Discussion
+status: Approved
 version: 1.2
 updated: 2026-11-25
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-010, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-023, FEAT-025, FEAT-027]
@@ -257,3 +257,4 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | 1.1 | 2026-11-24 | Clarification (FEAT-007-T02, Product Owner choice): new info code `OPEN_NO_VIEWER` in sections 5, 8 and 10; FR-13 accepts the API 29+ system conflict rename seen in the T01 spike. No scope change |
 | 1.1 | 2026-11-24 | Approved by Product Owner |
 | 1.2 | 2026-11-25 | Clarification (FEAT-007-T21 Spanish review, Product Owner asked to fix the English first): FR-23 / AC-8.2 leave text names the new file and says gallery photos stay ("This file" could read as the original photo); `FILE_MISSING` text names the next step instead of "Please create it again"; FR-26 privacy line also covers "Choose where to save". Texts only, no behaviour change |
+| 1.2 | 2026-11-25 | Approved by Product Owner |
