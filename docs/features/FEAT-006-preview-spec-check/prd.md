@@ -2,7 +2,7 @@
 id: FEAT-006
 title: Preview with "meets spec" check
 status: Approved
-version: 1.0
+version: 1.1
 updated: 2026-11-25
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-010, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-019, FEAT-025, FEAT-027]
 ---
@@ -123,7 +123,7 @@ First-try success (99%) is measured in pre-release device tests, not production 
 | FR-3 | **Target values.** The check shall compare against exactly the fields of the `TargetSpec` captured when the run started: width, height, minimum KB (optional), maximum KB, format. It shall use no other field. DPI is not checked or shown; FEAT-010 would add a row through a change to this PRD. | US-1 | Must |
 | FR-4 | **Rules.** Pixel size meets only if width and height each equal the target exactly (no tolerance). File size meets only if it lies in the FEAT-004 byte window: `min×1024 ≤ bytes ≤ max×1000`, floor `min×1000` when that window would be empty (narrow range), floor 0 without a minimum. The window shall come from the one definition FEAT-004 uses, never a second copy [Fact](docs/features/FEAT-004-kb-range-compression/prd.md, FR-3, FR-4, FR-19; lib/features/compression/domain/byte_window.dart). Format meets only if it equals the target format. The verdict is "matches" only if all three meet. | US-2 | Must |
 | FR-5 | The system shall show three rows in fixed order (Size in pixels, File size, Format). Each row shows its label, the target, the measured value and a status as icon plus word ("Meets" or "Doesn't meet"). A target without a minimum reads "Up to [MAX] KB". | US-1, US-2 | Must |
-| FR-6 | KB shall be shown as 1 KB = 1000 bytes with one decimal. A file inside the window rounds to the nearest tenth. A file outside it rounds away from the target, so a failing value never reads as inside the range [Fact](lib/features/compression/presentation/outcome_messages.dart, `achievedKb`; the rule is still marked [Assumption] in code, OQ-5). | US-3 | Must |
+| FR-6 | KB shall be shown with one decimal. A file inside the window shall show bytes ÷ 1000, rounded to the nearest tenth. A file outside it shall round away from the target: above the maximum, bytes ÷ 1000 rounded up; below the minimum, bytes ÷ 1024 rounded down (the window floor counts 1024 bytes per KB). So a failing value never reads as inside the range, for example 50,001 B shows "50.1 KB" against a 50 KB maximum and 20,000 B shows "19.5 KB" against a 20 KB minimum [Fact](lib/features/compression/presentation/outcome_messages.dart, `achievedKb`; rule confirmed by the Product Owner, PRD OQ-5 and FEAT-006-TECH OQ-T3). | US-3 | Must |
 | FR-7 | The headline for a matching file shall say it matches the target the user entered and shall not say or imply that a portal will accept, approve or guarantee it. Preview, headline and rows shall come before Save and Share in reading and focus order. | US-2 | Must |
 | FR-8 | When the window is not narrow, the File size row should add: "Also fits if your portal counts 1 KB as 1,024 bytes." It shall be hidden in the narrow case. | US-2 | Should |
 | FR-9 | The screen should show one line that only pixels, KB and format are checked and that some forms also check the photo itself. | US-2 | Should |
@@ -236,3 +236,4 @@ First-try success (99%) is measured in pre-release device tests, not production 
 |---|---|---|
 | 0.1 | 2026-11-25 | First draft |
 | 1.0 | 2026-11-25 | Approved by Product Owner; open questions OQ-1 to OQ-10 stay at their proposed defaults |
+| 1.1 | 2026-11-25 | Clarification (FEAT-006-TECH OQ-T3): FR-6 states the existing display rule exactly (inside the window ÷ 1000 to the nearest tenth; above the maximum ÷ 1000 rounded up; below the minimum ÷ 1024 rounded down). No behaviour change. Approved by Product Owner |
