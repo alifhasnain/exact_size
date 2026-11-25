@@ -114,7 +114,7 @@ class _CropStepState extends ConsumerState<_CropStep> {
             // The buffer moves to FEAT-004 with the request (ADR-003); the flow never frees it.
             ref.read(compressionControllerProvider.notifier).start(widget.spec.request(pixels));
             Navigator.of(context).push(MaterialPageRoute<void>(
-                builder: (_) => ResultScreen(size: widget.spec.dimensions, onStartOver: () => _chooseAnother(context, ref))));
+                builder: (_) => ResultScreen(spec: widget.spec, onStartOver: () => _chooseAnother(context, ref))));
           },
           onChooseAnother: () => _chooseAnother(context, ref),
         ),

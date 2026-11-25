@@ -4,13 +4,13 @@ import 'package:exact_size/app.dart';
 import 'package:exact_size/features/compression/data/temp_files.dart';
 import 'package:exact_size/features/compression/domain/compression_result.dart';
 import 'package:exact_size/features/compression/presentation/compression_providers.dart';
-import 'package:exact_size/features/crop/domain/crop_types.dart' show Target;
 import 'package:exact_size/features/export/data/export_outcome_log.dart';
 import 'package:exact_size/features/export/data/share_copies.dart';
 import 'package:exact_size/features/export/domain/export_outcome.dart';
 import 'package:exact_size/features/export/domain/export_types.dart';
 import 'package:exact_size/features/export/presentation/export_controller.dart';
 import 'package:exact_size/features/export/presentation/result_screen.dart';
+import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:exact_size/l10n/app_localizations.dart';
 import 'package:exact_size/ui/booth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,7 +61,7 @@ void main() {
         home: Builder(
           builder: (context) => MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
-            child: ResultScreen(size: const Target(300, 300), onStartOver: () {}),
+            child: ResultScreen(spec: const TargetSpec(width: 300, height: 300, maxKb: 50, format: OutputFormat.jpeg), onStartOver: () {}),
           ),
         ),
       ),

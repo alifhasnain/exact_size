@@ -84,7 +84,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** per tech section 2: `PreviewDecoder.decode(src, info, {int maxSide = maxSide})` and `previewSampleSize(w, h, [maxSide])`, default 2048 unchanged; `resultPreviewDecoderProvider` seam (FEAT-002's `previewDecoderProvider` stays where it is); `_checkerboard` → public `paintCheckerboard`; `RecentsGuard` with a static depth counter (disable on 0→1, enable on 1→0). Any T01 fallback the Product Owner approved goes here.
 - **Done when:** new `previewSampleSize` cases with `maxSide` 1080 for 6000×4000 and 2000×1000 give the expected sample sizes written from the function's rule; every existing FEAT-002 decoder, crop canvas and golden test passes unchanged; `recents_guard_test` nested case passes: outer mount disables once, inner mount makes no call, inner unmount keeps protection off, outer unmount enables once.
 
-### - [ ] FEAT-006-T05 — `TargetSpec` wiring: `ResultScreen(spec:)`
+### - [x] FEAT-006-T05 — `TargetSpec` wiring: `ResultScreen(spec:)`
 - **Implements:** FR-3 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** S

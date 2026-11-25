@@ -5,12 +5,12 @@ import 'package:exact_size/app.dart';
 import 'package:exact_size/features/compression/data/temp_files.dart';
 import 'package:exact_size/features/compression/domain/compression_result.dart';
 import 'package:exact_size/features/compression/presentation/compression_providers.dart';
-import 'package:exact_size/features/crop/domain/crop_types.dart' show Target;
 import 'package:exact_size/features/export/data/export_outcome_log.dart';
 import 'package:exact_size/features/export/data/share_copies.dart';
 import 'package:exact_size/features/export/presentation/export_controller.dart';
 import 'package:exact_size/features/export/presentation/export_panel.dart';
 import 'package:exact_size/features/export/presentation/result_screen.dart';
+import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -75,7 +75,7 @@ void main() {
               child: TextButton(
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
                     builder: (_) => ResultScreen(
-                          size: const Target(300, 300),
+                          spec: const TargetSpec(width: 300, height: 300, maxKb: 50, format: OutputFormat.jpeg),
                           onStartOver: () {
                             startOvers++;
                             Navigator.of(context).popUntil((r) => r.isFirst);

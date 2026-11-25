@@ -303,5 +303,30 @@ void main() {
       expect(compression.requests, hasLength(1));
       expect(find.byType(CropScreen), findsOneWidget, reason: 'back on crop');
     });
+
+    for (final entered in const [
+      TargetSpec(width: 30, height: 30, minKb: 20, maxKb: 50, format: OutputFormat.png),
+      TargetSpec(width: 30, height: 30, maxKb: 70, format: OutputFormat.jpeg),
+    ]) {
+      testWidgets('FEAT-006-T05: the result screen gets the spec as entered (min ${entered.minKb})', (tester) async {
+        decoder.previews.add(await image(tester));
+        final c = await onTargetStep(tester, overrides: [
+          compressionControllerProvider.overrideWith(_FakeCompression.new),
+          cropRenderProvider.overrideWithValue((req, cancel) async => RenderOk(TestPixels(
+              req.target.width, req.target.height, 3, Uint8List(req.target.width * req.target.height * 3),
+              hasTransparency: false))),
+        ]);
+        openCrop(tester, c, entered);
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+        final spec = tester.widget<ResultScreen>(find.byType(ResultScreen)).spec;
+        expect((spec.width, spec.height, spec.minKb, spec.maxKb, spec.format),
+            (entered.width, entered.height, entered.minKb, entered.maxKb, entered.format));
+        tester.state<NavigatorState>(find.byType(Navigator)).pop();
+        await tester.pumpAndSettle();
+      });
+    }
   });
 }

@@ -11,6 +11,7 @@ import 'package:exact_size/features/export/domain/export_outcome.dart';
 import 'package:exact_size/features/export/domain/export_types.dart';
 import 'package:exact_size/features/export/presentation/export_controller.dart';
 import 'package:exact_size/features/export/presentation/result_screen.dart';
+import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path_provider/path_provider.dart';
@@ -88,5 +89,5 @@ class _AutoSaveState extends ConsumerState<_AutoSave> {
   }
 
   @override
-  Widget build(BuildContext context) => ResultScreen(size: widget.input.size, onStartOver: () {});
+  Widget build(BuildContext context) => ResultScreen(spec: const TargetSpec(width: 300, height: 300, maxKb: 50, format: OutputFormat.jpeg), onStartOver: () {});
 }

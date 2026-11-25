@@ -6,7 +6,7 @@ import '../../../ui/booth.dart';
 import '../../compression/domain/compression_result.dart';
 import '../../compression/presentation/compression_providers.dart';
 import '../../compression/presentation/outcome_messages.dart';
-import '../../crop/domain/crop_types.dart';
+import '../../target/domain/target_spec.dart';
 import '../domain/export_types.dart';
 import 'export_controller.dart';
 import 'export_messages.dart';
@@ -18,9 +18,10 @@ import 'export_panel.dart';
 /// nothing was saved or shared (FR-23), waits for a running save, drops the result (FR-22, FR-24)
 /// and then calls [onStartOver] (release the photo, end crop, back to the pick screen).
 class ResultScreen extends ConsumerWidget {
-  const ResultScreen({super.key, required this.size, required this.onStartOver});
+  const ResultScreen({super.key, required this.spec, required this.onStartOver});
 
-  final Target size;
+  /// The target as entered (FEAT-006 FR-3); [ExportPanel] gets its dimensions.
+  final TargetSpec spec;
   final VoidCallback onStartOver;
 
   @override
@@ -43,8 +44,8 @@ class ResultScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 16,
               children: [
-                Text(ExportMessages(l).ready(success, size), style: _spec),
-                ExportPanel(success: success, size: size),
+                Text(ExportMessages(l).ready(success, spec.dimensions), style: _spec),
+                ExportPanel(success: success, size: spec.dimensions),
               ],
             ),
           ),
@@ -107,7 +108,7 @@ class ResultScreen extends ConsumerWidget {
   );
 
   Future<void> _leave(BuildContext context, WidgetRef ref, CompressionSuccess success) async {
-    final ctl = ref.read(exportControllerProvider(ExportInput(success, size)).notifier);
+    final ctl = ref.read(exportControllerProvider(ExportInput(success, spec.dimensions)).notifier);
     if (ctl.needsLeaveConfirm && !await _confirm(context)) return;
     await ctl.leave();
     onStartOver();
