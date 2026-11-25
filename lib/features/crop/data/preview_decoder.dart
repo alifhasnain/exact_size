@@ -31,9 +31,10 @@ final class PreviewErr extends PreviewResult {
 
 /// Longest preview side in pixels (FR-25).
 const maxSide = 2048;
+const _defaultMaxSide = maxSide; // a parameter named maxSide hides the constant
 
 /// Smallest power of two that brings the long side to [maxSide] or less.
-int previewSampleSize(int w, int h) {
+int previewSampleSize(int w, int h, [int maxSide = _defaultMaxSide]) {
   final long = w > h ? w : h;
   var s = 1;
   while (long / s > maxSide) {
@@ -52,10 +53,11 @@ class PreviewDecoder {
   /// Test hook: behave as if the decoder ran out of memory.
   final bool debugForceOutOfMemory;
 
-  Future<PreviewResult> decode(SourceHandle src, SourceInfo info) async {
+  /// [maxSide] caps the long side; FEAT-006 passes the display size (its tech section 2).
+  Future<PreviewResult> decode(SourceHandle src, SourceInfo info, {int maxSide = _defaultMaxSide}) async {
     final uri = src.uri;
     final forceOom = debugForceOutOfMemory;
-    final r = await Isolate.run(() => _decodePixels(uri, info, forceOom));
+    final r = await Isolate.run(() => _decodePixels(uri, info, forceOom, maxSide));
     if (r case (final TransferableTypedData px, final int w, final int h, final int s)) {
       final bytes = px.materialize().asUint8List();
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
@@ -71,7 +73,7 @@ class PreviewDecoder {
   }
 
   /// Worker isolate: (pixels, width, height, sample) or a [Reason].
-  static Object _decodePixels(String uri, SourceInfo info, bool forceOom) {
+  static Object _decodePixels(String uri, SourceInfo info, bool forceOom, int maxSide) {
     if (forceOom) return Reason.outOfMemoryHandled;
     final ParcelFileDescriptor pfd;
     try {
@@ -82,7 +84,7 @@ class PreviewDecoder {
     Bitmap? bmp;
     Pointer<Uint8>? out;
     try {
-      final s = previewSampleSize(info.rawWidth, info.rawHeight);
+      final s = previewSampleSize(info.rawWidth, info.rawHeight, maxSide);
       // Premultiplied: the engine reads raw rgba8888 as premultiplied.
       bmp = decodeSampled(pfd, info, sample: s, premultiplied: true).bitmap; // whole image: no offset
       final n = bmp.width * bmp.height * 4;

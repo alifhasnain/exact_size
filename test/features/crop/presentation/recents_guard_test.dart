@@ -29,6 +29,18 @@ void main() {
     }
   });
 
+  testWidgets('FEAT-006-T04: nested guards: outer disables once, inner adds no call, outer removal enables once', (tester) async {
+    final b = FakeBinding(36);
+    await tester.pumpWidget(RecentsGuard(binding: b, child: const SizedBox()));
+    expect(b.calls, [false]);
+    await tester.pumpWidget(RecentsGuard(binding: b, child: RecentsGuard(binding: b, child: const SizedBox())));
+    expect(b.calls, [false], reason: 'inner mount makes no call');
+    await tester.pumpWidget(RecentsGuard(binding: b, child: const SizedBox()));
+    expect(b.calls, [false], reason: 'inner unmount keeps protection off');
+    await tester.pumpWidget(const SizedBox());
+    expect(b.calls, [false, true]);
+  });
+
   testWidgets('below API 33: never called', (tester) async {
     for (final sdk in [28, 32]) {
       final b = FakeBinding(sdk);

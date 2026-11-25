@@ -300,7 +300,7 @@ void paintPhoto(Canvas canvas, Size size, ui.Image image, SourceInfo info, Targe
   final (sw, sh) = CropMath.orientedSize(info, crop.quarterTurns);
   final imageRect = Rect.fromLTWH(frame.left - left * k, frame.top - top * k, sw * k, sh * k);
 
-  if (info.hasAlpha) _checkerboard(canvas, imageRect.intersect(Offset.zero & size));
+  if (info.hasAlpha) paintCheckerboard(canvas, imageRect.intersect(Offset.zero & size));
 
   final o = CropMath.orientation(info, crop.quarterTurns);
   final (pw, ph) = (image.width, image.height);
@@ -369,7 +369,8 @@ class _PrintPainter extends CustomPainter {
   bool shouldRepaint(_PrintPainter old) => old.crop != crop || old.image != image || old.target != target;
 }
 
-void _checkerboard(Canvas canvas, Rect r) {
+/// White and light-grey 8 px checks behind transparent pixels (also FEAT-006 FR-15).
+void paintCheckerboard(Canvas canvas, Rect r) {
   if (r.isEmpty) return;
   const cell = 8.0;
   canvas

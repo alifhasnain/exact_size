@@ -68,7 +68,7 @@ class _Decoder implements PreviewDecoder {
   @override
   bool get debugForceOutOfMemory => false;
   @override
-  Future<PreviewResult> decode(SourceHandle src, SourceInfo info) async {
+  Future<PreviewResult> decode(SourceHandle src, SourceInfo info, {int maxSide = 2048}) async {
     if (gate != null) return gate!.future;
     if (error != null) return PreviewErr(error!);
     final image = previews.removeAt(0);

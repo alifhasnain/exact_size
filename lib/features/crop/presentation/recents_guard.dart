@@ -39,7 +39,9 @@ final class AndroidRecentsBinding implements RecentsBinding {
 /// Hides the screen below it from the recent-apps thumbnail on Android 13+
 /// while it is shown (FR-26, Product Owner decision OQ-8): off when inserted,
 /// back on when removed. Screenshots are not blocked (no FLAG_SECURE), and
-/// older Android versions get no protection. FEAT-006 should reuse it.
+/// older Android versions get no protection. Reference-counted (FEAT-006): with guards
+/// stacked on several routes, only the first insert turns protection on and only the
+/// last removal turns it off again.
 class RecentsGuard extends StatefulWidget {
   const RecentsGuard({super.key, required this.child, this.binding = const AndroidRecentsBinding()});
 
@@ -48,6 +50,8 @@ class RecentsGuard extends StatefulWidget {
 
   /// `setRecentsScreenshotEnabled` exists from API 33 (Android 13).
   static const minSdk = 33;
+
+  static int _depth = 0;
 
   @override
   State<RecentsGuard> createState() => _RecentsGuardState();
@@ -59,12 +63,12 @@ class _RecentsGuardState extends State<RecentsGuard> {
   @override
   void initState() {
     super.initState();
-    if (_active) widget.binding.setRecentsScreenshotEnabled(false);
+    if (_active && RecentsGuard._depth++ == 0) widget.binding.setRecentsScreenshotEnabled(false);
   }
 
   @override
   void dispose() {
-    if (_active) widget.binding.setRecentsScreenshotEnabled(true);
+    if (_active && --RecentsGuard._depth == 0) widget.binding.setRecentsScreenshotEnabled(true);
     super.dispose();
   }
 
