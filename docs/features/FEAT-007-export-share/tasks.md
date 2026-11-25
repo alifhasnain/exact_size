@@ -105,7 +105,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** tech section 4.3 "Kotlin save on API 29+" steps 1–6: length check → `fileMissing`; insert with `DISPLAY_NAME`, `MIME_TYPE`, `RELATIVE_PATH=Pictures/ExactSize`, `IS_PENDING=1` (null → `failed`); 64 KiB chunk copy, flush, `fd.sync()`; verify `statSize == bytes` else delete → `failed`; `IS_PENDING=0`; return the queried `DISPLAY_NAME` and URI. On `IOException`/`SecurityException`: delete the row, then `noSpace` if `StatFs` free < bytes + 1 MiB, else `failed`. Never `nameTaken` on 29+.
 - **Done when:** on the Realme 2 Pro a temporary drive check in `integration_test/export_bridge_test.dart` (completed in T11) saves a synthetic 300 KB JPEG: SHA-256 and length equal the source, the folder gains exactly one file and no pending row is visible to a non-pending query. A forced failure (source deleted mid-call by a test hook in the driver, or a zero `bytes` mismatch) leaves no row and returns `failed`/`fileMissing`. The grep test still passes.
 
-### - [ ] FEAT-007-T07 — Kotlin `save` on API 28 (permission, `.part`, no-overwrite rename, scan)
+### - [x] FEAT-007-T07 — Kotlin `save` on API 28 (permission, `.part`, no-overwrite rename, scan)
 - **Implements:** FR-3, FR-7, FR-8 (own folder only), FR-9 (once per call), FR-13, FR-14, NFR-6 · **ADRs:** ADR-007
 - **Depends on:** T06
 - **Size:** M
@@ -119,7 +119,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** tech section 4.3 "Kotlin saveAs": `ACTION_CREATE_DOCUMENT`, `CATEGORY_OPENABLE`, mime, `EXTRA_TITLE = name`; on `RESULT_OK` chunk copy on the executor, verify `statSize`; failure → `deleteDocument` best effort → `noSpace`/`failed`; cancel → `cancelled`; a result with no pending call deletes the created document and reports nothing (R8). Returns the picked document's `DISPLAY_NAME`.
 - **Done when:** manual check on the Realme 2 Pro (recorded in the Test record): save-as to Downloads with a synthetic file gives an identical length; cancel returns `cancelled`; with "Don't keep activities" on, a save-as completed after recreation leaves no empty document. No permission dialog on any path.
 
-### - [ ] FEAT-007-T09 — Kotlin `sweepIncomplete` and Dart start-up sweeps
+### - [x] FEAT-007-T09 — Kotlin `sweepIncomplete` and Dart start-up sweeps
 - **Implements:** FR-8, FR-16 · **ADRs:** ADR-007
 - **Depends on:** T07
 - **Size:** S
@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T07, T09 | Revoked-permission run on API 28 (EXPORT_MODE=revoked): the driver denies the real permission dialog, then denies it with "Don't ask again"; the next save returns permissionDenied at once with no dialog (AC-2.4) and writes nothing (entry count unchanged); the sweep without the permission keeps a planted .part (FR-16). The granted run passed again (save, 100 names, nameTaken keeps the existing file, no .part, sweep keeps the completed file). "User-fixed" comes from the real "Don't ask again" tick instead of pm set-permission-flags (T01: flutter drive reinstalls the app) | CI API 28 run 45463961493 | Pass |
 | 2026-11-25 | T22 | tool/export_reliability.dart: 20 kills during a 50 MB save (4 landed inside the copy); after every restart no unfinished save left and every visible file has the blob hash; timing median 108 ms for 1 MB (min 62, max 819); low space skipped (real device) | Realme 2 Pro, API 36 | Pass (CI API 28 run pending) |
 | 2026-11-25 | T20 | Gate G2: six phone screenshots (ready, saved, error, permission denied forced, ar RTL with English text until T21, 200% font) from integration_test/result_screen_demo.dart with a fake bridge; not committed | Realme 2 Pro, API 36; Product Owner | Passed |
 | 2026-11-25 | T19 | target_flow.dart (en, ar, hi at 200%): real flow to the result screen, panel shown on success, Done asks "Leave without saving?", Leave drops the result and the capture, a new photo keeps the values | Realme 2 Pro, API 36 | Pass |
