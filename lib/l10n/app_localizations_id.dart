@@ -331,90 +331,90 @@ class AppLocalizationsId extends AppLocalizations {
       'Gambar akan sangat kecil. Periksa dimensi yang diminta formulir Anda.';
 
   @override
-  String get exportSave => 'Save';
+  String get exportSave => 'Simpan';
 
   @override
-  String get exportShare => 'Share';
+  String get exportShare => 'Bagikan';
 
   @override
-  String get exportSaveAs => 'Choose where to save';
+  String get exportSaveAs => 'Pilih lokasi penyimpanan';
 
   @override
-  String get exportOpen => 'Open';
+  String get exportOpen => 'Buka';
 
   @override
-  String get exportDone => 'Done';
+  String get exportDone => 'Selesai';
 
   @override
   String exportReady(String width, String height, String size, String format) {
-    return 'Ready: $width × $height px, $size, $format';
+    return 'Gambar siap: $width × $height px, $size, $format';
   }
 
   @override
   String exportSaved(String folder, String fileName) {
-    return 'Saved to $folder as $fileName.';
+    return 'File disimpan di $folder sebagai $fileName.';
   }
 
   @override
   String exportSavedAs(String fileName) {
-    return 'Saved as $fileName.';
+    return 'File disimpan sebagai $fileName.';
   }
 
   @override
   String exportAlreadySaved(String fileName, String folder) {
-    return 'Already saved as $fileName in $folder.';
+    return 'File ini sudah disimpan sebagai $fileName di $folder.';
   }
 
   @override
   String exportAlreadySavedAs(String fileName) {
-    return 'Already saved as $fileName.';
+    return 'File ini sudah disimpan sebagai $fileName.';
   }
 
   @override
   String get exportNoSpace =>
-      'There isn\'t enough free space on this phone to save the file. Free some space and try again.';
+      'Ruang penyimpanan di ponsel ini tidak cukup untuk menyimpan file. Kosongkan sebagian ruang penyimpanan, lalu coba lagi.';
 
   @override
   String get exportSaveFailed =>
-      'Couldn\'t save the file. Try again, or share it instead.';
+      'File tidak dapat disimpan. Coba lagi atau bagikan file sebagai gantinya.';
 
   @override
   String get exportPermissionDenied =>
-      'ExactSize needs the Storage permission to save to your gallery. Turn it on in Settings. You can also share the file or choose where to save it.';
+      'ExactSize memerlukan izin penyimpanan untuk menyimpan ke galeri Anda. Izinkan akses penyimpanan di Setelan. Anda juga dapat membagikan file atau memilih lokasi penyimpanan.';
 
   @override
   String get exportFileMissing =>
-      'The new file is no longer available. Your gallery photos stay as they are. Choose the photo again to make a new one.';
+      'File hasil tidak tersedia lagi. Foto di galeri Anda tetap seperti semula. Pilih ulang foto untuk membuat file baru.';
 
   @override
   String get exportShareFailed =>
-      'Couldn\'t open the share menu. Try again, or save the file instead.';
+      'Menu berbagi tidak dapat dibuka. Coba lagi atau simpan file sebagai gantinya.';
 
   @override
   String get exportNoViewer =>
-      'No app on this phone can open this file. You can still share it.';
+      'Tidak ada aplikasi di ponsel ini yang dapat membuka file ini. Anda tetap dapat membagikannya.';
 
   @override
   String get exportPrivacy =>
-      'Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.';
+      'Jika Anda menyimpan, salinan disimpan ke galeri Anda atau folder yang Anda pilih. Jika Anda membagikan, aplikasi yang Anda pilih menerima salinan.';
 
   @override
   String get exportShareHint =>
-      'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.';
+      'Beberapa aplikasi chat mengompres foto. Untuk formulir, simpan file, lalu pilih file itu saat mengunggah.';
 
   @override
-  String get exportLeaveTitle => 'Leave without saving?';
+  String get exportLeaveTitle => 'Kembali tanpa menyimpan?';
 
   @override
   String get exportLeaveBody =>
-      'The new file will be deleted. Your gallery photos stay as they are.';
+      'File hasil akan dihapus. Foto di galeri Anda tetap seperti semula.';
 
   @override
-  String get exportStay => 'Stay';
+  String get exportStay => 'Tetap di sini';
 
   @override
-  String get exportLeave => 'Leave';
+  String get exportLeave => 'Kembali';
 
   @override
-  String get exportSaving => 'Saving…';
+  String get exportSaving => 'Menyimpan…';
 }
