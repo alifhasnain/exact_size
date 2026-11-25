@@ -112,7 +112,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** tech 4.3 steps 6 and 7: one `AppLifecycleListener(onResume:)` re-measures once while in `CheckMeets`; `ref.mounted` after every await; the `ui.Image` is disposed on every transition, on a late arrival and on dispose.
 - **Done when:** controller tests pass: resume after deleting the file → `CheckUnreadable` and the image disposed; resume after replacing it with an off-by-one file → `CheckMismatch`; resume with the file unchanged → `measure` called once more and the state instance unchanged (no redraw); resume in `Checking`, `CheckMismatch` or `CheckUnreadable` does nothing; disposing the container while the fake measurer or decoder is pending → no state set and the late fake image records `dispose()`; disposing in `CheckMeets` → image disposed.
 
-### - [ ] FEAT-006-T09 — Preview privacy static test and log audit
+### - [x] FEAT-006-T09 — Preview privacy static test and log audit
 - **Implements:** FR-19, NFR-3, NFR-8 · **ADRs:** —
 - **Depends on:** T08
 - **Size:** S

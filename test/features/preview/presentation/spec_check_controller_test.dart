@@ -63,7 +63,7 @@ void main() {
       Completer<MeasureResult>? measureGate,
       Completer<PreviewResult>? decodeGate}) async {
     tmp = Directory.systemTemp.createTempSync('spec_check_test');
-    final file = File('${tmp.path}/0123456789abcdef.jpg')..writeAsBytesSync(List.filled(48200, 1));
+    final file = File('${tmp.path}/[PLACEHOLDER].jpg')..writeAsBytesSync(List.filled(48200, 1));
     success = CompressionSuccess(tempFilePath: file.path, sizeBytes: 48200, format: OutputFormat.jpeg);
     measurer = FakeOutputMeasurer(measured ?? Measured(out()));
     decoder = FakePreviewDecoder(preview ?? PreviewOk(await createTestImage(width: 30, height: 30), 1))..gate = decodeGate;
@@ -83,7 +83,15 @@ void main() {
     await settle();
   }
 
+  final logPattern = RegExp(
+      r'^exactsize\.preview outcome=(SPEC_MEETS|SPEC_MISMATCH fields=(DIMENSIONS|SIZE|FORMAT)(,(DIMENSIONS|SIZE|FORMAT))*|SPEC_UNREADABLE|PREVIEW_UNAVAILABLE)$');
+
   tearDown(() {
+    // FEAT-006-T09 log audit (AC-6.3): every line of every case is a bare code.
+    for (final l in logs) {
+      expect(l, matches(logPattern));
+      expect(l, isNot(matches(RegExp(r'[0-9]|exactsize-|/data/|/storage/|content://|\[PLACEHOLDER\]'))));
+    }
     if (!disposed) container.dispose();
     if (tmp.existsSync()) tmp.deleteSync(recursive: true);
   });
