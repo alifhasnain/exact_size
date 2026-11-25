@@ -1,7 +1,7 @@
 ---
 id: FEAT-007
 title: Export and share
-status: Approved
+status: Implemented
 version: 1.3
 updated: 2026-11-25
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-010, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-023, FEAT-025, FEAT-027]
@@ -260,3 +260,4 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | 1.2 | 2026-11-25 | Approved by Product Owner |
 | 1.3 | 2026-11-25 | Clarification (FEAT-007-T21 Portuguese review, Product Owner asked to fix the English first): `PERMISSION_DENIED` text names the way back (turn the Storage permission on in Settings; after "Don't ask again" the dialog no longer appears); `FILE_MISSING` text names the new file and says gallery photos stay. Texts only, no behaviour change |
 | 1.3 | 2026-11-25 | Approved by Product Owner |
+| 1.3 | 2026-11-25 | Implemented (Product Owner, `/approve FEAT-007 implemented`) |
