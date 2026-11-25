@@ -70,10 +70,10 @@ Future<void> main(List<String> args) async {
   for (var i = 1; i <= kills; i++) {
     await stop();
     await launch();
-    await waitFor('saving', i + 1);
-    await Future<void>.delayed(Duration(milliseconds: rnd.nextInt(max(1, copyMs * 9 ~/ 10))));
-    final pid = await adb('pidof $_pkg');
-    if (pid.isNotEmpty) await adb('run-as $_pkg kill -9 $pid');
+    // The wait for "saving" and the kill run on the device: host polling lags ~300 ms, longer than a
+    // fast emulator's whole copy (CI run 45463961493: 349 ms, no kill inside it). Bounded: 30 s.
+    final delay = (rnd.nextInt(max(1, copyMs * 9 ~/ 10)) / 1000).toStringAsFixed(3);
+    await adb("run-as $_pkg sh -c 'i=0; while [ \$(cat files/rel_report 2>/dev/null | grep -c saving) -lt ${i + 1} ] && [ \$i -lt 3000 ]; do i=\$((i+1)); sleep 0.01; done; sleep $delay; kill -9 \$(pidof $_pkg)'");
     await Future<void>.delayed(const Duration(milliseconds: 500));
   }
   await stop();
@@ -96,20 +96,22 @@ Future<void> main(List<String> args) async {
 
   // Low space, emulators only.
   if (emulator) {
+    Future<int> entries() async => int.parse(await adb('ls -A /sdcard/Pictures/ExactSize 2>/dev/null | wc -l'));
+    final baseline = await entries(); // the kill test's last save stays until the cleanup below
     final avail = int.parse(RegExp(r'\s(\d+)\s+\d+%').firstMatch(await adb('df -k /data | tail -1'))![1]!);
     final fillKb = avail - 20 * 1024; // leave 20 MB: less than the 50 MB blob
     await adb('fallocate -l ${fillKb}k /data/local/tmp/es_fill || dd if=/dev/zero of=/data/local/tmp/es_fill bs=1m count=${fillKb ~/ 1024}');
     await setMode('lowspace');
     await launch();
     final low = (await waitFor('lowspace', 1)).lastWhere((e) => e['event'] == 'lowspace')['result'];
-    final leftovers = await adb('ls -A /sdcard/Pictures/ExactSize 2>/dev/null | wc -l');
+    final leftovers = await entries() - baseline;
     await adb('rm -f /data/local/tmp/es_fill');
     await setMode('lowspace');
     await launch();
     final freed = (await waitFor('lowspace', 1)).lastWhere((e) => e['event'] == 'lowspace')['result'];
     stdout.writeln('lowspace: full=$low leftovers=$leftovers afterFreeing=$freed');
     if (low != 'NO_SPACE') failures.add('low space gave $low, expected NO_SPACE');
-    if (leftovers != '0') failures.add('low space left $leftovers entries');
+    if (leftovers != 0) failures.add('low space left $leftovers entries');
     if (freed != 'SAVED') failures.add('after freeing space: $freed');
   } else {
     stdout.writeln('lowspace: skipped (real device)');
