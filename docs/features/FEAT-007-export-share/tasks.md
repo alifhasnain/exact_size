@@ -231,7 +231,7 @@ Module paths follow ADR-001: `lib/features/export/{domain,data,presentation}`, p
 - **Scope:** ≥ 48 dp targets; text scaling; buttons wrap into a column at large scale; Material 3 roles only; Arabic mirrored with file name and folder LTR and unbroken, digits 0-9. Host goldens with `TolerantGoldenComparator`: en and ar × ready, saved, error at 360×640, plus 200%. One real-phone screenshot (Realme 2 Pro, synthetic image) per G2 state, shown to the Product Owner.
 - **Done when:** widget tests pass for AC-9.1 (ar mirrored, the saved name is one LTR isolate), AC-9.2 (one live-region announcement per save result, every control ≥ 48 dp, status has text), text scale 2.0 at 360×640 with no overflow. Goldens pass. The screenshots are in the PR (not committed unless the Product Owner asks). Gate G2 is recorded.
 
-### - [ ] FEAT-007-T21 — Translate FEAT-007 strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
+### - [x] FEAT-007-T21 — Translate FEAT-007 strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
 - **Implements:** FR-30, NFR-4 · **ADRs:** —
 - **Depends on:** T16, T20 (strings final after G1/G2)
 - **Size:** M (not counted in the tech estimate: FEAT-019 work)
@@ -353,6 +353,7 @@ _Filled in by T01, T06–T08, T11, T19, T20, T22 and T23 (one row per check and 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-25 | T21 | es, pt (pt-BR), hi, id, ar: all 23 FEAT-007 keys; mechanical checks clean; gen-l10n reports no untranslated keys; widget test renders the result screen and panel in every supported locale with no English fallback; ar goldens regenerated; ai-review-log has one entry per language (AI-reviewed only) | Host tests | Pass |
 | 2026-11-25 | T22 | tool/export_reliability.dart: 20 kills during a 50 MB save (8 landed inside the copy); no unfinished save left and every visible file has the blob hash; low space (emulator): NO_SPACE with no entry left, then SAVED after freeing space; timing median 26 ms for 1 MB (min 19, max 704) | CI API 28 run 45627164359 | Pass; job green |
 | 2026-11-25 | T07, T09 | Revoked-permission run on API 28 (EXPORT_MODE=revoked): the driver denies the real permission dialog, then denies it with "Don't ask again"; the next save returns permissionDenied at once with no dialog (AC-2.4) and writes nothing (entry count unchanged); the sweep without the permission keeps a planted .part (FR-16). The granted run passed again (save, 100 names, nameTaken keeps the existing file, no .part, sweep keeps the completed file). "User-fixed" comes from the real "Don't ask again" tick instead of pm set-permission-flags (T01: flutter drive reinstalls the app) | CI API 28 run 45463961493 | Pass |
 | 2026-11-25 | T22 | Rerun after the fix (kill timed on the device, ~10 ms after "saving" instead of ~300 ms host polling): 20 kills during a 50 MB save (18 landed inside the copy); no unfinished save left and every visible file has the blob hash; timing median 104 ms for 1 MB (min 49, max 852); low space skipped (real device) | Realme 2 Pro, API 36 | Pass |

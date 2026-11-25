@@ -36,9 +36,12 @@ class ExportMessages {
   }
 
   /// FR-29 "Ready: W × H px, SIZE, FORMAT"; the size is FEAT-004's, not recomputed.
+  /// One LTR isolate opens in the width and closes in the height, so "W × H" keeps that order in
+  /// Arabic as on the target step (two separate isolates would show "H × W" in RTL).
+  /// shortcut: relies on every ARB keeping {width} before {height}; a test checks all locales.
   String ready(CompressionSuccess s, Target size) => _l10n.exportReady(
-        _iso(_number.format(size.width)),
-        _iso(_number.format(size.height)),
+        '\u2066${_number.format(size.width)}',
+        '${_number.format(size.height)}\u2069',
         _iso(_l10n.kbAmount(_number.format(achievedKb(s.sizeBytes, null)))),
         _ltr(s.format == OutputFormat.jpeg ? 'JPEG' : 'PNG'),
       );

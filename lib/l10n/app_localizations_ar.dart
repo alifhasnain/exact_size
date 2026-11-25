@@ -329,90 +329,90 @@ class AppLocalizationsAr extends AppLocalizations {
       'ستكون الصورة صغيرة جدًا. تحقّق من الأبعاد المطلوبة في النموذج الإلكتروني.';
 
   @override
-  String get exportSave => 'Save';
+  String get exportSave => 'حفظ';
 
   @override
-  String get exportShare => 'Share';
+  String get exportShare => 'مشاركة';
 
   @override
-  String get exportSaveAs => 'Choose where to save';
+  String get exportSaveAs => 'اختيار مكان الحفظ';
 
   @override
-  String get exportOpen => 'Open';
+  String get exportOpen => 'فتح';
 
   @override
-  String get exportDone => 'Done';
+  String get exportDone => 'تم';
 
   @override
   String exportReady(String width, String height, String size, String format) {
-    return 'Ready: $width × $height px, $size, $format';
+    return 'الصورة جاهزة: $width × $height بكسل، $size، $format';
   }
 
   @override
   String exportSaved(String folder, String fileName) {
-    return 'Saved to $folder as $fileName.';
+    return 'تم حفظ الملف في $folder باسم $fileName.';
   }
 
   @override
   String exportSavedAs(String fileName) {
-    return 'Saved as $fileName.';
+    return 'تم حفظ الملف باسم $fileName.';
   }
 
   @override
   String exportAlreadySaved(String fileName, String folder) {
-    return 'Already saved as $fileName in $folder.';
+    return 'تم حفظ هذا الملف مسبقًا باسم $fileName في $folder.';
   }
 
   @override
   String exportAlreadySavedAs(String fileName) {
-    return 'Already saved as $fileName.';
+    return 'تم حفظ هذا الملف مسبقًا باسم $fileName.';
   }
 
   @override
   String get exportNoSpace =>
-      'There isn\'t enough free space on this phone to save the file. Free some space and try again.';
+      'لا توجد مساحة خالية كافية على هذا الهاتف لحفظ الملف. حرّر بعض المساحة وحاول مرة أخرى.';
 
   @override
   String get exportSaveFailed =>
-      'Couldn\'t save the file. Try again, or share it instead.';
+      'تعذّر حفظ الملف. حاول مرة أخرى أو شارك الملف بدلًا من ذلك.';
 
   @override
   String get exportPermissionDenied =>
-      'ExactSize needs the Storage permission to save to your gallery. Turn it on in Settings. You can also share the file or choose where to save it.';
+      'يحتاج ExactSize إلى إذن التخزين للحفظ في المعرض. انتقل إلى الإعدادات وامنح الإذن. يمكنك أيضًا مشاركة الملف أو اختيار مكان حفظه.';
 
   @override
   String get exportFileMissing =>
-      'The new file is no longer available. Your gallery photos stay as they are. Choose the photo again to make a new one.';
+      'لم يعد الملف الذي أنشأته متاحًا. تبقى الصور في معرضك كما هي. اختر الصورة مرة أخرى لإنشاء ملف جديد.';
 
   @override
   String get exportShareFailed =>
-      'Couldn\'t open the share menu. Try again, or save the file instead.';
+      'تعذّر فتح قائمة المشاركة. حاول مرة أخرى أو احفظ الملف بدلًا من ذلك.';
 
   @override
   String get exportNoViewer =>
-      'No app on this phone can open this file. You can still share it.';
+      'لا يوجد تطبيق على هذا الهاتف يمكنه فتح هذا الملف. لا يزال بإمكانك مشاركته.';
 
   @override
   String get exportPrivacy =>
-      'Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.';
+      'عند الحفظ، توضع نسخة في معرضك أو في مجلد تختاره. وعند المشاركة، يحصل التطبيق الذي تختاره على نسخة.';
 
   @override
   String get exportShareHint =>
-      'Some chat apps shrink photos. For a form, save the file and choose it in the upload window.';
+      'بعض تطبيقات الدردشة تضغط الصور. للنموذج الإلكتروني، احفظ الملف ثم اختره عند رفعه.';
 
   @override
-  String get exportLeaveTitle => 'Leave without saving?';
+  String get exportLeaveTitle => 'الرجوع دون حفظ؟';
 
   @override
   String get exportLeaveBody =>
-      'The new file will be deleted. Your gallery photos stay as they are.';
+      'سيُحذف الملف الذي أنشأته. تبقى الصور في معرضك كما هي.';
 
   @override
-  String get exportStay => 'Stay';
+  String get exportStay => 'البقاء';
 
   @override
-  String get exportLeave => 'Leave';
+  String get exportLeave => 'الرجوع';
 
   @override
-  String get exportSaving => 'Saving…';
+  String get exportSaving => 'جارٍ الحفظ…';
 }

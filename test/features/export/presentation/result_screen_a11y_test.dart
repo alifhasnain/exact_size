@@ -11,6 +11,7 @@ import 'package:exact_size/features/export/domain/export_outcome.dart';
 import 'package:exact_size/features/export/domain/export_types.dart';
 import 'package:exact_size/features/export/presentation/export_controller.dart';
 import 'package:exact_size/features/export/presentation/result_screen.dart';
+import 'package:exact_size/l10n/app_localizations.dart';
 import 'package:exact_size/ui/booth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -120,6 +121,21 @@ void main() {
       final saveAs = find.byIcon(Icons.folder_open);
       await tester.ensureVisible(saveAs);
       expect(tester.getSize(find.ancestor(of: saveAs, matching: find.bySubtype<ButtonStyleButton>())).height, greaterThanOrEqualTo(48));
+    });
+  }
+
+  // FEAT-007-T21: every locale shows its own texts, never the English fallback.
+  final en = lookupAppLocalizations(const Locale('en'));
+  for (final locale in AppLocalizations.supportedLocales) {
+    testWidgets('$locale: result screen and panel render in that language (T21)', (tester) async {
+      final l = lookupAppLocalizations(locale);
+      await pump(tester, locale: locale);
+      for (final text in [l.exportSave, l.exportShare, l.exportDone, l.exportPrivacy, l.exportShareHint]) {
+        if (locale.languageCode != 'en') expect(text, isNot(anyOf(en.exportSave, en.exportShare, en.exportDone, en.exportPrivacy, en.exportShareHint)));
+        await tester.scrollUntilVisible(find.text(text), 50, scrollable: find.byType(Scrollable).first);
+        expect(find.text(text), findsOneWidget, reason: '$locale: $text');
+      }
+      expect(tester.takeException(), isNull);
     });
   }
 

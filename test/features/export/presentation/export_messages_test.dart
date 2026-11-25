@@ -44,6 +44,15 @@ void main() {
     expect(text.replaceAll(RegExp('[\u2066-\u2069]'), ''), 'Ready: 1,200 × 300 px, 48.2 KB, JPEG');
   });
 
+  test('ready line keeps "W × H" in one LTR isolate in every locale (RTL order)', () {
+    for (final locale in AppLocalizations.supportedLocales) {
+      final text = ExportMessages(lookupAppLocalizations(locale))
+          .ready(const CompressionSuccess(tempFilePath: 'x', sizeBytes: 48200, format: OutputFormat.jpeg), const Target(1200, 300));
+      final run = RegExp('$lri([^$lri$pdi]*)$pdi').firstMatch(text)?.group(1) ?? '';
+      expect(run, allOf(startsWith('1'), endsWith('300'), contains('×')), reason: '$locale');
+    }
+  });
+
   test('new export ARB messages carry no literal numbers and have descriptions', () {
     final arb = jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync()) as Map<String, dynamic>;
     final keys = arb.keys.where((k) => k.startsWith('export')).toList();
