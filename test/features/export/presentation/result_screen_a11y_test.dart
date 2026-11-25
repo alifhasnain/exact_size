@@ -140,7 +140,9 @@ void main() {
   }
 
   group('goldens (G1 design, 360x640)', () {
-    setUpAll(useTolerantGoldens);
+    // Text-heavy screens: Windows-made goldens differ on Linux CI by 1.5–1.8% from text
+    // anti-aliasing alone (run 45638925079); a moved or missing control changes far more.
+    setUpAll(() => useTolerantGoldens(tolerance: 0.025));
 
     for (final locale in ['en', 'ar']) {
       testWidgets('$locale ready', (tester) async {

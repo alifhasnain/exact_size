@@ -28,9 +28,9 @@ class TolerantGoldenComparator extends LocalFileComparator {
 
 /// Uses [TolerantGoldenComparator] for the rest of the current test file,
 /// with the same golden folder as the default comparator. Call from `setUpAll`.
-void useTolerantGoldens() {
+void useTolerantGoldens({double tolerance = 0.015}) {
   final previous = goldenFileComparator;
   final basedir = (previous as LocalFileComparator).basedir;
-  goldenFileComparator = TolerantGoldenComparator(basedir.resolve('golden_test.dart'));
+  goldenFileComparator = TolerantGoldenComparator(basedir.resolve('golden_test.dart'), tolerance: tolerance);
   addTearDown(() => goldenFileComparator = previous);
 }
