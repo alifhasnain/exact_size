@@ -44,7 +44,7 @@ Inside the plate, below the ready line:
 Wide or large-font layout: the keys always stay stacked full width (simplest at 200% font); the message and hint wrap.
 
 ## Leave dialog (FR-23)
-Shown on Back or Done only when nothing was saved and nothing was shared. Material 3 `AlertDialog` on the plate tone: title "Leave without saving?", body "This file will be deleted.", actions **Stay** (focused first) and **Leave**. Leave waits for a running save (FR-24), deletes the share copy and the temp file, then returns to the pick screen. After a save or a share, Back and Done leave at once.
+Shown on Back or Done only when nothing was saved and nothing was shared. Material 3 `AlertDialog` on the plate tone: title "Leave without saving?", body "The new file will be deleted. Your gallery photos stay as they are.", actions **Stay** (focused first) and **Leave**. Leave waits for a running save (FR-24), deletes the share copy and the temp file, then returns to the pick screen. After a save or a share, Back and Done leave at once.
 
 ## Accessibility and locale
 - Each key ≥ 48 dp (Save and Share 56 dp); labels are verbs; icons are decorative.

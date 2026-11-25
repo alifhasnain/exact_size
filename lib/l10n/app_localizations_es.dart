@@ -381,7 +381,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get exportFileMissing =>
-      'Este archivo ya no está disponible. Vuelve a crearlo.';
+      'Este archivo ya no está disponible. Vuelve a elegir la foto para crear uno nuevo.';
 
   @override
   String get exportShareFailed =>
@@ -393,7 +393,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get exportPrivacy =>
-      'Al guardar, se crea una copia en tu galería. Al compartir, la app que elijas recibe una copia.';
+      'Al guardar, se crea una copia en tu galería o en la carpeta que elijas. Al compartir, la app que elijas recibe una copia.';
 
   @override
   String get exportShareHint =>
@@ -403,7 +403,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportLeaveTitle => '¿Salir sin guardar?';
 
   @override
-  String get exportLeaveBody => 'Este archivo se eliminará.';
+  String get exportLeaveBody =>
+      'Se eliminará el archivo nuevo. Las fotos de tu galería no se modifican.';
 
   @override
   String get exportStay => 'Quedarse';

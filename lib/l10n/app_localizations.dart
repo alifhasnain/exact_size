@@ -656,7 +656,7 @@ abstract class AppLocalizations {
   /// FEAT-007 FILE_MISSING (FR-2): the finished file was removed before it could be saved or shared.
   ///
   /// In en, this message translates to:
-  /// **'This file is no longer available. Please create it again.'**
+  /// **'This file is no longer available. Choose the photo again to make a new one.'**
   String get exportFileMissing;
 
   /// FEAT-007 SHARE_FAILED (FR-20): the system share menu could not be opened.
@@ -674,7 +674,7 @@ abstract class AppLocalizations {
   /// FEAT-007 FR-26: one plain privacy line in the export area.
   ///
   /// In en, this message translates to:
-  /// **'Saving puts a copy in your gallery. Sharing gives a copy to the app you choose.'**
+  /// **'Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.'**
   String get exportPrivacy;
 
   /// FEAT-007 FR-21: hint near Share; chat apps may recompress the photo, so a form upload should use the saved file.
@@ -692,7 +692,7 @@ abstract class AppLocalizations {
   /// FEAT-007 FR-23: body of the leave dialog.
   ///
   /// In en, this message translates to:
-  /// **'This file will be deleted.'**
+  /// **'The new file will be deleted. Your gallery photos stay as they are.'**
   String get exportLeaveBody;
 
   /// FEAT-007 FR-23: leave dialog button that keeps the result screen.

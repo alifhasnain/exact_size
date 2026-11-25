@@ -106,7 +106,7 @@ void main() {
 
   testWidgets('privacy line and chat hint are shown; no image in the panel (FR-21, FR-26)', (tester) async {
     await pump(tester);
-    expect(find.text('Saving puts a copy in your gallery. Sharing gives a copy to the app you choose.'), findsOneWidget);
+    expect(find.text('Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.'), findsOneWidget);
     expect(find.text('Some chat apps shrink photos. For a form, save the file and choose it in the upload window.'), findsOneWidget);
     expect(find.byType(Image), findsNothing);
     expect(find.byType(RawImage), findsNothing);

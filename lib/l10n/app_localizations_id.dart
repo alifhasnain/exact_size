@@ -384,7 +384,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exportFileMissing =>
-      'This file is no longer available. Please create it again.';
+      'This file is no longer available. Choose the photo again to make a new one.';
 
   @override
   String get exportShareFailed =>
@@ -396,7 +396,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exportPrivacy =>
-      'Saving puts a copy in your gallery. Sharing gives a copy to the app you choose.';
+      'Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose.';
 
   @override
   String get exportShareHint =>
@@ -406,7 +406,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportLeaveTitle => 'Leave without saving?';
 
   @override
-  String get exportLeaveBody => 'This file will be deleted.';
+  String get exportLeaveBody =>
+      'The new file will be deleted. Your gallery photos stay as they are.';
 
   @override
   String get exportStay => 'Stay';

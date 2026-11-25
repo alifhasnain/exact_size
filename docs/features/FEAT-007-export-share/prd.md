@@ -1,9 +1,9 @@
 ---
 id: FEAT-007
 title: Export and share
-status: Approved
-version: 1.1
-updated: 2026-11-24
+status: Under Discussion
+version: 1.2
+updated: 2026-11-25
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-010, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-023, FEAT-025, FEAT-027]
 ---
 
@@ -99,7 +99,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
   - **AC-7.3** Given no app can open it, when I tap Open, then I see a short message and Share still works.
 - **US-8** As a user with an ID photo or signature, I want the app to leave nothing behind except what I chose to save, so that my image is not scattered.
   - **AC-8.1** Given I leave the export step (Start over, Done or back), when I check, then the temp file is deleted, the camera file is released and the only copy left is the one I saved.
-  - **AC-8.2** Given I saved nothing and shared nothing, when I press back, then I am asked "Leave without saving? This file will be deleted." (Should) and Stay keeps me on the screen.
+  - **AC-8.2** Given I saved nothing and shared nothing, when I press back, then I am asked "Leave without saving? The new file will be deleted. Your gallery photos stay as they are." (Should) and Stay keeps me on the screen.
   - **AC-8.3** Given the app is killed while I am on the export screen, when I reopen it, then it starts on the pick screen with no restored result and the cache holds no output file after the start-up sweep.
   - **AC-8.4** Given I saved and the app was killed afterwards, when I look in the gallery, then my saved file is complete and unchanged.
   - **AC-8.5** Given a full export session, when release logs and crash reports are read, then they hold only enum outcome codes: no file name, URI, path or size.
@@ -149,10 +149,10 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | FR-20 | If the chooser cannot be launched, the system shall show the `SHARE_FAILED` message and keep the result. | US-4 | Must |
 | FR-21 | The system should show one short hint near Share that some chat apps shrink photos and that a form upload is safer from a saved file (text in section 8). | US-3 | Should |
 | FR-22 | When the user leaves the export step (Start over, Done, system back) the system shall delete the temp output file and any shared copy, clear the compression state, call FEAT-001 `release()`, end the crop session and open the pick screen. | US-8 | Must |
-| FR-23 | If nothing was saved or shared in this session, leaving shall first ask "Leave without saving? This file will be deleted." with Stay and Leave. A save-as save counts as saved. | US-8 | Should |
+| FR-23 | If nothing was saved or shared in this session, leaving shall first ask "Leave without saving? The new file will be deleted. Your gallery photos stay as they are." with Stay and Leave. A save-as save counts as saved. | US-8 | Should |
 | FR-24 | If the user leaves while a save is writing, the system shall wait for the write to finish or fail (FR-14) before deleting the temp file. Writes longer than 500 ms show progress. | US-8 | Must |
 | FR-25 | The system shall keep no export state across process death. After a restart the app opens on the pick screen with no result, file path or saved-item reference [Fact](docs/features/FEAT-001-pick-image/prd.md, FR-16). | US-8 | Must |
-| FR-26 | The export area shall show one plain line: "Saving puts a copy in your gallery. Sharing gives a copy to the app you choose." (final copy belongs to FEAT-016). | US-1, US-3 | Must |
+| FR-26 | The export area shall show one plain line: "Saving puts a copy in your gallery or a folder you pick. Sharing gives a copy to the app you choose." (final copy belongs to FEAT-016). | US-1, US-3 | Must |
 | FR-27 | Logging shall use only the shared enum-only wrapper and only the outcome codes in section 5. File names, URIs, paths, sizes and platform exception text shall never be logged or put in crash reports [Fact](lib/features/compression/data/outcome_log.dart; FEAT-001 FR-19). | US-8 | Must |
 | FR-28 | Export shall use no network API and shall pass no file, name or path to any ad, analytics or crash SDK. | US-8 | Must |
 | FR-29 | Until FEAT-006 exists, the system shall provide the panel and the minimal result screen described in section 5 and shall remove the dev stand-in. | US-1, US-3 | Must |
@@ -174,7 +174,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 ## 8. Validation rules
 | Field / input | Rule | Error message |
 |---|---|---|
-| Source temp file | Exists, readable, length equals `sizeBytes` (FR-2) | "This file is no longer available. Please create it again." (`FILE_MISSING`) |
+| Source temp file | Exists, readable, length equals `sizeBytes` (FR-2) | "This file is no longer available. Choose the photo again to make a new one." (`FILE_MISSING`) |
 | Output format | `jpeg` or `png` only; maps to `image/jpeg` or `image/png` and `jpg` or `png` | Not user-visible; export refused as `SAVE_FAILED` |
 | File name | Matches `^exactsize-[0-9]{1,6}x[0-9]{1,6}-[a-z0-9]{6}\.(jpg\|png)$`, at most 40 characters (FR-4) | Not user-visible; after 5 name collisions: "Couldn't save the file. Try again, or share it instead." |
 | Storage permission (API 28 only) | Granted before any write (FR-7) | "ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it." (`PERMISSION_DENIED`) |
@@ -183,7 +183,7 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | Saved again | Saved item still resolves (FR-12) | Info: "Already saved as [FILENAME] in [FOLDER]." (`ALREADY_SAVED`) |
 | Success | Item complete and length verified | "Saved to [FOLDER] as [FILENAME]." (`SAVED`) |
 | Open | A viewer app exists (FR-15) | "No app on this phone can open this file. You can still share it." (`OPEN_NO_VIEWER`) |
-| Leave | Nothing saved or shared (FR-23) | "Leave without saving? This file will be deleted." Buttons: "Stay", "Leave" |
+| Leave | Nothing saved or shared (FR-23) | "Leave without saving? The new file will be deleted. Your gallery photos stay as they are." Buttons: "Stay", "Leave" |
 | Share hint (Should) | Shown near Share (FR-21) | "Some chat apps shrink photos. For a form, save the file and choose it in the upload window." |
 
 ## 9. Edge cases & error states
@@ -256,3 +256,4 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | 1.0 | 2026-11-24 | Approved by Product Owner; OQ-1 = A (permission on API 28), OQ-3 = FEAT-007 first |
 | 1.1 | 2026-11-24 | Clarification (FEAT-007-T02, Product Owner choice): new info code `OPEN_NO_VIEWER` in sections 5, 8 and 10; FR-13 accepts the API 29+ system conflict rename seen in the T01 spike. No scope change |
 | 1.1 | 2026-11-24 | Approved by Product Owner |
+| 1.2 | 2026-11-25 | Clarification (FEAT-007-T21 Spanish review, Product Owner asked to fix the English first): FR-23 / AC-8.2 leave text names the new file and says gallery photos stay ("This file" could read as the original photo); `FILE_MISSING` text names the next step instead of "Please create it again"; FR-26 privacy line also covers "Choose where to save". Texts only, no behaviour change |
