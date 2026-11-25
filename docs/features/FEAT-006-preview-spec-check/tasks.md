@@ -1,8 +1,8 @@
 ---
 id: FEAT-006-TASKS
 title: Preview with "meets spec" check — Implementation Tasks
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-25
 links: [FEAT-006, FEAT-006-TECH, ADR-001, ADR-004, ADR-007, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-019]
 ---
@@ -284,3 +284,4 @@ _Filled in by T01, T10, T12, T14, T15, T16 and T17 (one row per check and device
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-25 | First draft |
+| 1.0 | 2026-11-25 | Approved by Product Owner |
