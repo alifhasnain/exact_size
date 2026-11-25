@@ -1,8 +1,8 @@
 ---
 id: FEAT-007
 title: Export and share
-status: Approved
-version: 1.2
+status: Under Discussion
+version: 1.3
 updated: 2026-11-25
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-010, FEAT-016, FEAT-018, FEAT-019, FEAT-022, FEAT-023, FEAT-025, FEAT-027]
 ---
@@ -174,10 +174,10 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 ## 8. Validation rules
 | Field / input | Rule | Error message |
 |---|---|---|
-| Source temp file | Exists, readable, length equals `sizeBytes` (FR-2) | "This file is no longer available. Choose the photo again to make a new one." (`FILE_MISSING`) |
+| Source temp file | Exists, readable, length equals `sizeBytes` (FR-2) | "The new file is no longer available. Your gallery photos stay as they are. Choose the photo again to make a new one." (`FILE_MISSING`) |
 | Output format | `jpeg` or `png` only; maps to `image/jpeg` or `image/png` and `jpg` or `png` | Not user-visible; export refused as `SAVE_FAILED` |
 | File name | Matches `^exactsize-[0-9]{1,6}x[0-9]{1,6}-[a-z0-9]{6}\.(jpg\|png)$`, at most 40 characters (FR-4) | Not user-visible; after 5 name collisions: "Couldn't save the file. Try again, or share it instead." |
-| Storage permission (API 28 only) | Granted before any write (FR-7) | "ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it." (`PERMISSION_DENIED`) |
+| Storage permission (API 28 only) | Granted before any write (FR-7) | "ExactSize needs the Storage permission to save to your gallery. Turn it on in Settings. You can also share the file or choose where to save it." (`PERMISSION_DENIED`) |
 | Write | Written length equals `sizeBytes` (FR-3) | No space: "There isn't enough free space on this phone to save the file. Free some space and try again." (`NO_SPACE`). Other: "Couldn't save the file. Try again, or share it instead." (`SAVE_FAILED`) |
 | Share intent | One stream, one file, read-only grant, ExactSize excluded (FR-17) | "Couldn't open the share menu. Try again, or save the file instead." (`SHARE_FAILED`) |
 | Saved again | Saved item still resolves (FR-12) | Info: "Already saved as [FILENAME] in [FOLDER]." (`ALREADY_SAVED`) |
@@ -258,3 +258,4 @@ First-try success (the vision's 99%) is measured in pre-release device tests, no
 | 1.1 | 2026-11-24 | Approved by Product Owner |
 | 1.2 | 2026-11-25 | Clarification (FEAT-007-T21 Spanish review, Product Owner asked to fix the English first): FR-23 / AC-8.2 leave text names the new file and says gallery photos stay ("This file" could read as the original photo); `FILE_MISSING` text names the next step instead of "Please create it again"; FR-26 privacy line also covers "Choose where to save". Texts only, no behaviour change |
 | 1.2 | 2026-11-25 | Approved by Product Owner |
+| 1.3 | 2026-11-25 | Clarification (FEAT-007-T21 Portuguese review, Product Owner asked to fix the English first): `PERMISSION_DENIED` text names the way back (turn the Storage permission on in Settings; after "Don't ask again" the dialog no longer appears); `FILE_MISSING` text names the new file and says gallery photos stay. Texts only, no behaviour change |

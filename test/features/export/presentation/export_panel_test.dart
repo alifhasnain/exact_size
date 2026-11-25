@@ -72,7 +72,7 @@ void main() {
     await pump(tester);
     expect(find.text('Choose where to save'), findsNothing);
     await tap(tester, 'Save');
-    expect(textContaining('ExactSize needs your permission'), findsOneWidget);
+    expect(textContaining('ExactSize needs the Storage permission'), findsOneWidget);
     expect(tester.widget<ButtonStyleButton>(find.ancestor(of: find.text('Choose where to save'), matching: find.bySubtype<ButtonStyleButton>())).enabled,
         isTrue);
     expect(tester.widget<ButtonStyleButton>(find.ancestor(of: find.text('Share'), matching: find.bySubtype<ButtonStyleButton>())).enabled, isTrue);

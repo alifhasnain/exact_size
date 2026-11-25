@@ -650,13 +650,13 @@ abstract class AppLocalizations {
   /// FEAT-007 PERMISSION_DENIED (FR-9): Android 9 storage permission refused. Keep the app name ExactSize.
   ///
   /// In en, this message translates to:
-  /// **'ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it.'**
+  /// **'ExactSize needs the Storage permission to save to your gallery. Turn it on in Settings. You can also share the file or choose where to save it.'**
   String get exportPermissionDenied;
 
   /// FEAT-007 FILE_MISSING (FR-2): the finished file was removed before it could be saved or shared.
   ///
   /// In en, this message translates to:
-  /// **'This file is no longer available. Choose the photo again to make a new one.'**
+  /// **'The new file is no longer available. Your gallery photos stay as they are. Choose the photo again to make a new one.'**
   String get exportFileMissing;
 
   /// FEAT-007 SHARE_FAILED (FR-20): the system share menu could not be opened.

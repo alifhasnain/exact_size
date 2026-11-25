@@ -378,11 +378,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportPermissionDenied =>
-      'ExactSize needs your permission to save to your gallery. You can still share the file or choose where to save it.';
+      'ExactSize needs the Storage permission to save to your gallery. Turn it on in Settings. You can also share the file or choose where to save it.';
 
   @override
   String get exportFileMissing =>
-      'This file is no longer available. Choose the photo again to make a new one.';
+      'The new file is no longer available. Your gallery photos stay as they are. Choose the photo again to make a new one.';
 
   @override
   String get exportShareFailed =>
