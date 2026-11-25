@@ -63,7 +63,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Fallbacks to propose if a row fails:** H1 → `ParcelFileDescriptor.open` through a JNIgen binding (still ADR-004, small regeneration); H3 → run the measurer inside the decode isolate (no API change); H2 → a smaller `maxSide` cap. Each is a tech.md change for the Product Owner, not improvised.
 - **Done when:** each H row has one Test record line per device or CI run (pass/fail and numbers; no paths or file names). Gate G0 is recorded. Spike code is deleted.
 
-### - [ ] FEAT-006-T02 — Domain: `MeasuredOutput`, `MeasureResult`, `OutputMeasurer`, `checkSpec`
+### - [x] FEAT-006-T02 — Domain: `MeasuredOutput`, `MeasureResult`, `OutputMeasurer`, `checkSpec`
 - **Implements:** FR-3, FR-4, FR-6 (`sizeDirection`), FR-8 (`window.narrow`), NFR-5, NFR-6 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** M
