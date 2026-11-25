@@ -418,6 +418,75 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get exportSaving => 'Salvando…';
+
+  @override
+  String get checkMatches => 'Matches your target';
+
+  @override
+  String get checkMismatch =>
+      'This file doesn\'t match your target, so it can\'t be saved or shared. Go back and try again.';
+
+  @override
+  String get checkLabelPixels => 'Size in pixels';
+
+  @override
+  String get checkLabelFileSize => 'File size';
+
+  @override
+  String get checkLabelFormat => 'Format';
+
+  @override
+  String get checkTarget => 'Target';
+
+  @override
+  String get checkThisFile => 'This file';
+
+  @override
+  String get checkMeets => 'Meets';
+
+  @override
+  String get checkDoesntMeet => 'Doesn\'t meet';
+
+  @override
+  String checkUpToKb(String max) {
+    return 'Up to $max';
+  }
+
+  @override
+  String checkPixels(String width, String height) {
+    return '$width × $height px';
+  }
+
+  @override
+  String checkAlsoFits1024(String kb, String bytes) {
+    return 'Also fits if your portal counts $kb as $bytes bytes.';
+  }
+
+  @override
+  String get checkCaveat =>
+      'We check pixels, KB and format. Some forms also check the photo itself, such as the face or background.';
+
+  @override
+  String get previewCaption => 'Shown scaled to fit your screen.';
+
+  @override
+  String previewAlt(String width, String height, String format) {
+    return 'Preview of your new file, $width × $height px, $format.';
+  }
+
+  @override
+  String get previewUnavailable =>
+      'Preview isn\'t available. The check below is still correct.';
+
+  @override
+  String checkRowSentence(
+    String label,
+    String target,
+    String measured,
+    String status,
+  ) {
+    return '$label: target $target, this file $measured, $status.';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

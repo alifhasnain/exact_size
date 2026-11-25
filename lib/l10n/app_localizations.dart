@@ -712,6 +712,113 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saving…'**
   String get exportSaving;
+
+  /// FEAT-006 FR-5: headline when pixel size, file size and format all match the target. Do not say 'accepted' or 'approved': the portal decides that.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches your target'**
+  String get checkMatches;
+
+  /// FEAT-006 FR-10: shown when a field does not match (should not happen). The file has already been deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This file doesn\'t match your target, so it can\'t be saved or shared. Go back and try again.'**
+  String get checkMismatch;
+
+  /// FEAT-006 FR-5: row label for width × height.
+  ///
+  /// In en, this message translates to:
+  /// **'Size in pixels'**
+  String get checkLabelPixels;
+
+  /// FEAT-006 FR-5: row label for the file size in KB.
+  ///
+  /// In en, this message translates to:
+  /// **'File size'**
+  String get checkLabelFileSize;
+
+  /// FEAT-006 FR-5: row label for JPEG or PNG.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get checkLabelFormat;
+
+  /// FEAT-006 FR-5: column heading, the values the user entered.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get checkTarget;
+
+  /// FEAT-006 FR-5: column heading, the values read from the new file.
+  ///
+  /// In en, this message translates to:
+  /// **'This file'**
+  String get checkThisFile;
+
+  /// FEAT-006 FR-5: row status when the value matches the target. Not 'accepted'.
+  ///
+  /// In en, this message translates to:
+  /// **'Meets'**
+  String get checkMeets;
+
+  /// FEAT-006 FR-5: row status when the value does not match the target.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t meet'**
+  String get checkDoesntMeet;
+
+  /// FEAT-006 AC-1.3: target file size when only a maximum was entered. max is an already formatted size such as '100 KB', wrapped in a bidi isolate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {max}'**
+  String checkUpToKb(String max);
+
+  /// FEAT-006 FR-5: a pixel size. width and height are formatted numbers that arrive inside one left-to-right isolate, so keep {width} before {height}. Keep the × sign and px unit as your language writes them.
+  ///
+  /// In en, this message translates to:
+  /// **'{width} × {height} px'**
+  String checkPixels(String width, String height);
+
+  /// FEAT-006 FR-8: shown under the file size when the file also passes a portal that counts 1 KB as 1,024 bytes. kb is a formatted size ('1 KB'), bytes a formatted number ('1,024').
+  ///
+  /// In en, this message translates to:
+  /// **'Also fits if your portal counts {kb} as {bytes} bytes.'**
+  String checkAlsoFits1024(String kb, String bytes);
+
+  /// FEAT-006 FR-9: plain note on what the check does not cover.
+  ///
+  /// In en, this message translates to:
+  /// **'We check pixels, KB and format. Some forms also check the photo itself, such as the face or background.'**
+  String get checkCaveat;
+
+  /// FEAT-006 FR-14: caption under the preview image.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown scaled to fit your screen.'**
+  String get previewCaption;
+
+  /// FEAT-006 FR-16: text for screen readers. Technical values only; never describe the person or the picture. width and height arrive inside one left-to-right isolate, so keep {width} before {height}; format is JPEG or PNG.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview of your new file, {width} × {height} px, {format}.'**
+  String previewAlt(String width, String height, String format);
+
+  /// FEAT-006 FR-14: shown instead of the preview when the phone ran out of memory for it.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview isn\'t available. The check below is still correct.'**
+  String get previewUnavailable;
+
+  /// FEAT-006 AC-8.2: one row read as a sentence by TalkBack. label is a row label, target and measured are formatted values, status is 'Meets' or 'Doesn't meet'.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: target {target}, this file {measured}, {status}.'**
+  String checkRowSentence(
+    String label,
+    String target,
+    String measured,
+    String status,
+  );
 }
 
 class _AppLocalizationsDelegate
