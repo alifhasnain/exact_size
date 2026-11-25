@@ -382,7 +382,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get exportPermissionDenied =>
-      'गैलरी में सेव करने के लिए ExactSize को स्टोरेज की अनुमति चाहिए। इसे सेटिंग में चालू करें। आप फ़ाइल शेयर भी कर सकते हैं या सेव करने की जगह चुन सकते हैं।';
+      'गैलरी में सेव करने के लिए ExactSize को स्टोरेज की अनुमति चाहिए। सेटिंग में जाकर अनुमति दें। आप फ़ाइल शेयर भी कर सकते हैं या सेव करने की जगह चुन सकते हैं।';
 
   @override
   String get exportFileMissing =>
