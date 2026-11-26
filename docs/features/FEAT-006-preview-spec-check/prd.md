@@ -1,9 +1,9 @@
 ---
 id: FEAT-006
 title: Preview with "meets spec" check
-status: Approved
+status: Implemented
 version: 1.1
-updated: 2026-11-25
+updated: 2026-11-26
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, FEAT-002, FEAT-004, FEAT-005, FEAT-007, FEAT-010, FEAT-011, FEAT-015, FEAT-016, FEAT-018, FEAT-019, FEAT-025, FEAT-027]
 ---
 
