@@ -52,6 +52,8 @@ jobs:
       - run: flutter test
       - name: Release APK for arm, arm64, x64
         run: flutter build apk --release --target-platform android-arm,android-arm64,android-x64
+      - name: Privacy gates ran (FEAT-016 FR-11)
+        run: test -f build/app/outputs/privacy/checkMergedManifest.ok && test -f build/app/outputs/privacy/checkReviewedDependencies.ok
       - name: 16 KB page alignment (main app, 3 ABIs)
         run: bash tool/check_16kb_alignment.sh build/app/outputs/flutter-apk/app-release.apk
 

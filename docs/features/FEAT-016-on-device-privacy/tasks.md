@@ -70,7 +70,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `<application android:allowBackup="false" android:dataExtractionRules="@xml/data_extraction_rules">`; new `res/xml/data_extraction_rules.xml` excluding `root`, `file`, `database`, `sharedpref` and `external` in both `<cloud-backup>` and `<device-transfer>`; no `fullBackupContent` (tech section 11). `CheckMergedManifest` requires both attributes and all five excludes in both sections; mutations: allowBackup removed, allowBackup true, dataExtractionRules missing, `device-transfer` loses one exclude. Message per PRD section 8.
 - **Done when:** Android lint reports no error on the rules file; the four mutations fail and pass when removed; real-phone check on the Realme 2 Pro (API 36): note the backup state, `adb shell bmgr backupnow <applicationId>` reports the package as not eligible or not allowed, state restored, build uninstalled (rows in the Test record). The API 28 `bmgr` check runs in the P1 slim throwaway step (T10). Device-to-device transfer has no adb test: recorded as covered by lint and the gate only [Hypothesis stays].
 
-### - [ ] FEAT-016-T04 — Gradle reviewed-dependencies task and list
+### - [x] FEAT-016-T04 — Gradle reviewed-dependencies task and list
 - **Implements:** FR-10 (Gradle half), FR-11, FR-12 (message), NFR-5, NFR-10 · **ADRs:** ADR-001
 - **Depends on:** T02
 - **Size:** M

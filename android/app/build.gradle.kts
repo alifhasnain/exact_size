@@ -1,4 +1,5 @@
 import com.android.build.api.artifact.SingleArtifact
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Element
 
@@ -229,6 +230,53 @@ abstract class CheckMergedManifest : DefaultTask() {
     }
 }
 
+// FEAT-016-T04 (FR-10 Gradle half, FR-11, NFR-5): every external module on the release runtime
+// classpath must be on a reviewed list with a network, data and permissions note. Versions are not
+// listed, so a version bump passes; a new group:module fails the release build. Flutter plugin
+// subprojects are skipped (the Dart list, FEAT-016-T05, covers them). Self-tests: a planted module
+// is refused, and an entry with an empty note is refused. Writes a marker file for CI.
+abstract class CheckReviewedDependencies : DefaultTask() {
+    @get:Input abstract val modules: SetProperty<String>
+    @get:InputFile abstract val reviewed: RegularFileProperty
+    @get:OutputFile abstract val marker: RegularFileProperty
+
+    private val followFr12 = "Follow FEAT-016 FR-12 (docs/features/FEAT-016-on-device-privacy/claims.md)."
+
+    /** `group:module  # note` lines; blank lines and lines starting with # are skipped. */
+    private fun parse(lines: List<String>, problems: MutableList<String>): Set<String> = lines.map { it.trim() }
+        .filter { it.isNotEmpty() && !it.startsWith("#") }
+        .mapNotNull { line ->
+            val name = line.substringBefore('#').trim()
+            val note = if ('#' in line) line.substringAfter('#').trim() else ""
+            if (note.isEmpty()) {
+                problems += "Reviewed entry \"$name\" has no note. Write \"# network: ...; data: ...; permissions: ...\". $followFr12"
+                null
+            } else name
+        }.toSet()
+
+    private fun unlisted(found: Set<String>, listed: Set<String>) = (found - listed).sorted()
+        .map { "New dependency $it. Review network, data and permissions, then add it with a note to android/app/reviewed_dependencies.txt. $followFr12" }
+
+    @TaskAction
+    fun check() {
+        val problems = mutableListOf<String>()
+        val listed = parse(reviewed.get().asFile.readLines(), problems)
+        val found = modules.get()
+        problems += unlisted(found, listed)
+
+        // Self-tests (AC-4.4): a planted module and an entry without a note must be refused.
+        val planted = "[PLACEHOLDER_GROUP]:planted"
+        if (unlisted(found + planted, listed).none { planted in it && followFr12 in it }) problems += "Self-test failed: $planted was not refused."
+        val noteProblems = mutableListOf<String>()
+        parse(listOf("[PLACEHOLDER_GROUP]:no-note  #"), noteProblems)
+        if (noteProblems.isEmpty()) problems += "Self-test failed: an entry with an empty note was not refused."
+
+        if (problems.isNotEmpty()) throw GradleException("checkReviewedDependencies failed:\n- " + problems.joinToString("\n- "))
+        marker.get().asFile.apply { parentFile.mkdirs(); writeText("OK ${found.size} modules reviewed\n") }
+        logger.lifecycle("checkReviewedDependencies: OK (${found.size} modules reviewed, 2 self-tests refused)")
+    }
+}
+
 androidComponents {
     onVariants(selector().withBuildType("release")) { variant ->
         val check = tasks.register<CheckMergedManifest>("checkMergedManifest") {
@@ -239,6 +287,21 @@ androidComponents {
             applicationId.set(variant.applicationId)
             marker.set(layout.buildDirectory.file("outputs/privacy/checkMergedManifest.ok"))
         }
-        tasks.matching { it.name == "assembleRelease" || it.name == "bundleRelease" }.configureEach { dependsOn(check) }
+        val deps = tasks.register<CheckReviewedDependencies>("checkReviewedDependencies") {
+            // The resolved graph, not artifacts: artifact selection is ambiguous for plugin subprojects.
+            modules.set(variant.runtimeConfiguration.incoming.resolutionResult.rootComponent.map { root ->
+                val seen = mutableSetOf<org.gradle.api.artifacts.result.ResolvedComponentResult>()
+                val todo = ArrayDeque(listOf(root))
+                while (todo.isNotEmpty()) {
+                    val c = todo.removeFirst()
+                    if (!seen.add(c)) continue
+                    c.dependencies.filterIsInstance<org.gradle.api.artifacts.result.ResolvedDependencyResult>().forEach { todo.add(it.selected) }
+                }
+                seen.mapNotNull { (it.id as? ModuleComponentIdentifier)?.let { m -> "${m.group}:${m.module}" } }.toSet()
+            })
+            reviewed.set(layout.projectDirectory.file("reviewed_dependencies.txt"))
+            marker.set(layout.buildDirectory.file("outputs/privacy/checkReviewedDependencies.ok"))
+        }
+        tasks.matching { it.name == "assembleRelease" || it.name == "bundleRelease" }.configureEach { dependsOn(check, deps) }
     }
 }

@@ -1,0 +1,57 @@
+# FEAT-016 FR-10: reviewed external modules of the release runtime classpath (group:module).
+# One entry per line: group:module  # network: ...; data: ...; permissions: ...; purpose
+# Notes come from each library's documented purpose (reviewed 2026-11-27, FEAT-016-T04). The app
+# has no INTERNET permission (checkMergedManifest), so no library here can reach the network.
+# A new module fails the release build until it is reviewed and added here (FEAT-016 FR-12).
+
+androidx.activity:activity                         # network: none; data: none; permissions: none; Activity Result API for the picker and camera contracts (FEAT-001, ADR-006)
+androidx.annotation:annotation                     # network: none; data: none; permissions: none; compile-time annotations
+androidx.annotation:annotation-experimental        # network: none; data: none; permissions: none; compile-time annotations
+androidx.annotation:annotation-jvm                 # network: none; data: none; permissions: none; compile-time annotations
+androidx.arch.core:core-common                     # network: none; data: none; permissions: none; lifecycle support classes
+androidx.arch.core:core-runtime                    # network: none; data: none; permissions: none; lifecycle support classes
+androidx.collection:collection                     # network: none; data: none; permissions: none; in-memory collections
+androidx.collection:collection-jvm                 # network: none; data: none; permissions: none; in-memory collections
+androidx.concurrent:concurrent-futures             # network: none; data: none; permissions: none; futures helper
+androidx.core:core                                 # network: none; data: none; permissions: DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION; platform compatibility; declares the app's DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+androidx.core:core-ktx                             # network: none; data: none; permissions: none; Kotlin extensions for androidx.core
+androidx.core:core-viewtree                        # network: none; data: none; permissions: none; view-tree owners
+androidx.customview:customview                     # network: none; data: none; permissions: none; view helpers
+androidx.exifinterface:exifinterface               # network: none; data: none; permissions: none; reads EXIF in process (FEAT-001 orientation)
+androidx.fragment:fragment                         # network: none; data: none; permissions: none; fragment support used by the activity library
+androidx.interpolator:interpolator                 # network: none; data: none; permissions: none; animation curves
+androidx.lifecycle:lifecycle-common                # network: none; data: none; permissions: none; lifecycle state
+androidx.lifecycle:lifecycle-common-java8          # network: none; data: none; permissions: none; lifecycle state
+androidx.lifecycle:lifecycle-livedata              # network: none; data: none; permissions: none; observable state
+androidx.lifecycle:lifecycle-livedata-core         # network: none; data: none; permissions: none; observable state
+androidx.lifecycle:lifecycle-livedata-core-ktx     # network: none; data: none; permissions: none; observable state
+androidx.lifecycle:lifecycle-process               # network: none; data: none; permissions: none; process lifecycle (non-exported startup provider)
+androidx.lifecycle:lifecycle-runtime               # network: none; data: none; permissions: none; lifecycle state
+androidx.lifecycle:lifecycle-viewmodel             # network: none; data: none; permissions: none; view-model holder
+androidx.lifecycle:lifecycle-viewmodel-savedstate  # network: none; data: none; permissions: none; saved-state handle (in memory, no backup)
+androidx.loader:loader                             # network: none; data: none; permissions: none; loader support
+androidx.profileinstaller:profileinstaller         # network: none; data: none; permissions: none; writes ART profiles on the device; receiver guarded by the system DUMP permission
+androidx.savedstate:savedstate                     # network: none; data: none; permissions: none; activity saved state (in memory)
+androidx.startup:startup-runtime                   # network: none; data: none; permissions: none; app startup initializers (non-exported provider)
+androidx.tracing:tracing                           # network: none; data: none; permissions: none; systrace markers, local only
+androidx.versionedparcelable:versionedparcelable   # network: none; data: none; permissions: none; parcel helpers
+androidx.viewpager:viewpager                       # network: none; data: none; permissions: none; view helpers
+androidx.window.extensions.core:core               # network: none; data: none; permissions: none; window extensions API (foldables)
+androidx.window:window                             # network: none; data: none; permissions: none; window metrics (foldables)
+androidx.window:window-java                        # network: none; data: none; permissions: none; window metrics (foldables)
+com.getkeepsafe.relinker:relinker                  # network: none; data: none; permissions: none; loads bundled native libraries (Flutter engine)
+com.google.guava:listenablefuture                  # network: none; data: none; permissions: none; empty compatibility artifact
+io.flutter:arm64_v8a_release                       # network: none; data: none; permissions: none; Flutter engine (release: no VM service, no network use by the engine)
+io.flutter:armeabi_v7a_release                     # network: none; data: none; permissions: none; Flutter engine (release: no VM service, no network use by the engine)
+io.flutter:flutter_embedding_release               # network: none; data: none; permissions: none; Flutter Android embedding
+io.flutter:x86_64_release                          # network: none; data: none; permissions: none; Flutter engine (release: no VM service, no network use by the engine)
+org.jetbrains.kotlin:kotlin-stdlib                 # network: none; data: none; permissions: none; Kotlin standard library
+org.jetbrains.kotlin:kotlin-stdlib-common          # network: none; data: none; permissions: none; Kotlin standard library
+org.jetbrains.kotlin:kotlin-stdlib-jdk7            # network: none; data: none; permissions: none; Kotlin standard library
+org.jetbrains.kotlin:kotlin-stdlib-jdk8            # network: none; data: none; permissions: none; Kotlin standard library
+org.jetbrains.kotlinx:kotlinx-coroutines-android   # network: none; data: none; permissions: none; coroutines
+org.jetbrains.kotlinx:kotlinx-coroutines-bom       # network: none; data: none; permissions: none; version alignment only, no code
+org.jetbrains.kotlinx:kotlinx-coroutines-core      # network: none; data: none; permissions: none; coroutines
+org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm  # network: none; data: none; permissions: none; coroutines
+org.jetbrains:annotations                          # network: none; data: none; permissions: none; compile-time annotations
+org.jspecify:jspecify                              # network: none; data: none; permissions: none; compile-time nullness annotations
