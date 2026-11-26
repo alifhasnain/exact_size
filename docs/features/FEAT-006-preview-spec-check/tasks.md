@@ -256,7 +256,7 @@ The task total is 1.5 d above tech and 0.2 pw above its 1.1–1.3 pw range: the 
 **Not covered by a task:** PRD OQ-9 compliance review (Data safety reading, PCI "opaque image" reading, local data-protection law) is release work for the Product Owner, as in FEAT-007.
 
 ## Open items
-1. **2 GB emulator profile.** NFR-1 names it. FEAT-007 recorded the local emulator's data as corrupted; CLAUDE.md says keep it running. T01 and T15 use it if available, otherwise the Realme 2 Pro and CI API 28 numbers stand in; the Product Owner accepts that at G0.
+1. **2 GB emulator profile.** NFR-1 names it. FEAT-007 recorded the local emulator's data as corrupted; CLAUDE.md says keep it running. T01 and T15 use it if available, otherwise the Realme 2 Pro and CI API 28 numbers stand in; the Product Owner accepts that at G0. Accepted 2026-11-26 (Test record).
 2. **AC-7.1 wording.** "FEAT-007 suite passes unchanged" is met in the OQ-T1 sense (behaviour assertions unchanged, fixed edit set), not word for word.
 3. **TalkBack** is not installed on the Realme 2 Pro (FEAT-007 T23). AC-4.6 and AC-8.2 are covered by semantics tests and `uiautomator events`; speech is checked only if the Product Owner installs TalkBack.
 4. **Recents on Android 9–12** has no protection (PRD privacy flag 2); AC-6.1 is checked on API 36 only, by eye.
@@ -279,6 +279,7 @@ _Filled in by T01, T10, T12, T14, T15, T16 and T17 (one row per check and device
 | 2026-11-25 | T01 | Local 2 GB API 36 emulator H3 row: not run, the emulator is not running and its data was recorded as corrupted (Open items 1); the Realme and CI API 28 numbers stand in | Realme 2 Pro, API 36, profile build | Gap, see Open items 1 |
 | 2026-11-25 | T01 | Cleanup: spike fixtures deleted by the test teardown; test build uninstalled (package absent afterwards) | Realme 2 Pro, API 36, profile build | Done |
 | 2026-11-25 | T01 | Gate G0: passed. `file://` decode works on API 36 and API 28; 2 MP measure + decode at most 92.5 ms median and 142 ms p95 (Realme, gate 500 ms / 1.5 s); steady extra at a 24 MP output 10.8 MB at cap 2048, so at most that at cap = short side (gate 24 MB). Recorded, not gated: peak (estimate only, see above) and the 10 MB PNG `checkContainer` time of 0.3-0.4 s on the Realme (tech [Hypothesis] was 100 ms; it adds to the time to verdict for large PNG outputs only, still far inside NFR-1). No fallback needed. Spike branch deleted, never merged | Realme 2 Pro and CI API 28 | Pass |
+| 2026-11-26 | T01 | Gate G0 gaps accepted by the Product Owner: the Realme 2 Pro and CI API 28 numbers stand in for the 2 GB emulator (Open items 1), and the peak memory figure is an estimate | Product Owner | Accepted |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-004, ADR-007 and ADR-001 before starting a task.
