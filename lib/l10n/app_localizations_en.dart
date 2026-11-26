@@ -344,11 +344,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportDone => 'Done';
 
   @override
-  String exportReady(String width, String height, String size, String format) {
-    return 'Ready: $width × $height px, $size, $format';
-  }
-
-  @override
   String exportSaved(String folder, String fileName) {
     return 'Saved to $folder as $fileName.';
   }

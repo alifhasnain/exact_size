@@ -44,6 +44,19 @@ void main() {
     expect(RegExp('[0-9]').hasMatch(alt.replaceAll(RegExp('\u2066[^\u2069]*\u2069'), '')), isFalse);
   });
 
+  // Moved from export_messages_test (FEAT-006-T13): the one LTR isolate opens in the width and
+  // closes in the height, which holds only while every ARB keeps {width} before {height}.
+  test('"W × H" stays one LTR isolate, width first, in every locale (checkPixels, previewAlt)', () {
+    const lri = '\u2066', pdi = '\u2069';
+    for (final locale in AppLocalizations.supportedLocales) {
+      final m = CheckMessages(lookupAppLocalizations(locale));
+      for (final text in [m.pixels(1200, 300), m.previewAlt(1200, 300, OutputFormat.jpeg)]) {
+        final run = RegExp('$lri([^$lri$pdi]*)$pdi').firstMatch(text)?.group(1) ?? '';
+        expect(run, allOf(startsWith('1'), endsWith('300'), contains('×')), reason: '$locale: $text');
+      }
+    }
+  });
+
   test('pixels, format and the 1,024 line', () {
     expect(plain(msg.pixels(1200, 300)), '1,200 × 300 px');
     expect(plain(msg.format(OutputFormat.png)), 'PNG');

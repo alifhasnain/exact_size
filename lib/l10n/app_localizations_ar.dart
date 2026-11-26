@@ -344,11 +344,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exportDone => 'تم';
 
   @override
-  String exportReady(String width, String height, String size, String format) {
-    return 'الصورة جاهزة: $width × $height بكسل، $size، $format';
-  }
-
-  @override
   String exportSaved(String folder, String fileName) {
     return 'تم حفظ الملف في $folder باسم $fileName.';
   }

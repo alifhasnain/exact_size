@@ -83,7 +83,6 @@
   "exportSaveAs": "اختيار مكان الحفظ",
   "exportOpen": "فتح",
   "exportDone": "تم",
-  "exportReady": "الصورة جاهزة: {width} × {height} بكسل، {size}، {format}",
   "exportSaved": "تم حفظ الملف في {folder} باسم {fileName}.",
   "exportSavedAs": "تم حفظ الملف باسم {fileName}.",
   "exportAlreadySaved": "تم حفظ هذا الملف مسبقًا باسم {fileName} في {folder}.",

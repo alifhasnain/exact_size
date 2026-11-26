@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:exact_size/features/compression/domain/compression_result.dart';
-import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/export/domain/export_outcome.dart';
 import 'package:exact_size/features/export/domain/export_types.dart';
 import 'package:exact_size/features/export/presentation/export_messages.dart';
@@ -39,24 +37,10 @@ void main() {
     expect(m.message(ExportOutcome.alreadySaved, viaSaveAs), 'Already saved as $lri$name$pdi.');
   });
 
-  test('ready line uses FEAT-004 size and the target pixels', () {
-    final text = m.ready(const CompressionSuccess(tempFilePath: 'x', sizeBytes: 48200, format: OutputFormat.jpeg), const Target(1200, 300));
-    expect(text.replaceAll(RegExp('[\u2066-\u2069]'), ''), 'Ready: 1,200 × 300 px, 48.2 KB, JPEG');
-  });
-
-  test('ready line keeps "W × H" in one LTR isolate in every locale (RTL order)', () {
-    for (final locale in AppLocalizations.supportedLocales) {
-      final text = ExportMessages(lookupAppLocalizations(locale))
-          .ready(const CompressionSuccess(tempFilePath: 'x', sizeBytes: 48200, format: OutputFormat.jpeg), const Target(1200, 300));
-      final run = RegExp('$lri([^$lri$pdi]*)$pdi').firstMatch(text)?.group(1) ?? '';
-      expect(run, allOf(startsWith('1'), endsWith('300'), contains('×')), reason: '$locale');
-    }
-  });
-
   test('new export ARB messages carry no literal numbers and have descriptions', () {
     final arb = jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync()) as Map<String, dynamic>;
     final keys = arb.keys.where((k) => k.startsWith('export')).toList();
-    expect(keys, hasLength(23));
+    expect(keys, hasLength(22)); // FEAT-006-T13 removed the "Ready:" line
     for (final k in keys) {
       expect(RegExp(r'[0-9]').hasMatch(arb[k] as String), isFalse, reason: k);
       expect(((arb['@$k'] as Map)['description'] as String).trim(), isNotEmpty, reason: k);

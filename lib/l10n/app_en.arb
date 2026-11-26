@@ -450,8 +450,6 @@
   "@exportOpen": {"description": "FEAT-007 button (FR-15): opens the saved file in a photo viewer app."},
   "exportDone": "Done",
   "@exportDone": {"description": "FEAT-007 result screen button: leaves the result and goes back to choosing a photo."},
-  "exportReady": "Ready: {width} × {height} px, {size}, {format}",
-  "@exportReady": {"description": "FEAT-007 FR-29 result line. width and height are formatted pixel counts, size is a formatted file size like '48.2 KB', format is JPEG or PNG. All arrive wrapped in bidi isolates. Keep the × sign and px unit as your language writes them.", "placeholders": {"width": {"type": "String", "example": "300"}, "height": {"type": "String", "example": "300"}, "size": {"type": "String", "example": "48.2 KB"}, "format": {"type": "String", "example": "JPEG"}}},
   "exportSaved": "Saved to {folder} as {fileName}.",
   "@exportSaved": {"description": "FEAT-007 SAVED (FR-11). folder is the gallery folder path and fileName the saved file name; both are shown left to right and never translated.", "placeholders": {"folder": {"type": "String", "example": "Pictures/ExactSize"}, "fileName": {"type": "String", "example": "exactsize-300x300-a1b2c3.jpg"}}},
   "exportSavedAs": "Saved as {fileName}.",

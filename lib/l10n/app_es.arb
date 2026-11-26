@@ -83,7 +83,6 @@
   "exportSaveAs": "Elegir dónde guardar",
   "exportOpen": "Abrir",
   "exportDone": "Listo",
-  "exportReady": "Imagen lista: {width} × {height} px, {size}, {format}",
   "exportSaved": "Se guardó en {folder} como {fileName}.",
   "exportSavedAs": "Se guardó como {fileName}.",
   "exportAlreadySaved": "Ya se guardó como {fileName} en {folder}.",

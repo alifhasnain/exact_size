@@ -346,11 +346,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportDone => 'Selesai';
 
   @override
-  String exportReady(String width, String height, String size, String format) {
-    return 'Gambar siap: $width × $height px, $size, $format';
-  }
-
-  @override
   String exportSaved(String folder, String fileName) {
     return 'File disimpan di $folder sebagai $fileName.';
   }

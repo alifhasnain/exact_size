@@ -348,11 +348,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get exportDone => 'हो गया';
 
   @override
-  String exportReady(String width, String height, String size, String format) {
-    return 'इमेज तैयार है: $width × $height पिक्सेल, $size, $format';
-  }
-
-  @override
   String exportSaved(String folder, String fileName) {
     return 'फ़ाइल $folder में $fileName नाम से सेव हो गई।';
   }

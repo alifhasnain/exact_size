@@ -343,11 +343,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportDone => 'Listo';
 
   @override
-  String exportReady(String width, String height, String size, String format) {
-    return 'Imagen lista: $width × $height px, $size, $format';
-  }
-
-  @override
   String exportSaved(String folder, String fileName) {
     return 'Se guardó en $folder como $fileName.';
   }

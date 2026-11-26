@@ -347,11 +347,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get exportDone => 'Concluído';
 
   @override
-  String exportReady(String width, String height, String size, String format) {
-    return 'Imagem pronta: $width × $height px, $size, $format';
-  }
-
-  @override
   String exportSaved(String folder, String fileName) {
     return 'Arquivo salvo em $folder como $fileName.';
   }

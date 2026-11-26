@@ -83,7 +83,6 @@
   "exportSaveAs": "सेव करने की जगह चुनें",
   "exportOpen": "खोलें",
   "exportDone": "हो गया",
-  "exportReady": "इमेज तैयार है: {width} × {height} पिक्सेल, {size}, {format}",
   "exportSaved": "फ़ाइल {folder} में {fileName} नाम से सेव हो गई।",
   "exportSavedAs": "फ़ाइल {fileName} नाम से सेव हो गई।",
   "exportAlreadySaved": "यह फ़ाइल पहले ही {folder} में {fileName} नाम से सेव हो चुकी है।",

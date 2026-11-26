@@ -83,7 +83,6 @@
   "exportSaveAs": "Pilih lokasi penyimpanan",
   "exportOpen": "Buka",
   "exportDone": "Selesai",
-  "exportReady": "Gambar siap: {width} × {height} px, {size}, {format}",
   "exportSaved": "File disimpan di {folder} sebagai {fileName}.",
   "exportSavedAs": "File disimpan sebagai {fileName}.",
   "exportAlreadySaved": "File ini sudah disimpan sebagai {fileName} di {folder}.",

@@ -83,7 +83,6 @@
   "exportSaveAs": "Escolher onde salvar",
   "exportOpen": "Abrir",
   "exportDone": "Concluído",
-  "exportReady": "Imagem pronta: {width} × {height} px, {size}, {format}",
   "exportSaved": "Arquivo salvo em {folder} como {fileName}.",
   "exportSavedAs": "Arquivo salvo como {fileName}.",
   "exportAlreadySaved": "Este arquivo já foi salvo como {fileName} em {folder}.",

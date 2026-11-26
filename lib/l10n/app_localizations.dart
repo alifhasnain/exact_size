@@ -605,12 +605,6 @@ abstract class AppLocalizations {
   /// **'Done'**
   String get exportDone;
 
-  /// FEAT-007 FR-29 result line. width and height are formatted pixel counts, size is a formatted file size like '48.2 KB', format is JPEG or PNG. All arrive wrapped in bidi isolates. Keep the × sign and px unit as your language writes them.
-  ///
-  /// In en, this message translates to:
-  /// **'Ready: {width} × {height} px, {size}, {format}'**
-  String exportReady(String width, String height, String size, String format);
-
   /// FEAT-007 SAVED (FR-11). folder is the gallery folder path and fileName the saved file name; both are shown left to right and never translated.
   ///
   /// In en, this message translates to:
