@@ -133,7 +133,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `prd.md` only: version 1.1, status `Under Discussion` (CLAUDE.md rule for changing an Approved doc), Change log line. AC-4.3: the Dart package list fails in `flutter test`; the Gradle coordinate list fails in the release build (OQ-T1). FR-11: "its log line appears in CI" becomes "a marker file it writes is asserted in CI" (tech FR-11). No scope change. Tell the Product Owner; only the Product Owner's `/approve` sets it back to Approved.
 - **Done when:** the PRD diff touches only AC-4.3, FR-11, the version, status and Change log; the Product Owner has been told; the re-approval (or the decision to keep 1.0 and accept the deviation) is recorded before G-final.
 
-### - [ ] FEAT-016-T13 — Explainer design pass with the Product Owner (impeccable, lean) — gate G1
+### - [x] FEAT-016-T13 — Explainer design pass with the Product Owner (impeccable, lean) — gate G1
 - **Implements:** prerequisite for FR-2, FR-3, FR-4, NFR-2, NFR-4 (visual) · **ADRs:** —
 - **Depends on:** T07, T08
 - **Size:** S (developer side; the Product Owner's time is not counted)
@@ -256,6 +256,7 @@ _Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and d
 | 2026-11-27 | T10 | API 28 backup, slim throwaway run (branch never merged, deleted after): release APK installed, `getprop ro.build.version.sdk` = 28, package flags `[ HAS_CODE ALLOW_CLEAR_USER_DATA ]` (no ALLOW_BACKUP), `bmgr backupnow` gives "Package com.exactsize.exact_size with result: Backup is not allowed". Backup Manager was disabled, enabled for the check, disabled again. First attempt (45875475653) did not boot the emulator (runner disk full); rerun with the usual disk cleanup | CI API 28 emulator, run 45877836926 | Pass |
 | 2026-11-27 | T10 | Finding for earlier records: because Wi-Fi stays on in airplane mode on this phone, the FEAT-006 T17 row "AC-6.4, NFR-3: airplane mode on (Wi-Fi off)" did not prove offline (the run noted `wifi_on` 2, the same state as today). Its result (check and Save work) is not in doubt, and FEAT-016 T10 now proves the pipeline offline on the phone and on API 28; T17 re-runs Save and Share offline with Wi-Fi off (Open items 6). FEAT-006 docs are Implemented and are not edited here | Realme 2 Pro, API 36 | Recorded |
 | 2026-11-27 | T12 | PRD 1.1 (AC-4.3, FR-11 wording, no scope change) re-approved by the Product Owner (`/approve FEAT-016`) | Product Owner | Approved |
+| 2026-11-27 | T13 | Gate G1: lean impeccable design (t13/explainer_design.md, 2026-11-27) and the T07 English copy accepted by the Product Owner with the default title placement (title in the scroll body, app bar with Back only) | Product Owner | Accepted |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.
