@@ -105,7 +105,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `test/privacy/privacy_copy_test.dart` per tech section 8: FR-5 banned list, case-insensitive, over `privacy*`, `pickPrivacyNote`, `exportPrivacy` in `app_en.arb`, PRD section 8 message; Latin tokens (`100%`, `GPS`, `GDPR`, `PCI`) in all 6 ARBs; every `privacy*` key except `privacyEntry`/`privacyTitle` has an `@` description matching `C\d+` and no `{placeholder}`; English values matching `internet|connect|network|offline|online` fail outside `pickSourceUnavailable`, `privacyOffline`, `privacyOfflineTitle`; word and sentence counts for FR-3. The presence-in-6-locales check is added in T16 (it cannot pass before translation).
 - **Done when:** passes on the tree; a planted "never leaves" in a scratch copy of the English map fails with the PRD message; a missing C-ID and a placeholder each fail; a "no internet" phrase in a non-allow-listed key fails. If an existing non-privacy key trips the connectivity rule, stop and report; do not widen the allow-list silently.
 
-### - [ ] FEAT-016-T09 — Global uncaught-error log (enum only)
+### - [x] FEAT-016-T09 — Global uncaught-error log (enum only)
 - **Implements:** FR-18, NFR-6, NFR-8 · **ADRs:** ADR-001
 - **Depends on:** T06
 - **Size:** M
@@ -249,6 +249,7 @@ _Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and d
 | 2026-11-27 | T03 | Release build: `checkMergedManifest: OK (13 self-test mutations refused)` with the four backup mutations (allowBackup removed, allowBackup true, dataExtractionRules missing, device-transfer loses one exclude); marker written | Host (Windows), release build | Pass |
 | 2026-11-27 | T03 | `gradlew :app:lintRelease`: no finding on `data_extraction_rules.xml`. One warning (DataExtractionRules) asks for `fullBackupContent` for API 28-30; left out on purpose (tech section 11: `allowBackup="false"` already covers those levels). The 2 lint errors are in the untracked, machine-local `android/local.properties` (path escaping), unrelated and pre-existing | Host (Windows) | Pass |
 | 2026-11-27 | T03 | Real phone: Backup Manager found disabled (`bmgr enabled`), not changed. Release build installed: package flags without `ALLOW_BACKUP`; `bmgr backupnow com.exactsize.exact_size` gives "Backup is not allowed". Build uninstalled; Backup Manager still disabled. Device-to-device transfer has no adb test: covered by lint and the gate only [Hypothesis stays]. API 28 `bmgr` check runs at P1 (T10) | Realme 2 Pro, API 36, release build (debug-signed) | Pass |
+| 2026-11-27 | T09 | Release logcat, throwaway probe entry point (not committed) that reports one framework error and throws one async error, each message holding `[PLACEHOLDER_PATH]`. Without the handler: `I flutter : Exception: framework [PLACEHOLDER_PATH]` and `E flutter : … Unhandled Exception: Exception: async [PLACEHOLDER_PATH]`, so release builds do print exception text (PRD gap 7 is now a [Fact]). With `installUncaughtErrorLog()`: only `exactsize.app outcome=UNCAUGHT source=FRAMEWORK` and `… source=PLATFORM`. Probe deleted, build uninstalled, no screenshot | Realme 2 Pro, API 36, release build | Pass |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.

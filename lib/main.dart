@@ -12,9 +12,11 @@ import 'features/compression/data/temp_files.dart';
 import 'features/export/data/export_bridge.dart';
 import 'features/export/data/share_copies.dart';
 import 'features/pick/data/system_picker.dart';
+import 'features/privacy/data/uncaught_error_log.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installUncaughtErrorLog(); // FEAT-016 FR-18: enum line only, never the error text
   await configureDependencies();
   registerEsCodecLicenses();
   LicenseRegistry.addLicense(() async* {
