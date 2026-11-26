@@ -1,8 +1,8 @@
 ---
 id: FEAT-016
 title: On-device-only, offline-capable processing with in-app privacy explainer
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-26
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, ADR-007, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-007, FEAT-012, FEAT-013, FEAT-018, FEAT-019, FEAT-025, FEAT-026, FEAT-027]
 ---
@@ -237,7 +237,7 @@ There is no user input. The rules apply to content and build inputs; messages ar
 - **Content and legal:** privacy policy text and URL [PLACEHOLDER]; compliance review (OQ-7); store listing text in six languages (store release budget 1.5 pw [Fact](docs/roadmap.md, Scoring conventions)).
 
 ## 12. Open questions
-- [ ] **OQ-1 (blocking) Claim scope.** Absolute ("Your photos never leave your phone") versus app-scoped ("ExactSize never uploads them"). **Proposed default: app-scoped**, with the FR-1 wording; it keeps the line true after Save or Share and after ads arrive, and follows all five translation reviews. Cost: retranslating `pickPrivacyNote` in five languages.
+- [x] **OQ-1 (blocking) Claim scope.** **Decided 2026-11-26 (Product Owner, `/approve` at defaults): app-scoped, FR-1 wording.** Absolute ("Your photos never leave your phone") versus app-scoped ("ExactSize never uploads them"). **Proposed default: app-scoped**, with the FR-1 wording; it keeps the line true after Save or Share and after ads arrive, and follows all five translation reviews. Cost: retranslating `pickPrivacyNote` in five languages.
 - [ ] **OQ-2 (non-blocking) Ads in R1.** Roadmap rows say "no-ads MVP"; BRIEF 1.5 and ROADMAP 1.4 ship ads and the subscription in R1; FEAT-025 is a Should and can be cut. **Proposed default:** treat both states as valid (this PRD), build the ad-free explainer in Phase A, FEAT-025 updates it. The Product Owner may want to correct the stale roadmap row text; this PRD does not edit it.
 - [ ] **OQ-3 (non-blocking) Entry point.** Tappable line, a labelled "How your photos are handled" control beside it, an info icon, or an extra link on the result screen. **Proposed default:** the labelled control beside the line on the pick screen only; decided in the impeccable pass.
 - [ ] **OQ-4 (non-blocking, before release) Privacy policy.** Who writes and hosts it, and whether Play requires an in-app link here [Hypothesis, not verified]. **Proposed default:** policy URL in the store listing [PLACEHOLDER]; no in-app link in the ad-free build (keeps FR-4 clean); FEAT-025 adds the link its consent flow needs.
@@ -254,3 +254,4 @@ There is no user input. The rules apply to content and build inputs; messages ar
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-26 | First draft |
+| 1.0 | 2026-11-26 | Approved by the Product Owner with open questions at their proposed defaults; OQ-1 decided (app-scoped claim) |
