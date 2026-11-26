@@ -256,7 +256,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pickPrivacyNote =>
-      'تبقى صورك على هاتفك ولا تُرفع إلى الإنترنت أبدًا.';
+      'يُغيَّر حجم صورك على هاتفك. ولا يرفعها ExactSize أبدًا.';
 
   @override
   String get pickOpening => 'جارٍ فتح صورتك…';
@@ -481,50 +481,50 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get privacyEntry => 'How your photos are handled';
+  String get privacyEntry => 'كيف تُعالَج صورك';
 
   @override
-  String get privacyTitle => 'Your photos and privacy';
+  String get privacyTitle => 'صورك وخصوصيتك';
 
   @override
-  String get privacyOnPhoneTitle => 'On your phone';
+  String get privacyOnPhoneTitle => 'على هاتفك';
 
   @override
   String get privacyOnPhone =>
-      'ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.';
+      'يغيّر ExactSize حجم صورتك على هاتفك. ولا يرفع ExactSize صورك أبدًا. ولا تحتاج إلى حساب.';
 
   @override
-  String get privacyOfflineTitle => 'Works offline';
+  String get privacyOfflineTitle => 'يعمل دون اتصال';
 
   @override
   String get privacyOffline =>
-      'Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.';
+      'تعمل كل خطوة دون اتصال بالإنترنت. أما إن كانت الصورة محفوظة في التخزين السحابي فقط، فيجب أن ينزّلها تطبيق المعرض أولًا.';
 
   @override
-  String get privacyKeptTitle => 'What ExactSize keeps';
+  String get privacyKeptTitle => 'ما يحتفظ به ExactSize';
 
   @override
   String get privacyKept =>
-      'ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.';
+      'يحتفظ ExactSize بنسخ مؤقتة أثناء عملك فقط. وتُحذف عند انتهائك من العمل أو عند فتح التطبيق في المرة التالية. ولا تحتوي سجلات ExactSize إلا على رموز حالة قصيرة، ولا تحتوي على صورتك أبدًا.';
 
   @override
-  String get privacyCopiesTitle => 'When you save or share';
+  String get privacyCopiesTitle => 'عند الحفظ أو المشاركة';
 
   @override
   String get privacyCopies =>
-      'Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.';
+      'عند الحفظ، توضع نسخة في معرضك أو في مجلد تختاره. وعند المشاركة، يحصل التطبيق الذي تختاره على نسخة. ومن تلك اللحظة، تصبح النسخة لك، ولا يتحكم فيها ExactSize.';
 
   @override
-  String get privacyOutsideTitle => 'Other apps on your phone';
+  String get privacyOutsideTitle => 'التطبيقات الأخرى على هاتفك';
 
   @override
   String get privacyOutside =>
-      'Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.';
+      'يتبع كلٌّ من معرضك ولوحة المفاتيح والتطبيقات التي تشارك الصور معها سياسة الخصوصية الخاصة به. وقد تنشئ بعضها نسخًا احتياطية أو ترسل ملفات.';
 
   @override
-  String get privacyReadsTitle => 'What ExactSize reads';
+  String get privacyReadsTitle => 'ما يقرؤه ExactSize';
 
   @override
   String get privacyReads =>
-      'ExactSize opens only the photo you choose. It does not browse your gallery or your files.';
+      'لا يفتح ExactSize إلا الصورة التي تختارها. ولا يستعرض معرضك أو ملفاتك.';
 }

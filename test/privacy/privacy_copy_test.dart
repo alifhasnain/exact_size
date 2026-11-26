@@ -90,6 +90,19 @@ void main() {
     expect(keyRuleProblems(en), isEmpty);
   });
 
+  test('every locale has every privacy key, translated (FR-6, FEAT-016-T16)', () {
+    final keys = [for (final k in english.keys) if (k.startsWith('privacy') || k == 'pickPrivacyNote') k];
+    expect(keys, hasLength(15));
+    for (final locale in locales.where((l) => l != 'en')) {
+      final strings = values(arb(locale));
+      for (final k in keys) {
+        expect(strings[k], isNotNull, reason: '$locale $k');
+        expect(strings[k], isNot(english[k]), reason: '$locale $k is still English');
+        expect(strings[k]!.contains('{'), isFalse, reason: '$locale $k');
+      }
+    }
+  });
+
   test('only the allowed keys talk about the network (FR-15)', () {
     expect(connectivityTalk(english), isEmpty);
   });

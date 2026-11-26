@@ -154,7 +154,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** widget tests: `androidTapTargetGuideline`, `labeledTapTargetGuideline`, `textContrastGuideline` on the pick screen and explainer; text scale 2.0 at 360×640 in en and ar with no overflow and all parts reachable by scrolling; ar `TextDirection.rtl`, digits 0-9 only. Screenshots on the Realme 2 Pro (profile build), foreground app checked before each, only ExactSize screens, states from T13. Explainer open time read from a profile trace on the Realme (and on the emulator only if already running), informational.
 - **Done when:** tests pass; the screenshots are in the PR (not committed unless the Product Owner asks); phone settings restored (font scale, locale) and build uninstalled; the Product Owner accepted them or named fixes, which are done here; G2 recorded. Until T16 the ar shot shows English privacy text; that is expected.
 
-### - [ ] FEAT-016-T16 — Translate privacy strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
+### - [x] FEAT-016-T16 — Translate privacy strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
 - **Implements:** FR-1, FR-5 (reviewer brief), FR-6, NFR-4 · **ADRs:** —
 - **Depends on:** T15 (G2; strings final)
 - **Size:** M (not counted: FEAT-019 work)
@@ -260,6 +260,7 @@ _Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and d
 | 2026-11-27 | T15 | `privacy_a11y_test.dart`: tap-target, labelled-target and text-contrast guidelines pass on the pick screen with the entry and on the explainer; en and ar at 200% on 360x640 have no overflow, every part is reachable by scrolling and the entry stays at least 48 dp; ar is right to left with the title at the right edge and no Eastern digits | Host (Windows), flutter test | Pass |
 | 2026-11-27 | T15 | G2 screenshots (profile build, foreground app checked before each, only ExactSize screens, status bar cropped): pick screen with the entry (en), explainer top and bottom (en), explainer in ar (English text until T16), explainer at 200% font. Explainer push, informational: 2 frames rendered, 0 janky, 50th and 90th percentile 10 ms (`dumpsys gfxinfo`). Settings: rotation locked to portrait for the run, then auto-rotate restored to on (found on); font scale 2.0 then back to 0.85; app language ar then cleared by uninstall; build uninstalled | Realme 2 Pro, API 36, profile build | Pass |
 | 2026-11-27 | T15 | Gate G2: the Product Owner accepted the five screenshots with no fixes. Known until T16: the ar shot shows the English privacy text | Product Owner | Accepted |
+| 2026-11-27 | T16 | `/l10n-translate` es, pt, hi, id, ar (run by the Product Owner): 15 keys each (pickPrivacyNote and the 14 privacy* keys), drafted by Claude Opus 5.5, blind review by Claude Sonnet and second blind review of all keys by Claude Haiku with the FR-5 banned list; 29 fixes (es 5, pt 3, hi 7, id 8, ar 6), open list none, status AI-reviewed only. `untranslated_messages.json` is `{}`; the new presence check (every locale has every privacy key, not English) and the 200% test in all 7 supported locales pass; 611 tests pass, analyze clean | Host (Windows) | Pass |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.

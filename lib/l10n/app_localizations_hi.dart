@@ -259,7 +259,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pickPrivacyNote =>
-      'आपकी फ़ोटो आपके फ़ोन पर ही रहती हैं और कभी इंटरनेट पर अपलोड नहीं होतीं।';
+      'आपकी फ़ोटो का साइज़ आपके फ़ोन पर ही बदला जाता है। ExactSize आपकी फ़ोटो कभी अपलोड नहीं करता।';
 
   @override
   String get pickOpening => 'आपकी फ़ोटो खुल रही है…';
@@ -486,50 +486,50 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get privacyEntry => 'How your photos are handled';
+  String get privacyEntry => 'आपकी फ़ोटो के साथ क्या होता है';
 
   @override
-  String get privacyTitle => 'Your photos and privacy';
+  String get privacyTitle => 'आपकी फ़ोटो और निजता';
 
   @override
-  String get privacyOnPhoneTitle => 'On your phone';
+  String get privacyOnPhoneTitle => 'आपके फ़ोन पर';
 
   @override
   String get privacyOnPhone =>
-      'ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.';
+      'ExactSize आपकी फ़ोटो का साइज़ आपके फ़ोन पर ही बदलता है। ExactSize आपकी फ़ोटो कभी अपलोड नहीं करता। आपको कोई अकाउंट नहीं बनाना पड़ता।';
 
   @override
-  String get privacyOfflineTitle => 'Works offline';
+  String get privacyOfflineTitle => 'बिना इंटरनेट के चलता है';
 
   @override
   String get privacyOffline =>
-      'Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.';
+      'हर स्टेप बिना इंटरनेट कनेक्शन के काम करता है। अगर कोई फ़ोटो सिर्फ़ क्लाउड में सेव है, तो पहले आपके गैलरी ऐप को उसे डाउनलोड करना होगा।';
 
   @override
-  String get privacyKeptTitle => 'What ExactSize keeps';
+  String get privacyKeptTitle => 'ExactSize क्या रखता है';
 
   @override
   String get privacyKept =>
-      'ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.';
+      'ExactSize अस्थायी कॉपियाँ सिर्फ़ तब तक रखता है, जब तक आप काम करते हैं। काम पूरा होने पर या अगली बार ऐप खुलने पर वे हटा दी जाती हैं। ExactSize के लॉग में सिर्फ़ छोटे स्टेटस कोड होते हैं, आपकी फ़ोटो कभी नहीं।';
 
   @override
-  String get privacyCopiesTitle => 'When you save or share';
+  String get privacyCopiesTitle => 'सेव या शेयर करने पर';
 
   @override
   String get privacyCopies =>
-      'Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.';
+      'सेव करने पर एक कॉपी आपकी गैलरी में या आपके चुने हुए फ़ोल्डर में जाती है। शेयर करने पर एक कॉपी आपके चुने हुए ऐप को मिलती है। उसके बाद वह कॉपी आपकी है, और ExactSize का उस पर कोई नियंत्रण नहीं रहता।';
 
   @override
-  String get privacyOutsideTitle => 'Other apps on your phone';
+  String get privacyOutsideTitle => 'आपके फ़ोन के दूसरे ऐप';
 
   @override
   String get privacyOutside =>
-      'Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.';
+      'आपकी गैलरी, आपका कीबोर्ड और जिन ऐप के साथ आप शेयर करते हैं, वे अपनी निजता नीतियों के मुताबिक काम करते हैं। उनमें से कुछ फ़ाइलों का बैकअप ले सकते हैं या उन्हें कहीं भेज सकते हैं।';
 
   @override
-  String get privacyReadsTitle => 'What ExactSize reads';
+  String get privacyReadsTitle => 'ExactSize क्या देखता है';
 
   @override
   String get privacyReads =>
-      'ExactSize opens only the photo you choose. It does not browse your gallery or your files.';
+      'ExactSize सिर्फ़ वही फ़ोटो खोलता है, जो आप चुनते हैं। यह आपकी गैलरी या बाकी फ़ाइलें नहीं देखता।';
 }

@@ -44,7 +44,7 @@ void main() {
     });
   }
 
-  for (final locale in [const Locale('en'), const Locale('ar')]) {
+  for (final locale in AppLocalizations.supportedLocales) {
     testWidgets('$locale at 200% on 360x640: no overflow, every part reachable by scrolling, entry reachable', (tester) async {
       final l = lookupAppLocalizations(locale);
       await pump(tester, const PrivacyScreen(), locale: locale, scale: 2);

@@ -259,7 +259,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get pickPrivacyNote =>
-      'Suas fotos ficam no seu celular e nunca são enviadas para a internet.';
+      'Suas fotos são redimensionadas no seu celular. O ExactSize nunca as envia para a internet.';
 
   @override
   String get pickOpening => 'Abrindo sua foto…';
@@ -484,52 +484,52 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get privacyEntry => 'How your photos are handled';
+  String get privacyEntry => 'Como suas fotos são tratadas';
 
   @override
-  String get privacyTitle => 'Your photos and privacy';
+  String get privacyTitle => 'Suas fotos e sua privacidade';
 
   @override
-  String get privacyOnPhoneTitle => 'On your phone';
+  String get privacyOnPhoneTitle => 'No seu celular';
 
   @override
   String get privacyOnPhone =>
-      'ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.';
+      'O ExactSize redimensiona sua foto no seu celular. O ExactSize nunca envia suas fotos para a internet. Você não precisa de uma conta.';
 
   @override
-  String get privacyOfflineTitle => 'Works offline';
+  String get privacyOfflineTitle => 'Funciona sem internet';
 
   @override
   String get privacyOffline =>
-      'Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.';
+      'Todas as etapas funcionam sem conexão com a internet. Se uma foto estiver salva só na nuvem, o app de galeria precisa baixá-la primeiro.';
 
   @override
-  String get privacyKeptTitle => 'What ExactSize keeps';
+  String get privacyKeptTitle => 'O que o ExactSize guarda';
 
   @override
   String get privacyKept =>
-      'ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.';
+      'O ExactSize guarda cópias temporárias só enquanto você trabalha. Elas são excluídas quando você termina ou na próxima vez que o app for aberto. Os registros contêm apenas códigos de status curtos, nunca sua foto.';
 
   @override
-  String get privacyCopiesTitle => 'When you save or share';
+  String get privacyCopiesTitle => 'Ao salvar ou compartilhar';
 
   @override
   String get privacyCopies =>
-      'Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.';
+      'Ao salvar, uma cópia vai para sua galeria ou para uma pasta que você escolher. Ao compartilhar, o app que você escolher recebe uma cópia. A partir daí, essa cópia é sua, e o ExactSize não tem controle sobre ela.';
 
   @override
-  String get privacyOutsideTitle => 'Other apps on your phone';
+  String get privacyOutsideTitle => 'Outros apps do seu celular';
 
   @override
   String get privacyOutside =>
-      'Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.';
+      'Sua galeria, seu teclado e os apps com que você compartilha seguem as próprias regras de privacidade. Alguns deles podem fazer backup ou enviar arquivos.';
 
   @override
-  String get privacyReadsTitle => 'What ExactSize reads';
+  String get privacyReadsTitle => 'O que o ExactSize lê';
 
   @override
   String get privacyReads =>
-      'ExactSize opens only the photo you choose. It does not browse your gallery or your files.';
+      'O ExactSize abre só a foto que você escolhe. Ele não percorre sua galeria nem seus arquivos.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

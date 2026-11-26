@@ -258,7 +258,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pickPrivacyNote =>
-      'Foto Anda tetap di ponsel Anda dan tidak pernah diunggah ke internet.';
+      'Foto Anda diubah ukurannya di ponsel Anda. ExactSize tidak pernah mengunggahnya.';
 
   @override
   String get pickOpening => 'Membuka foto Anda…';
@@ -484,50 +484,50 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get privacyEntry => 'How your photos are handled';
+  String get privacyEntry => 'Cara foto Anda ditangani';
 
   @override
-  String get privacyTitle => 'Your photos and privacy';
+  String get privacyTitle => 'Foto dan privasi Anda';
 
   @override
-  String get privacyOnPhoneTitle => 'On your phone';
+  String get privacyOnPhoneTitle => 'Di ponsel Anda';
 
   @override
   String get privacyOnPhone =>
-      'ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.';
+      'ExactSize mengubah ukuran foto Anda di ponsel Anda. ExactSize tidak pernah mengunggah foto Anda. Anda tidak perlu akun.';
 
   @override
-  String get privacyOfflineTitle => 'Works offline';
+  String get privacyOfflineTitle => 'Berfungsi tanpa koneksi internet';
 
   @override
   String get privacyOffline =>
-      'Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.';
+      'Setiap langkah berfungsi tanpa koneksi internet. Foto yang hanya ada di cloud harus diunduh terlebih dahulu ke ponsel oleh aplikasi galeri Anda.';
 
   @override
-  String get privacyKeptTitle => 'What ExactSize keeps';
+  String get privacyKeptTitle => 'Apa yang disimpan sementara oleh ExactSize';
 
   @override
   String get privacyKept =>
-      'ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.';
+      'ExactSize menyimpan salinan sementara hanya selama Anda bekerja. Salinan ini dihapus saat Anda selesai, atau saat aplikasi dibuka kembali. Log ExactSize hanya berisi kode status singkat, tidak pernah foto Anda.';
 
   @override
-  String get privacyCopiesTitle => 'When you save or share';
+  String get privacyCopiesTitle => 'Saat Anda menyimpan atau membagikan';
 
   @override
   String get privacyCopies =>
-      'Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.';
+      'Jika Anda menyimpan, salinan disimpan ke galeri Anda atau folder yang Anda pilih. Jika Anda membagikan, aplikasi yang Anda pilih menerima salinan. Setelah itu, salinan tersebut milik Anda, dan ExactSize tidak lagi mengendalikannya.';
 
   @override
-  String get privacyOutsideTitle => 'Other apps on your phone';
+  String get privacyOutsideTitle => 'Aplikasi lain di ponsel Anda';
 
   @override
   String get privacyOutside =>
-      'Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.';
+      'Galeri, keyboard, dan aplikasi tempat Anda berbagi mengikuti kebijakan privasinya masing-masing. Beberapa di antaranya dapat mencadangkan atau mengirim file.';
 
   @override
-  String get privacyReadsTitle => 'What ExactSize reads';
+  String get privacyReadsTitle => 'Apa yang dibaca ExactSize';
 
   @override
   String get privacyReads =>
-      'ExactSize opens only the photo you choose. It does not browse your gallery or your files.';
+      'ExactSize hanya membuka foto yang Anda pilih. ExactSize tidak menelusuri galeri atau file Anda.';
 }
