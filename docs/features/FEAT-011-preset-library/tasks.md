@@ -1,8 +1,8 @@
 ---
 id: FEAT-011-TASKS
 title: Built-in preset library — Implementation Tasks
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-27
 links: [FEAT-011, FEAT-011-TECH, ADR-001, FEAT-005, FEAT-002, FEAT-004, FEAT-014, FEAT-016, FEAT-019]
 ---
@@ -237,3 +237,4 @@ _Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: dat
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft |
+| 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TASKS) |
