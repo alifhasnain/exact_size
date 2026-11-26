@@ -63,12 +63,19 @@ dependencies {
 // release build if the merged manifest asks for camera, media or broad storage permissions or an
 // uncapped WRITE_EXTERNAL_STORAGE, exports a provider, widens or adds a FileProvider, or loses the
 // IMAGE_CAPTURE query. It only reports; it never strips entries with tools:node="remove".
-// Each run also self-tests: five broken copies of the real manifest must each be refused.
+// Each run also self-tests: broken copies of the real manifest must each be refused.
+// FEAT-016-T02 (FR-8, FR-11, NFR-5): every requested permission must be on a reviewed allow-list,
+// and a marker file proves to CI that the task ran (non-verbose `flutter build` hides its log line).
+// The task is registered for the release variant by name; a product-flavor change must rename it
+// per variant and update the CI marker assertion.
 abstract class CheckMergedManifest : DefaultTask() {
     @get:InputFile abstract val manifest: RegularFileProperty
     @get:InputFile abstract val cameraPaths: RegularFileProperty
     @get:InputFile abstract val sharePaths: RegularFileProperty
     @get:Input abstract val applicationId: Property<String>
+    @get:OutputFile abstract val marker: RegularFileProperty
+
+    private val followFr12 = "Follow FEAT-016 FR-12 (docs/features/FEAT-016-on-device-privacy/claims.md)."
 
     private val android = "http://schemas.android.com/apk/res/android"
     private fun parse(f: File) = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = true }
@@ -83,6 +90,14 @@ abstract class CheckMergedManifest : DefaultTask() {
         val id = applicationId.get()
         val problems = mutableListOf<String>()
 
+        // FEAT-016 FR-8: the reviewed set of permissions (T01 H3: release APK, 2026-11-26).
+        val reviewed = setOf("android.permission.WRITE_EXTERNAL_STORAGE", "$id.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION")
+        val network = mapOf(
+            "android.permission.INTERNET" to "lets the app use the network",
+            "android.permission.ACCESS_NETWORK_STATE" to "reads the network state",
+            "android.permission.ACCESS_WIFI_STATE" to "reads the Wi-Fi state",
+            "com.google.android.gms.permission.AD_ID" to "reads the advertising ID",
+        )
         val banned = setOf("android.permission.CAMERA", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.ACCESS_MEDIA_LOCATION",
             "android.permission.MANAGE_EXTERNAL_STORAGE")
         for (tag in listOf("uses-permission", "uses-permission-sdk-23")) {
@@ -90,6 +105,10 @@ abstract class CheckMergedManifest : DefaultTask() {
                 val name = p.a("name")
                 if (name in banned || name.startsWith("android.permission.READ_MEDIA_")) {
                     problems += "Banned permission $name in the merged manifest (FEAT-001 FR-18, FEAT-007 FR-8). Find the dependency that adds it; do not strip it with tools:node=\"remove\"."
+                } else if (name in network) {
+                    problems += "Permission $name ($tag) ${network[name]}: ExactSize never uses the network (FEAT-016 FR-8). Find the dependency that adds it; do not strip it with tools:node=\"remove\". $followFr12"
+                } else if (name !in reviewed) {
+                    problems += "Permission $name ($tag) is not on the reviewed list (FEAT-016 FR-8). $followFr12"
                 }
                 if (name == "android.permission.WRITE_EXTERNAL_STORAGE" && (p.a("maxSdkVersion").toIntOrNull() ?: Int.MAX_VALUE) > 28) {
                     problems += "WRITE_EXTERNAL_STORAGE must have android:maxSdkVersion=\"28\" or lower (found \"${p.a("maxSdkVersion")}\") (FEAT-007 FR-8)."
@@ -137,9 +156,18 @@ abstract class CheckMergedManifest : DefaultTask() {
     fun check() {
         val problems = problems(parse(manifest.get().asFile), parse(cameraPaths.get().asFile), parse(sharePaths.get().asFile)).toMutableList()
 
-        // Self-test (FEAT-007-T04): each broken copy must be refused.
+        // Self-test (FEAT-007-T04, FEAT-016-T02): each broken copy must be refused; a permission
+        // mutation must be refused with a message that names the permission and points to FR-12.
         fun write(r: Element) = r.all("uses-permission").first { it.a("name") == "android.permission.WRITE_EXTERNAL_STORAGE" }
         fun share(r: Element) = r.all("provider").first { "${applicationId.get()}.share" in it.authorities() }
+        fun ask(r: Element, tag: String, name: String) =
+            r.appendChild(r.ownerDocument.createElement(tag).also { it.setAttributeNS(android, "android:name", name) })
+        val namedIn = mapOf(
+            "INTERNET added" to "android.permission.INTERNET",
+            "ACCESS_NETWORK_STATE as uses-permission-sdk-23" to "android.permission.ACCESS_NETWORK_STATE",
+            "AD_ID added" to "com.google.android.gms.permission.AD_ID",
+            "unknown permission added" to "[PLACEHOLDER].permission.UNREVIEWED",
+        )
         val mutations: List<Pair<String, (Element, Element) -> Unit>> = listOf(
             "WRITE uncapped" to { r, _ -> write(r).removeAttributeNS(android, "maxSdkVersion") },
             "WRITE capped at 29" to { r, _ -> write(r).setAttributeNS(android, "android:maxSdkVersion", "29") },
@@ -152,6 +180,10 @@ abstract class CheckMergedManifest : DefaultTask() {
             "second path in share_paths.xml" to { _, s ->
                 s.appendChild(s.ownerDocument.createElement("files-path").also { it.setAttribute("name", "x"); it.setAttribute("path", "") })
             },
+            "INTERNET added" to { r, _ -> ask(r, "uses-permission", "android.permission.INTERNET") },
+            "ACCESS_NETWORK_STATE as uses-permission-sdk-23" to { r, _ -> ask(r, "uses-permission-sdk-23", "android.permission.ACCESS_NETWORK_STATE") },
+            "AD_ID added" to { r, _ -> ask(r, "uses-permission", "com.google.android.gms.permission.AD_ID") },
+            "unknown permission added" to { r, _ -> ask(r, "uses-permission", "[PLACEHOLDER].permission.UNREVIEWED") },
         )
         for ((label, mutate) in mutations) {
             val r = parse(manifest.get().asFile)
@@ -162,10 +194,16 @@ abstract class CheckMergedManifest : DefaultTask() {
                 problems += "Self-test \"$label\" could not run: ${e.message}"
                 continue
             }
-            if (problems(r, parse(cameraPaths.get().asFile), s).isEmpty()) problems += "Self-test failed: a merged manifest with \"$label\" was not refused."
+            val found = problems(r, parse(cameraPaths.get().asFile), s)
+            if (found.isEmpty()) problems += "Self-test failed: a merged manifest with \"$label\" was not refused."
+            val name = namedIn[label]
+            if (name != null && found.none { name in it && followFr12 in it }) {
+                problems += "Self-test failed: \"$label\" was refused without naming $name and pointing to FEAT-016 FR-12."
+            }
         }
 
         if (problems.isNotEmpty()) throw GradleException("checkMergedManifest failed:\n- " + problems.joinToString("\n- "))
+        marker.get().asFile.apply { parentFile.mkdirs(); writeText("OK ${mutations.size} self-test mutations refused\n") }
         logger.lifecycle("checkMergedManifest: OK (${mutations.size} self-test mutations refused)")
     }
 }
@@ -177,6 +215,7 @@ androidComponents {
             cameraPaths.set(layout.projectDirectory.file("src/main/res/xml/camera_paths.xml"))
             sharePaths.set(layout.projectDirectory.file("src/main/res/xml/share_paths.xml"))
             applicationId.set(variant.applicationId)
+            marker.set(layout.buildDirectory.file("outputs/privacy/checkMergedManifest.ok"))
         }
         tasks.matching { it.name == "assembleRelease" || it.name == "bundleRelease" }.configureEach { dependsOn(check) }
     }

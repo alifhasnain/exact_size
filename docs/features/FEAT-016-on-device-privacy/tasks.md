@@ -56,7 +56,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
   - H4: counts of `.dart` files under `lib/` and `.kt`/`.java` files under `android/app/src/main` for the NFR-5 floors (real count minus a margin).
 - **Done when:** one Test record row per H item (result, no paths beyond repo-relative ones); G0 recorded; if any H fails, a tech.md change is proposed to the Product Owner and T02/T05 wait.
 
-### - [ ] FEAT-016-T02 — Manifest permission allow-list and gate marker
+### - [x] FEAT-016-T02 — Manifest permission allow-list and gate marker
 - **Implements:** FR-8, FR-11, FR-12 (message), NFR-5 · **ADRs:** ADR-007
 - **Depends on:** T01 (G0)
 - **Size:** M
