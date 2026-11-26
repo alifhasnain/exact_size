@@ -147,7 +147,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `lib/features/privacy/presentation/privacy_screen.dart` (stateless, ARB text only, no provider, no log); `PickView` gets `onPrivacy` and the entry control per G1; `PickScreen` pushes `PrivacyScreen` with `MaterialPageRoute<void>`. No `PopScope`. No `pubspec.yaml` or Gradle change.
 - **Done when:** `test/features/privacy/privacy_screen_test.dart` passes: tap the entry control on a pumped `PickScreen` → title shown (1 tap, AC-2.1); Back → pick screen with the same `PickController` state; the 6 headings are header semantics in order (a)–(f) followed by their bodies; no `InkWell`, `GestureDetector` on text, link semantics, `Image` or progress indicator in the tree (FR-4, AC-2.2); a share-in while open returns to the first route (`popUntil`); the entry control is ≥ 48 dp. T06 scan still green (NFR-6); `git diff --quiet pubspec.yaml pubspec.lock android/app/build.gradle.kts` apart from T02–T04 (NFR-10).
 
-### - [ ] FEAT-016-T15 — Accessibility, 200% font, RTL, screenshots — gate G2
+### - [x] FEAT-016-T15 — Accessibility, 200% font, RTL, screenshots — gate G2
 - **Implements:** NFR-2, NFR-4, FR-1 (on screen), FR-2, NFR-1 (informational) · **ADRs:** —
 - **Depends on:** T14
 - **Size:** M
@@ -259,6 +259,7 @@ _Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and d
 | 2026-11-27 | T13 | Gate G1: lean impeccable design (t13/explainer_design.md, 2026-11-27) and the T07 English copy accepted by the Product Owner with the default title placement (title in the scroll body, app bar with Back only) | Product Owner | Accepted |
 | 2026-11-27 | T15 | `privacy_a11y_test.dart`: tap-target, labelled-target and text-contrast guidelines pass on the pick screen with the entry and on the explainer; en and ar at 200% on 360x640 have no overflow, every part is reachable by scrolling and the entry stays at least 48 dp; ar is right to left with the title at the right edge and no Eastern digits | Host (Windows), flutter test | Pass |
 | 2026-11-27 | T15 | G2 screenshots (profile build, foreground app checked before each, only ExactSize screens, status bar cropped): pick screen with the entry (en), explainer top and bottom (en), explainer in ar (English text until T16), explainer at 200% font. Explainer push, informational: 2 frames rendered, 0 janky, 50th and 90th percentile 10 ms (`dumpsys gfxinfo`). Settings: rotation locked to portrait for the run, then auto-rotate restored to on (found on); font scale 2.0 then back to 0.85; app language ar then cleared by uninstall; build uninstalled | Realme 2 Pro, API 36, profile build | Pass |
+| 2026-11-27 | T15 | Gate G2: the Product Owner accepted the five screenshots with no fixes. Known until T16: the ar shot shows the English privacy text | Product Owner | Accepted |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.
