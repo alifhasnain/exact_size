@@ -266,6 +266,7 @@ _Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and d
 | 2026-11-27 | T17 | `adb logcat --pid` of the release app during the run: app lines are outcome codes only (pick ACCEPTED x2, CANCELLED x2, crop and compression SUCCESS, preview SPEC_MEETS, export SAVED and SHARE_OPENED); no `exactsize-` name, `/storage/`, `content://`, file name, size or dimension | Realme 2 Pro, API 36, release build | Pass |
 | 2026-11-27 | T17 | Register vs English explainer: each part's sentences map to its claim IDs (C1, C3 / C2 / C4, C5 / C8 / C9 / C10; checked by `privacy_copy_test.dart`), no sentence claims C6 or C7, and the pick line maps to C1. AC-3.2 (online-only photo offline) is covered by FEAT-001's existing `pickSourceUnavailable` message; no online-only photo was created on the owner's account | Host | Pass |
 | 2026-11-27 | T17 | Cleanup: the synthetic source in Download and the saved output in Pictures/ExactSize deleted with their MediaStore rows (none left from the run); `/sdcard/ui.xml` removed; build uninstalled. Settings as found: airplane 0, Wi-Fi 1, mobile data 0, font 0.85, auto-rotate 1 (locked to portrait for the run; it switched itself back on once mid-run, as in earlier runs), user rotation 0 | Realme 2 Pro, API 36 | Done |
+| 2026-11-27 | T17 | P2 (commit 7a9973f): all 3 jobs green; the "Privacy gates ran" marker step passes and the 3 offline cases pass on API 28 | CI API 28, run 45886183791 | Pass |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.
