@@ -1,9 +1,9 @@
 ---
 id: FEAT-016
 title: On-device-only, offline-capable processing with in-app privacy explainer
-status: Approved
-version: 1.0
-updated: 2026-11-26
+status: Under Discussion
+version: 1.1
+updated: 2026-11-27
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, ADR-007, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-007, FEAT-012, FEAT-013, FEAT-018, FEAT-019, FEAT-025, FEAT-026, FEAT-027]
 ---
 
@@ -76,7 +76,7 @@ No usage telemetry exists or is allowed for this feature (NFR-6), so metrics are
 - **US-4** As the maintainer (Product Owner with Claude Code), I want the build to fail when the promise would become false, so that no later change makes a claim untrue by accident.
   - **AC-4.1** Given a change adds INTERNET (directly or through a plugin), when the release build runs, then it fails and names the permission and the allow-list rule.
   - **AC-4.2** Given a network class or banned SDK import in any file under `lib/`, the Kotlin sources or `es_codec` (including a new folder), when `flutter test` runs, then the scan fails with file and line.
-  - **AC-4.3** Given a new Dart package or Gradle dependency, when `flutter test` runs, then the dependency test fails until the package is added to the reviewed list with a network and data note.
+  - **AC-4.3** Given a new Dart package, when `flutter test` runs, then the dependency test fails until the package is added to the reviewed list with a network and data note. Given a new Gradle dependency, the release build fails the same way (FEAT-016-TECH OQ-T1).
   - **AC-4.4** Given each rule, when its self-test plants a violation, then the check fails; and when the planted violation is removed, then it passes.
   - **AC-4.5** Given a failure message, when it is shown, then it points to the change procedure (FR-12).
 - **US-5** As the Product Owner preparing the store listing, I want a data inventory, permission list and claims register that match the build, so that the Data safety form and listing are honest and quick to fill.
@@ -119,7 +119,7 @@ flowchart LR
 | FR-8 | The release build shall fail unless the merged release manifest permission set is within a reviewed allow-list (today: `WRITE_EXTERNAL_STORAGE` with max API 28 and the AndroidX non-exported receiver permission). The message shall name INTERNET, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE and `com.google.android.gms.permission.AD_ID` when found [Hypothesis: AD_ID is the ads-identifier permission, to verify with FEAT-025]. It extends `checkMergedManifest` and its self-test pattern, and shall not strip entries with `tools:node="remove"` (existing rule). | US-4 | Must |
 | FR-9 | One test shall scan, deny by default, every `.dart` file under `lib/` (generated localisation and injection files included or excluded by an explicit list), `packages/es_codec/lib` and `hook`, and the Kotlin files under `android/app/src/main`, for: network packages and classes (the existing list), `java.net`, OkHttp, WebView; analytics, ads and crash SDK imports; and `Clipboard`. The exempt-path list is empty in R1. It supersedes the folder lists in the existing per-feature tests; those tests stay as they are. Today's code has no match, so the scan starts green [Fact](grep of lib/, packages/es_codec/lib and hook, 2026-11-26). | US-4 | Must |
 | FR-10 | A test shall compare the Dart package names in `pubspec.lock` and the Gradle dependency coordinates with a checked-in reviewed list, and fail on any name not listed, saying "review network, data and permissions, then add with a note". Version bumps of listed names do not fail. | US-4 | Should |
-| FR-11 | The gates shall run inside existing CI steps (`flutter test`; the release build) and locally in `flutter test` before each push [Fact](CLAUDE.md, Budget), each with a self-test that plants a violation (INTERNET permission, network class in a new folder, unlisted package) and expects failure. The Stage 6 task shall confirm that `flutter build apk --release` runs `checkMergedManifest` and that its log line appears in CI [Hypothesis: the Flutter tool calls `assembleRelease`; the check is attached to that task]. | US-4 | Must |
+| FR-11 | The gates shall run inside existing CI steps (`flutter test`; the release build) and locally in `flutter test` before each push [Fact](CLAUDE.md, Budget), each with a self-test that plants a violation (INTERNET permission, network class in a new folder, unlisted package) and expects failure. Each release-build gate writes a marker file, and CI asserts the marker files after the release build, because non-verbose `flutter build` hides the gate's log line [Fact](docs/features/FEAT-016-on-device-privacy/tasks.md, Test record, T01 H2). | US-4 | Must |
 | FR-12 | Change procedure: a change that adds INTERNET, a third-party SDK, an app-initiated network call, new data collection or a new way a photo leaves the phone shall, in the same change: update the claims register and data inventory; update the explainer parts and their translations (or block the release); change this PRD through its change log with Product Owner approval; and record the decision. Gate failure messages shall point here. | US-4, US-6 | Must |
 | FR-13 | Release checklist: before store submission, print the merged release manifest permissions and compare them with the inventory; run the offline matrix on a real phone; compare register, explainer, store listing text and Data safety answers; confirm the privacy policy URL is set [PLACEHOLDER]; confirm six languages are `AI-reviewed only`; record the compliance review result or the Product Owner's waiver (OQ-7). The data inventory and register baseline are in section 10. | US-5 | Must |
 | FR-14 | Offline definition: with Wi-Fi and mobile data off, each row completes with no network error and no network wait: cold start; pick via system picker (local photo), camera, Choose from files, share-in; target entry; crop; compress; check; Save; Share (the chooser opens; whether the receiving app sends anything is its own business); open explainer. The matrix is recorded per release candidate on a real phone in the test record. | US-3 | Must |
@@ -255,3 +255,4 @@ There is no user input. The rules apply to content and build inputs; messages ar
 |---|---|---|
 | 0.1 | 2026-11-26 | First draft |
 | 1.0 | 2026-11-26 | Approved by the Product Owner with open questions at their proposed defaults; OQ-1 decided (app-scoped claim) |
+| 1.1 | 2026-11-27 | Minor clarification (FEAT-016-T12, tech OQ-T1): AC-4.3 says the Gradle dependency list fails in the release build, not in `flutter test`; FR-11 says CI asserts gate marker files instead of a log line. No scope change |
