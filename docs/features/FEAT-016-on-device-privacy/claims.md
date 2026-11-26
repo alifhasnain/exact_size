@@ -95,18 +95,18 @@ Offline means **airplane mode on, Wi-Fi off and mobile data off**. Check it firs
 
 | Row | Expected | Date | Device / build | Result |
 |---|---|---|---|---|
-| Cold start | Pick screen, no network wait | | | |
-| Pick: system photo picker, local photo | Target screen | | | |
-| Pick: camera | Target screen | | | |
-| Pick: Choose from files | Target screen | | | |
-| Pick: share-in | Target screen | | | |
-| Target entry | Values accepted | | | |
-| Crop | Continue works | | | |
-| Compress | Result reached | | | |
-| Check | Verdict shown | | | |
-| Save | Saved message | | | |
-| Share | System chooser opens (what the receiving app does is its own business) | | | |
-| Explainer | Opens at once, no spinner, no error | | | |
+| Cold start | Pick screen, no network wait | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Pick: system photo picker, local photo | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Picker opened offline and returned (CANCELLED). Not selected: the newest picker item was not the synthetic photo, so nothing of the owner's was opened; the same accept path is covered by the files and share-in rows |
+| Pick: camera | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Camera app opened offline, cancelled with Back, no capture (a capture would show the room); returns to the pick screen |
+| Pick: Choose from files | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (synthetic file chosen by its name only) |
+| Pick: share-in | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Target entry | Values accepted | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Crop | Continue works | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Compress | Result reached | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Check | Verdict shown | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (Matches your target) |
+| Save | Saved message | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Share | System chooser opens (what the receiving app does is its own business) | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (chooser opened, cancelled, no screenshot) |
+| Explainer | Opens at once, no spinner, no error | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 
 ## 6. Release checklist (FR-13)
 
