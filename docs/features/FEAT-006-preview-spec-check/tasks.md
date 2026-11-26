@@ -130,7 +130,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
   - Define the G2 screenshots: matches with padding notice, matches transparent PNG, preview unavailable (forced), mismatch (forced), unreadable (forced), ar RTL, 200% font.
 - **Done when:** the design reference (file, synthetic content only) and its date are in the PR and `docs/CHANGELOG.md`; the Product Owner's acceptance or fixes are recorded; gate G1 is recorded in the Test record.
 
-### - [ ] FEAT-006-T11 — `SpecCheckView`
+### - [x] FEAT-006-T11 — `SpecCheckView`
 - **Implements:** FR-5, FR-7, FR-8, FR-9, FR-13, FR-14 (box and placeholder), FR-15, FR-16, FR-17, FR-18, NFR-2 · **ADRs:** ADR-001
 - **Depends on:** T10 (G1)
 - **Size:** M
