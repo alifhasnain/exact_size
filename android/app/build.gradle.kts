@@ -72,6 +72,7 @@ abstract class CheckMergedManifest : DefaultTask() {
     @get:InputFile abstract val manifest: RegularFileProperty
     @get:InputFile abstract val cameraPaths: RegularFileProperty
     @get:InputFile abstract val sharePaths: RegularFileProperty
+    @get:InputFile abstract val backupRules: RegularFileProperty
     @get:Input abstract val applicationId: Property<String>
     @get:OutputFile abstract val marker: RegularFileProperty
 
@@ -86,7 +87,7 @@ abstract class CheckMergedManifest : DefaultTask() {
     private fun Element.authorities() = a("authorities").split(';').map { it.trim() }
     private fun Element.pathsResource() = all("meta-data").filter { it.a("name") == "android.support.FILE_PROVIDER_PATHS" }.map { it.a("resource") }
 
-    private fun problems(root: Element, camera: Element, share: Element): List<String> {
+    private fun problems(root: Element, camera: Element, share: Element, rules: Element): List<String> {
         val id = applicationId.get()
         val problems = mutableListOf<String>()
 
@@ -139,6 +140,19 @@ abstract class CheckMergedManifest : DefaultTask() {
         val capture = root.all("queries").flatMap { it.all("action") }.any { it.a("name") == "android.media.action.IMAGE_CAPTURE" }
         if (!capture) problems += "The <queries> entry for android.media.action.IMAGE_CAPTURE is missing (FEAT-001 FR-5)."
 
+        // FEAT-016-T03 (FR-17): no app data in cloud backup (allowBackup, API 28-30) or in cloud
+        // backup and device transfer (dataExtractionRules, API 31+).
+        val app = root.all("application").first()
+        val domains = listOf("root", "file", "database", "sharedpref", "external")
+        val backupOff = app.a("allowBackup") == "false" && app.a("dataExtractionRules") == "@xml/data_extraction_rules" &&
+            listOf("cloud-backup", "device-transfer").all { section ->
+                val excluded = rules.all(section).flatMap { it.all("exclude") }.filter { it.getAttribute("path") == "." }.map { it.getAttribute("domain") }.toSet()
+                rules.all(section).size == 1 && excluded.containsAll(domains) && rules.all(section).flatMap { it.all("include") }.isEmpty()
+            }
+        if (!backupOff) {
+            problems += "Backup is not disabled for app data (FEAT-016 FR-17): need android:allowBackup=\"false\", android:dataExtractionRules=\"@xml/data_extraction_rules\" (found \"${app.a("allowBackup")}\", \"${app.a("dataExtractionRules")}\") and all of $domains excluded with path \".\" in both <cloud-backup> and <device-transfer>, with no <include>. $followFr12"
+        }
+
         // FEAT-001-T24 (FR-20, AC-8.3): only the launcher and the single-image share target are exported.
         for (act in root.all("activity").filter { it.a("exported") == "true" }) {
             val filters = act.all("intent-filter").map { f -> f.all("action").map { it.a("name") }.toSet() to f.all("data").map { it.a("mimeType") }.toSet() }
@@ -154,7 +168,7 @@ abstract class CheckMergedManifest : DefaultTask() {
 
     @TaskAction
     fun check() {
-        val problems = problems(parse(manifest.get().asFile), parse(cameraPaths.get().asFile), parse(sharePaths.get().asFile)).toMutableList()
+        val problems = problems(parse(manifest.get().asFile), parse(cameraPaths.get().asFile), parse(sharePaths.get().asFile), parse(backupRules.get().asFile)).toMutableList()
 
         // Self-test (FEAT-007-T04, FEAT-016-T02): each broken copy must be refused; a permission
         // mutation must be refused with a message that names the permission and points to FR-12.
@@ -168,33 +182,40 @@ abstract class CheckMergedManifest : DefaultTask() {
             "AD_ID added" to "com.google.android.gms.permission.AD_ID",
             "unknown permission added" to "[PLACEHOLDER].permission.UNREVIEWED",
         )
-        val mutations: List<Pair<String, (Element, Element) -> Unit>> = listOf(
-            "WRITE uncapped" to { r, _ -> write(r).removeAttributeNS(android, "maxSdkVersion") },
-            "WRITE capped at 29" to { r, _ -> write(r).setAttributeNS(android, "android:maxSdkVersion", "29") },
-            "third FileProvider" to { r, _ ->
+        val mutations: List<Pair<String, (Element, Element, Element) -> Unit>> = listOf(
+            "WRITE uncapped" to { r, _, _ -> write(r).removeAttributeNS(android, "maxSdkVersion") },
+            "WRITE capped at 29" to { r, _, _ -> write(r).setAttributeNS(android, "android:maxSdkVersion", "29") },
+            "third FileProvider" to { r, _, _ ->
                 val copy = share(r).cloneNode(true) as Element
                 copy.setAttributeNS(android, "android:authorities", "${applicationId.get()}.other")
                 share(r).parentNode.appendChild(copy)
             },
-            ".share exported" to { r, _ -> share(r).setAttributeNS(android, "android:exported", "true") },
-            "second path in share_paths.xml" to { _, s ->
+            ".share exported" to { r, _, _ -> share(r).setAttributeNS(android, "android:exported", "true") },
+            "second path in share_paths.xml" to { _, s, _ ->
                 s.appendChild(s.ownerDocument.createElement("files-path").also { it.setAttribute("name", "x"); it.setAttribute("path", "") })
             },
-            "INTERNET added" to { r, _ -> ask(r, "uses-permission", "android.permission.INTERNET") },
-            "ACCESS_NETWORK_STATE as uses-permission-sdk-23" to { r, _ -> ask(r, "uses-permission-sdk-23", "android.permission.ACCESS_NETWORK_STATE") },
-            "AD_ID added" to { r, _ -> ask(r, "uses-permission", "com.google.android.gms.permission.AD_ID") },
-            "unknown permission added" to { r, _ -> ask(r, "uses-permission", "[PLACEHOLDER].permission.UNREVIEWED") },
+            "INTERNET added" to { r, _, _ -> ask(r, "uses-permission", "android.permission.INTERNET") },
+            "ACCESS_NETWORK_STATE as uses-permission-sdk-23" to { r, _, _ -> ask(r, "uses-permission-sdk-23", "android.permission.ACCESS_NETWORK_STATE") },
+            "AD_ID added" to { r, _, _ -> ask(r, "uses-permission", "com.google.android.gms.permission.AD_ID") },
+            "unknown permission added" to { r, _, _ -> ask(r, "uses-permission", "[PLACEHOLDER].permission.UNREVIEWED") },
+            "allowBackup removed" to { r, _, _ -> r.all("application").first().removeAttributeNS(android, "allowBackup") },
+            "allowBackup true" to { r, _, _ -> r.all("application").first().setAttributeNS(android, "android:allowBackup", "true") },
+            "dataExtractionRules missing" to { r, _, _ -> r.all("application").first().removeAttributeNS(android, "dataExtractionRules") },
+            "device-transfer loses one exclude" to { _, _, b ->
+                b.all("device-transfer").first().all("exclude").first().let { it.parentNode.removeChild(it) }
+            },
         )
         for ((label, mutate) in mutations) {
             val r = parse(manifest.get().asFile)
             val s = parse(sharePaths.get().asFile)
+            val b = parse(backupRules.get().asFile)
             try {
-                mutate(r, s)
+                mutate(r, s, b)
             } catch (e: NoSuchElementException) {
                 problems += "Self-test \"$label\" could not run: ${e.message}"
                 continue
             }
-            val found = problems(r, parse(cameraPaths.get().asFile), s)
+            val found = problems(r, parse(cameraPaths.get().asFile), s, b)
             if (found.isEmpty()) problems += "Self-test failed: a merged manifest with \"$label\" was not refused."
             val name = namedIn[label]
             if (name != null && found.none { name in it && followFr12 in it }) {
@@ -214,6 +235,7 @@ androidComponents {
             manifest.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
             cameraPaths.set(layout.projectDirectory.file("src/main/res/xml/camera_paths.xml"))
             sharePaths.set(layout.projectDirectory.file("src/main/res/xml/share_paths.xml"))
+            backupRules.set(layout.projectDirectory.file("src/main/res/xml/data_extraction_rules.xml"))
             applicationId.set(variant.applicationId)
             marker.set(layout.buildDirectory.file("outputs/privacy/checkMergedManifest.ok"))
         }

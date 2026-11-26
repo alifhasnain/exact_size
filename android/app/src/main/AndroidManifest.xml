@@ -6,7 +6,10 @@
     <!-- FEAT-007 (FR-7, FR-8, ADR-007): Android 9 only, asked when the user taps Save. API 29+ saves
          through MediaStore with no permission. checkMergedManifest refuses a higher maxSdkVersion. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <!-- FEAT-016 FR-17: no app data in cloud backup or device transfer (checked by checkMergedManifest). -->
     <application
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:label="exact_size"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
