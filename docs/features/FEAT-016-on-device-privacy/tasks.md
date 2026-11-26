@@ -98,7 +98,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `lib/l10n/app_en.arb` only: `pickPrivacyNote` = "Your photos are resized on your phone. ExactSize never uploads them."; new `privacyEntry` (proposed "How your photos are handled"), `privacyTitle`, and `privacy{OnPhone,Offline,Kept,Copies,Outside,Reads}` plus each `…Title`. Parts (a)–(f) per FR-3 and AC-2.3; part (b) names the online-album exception; part (d) agrees with the unchanged `exportPrivacy`; part (e) names gallery, keyboard and receiving apps; no internal-gate fact (C6, C7); `@` descriptions name register IDs (`Register: C1, C3`); no placeholders; short plain sentences, no idioms. The five other ARBs are not touched (T16); until then they still carry the old `pickPrivacyNote` (not shippable, closed by T16).
 - **Done when:** `flutter gen-l10n` passes; body text ≤ 150 English words and no sentence > 20 words (checked by T08); the PR lists each key with its C-IDs. The Product Owner reviews the copy at G1.
 
-### - [ ] FEAT-016-T08 — Privacy copy tests (banned claims, key rules, connectivity words)
+### - [x] FEAT-016-T08 — Privacy copy tests (banned claims, key rules, connectivity words)
 - **Implements:** FR-5, FR-6, FR-7, FR-15, FR-3 (length), NFR-7 · **ADRs:** —
 - **Depends on:** T07
 - **Size:** M
