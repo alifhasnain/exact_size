@@ -126,7 +126,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** new `docs/features/FEAT-016-on-device-privacy/claims.md` (frontmatter, status `Proposed`): claims register C1–C10 from PRD section 10 with check type; data inventory; permission list mirroring the T02 allow-list; "Change procedure" copying FR-12 as a checklist; "Release checklist" (FR-13 plus tech rows: `aapt2 dump permissions` compare, offline matrix, register vs explainer vs listing vs Data safety, privacy policy URL `[PLACEHOLDER]`, 6 languages `AI-reviewed only`, OQ-7 review result or waiver, release signing key in place of the debug key); FR-14 matrix table (empty result columns); "Carried requirements" FR-19 (a)–(c) verbatim with owner and status "to copy into owning PRD at /draft-prd".
 - **Done when:** every explainer key's C-IDs from T07 exist in the register; every C-ID has a check type; the path in the gate messages resolves; no real credential, URL or personal data (`[PLACEHOLDER]` only).
 
-### - [ ] FEAT-016-T12 — PRD 1.1 minor clarification (AC-4.3, FR-11) for re-approval
+### - [x] FEAT-016-T12 — PRD 1.1 minor clarification (AC-4.3, FR-11) for re-approval
 - **Implements:** FR-10, FR-11 (wording) · **ADRs:** —
 - **Depends on:** T04, T10
 - **Size:** S
@@ -255,6 +255,7 @@ _Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and d
 | 2026-11-27 | T10 | P1 (commit 64a2740): all 3 jobs green. "Privacy gates ran" step passes (both marker files present after the release build); the offline step on API 28 passes the 3 offline cases. Job times against the last green run (45863467485): build 9 min 8 s vs 8 min 9 s (+59 s), emulator 20 min 13 s vs 19 min 36 s (+37 s); NFR-1 target is 1 minute or less | CI API 28, run 45875422502 | Pass |
 | 2026-11-27 | T10 | API 28 backup, slim throwaway run (branch never merged, deleted after): release APK installed, `getprop ro.build.version.sdk` = 28, package flags `[ HAS_CODE ALLOW_CLEAR_USER_DATA ]` (no ALLOW_BACKUP), `bmgr backupnow` gives "Package com.exactsize.exact_size with result: Backup is not allowed". Backup Manager was disabled, enabled for the check, disabled again. First attempt (45875475653) did not boot the emulator (runner disk full); rerun with the usual disk cleanup | CI API 28 emulator, run 45877836926 | Pass |
 | 2026-11-27 | T10 | Finding for earlier records: because Wi-Fi stays on in airplane mode on this phone, the FEAT-006 T17 row "AC-6.4, NFR-3: airplane mode on (Wi-Fi off)" did not prove offline (the run noted `wifi_on` 2, the same state as today). Its result (check and Save work) is not in doubt, and FEAT-016 T10 now proves the pipeline offline on the phone and on API 28; T17 re-runs Save and Share offline with Wi-Fi off (Open items 6). FEAT-006 docs are Implemented and are not edited here | Realme 2 Pro, API 36 | Recorded |
+| 2026-11-27 | T12 | PRD 1.1 (AC-4.3, FR-11 wording, no scope change) re-approved by the Product Owner (`/approve FEAT-016`) | Product Owner | Approved |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.

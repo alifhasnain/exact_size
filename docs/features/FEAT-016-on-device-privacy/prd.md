@@ -1,7 +1,7 @@
 ---
 id: FEAT-016
 title: On-device-only, offline-capable processing with in-app privacy explainer
-status: Under Discussion
+status: Approved
 version: 1.1
 updated: 2026-11-27
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, ADR-007, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-007, FEAT-012, FEAT-013, FEAT-018, FEAT-019, FEAT-025, FEAT-026, FEAT-027]
@@ -255,4 +255,4 @@ There is no user input. The rules apply to content and build inputs; messages ar
 |---|---|---|
 | 0.1 | 2026-11-26 | First draft |
 | 1.0 | 2026-11-26 | Approved by the Product Owner with open questions at their proposed defaults; OQ-1 decided (app-scoped claim) |
-| 1.1 | 2026-11-27 | Minor clarification (FEAT-016-T12, tech OQ-T1): AC-4.3 says the Gradle dependency list fails in the release build, not in `flutter test`; FR-11 says CI asserts gate marker files instead of a log line. No scope change |
+| 1.1 | 2026-11-27 | Minor clarification (FEAT-016-T12, tech OQ-T1): AC-4.3 says the Gradle dependency list fails in the release build, not in `flutter test`; FR-11 says CI asserts gate marker files instead of a log line. No scope change. Re-approved by the Product Owner 2026-11-27 |
