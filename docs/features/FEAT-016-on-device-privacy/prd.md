@@ -1,7 +1,7 @@
 ---
 id: FEAT-016
 title: On-device-only, offline-capable processing with in-app privacy explainer
-status: Approved
+status: Implemented
 version: 1.1
 updated: 2026-11-27
 links: [ROADMAP, BRIEF, RESEARCH, ADR-001, ADR-006, ADR-007, FEAT-001, FEAT-002, FEAT-004, FEAT-005, FEAT-006, FEAT-007, FEAT-012, FEAT-013, FEAT-018, FEAT-019, FEAT-025, FEAT-026, FEAT-027]
