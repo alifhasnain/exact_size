@@ -412,63 +412,63 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exportSaving => 'جارٍ الحفظ…';
 
   @override
-  String get checkMatches => 'Matches your target';
+  String get checkMatches => 'الملف يطابق المطلوب';
 
   @override
   String get checkMismatch =>
-      'This file doesn\'t match your target, so it can\'t be saved or shared. Go back and try again.';
+      'هذا الملف لا يطابق المطلوب، لذا لا يمكن حفظه أو مشاركته. ارجع وحاول مرة أخرى.';
 
   @override
-  String get checkLabelPixels => 'Size in pixels';
+  String get checkLabelPixels => 'الأبعاد بالبكسل';
 
   @override
-  String get checkLabelFileSize => 'File size';
+  String get checkLabelFileSize => 'حجم الملف';
 
   @override
-  String get checkLabelFormat => 'Format';
+  String get checkLabelFormat => 'صيغة الملف';
 
   @override
-  String get checkTarget => 'Target';
+  String get checkTarget => 'المطلوب';
 
   @override
-  String get checkThisFile => 'This file';
+  String get checkThisFile => 'هذا الملف';
 
   @override
-  String get checkMeets => 'Meets';
+  String get checkMeets => 'مطابق';
 
   @override
-  String get checkDoesntMeet => 'Doesn\'t meet';
+  String get checkDoesntMeet => 'غير مطابق';
 
   @override
   String checkUpToKb(String max) {
-    return 'Up to $max';
+    return 'حتى $max';
   }
 
   @override
   String checkPixels(String width, String height) {
-    return '$width × $height px';
+    return '$width × $height بكسل';
   }
 
   @override
   String checkAlsoFits1024(String kb, String bytes) {
-    return 'Also fits if your portal counts $kb as $bytes bytes.';
+    return 'يُعدّ الملف مطابقًا أيضًا إذا كانت بوابتك الإلكترونية تعتبر $kb مساويًا لـ $bytes بايت.';
   }
 
   @override
   String get checkCaveat =>
-      'We check pixels, KB and format. Some forms also check the photo itself, such as the face or background.';
+      'نتحقق من الأبعاد بالبكسل وحجم الملف بوحدة KB وصيغته. بعض النماذج الإلكترونية تتحقق أيضًا من الصورة نفسها، مثل الوجه أو الخلفية.';
 
   @override
-  String get previewCaption => 'Shown scaled to fit your screen.';
+  String get previewCaption => 'تُعرض الصورة مصغّرة أو مكبّرة لتناسب شاشتك.';
 
   @override
   String previewAlt(String width, String height, String format) {
-    return 'Preview of your new file, $width × $height px, $format.';
+    return 'معاينة الملف الذي أنشأته، $width × $height بكسل، $format.';
   }
 
   @override
   String get previewUnavailable =>
-      'Preview isn\'t available. The check below is still correct.';
+      'المعاينة غير متاحة. نتيجة التحقق أدناه لا تزال صحيحة.';
 
   @override
   String checkRowSentence(
@@ -477,6 +477,6 @@ class AppLocalizationsAr extends AppLocalizations {
     String measured,
     String status,
   ) {
-    return '$label: target $target, this file $measured, $status.';
+    return '$label: المطلوب $target، هذا الملف $measured، $status.';
   }
 }

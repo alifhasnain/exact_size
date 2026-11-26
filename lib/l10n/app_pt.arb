@@ -99,5 +99,22 @@
   "exportLeaveBody": "O novo arquivo será excluído. As fotos da sua galeria não serão alteradas.",
   "exportStay": "Ficar",
   "exportLeave": "Sair",
-  "exportSaving": "Salvando…"
+  "exportSaving": "Salvando…",
+  "checkMatches": "Atende aos seus requisitos",
+  "checkMismatch": "Este arquivo não atende aos seus requisitos, então não pode ser salvo nem compartilhado. Volte e tente de novo.",
+  "checkLabelPixels": "Dimensões em pixels",
+  "checkLabelFileSize": "Tamanho de arquivo",
+  "checkLabelFormat": "Formato",
+  "checkTarget": "Requisito",
+  "checkThisFile": "Este arquivo",
+  "checkMeets": "Atende",
+  "checkDoesntMeet": "Não atende",
+  "checkUpToKb": "Até {max}",
+  "checkPixels": "{width} × {height} px",
+  "checkAlsoFits1024": "O arquivo também atende se o seu portal contar {kb} como {bytes} bytes.",
+  "checkCaveat": "Verificamos pixels, KB e formato. Alguns formulários também verificam a própria foto, como o rosto ou o fundo.",
+  "previewCaption": "Imagem ajustada para caber na sua tela.",
+  "previewAlt": "Pré-visualização do seu novo arquivo, {width} × {height} px, {format}.",
+  "previewUnavailable": "A pré-visualização não está disponível. A verificação abaixo continua válida.",
+  "checkRowSentence": "{label}: requisito {target}, este arquivo {measured}, {status}."
 }

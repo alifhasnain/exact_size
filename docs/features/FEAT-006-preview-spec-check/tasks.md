@@ -173,7 +173,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
   - CI: covered by the existing `bundle.dart` line; push once for this milestone.
 - **Done when:** the target passes on the Realme 2 Pro and in the CI API 28 job; timings and pass/fail per check are in the Test record (no paths or file names); nothing is left in `cache/exactsize_out` after the run.
 
-### - [ ] FEAT-006-T16 — Translate FEAT-006 strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
+### - [x] FEAT-006-T16 — Translate FEAT-006 strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
 - **Implements:** FR-23, NFR-4 · **ADRs:** —
 - **Depends on:** T14 (strings final after G1/G2)
 - **Size:** M (not counted: FEAT-019 work)

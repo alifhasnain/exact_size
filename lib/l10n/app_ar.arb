@@ -99,5 +99,22 @@
   "exportLeaveBody": "سيُحذف الملف الذي أنشأته. تبقى الصور في معرضك كما هي.",
   "exportStay": "البقاء",
   "exportLeave": "الرجوع",
-  "exportSaving": "جارٍ الحفظ…"
+  "exportSaving": "جارٍ الحفظ…",
+  "checkMatches": "الملف يطابق المطلوب",
+  "checkMismatch": "هذا الملف لا يطابق المطلوب، لذا لا يمكن حفظه أو مشاركته. ارجع وحاول مرة أخرى.",
+  "checkLabelPixels": "الأبعاد بالبكسل",
+  "checkLabelFileSize": "حجم الملف",
+  "checkLabelFormat": "صيغة الملف",
+  "checkTarget": "المطلوب",
+  "checkThisFile": "هذا الملف",
+  "checkMeets": "مطابق",
+  "checkDoesntMeet": "غير مطابق",
+  "checkUpToKb": "حتى {max}",
+  "checkPixels": "{width} × {height} بكسل",
+  "checkAlsoFits1024": "يُعدّ الملف مطابقًا أيضًا إذا كانت بوابتك الإلكترونية تعتبر {kb} مساويًا لـ {bytes} بايت.",
+  "checkCaveat": "نتحقق من الأبعاد بالبكسل وحجم الملف بوحدة KB وصيغته. بعض النماذج الإلكترونية تتحقق أيضًا من الصورة نفسها، مثل الوجه أو الخلفية.",
+  "previewCaption": "تُعرض الصورة مصغّرة أو مكبّرة لتناسب شاشتك.",
+  "previewAlt": "معاينة الملف الذي أنشأته، {width} × {height} بكسل، {format}.",
+  "previewUnavailable": "المعاينة غير متاحة. نتيجة التحقق أدناه لا تزال صحيحة.",
+  "checkRowSentence": "{label}: المطلوب {target}، هذا الملف {measured}، {status}."
 }

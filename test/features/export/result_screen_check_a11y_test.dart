@@ -153,11 +153,11 @@ void main() {
     }
   });
 
-  for (final locale in ['en', 'ar', 'hi']) {
+  for (final locale in AppLocalizations.supportedLocales.map((l) => l.toLanguageTag())) {
     testWidgets('$locale at 200% on 360x640: no overflow, no sideways scroll, Save, Share and Done reachable (AC-8.1)', (tester) async {
-      await pump(tester, _State.matches, locale: Locale(locale), textScale: 2);
+      await pump(tester, _State.matches, locale: _locale(locale), textScale: 2);
       expect(tester.takeException(), isNull);
-      final l = lookupAppLocalizations(Locale(locale));
+      final l = lookupAppLocalizations(_locale(locale));
       for (final text in [l.exportSave, l.exportShare, l.exportDone]) {
         await tester.scrollUntilVisible(find.text(text), 80, scrollable: find.byType(Scrollable).first);
         expect(tester.getRect(find.text(text)).right, lessThanOrEqualTo(360));
@@ -174,6 +174,32 @@ void main() {
       await pump(tester, s, locale: const Locale('hi'), textScale: 2);
       expect(tester.takeException(), isNull);
     });
+  }
+
+  // FEAT-006-T16: every locale shows its own check texts, never the English fallback.
+  final en = lookupAppLocalizations(const Locale('en'));
+  for (final locale in AppLocalizations.supportedLocales) {
+    for (final s in [_State.matches, _State.mismatch]) {
+      testWidgets('$locale ${s.name}: check texts render in that language (T16)', (tester) async {
+        final l = lookupAppLocalizations(locale);
+        await pump(tester, s, locale: locale);
+        final texts = [
+          s == _State.matches ? l.checkMatches : l.checkMismatch,
+          l.checkLabelPixels, l.checkLabelFileSize, l.checkLabelFormat, l.checkTarget, l.checkThisFile,
+          s == _State.matches ? l.checkMeets : l.checkDoesntMeet,
+        ];
+        final english = [
+          s == _State.matches ? en.checkMatches : en.checkMismatch,
+          en.checkLabelPixels, en.checkLabelFileSize, en.checkLabelFormat, en.checkTarget, en.checkThisFile,
+          s == _State.matches ? en.checkMeets : en.checkDoesntMeet,
+        ];
+        for (var i = 0; i < texts.length; i++) {
+          if (locale.languageCode != 'en' && texts[i] != 'Format') expect(texts[i], isNot(english[i]), reason: '$locale: ${english[i]}');
+          expect(find.text(texts[i]), findsWidgets, reason: '$locale: ${texts[i]}');
+        }
+        expect(tester.takeException(), isNull);
+      });
+    }
   }
 
   group('goldens (G1 design, 360x640)', () {
@@ -194,4 +220,9 @@ void main() {
       });
     }
   });
+}
+
+Locale _locale(String tag) {
+  final p = tag.split('-');
+  return Locale(p[0], p.length > 1 ? p[1] : null);
 }

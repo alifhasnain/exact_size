@@ -99,5 +99,22 @@
   "exportLeaveBody": "Se eliminará el archivo nuevo. Las fotos de tu galería no se modifican.",
   "exportStay": "Quedarse",
   "exportLeave": "Salir",
-  "exportSaving": "Guardando…"
+  "exportSaving": "Guardando…",
+  "checkMatches": "Cumple con tus requisitos",
+  "checkMismatch": "Este archivo no cumple con tus requisitos, así que no se puede guardar ni compartir. Regresa e inténtalo de nuevo.",
+  "checkLabelPixels": "Dimensiones en píxeles",
+  "checkLabelFileSize": "Tamaño de archivo",
+  "checkLabelFormat": "Formato",
+  "checkTarget": "Requisito",
+  "checkThisFile": "Este archivo",
+  "checkMeets": "Cumple",
+  "checkDoesntMeet": "No cumple",
+  "checkUpToKb": "Hasta {max}",
+  "checkPixels": "{width} × {height} px",
+  "checkAlsoFits1024": "El archivo también cabe si tu portal considera que {kb} son {bytes} bytes.",
+  "checkCaveat": "Verificamos los píxeles, los KB y el formato. Algunos formularios también verifican la foto en sí, como la cara o el fondo.",
+  "previewCaption": "Imagen ajustada para caber en tu pantalla.",
+  "previewAlt": "Vista previa de tu archivo nuevo, {width} × {height} px, {format}.",
+  "previewUnavailable": "La vista previa no está disponible. La verificación de abajo sigue siendo correcta.",
+  "checkRowSentence": "{label}: requisito {target}, este archivo {measured}, {status}."
 }

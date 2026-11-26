@@ -99,5 +99,22 @@
   "exportLeaveBody": "नई फ़ाइल हटा दी जाएगी। आपकी गैलरी की फ़ोटो में कोई बदलाव नहीं होगा।",
   "exportStay": "यहीं रहें",
   "exportLeave": "वापस जाएँ",
-  "exportSaving": "सेव हो रही है…"
+  "exportSaving": "सेव हो रही है…",
+  "checkMatches": "फ़ाइल आपकी ज़रूरत के मुताबिक है",
+  "checkMismatch": "यह फ़ाइल आपकी ज़रूरत के मुताबिक नहीं है, इसलिए इसे सेव या शेयर नहीं किया जा सकता। वापस जाएँ और फिर से कोशिश करें।",
+  "checkLabelPixels": "पिक्सेल में माप",
+  "checkLabelFileSize": "फ़ाइल साइज़",
+  "checkLabelFormat": "फ़ॉर्मेट",
+  "checkTarget": "ज़रूरी",
+  "checkThisFile": "यह फ़ाइल",
+  "checkMeets": "ज़रूरत के मुताबिक",
+  "checkDoesntMeet": "ज़रूरत के मुताबिक नहीं",
+  "checkUpToKb": "{max} तक",
+  "checkPixels": "{width} × {height} पिक्सेल",
+  "checkAlsoFits1024": "अगर आपका पोर्टल {kb} को {bytes} बाइट मानता है, तो भी फ़ाइल ज़रूरत के मुताबिक रहेगी।",
+  "checkCaveat": "हम पिक्सेल, KB और फ़ॉर्मेट जाँचते हैं। कुछ फ़ॉर्म फ़ोटो में चेहरा या बैकग्राउंड जैसी चीज़ें भी जाँचते हैं।",
+  "previewCaption": "प्रीव्यू को आपकी स्क्रीन के अनुसार आकार बदलकर दिखाया गया है।",
+  "previewAlt": "आपकी नई फ़ाइल का प्रीव्यू, {width} × {height} पिक्सेल, {format}।",
+  "previewUnavailable": "प्रीव्यू उपलब्ध नहीं है। नीचे दी गई जाँच फिर भी मान्य है।",
+  "checkRowSentence": "{label}: ज़रूरी {target}, यह फ़ाइल {measured}, {status}।"
 }

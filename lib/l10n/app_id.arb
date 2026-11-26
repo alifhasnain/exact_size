@@ -99,5 +99,22 @@
   "exportLeaveBody": "File hasil akan dihapus. Foto di galeri Anda tetap seperti semula.",
   "exportStay": "Tetap di sini",
   "exportLeave": "Kembali",
-  "exportSaving": "Menyimpan…"
+  "exportSaving": "Menyimpan…",
+  "checkMatches": "Memenuhi persyaratan Anda",
+  "checkMismatch": "File ini tidak memenuhi persyaratan Anda, jadi tidak dapat disimpan atau dibagikan. Kembali dan coba lagi.",
+  "checkLabelPixels": "Dimensi dalam piksel",
+  "checkLabelFileSize": "Ukuran file",
+  "checkLabelFormat": "Format",
+  "checkTarget": "Persyaratan",
+  "checkThisFile": "File ini",
+  "checkMeets": "Memenuhi",
+  "checkDoesntMeet": "Tidak memenuhi",
+  "checkUpToKb": "Hingga {max}",
+  "checkPixels": "{width} × {height} piksel",
+  "checkAlsoFits1024": "Juga memenuhi jika portal Anda menghitung {kb} sebagai {bytes} byte.",
+  "checkCaveat": "Kami memeriksa piksel, KB, dan format. Beberapa formulir juga memeriksa fotonya sendiri, seperti wajah atau latar belakang.",
+  "previewCaption": "Ditampilkan dengan ukuran yang disesuaikan agar muat di layar Anda.",
+  "previewAlt": "Pratinjau file hasil Anda, {width} × {height} piksel, {format}.",
+  "previewUnavailable": "Pratinjau tidak tersedia. Hasil pemeriksaan di bawah tetap berlaku.",
+  "checkRowSentence": "{label}: persyaratan {target}, file ini {measured}, {status}."
 }
