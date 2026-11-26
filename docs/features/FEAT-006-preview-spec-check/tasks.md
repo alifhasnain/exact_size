@@ -151,7 +151,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** delete `exportReady` from all 6 ARBs (OQ-T5), `ExportMessages.ready`, and FEAT-007 edit 3b (the two `ready` cases in `export_messages_test.dart`); move the all-locales "`{width}` before `{height}`" order test to `check_messages_test.dart` for `checkPixels` and `previewAlt`.
 - **Done when:** `flutter gen-l10n` passes; `grep -rn "exportReady\|ExportMessages.ready" lib test integration_test` finds nothing; the moved order test passes in all 6 locales; the rest of `export_messages_test.dart` is unchanged.
 
-### - [ ] FEAT-006-T14 — Accessibility, 200% font, RTL, goldens — gate G2
+### - [x] FEAT-006-T14 — Accessibility, 200% font, RTL, goldens — gate G2
 - **Implements:** NFR-2, NFR-4, FR-15 (golden), FR-16, FR-23 (isolates) · **ADRs:** —
 - **Depends on:** T13
 - **Size:** M
@@ -282,7 +282,8 @@ _Filled in by T01, T10, T12, T14, T15, T16 and T17 (one row per check and device
 | 2026-11-26 | T01 | Gate G0 gaps accepted by the Product Owner: the Realme 2 Pro and CI API 28 numbers stand in for the 2 GB emulator (Open items 1), and the peak memory figure is an estimate | Product Owner | Accepted |
 | 2026-11-26 | T10 | Gate G1: lean impeccable design (t10/check_design.md, 2026-11-26) accepted by the Product Owner with the three defaults (unreadable key "Choose another photo"; Checking = spinner only; 1,024 line hidden on a mismatch) | Product Owner | Accepted |
 | 2026-11-26 | T14 | `result_screen_check_a11y_test.dart` (22 cases): tap-target, labelled-target and text-contrast guidelines pass for matches, mismatch and unreadable; one verdict live region besides the panel's, each row node's label equals its row sentence; ar is RTL with mirrored rows, digits 0-9 and every number, KB and format name of the spec slip inside an isolate ("px" belongs to the translated pattern, checked again after T16); en, ar and hi at 200% on 360x640 (and hi mismatch/unreadable) have no overflow or sideways scroll, with Save, Share and Done reachable; 12 host goldens `check_{en,ar}_{matches,matchesPng,unavailable,mismatch,unreadable}` and `check_{en,hi}_font200` recorded | Host (Windows), flutter test | Pass |
-| 2026-11-26 | T14 | G2 screenshots, one per state from `integration_test/result_screen_demo.dart` (fake measurer, painted synthetic picture, no face or signature): matches with padding notice, matches transparent PNG, preview unavailable (forced), mismatch (forced), unreadable (forced), ar RTL, 200% font. Test build uninstalled afterwards; no phone setting changed | Realme 2 Pro, API 36, profile build | Waiting for the Product Owner (G2) |
+| 2026-11-26 | T14 | G2 screenshots, one per state from `integration_test/result_screen_demo.dart` (fake measurer, painted synthetic picture, no face or signature): matches with padding notice, matches transparent PNG, preview unavailable (forced), mismatch (forced), unreadable (forced), ar RTL, 200% font. Test build uninstalled afterwards; no phone setting changed | Realme 2 Pro, API 36, profile build | Pass |
+| 2026-11-26 | T14 | Gate G2: the Product Owner accepted the seven screenshots with no fixes. Known until T16: the ar shot shows the untranslated English check strings, so "px" and the caption full stop sit on the wrong side in RTL | Product Owner | Accepted |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-004, ADR-007 and ADR-001 before starting a task.
