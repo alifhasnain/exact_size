@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../crop/presentation/crop_controller.dart';
+import '../../privacy/presentation/privacy_screen.dart';
 import '../domain/pick_types.dart';
 import 'pick_controller.dart';
 import 'pick_view.dart';
@@ -30,6 +31,8 @@ class PickScreen extends ConsumerWidget {
       state: ref.watch(pickControllerProvider),
       onLaunch: controller.launch,
       onCancel: controller.cancelOpening,
+      // FEAT-016 FR-2: a photo shared in while it is open goes through popUntil above.
+      onPrivacy: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PrivacyScreen())),
     );
   }
 }

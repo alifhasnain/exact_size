@@ -140,7 +140,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** **Stop and tell the Product Owner before any visual work.** One short impeccable pass on Material 3 and the existing theme; no image comps, no reviewer subagents, no multi-round critique. Inputs: the T07 English copy, the pick screen plaque, OQ-3 default (labelled control beside or under the plaque, ≥ 48 dp, plaque unchanged). Constraints: AppBar title, scrollable column, 6 parts as heading (`Semantics(header: true)`) then body, no link, no image, no icon that suggests a certification; 200% font at 360×640 with no clipping; RTL mirrored. Define the G2 screenshots: pick screen with entry control (en), explainer top and bottom (en), ar RTL, 200% font.
 - **Done when:** the design reference (synthetic content only) and its date are in the PR and `docs/CHANGELOG.md`; the Product Owner's acceptance of the placement and the English copy, or named fixes, is recorded; G1 recorded in the Test record.
 
-### - [ ] FEAT-016-T14 — `PrivacyScreen` and pick-screen entry control
+### - [x] FEAT-016-T14 — `PrivacyScreen` and pick-screen entry control
 - **Implements:** FR-2, FR-3, FR-4, NFR-2, NFR-6, NFR-10 · **ADRs:** ADR-001
 - **Depends on:** T13 (G1)
 - **Size:** M

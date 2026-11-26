@@ -17,6 +17,7 @@ class PickView extends StatefulWidget {
     required this.onLaunch,
     required this.onCancel,
     this.showFiles = true,
+    this.onPrivacy,
   });
 
   final PickState state;
@@ -25,6 +26,9 @@ class PickView extends StatefulWidget {
 
   /// "Choose from files" is a Should (FR-21, T22).
   final bool showFiles;
+
+  /// Opens the privacy explainer (FEAT-016 FR-2). No entry control when null.
+  final VoidCallback? onPrivacy;
 
   @override
   State<PickView> createState() => _PickViewState();
@@ -95,6 +99,13 @@ class _PickViewState extends State<PickView> {
                       const Spacer(),
                       const SizedBox(height: 32),
                       _Plaque(text: l.pickPrivacyNote, style: text.bodyMedium),
+                      if (widget.onPrivacy case final onPrivacy?)
+                        _PrivacyEntry(
+                          label: l.privacyEntry,
+                          style: text.bodyMedium,
+                          // Disabled while a pick is opening, like the keys.
+                          onPressed: state.phase == PickPhase.opening ? null : onPrivacy,
+                        ),
                     ],
                   ),
                 ),
@@ -242,6 +253,38 @@ class _Opening extends StatelessWidget {
 }
 
 /// The privacy line as a small plaque on the booth front (FR-22).
+/// FEAT-016 G1: labelled control under the plaque that opens the explainer (OQ-3).
+class _PrivacyEntry extends StatelessWidget {
+  const _PrivacyEntry({required this.label, required this.style, required this.onPressed});
+  final String label;
+  final TextStyle? style;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 4),
+    child: Center(
+      child: TextButton(
+        onPressed: onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 4,
+          children: [
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: style?.copyWith(color: onPressed == null ? Booth.text.withValues(alpha: 0.6) : Booth.text, decoration: TextDecoration.underline, decorationColor: Booth.text),
+              ),
+            ),
+            const ExcludeSemantics(child: Icon(Icons.chevron_right, size: 18)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _Plaque extends StatelessWidget {
   const _Plaque({required this.text, required this.style});
   final String text;
