@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../test_support/fake_check_overrides.dart';
 import '../../../../test_support/fake_export_bridge.dart';
 
 /// A compression controller in a fixed state; cancel() records and deletes the temp file.
@@ -60,8 +61,10 @@ void main() {
   /// Pushes the result screen above a home page, as the crop step does.
   Future<void> pump(WidgetTester tester, CompressionRunState state) async {
     compression = _Compression(state);
+    final image = await tester.runAsync(() => createTestImage(width: 30, height: 30));
     await tester.pumpWidget(ProviderScope(
       overrides: [
+        ...fakeCheckOverrides(image: image),
         compressionControllerProvider.overrideWith(() => compression),
         exportBridgeProvider.overrideWithValue(bridge),
         shareCopiesProvider.overrideWithValue(ShareCopies(TempFiles(tmp, folder: 'exactsize_share'))),
@@ -93,6 +96,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
   }
 
+  /// FEAT-006: the check above the panel makes the page taller than the test view, so
+  /// Save and Done are scrolled into view before a tap (no assertion changes).
+  Finder visible(WidgetTester tester, String text) {
+    final f = find.text(text);
+    tester.ensureVisible(f);
+    return f;
+  }
+
   Future<void> back(WidgetTester tester) async {
     await tester.binding.handlePopRoute();
     await tester.pump();
@@ -117,14 +128,6 @@ void main() {
     expect(find.text('Back'), findsOneWidget);
   });
 
-  testWidgets('success shows the ready line from FEAT-004 values and the panel (FR-29)', (tester) async {
-    await pump(tester, success());
-    expect(find.byWidgetPredicate((w) => w is Text && (w.data ?? '').replaceAll(RegExp('[\u2066-\u2069]'), '') == 'Ready: 300 × 300 px, 48.2 KB, JPEG'),
-        findsOneWidget);
-    expect(find.byType(ExportPanel), findsOneWidget);
-    expect(find.byType(Image), findsNothing);
-  });
-
   testWidgets('Back with nothing saved asks; Stay keeps the screen; Leave leaves once (FR-22, FR-23)', (tester) async {
     await pump(tester, success());
     await back(tester);
@@ -134,7 +137,7 @@ void main() {
     expect(find.byType(ResultScreen), findsOneWidget);
     expect((compression.cancels, startOvers), (0, 0));
 
-    await tester.tap(find.text('Done'));
+    await tester.tap(visible(tester, 'Done'));
     await tester.pumpAndSettle();
     await tester.runAsync(() async {
       await tester.tap(find.text('Leave'));
@@ -149,7 +152,7 @@ void main() {
   testWidgets('Back after a save leaves without a dialog', (tester) async {
     await pump(tester, success());
     await tester.runAsync(() async {
-      await tester.tap(find.text('Save'));
+      await tester.tap(visible(tester, 'Save'));
       await Future<void>.delayed(const Duration(milliseconds: 50));
     });
     await tester.pumpAndSettle();
@@ -165,9 +168,9 @@ void main() {
   testWidgets('leave during a slow save waits for it, then the temp file is gone (FR-24)', (tester) async {
     await pump(tester, success());
     bridge.gate = Completer<void>();
-    await tester.tap(find.text('Save'));
+    await tester.tap(visible(tester, 'Save'));
     await tester.pump();
-    await tester.tap(find.text('Done'));
+    await tester.tap(visible(tester, 'Done'));
     await tester.pump(); // a save is running and nothing is saved yet: the dialog asks
     await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.text('Leave'));

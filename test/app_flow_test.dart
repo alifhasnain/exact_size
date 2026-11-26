@@ -9,7 +9,7 @@ import 'package:exact_size/app_flow.dart';
 import 'package:exact_size/di/injection.dart';
 import 'package:exact_size/features/compression/data/temp_files.dart';
 import 'package:exact_size/features/compression/domain/compression_request.dart';
-import 'package:exact_size/features/compression/domain/compression_result.dart' show OutputFormat;
+import 'package:exact_size/features/compression/domain/compression_result.dart' show CompressionSuccess, OutputFormat;
 import 'package:exact_size/features/compression/domain/pixel_buffer.dart';
 import 'package:exact_size/features/compression/presentation/compression_providers.dart';
 import 'package:exact_size/features/crop/data/preview_decoder.dart';
@@ -25,6 +25,7 @@ import 'package:exact_size/features/export/presentation/export_panel.dart';
 import 'package:exact_size/features/export/presentation/result_screen.dart';
 import 'package:exact_size/features/pick/presentation/pick_controller.dart';
 import 'package:exact_size/features/pick/presentation/pick_screen.dart';
+import 'package:exact_size/features/preview/domain/measured_output.dart';
 import 'package:exact_size/features/target/domain/target_spec.dart';
 import 'package:exact_size/features/target/presentation/target_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../test_support/fake_check_overrides.dart';
+import '../test_support/fake_output_measurer.dart';
 import '../test_support/fake_system_picker.dart';
 import '../test_support/test_pixels.dart';
 
@@ -58,6 +61,24 @@ class _FakeCompression extends CompressionController {
 
   @override
   Future<void> cancel() async => cancels++;
+}
+
+/// Finishes every run with [result] at once (FEAT-006-T12).
+class _DoneCompression extends _FakeCompression {
+  _DoneCompression(this.result);
+  final CompressionSuccess result;
+  @override
+  Future<void> start(CompressionRequest request) async {
+    requests.add(request);
+    state = CompressionDone(result, maxKb: request.maxKb);
+  }
+
+  @override
+  Future<void> cancel() async {
+    cancels++;
+    File(result.tempFilePath).deleteSync();
+    state = const CompressionIdle();
+  }
 }
 
 class _Decoder implements PreviewDecoder {
@@ -302,6 +323,43 @@ void main() {
       expect(compression.cancels, 1);
       expect(compression.requests, hasLength(1));
       expect(find.byType(CropScreen), findsOneWidget, reason: 'back on crop');
+    });
+
+    testWidgets('FEAT-006-T12: a mismatch deletes nothing more, and Back lands on the crop step with photo and spec kept (AC-3.3)',
+        (tester) async {
+      decoder.previews.add(await image(tester));
+      final out = File('${tmp.path}/[PLACEHOLDER].jpg')..writeAsBytesSync(List.filled(48200, 1));
+      final compression = _DoneCompression(CompressionSuccess(tempFilePath: out.path, sizeBytes: 48200, format: OutputFormat.jpeg));
+      final c = await onTargetStep(tester, overrides: [
+        ...fakeCheckOverrides(
+          result: const Measured(MeasuredOutput(bytes: 48200, width: 31, height: 30, format: OutputFormat.jpeg, hasAlpha: false)),
+          decoder: FakePreviewDecoder(const PreviewErr(Reason.internalError)),
+        ),
+        compressionControllerProvider.overrideWith(() => compression),
+        cropRenderProvider.overrideWithValue((req, cancel) async => RenderOk(TestPixels(
+            req.target.width, req.target.height, 3, Uint8List(req.target.width * req.target.height * 3),
+            hasTransparency: false))),
+      ]);
+      const spec = TargetSpec(width: 30, height: 30, maxKb: 50, format: OutputFormat.jpeg);
+      openCrop(tester, c, spec);
+      await tester.pumpAndSettle();
+      final before = c.read(cropControllerProvider)!;
+      await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining("doesn't match your target"), findsOneWidget);
+      expect(find.byType(ExportPanel), findsNothing);
+      expect(compression.cancels, 1, reason: 'the single deleter ran once (FR-10)');
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Back'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CropScreen), findsOneWidget);
+      expect(find.byType(ResultScreen), findsNothing);
+      final after = c.read(cropControllerProvider)!;
+      expect(after.target, before.target, reason: 'spec kept');
+      expect(after.crop, before.crop, reason: 'crop kept');
+      expect(c.read(pickControllerProvider).current, isNotNull, reason: 'photo kept');
+      expect(compression.requests, hasLength(1));
     });
 
     for (final entered in const [

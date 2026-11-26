@@ -137,7 +137,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** `lib/features/preview/presentation/spec_check_view.dart`, built to the G1 design: `RawImage` in a sized box computed from the **measured** W×H, `BoxFit.contain`, `paintCheckerboard` under alpha, no filter or overlay, no gesture detector; caption; headline in `Semantics(liveRegion: true)`; three rows each `Semantics(label: rowSentence, excludeSemantics: true)`; one `BoothNotice` per `success.notices` item via `OutcomeMessages.notice`; the 1,024 line when `!window.narrow`; the caveat line; the "Preview isn't available" placeholder when the image is null.
 - **Done when:** widget tests pass: three rows in fixed order with target and measured texts (AC-1.1, AC-1.3); all meet → "Matches your target", each row icon plus "Meets" (AC-2.1); 1,024 line shown for a non-narrow and hidden for a narrow window (AC-2.4); caveat present (AC-2.5); narrow, padding and transparency notices shown once each, none → no notice widget (AC-5.1, AC-5.2); box aspect equals the measured aspect within 1 px, height ≤ 0.4 × screen height and scale ≤ 4 for 300×300, 140×60 and 6000×4000 (AC-4.1, FR-14); preview semantics label equals `previewAlt` (AC-4.6); a drag starting on the preview scrolls the page and no `GestureDetector`/`InteractiveViewer` wraps it (AC-4.7); null image → placeholder text, rows still shown (AC-4.4); `find.byType(Image)` finds nothing and `imageCache.currentSize == 0`.
 
-### - [ ] FEAT-006-T12 — `ResultScreen` success branch, leave rules, FEAT-007 test edits 2–4
+### - [x] FEAT-006-T12 — `ResultScreen` success branch, leave rules, FEAT-007 test edits 2–4
 - **Implements:** FR-1, FR-7 (order), FR-10, FR-11, FR-19 (recents, cache), FR-20, FR-21, FR-22, NFR-8 · **ADRs:** ADR-001, ADR-007
 - **Depends on:** T05, T11
 - **Size:** L
@@ -257,7 +257,7 @@ The task total is 1.5 d above tech and 0.2 pw above its 1.1–1.3 pw range: the 
 
 ## Open items
 1. **2 GB emulator profile.** NFR-1 names it. FEAT-007 recorded the local emulator's data as corrupted; CLAUDE.md says keep it running. T01 and T15 use it if available, otherwise the Realme 2 Pro and CI API 28 numbers stand in; the Product Owner accepts that at G0. Accepted 2026-11-26 (Test record).
-2. **AC-7.1 wording.** "FEAT-007 suite passes unchanged" is met in the OQ-T1 sense (behaviour assertions unchanged, fixed edit set), not word for word.
+2. **AC-7.1 wording.** "FEAT-007 suite passes unchanged" is met in the OQ-T1 sense (behaviour assertions unchanged, fixed edit set), not word for word. T12 needed one edit outside that set: `result_screen_test.dart` scrolls Save and Done into view before tapping them, because the check above the panel makes the page taller than the test view; no assertion changed.
 3. **TalkBack** is not installed on the Realme 2 Pro (FEAT-007 T23). AC-4.6 and AC-8.2 are covered by semantics tests and `uiautomator events`; speech is checked only if the Product Owner installs TalkBack.
 4. **Recents on Android 9–12** has no protection (PRD privacy flag 2); AC-6.1 is checked on API 36 only, by eye.
 5. **Effort** 1.5 pw against tech 1.2 pw and roadmap 0.8 pw; the Product Owner decides whether the roadmap row changes.

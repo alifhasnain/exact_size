@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../test_support/fake_check_overrides.dart';
 import '../../../../test_support/fake_export_bridge.dart';
 import '../../../../test_support/tolerant_golden_comparator.dart';
 
@@ -49,8 +50,10 @@ void main() {
       ..physicalSize = const Size(360, 640)
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
+    final image = await tester.runAsync(() => createTestImage(width: 30, height: 30));
     await tester.pumpWidget(ProviderScope(
       overrides: [
+        ...fakeCheckOverrides(image: image),
         compressionControllerProvider.overrideWith(() => _Done(success)),
         exportBridgeProvider.overrideWithValue(bridge),
         shareCopiesProvider.overrideWithValue(ShareCopies(TempFiles(tmp, folder: 'exactsize_share'))),
