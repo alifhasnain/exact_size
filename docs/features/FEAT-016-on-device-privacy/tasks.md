@@ -84,7 +84,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `test/privacy/reviewed_packages_test.dart` with `runtimePackages(pubDepsJson)` (tech section 4; or the T01 fallback); `tool/privacy/reviewed_packages.txt` with a note per package; build-hook packages noted "build-time hook, not in APK".
 - **Done when:** `flutter test test/privacy/reviewed_packages_test.dart` passes on the tree; a fixture graph with one unlisted runtime name fails with "New dependency [NAME]. Review network, data and permissions, then add it with a note." and the FR-12 pointer; a missing note fails; a dev-only transitive package (for example `http` via `build_runner`) does not appear in the closure; a version bump passes.
 
-### - [ ] FEAT-016-T06 — Whole-tree deny-by-default source scan
+### - [x] FEAT-016-T06 — Whole-tree deny-by-default source scan
 - **Implements:** FR-9, FR-4 (WebView, `url_launcher` ban), FR-15 (connectivity tokens), FR-12 (message), NFR-5, NFR-6 · **ADRs:** ADR-006, ADR-007
 - **Depends on:** T01 (floors)
 - **Size:** M
