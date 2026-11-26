@@ -92,6 +92,9 @@ No preview, no caveat, no panel, no export-anyway control.
 2. **Checking state:** spinner only, no text (no new string; it lasts under 0.1 s on the Realme). Alternative: add a "Checking your file…" string (new key, translated in T16). Default: spinner only.
 3. **1,024 line on a mismatch:** hide it there, because "Also fits…" next to a failing size reads like a contradiction. FR-8 does not name the state; this narrows a Should. Default: hide on mismatch, show on matches.
 
+## G1 decision
+2026-11-26: the Product Owner accepted this design with the three defaults: unreadable key "Choose another photo", Checking shows a spinner only, the 1,024 line is hidden on a mismatch.
+
 ## Verification screenshots for G2 (T14)
 Realme 2 Pro (API 36), from `integration_test/result_screen_demo.dart`, synthetic images only (no faces, no signatures), the fake measurer forcing the bad states:
 1. `matches_padding.png` — JPEG 300×300, padding notice.

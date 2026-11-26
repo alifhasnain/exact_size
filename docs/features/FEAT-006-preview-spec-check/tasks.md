@@ -119,7 +119,7 @@ Panel, controller, data, domain and privacy test files of FEAT-007 are not edite
 - **Scope:** new `test/features/preview/preview_privacy_test.dart` in the `export_privacy_test.dart` pattern, scanning `lib/features/preview/`: bans `print(`, `debugPrint(` and `log(` outside `SpecCheckLog`, `HttpClient`, `Socket`, network imports (extend `no_network_imports_test.dart` scope), `Image.file`, `FileImage`, `MemoryImage`, `Image.memory`, `shared_preferences`, `restorationId`, `Clipboard`, any ad, analytics or crash SDK import. Log audit: run the T07–T08 suites with a capturing log sink.
 - **Done when:** the test passes on the current tree and the PR shows it failing once per rule when a forbidden token is added to a scratch file. Every captured preview line matches the T03 regex; no line contains a digit, `exactsize-`, `/data/`, `/storage/`, `content://` or a `[PLACEHOLDER]` test value (AC-6.3). Because it scans the whole folder, it also guards the UI tasks.
 
-### - [ ] FEAT-006-T10 — Check screen design pass with the Product Owner (impeccable, lean) — gate G1
+### - [x] FEAT-006-T10 — Check screen design pass with the Product Owner (impeccable, lean) — gate G1
 - **Implements:** prerequisite for FR-5, FR-7–FR-9, FR-13–FR-18, NFR-2, NFR-4 (visual) · **ADRs:** —
 - **Depends on:** T06, T08
 - **Size:** M (developer side; the Product Owner's time is not counted)
@@ -280,6 +280,7 @@ _Filled in by T01, T10, T12, T14, T15, T16 and T17 (one row per check and device
 | 2026-11-25 | T01 | Cleanup: spike fixtures deleted by the test teardown; test build uninstalled (package absent afterwards) | Realme 2 Pro, API 36, profile build | Done |
 | 2026-11-25 | T01 | Gate G0: passed. `file://` decode works on API 36 and API 28; 2 MP measure + decode at most 92.5 ms median and 142 ms p95 (Realme, gate 500 ms / 1.5 s); steady extra at a 24 MP output 10.8 MB at cap 2048, so at most that at cap = short side (gate 24 MB). Recorded, not gated: peak (estimate only, see above) and the 10 MB PNG `checkContainer` time of 0.3-0.4 s on the Realme (tech [Hypothesis] was 100 ms; it adds to the time to verdict for large PNG outputs only, still far inside NFR-1). No fallback needed. Spike branch deleted, never merged | Realme 2 Pro and CI API 28 | Pass |
 | 2026-11-26 | T01 | Gate G0 gaps accepted by the Product Owner: the Realme 2 Pro and CI API 28 numbers stand in for the 2 GB emulator (Open items 1), and the peak memory figure is an estimate | Product Owner | Accepted |
+| 2026-11-26 | T10 | Gate G1: lean impeccable design (t10/check_design.md, 2026-11-26) accepted by the Product Owner with the three defaults (unreadable key "Choose another photo"; Checking = spinner only; 1,024 line hidden on a mismatch) | Product Owner | Accepted |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md`, ADR-004, ADR-007 and ADR-001 before starting a task.
