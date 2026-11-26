@@ -256,7 +256,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pickPrivacyNote =>
-      'Your photos stay on your phone and are never uploaded.';
+      'Your photos are resized on your phone. ExactSize never uploads them.';
 
   @override
   String get pickOpening => 'Opening your photo…';
@@ -479,4 +479,52 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return '$label: target $target, this file $measured, $status.';
   }
+
+  @override
+  String get privacyEntry => 'How your photos are handled';
+
+  @override
+  String get privacyTitle => 'Your photos and privacy';
+
+  @override
+  String get privacyOnPhoneTitle => 'On your phone';
+
+  @override
+  String get privacyOnPhone =>
+      'ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.';
+
+  @override
+  String get privacyOfflineTitle => 'Works offline';
+
+  @override
+  String get privacyOffline =>
+      'Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.';
+
+  @override
+  String get privacyKeptTitle => 'What ExactSize keeps';
+
+  @override
+  String get privacyKept =>
+      'ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.';
+
+  @override
+  String get privacyCopiesTitle => 'When you save or share';
+
+  @override
+  String get privacyCopies =>
+      'Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.';
+
+  @override
+  String get privacyOutsideTitle => 'Other apps on your phone';
+
+  @override
+  String get privacyOutside =>
+      'Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.';
+
+  @override
+  String get privacyReadsTitle => 'What ExactSize reads';
+
+  @override
+  String get privacyReads =>
+      'ExactSize opens only the photo you choose. It does not browse your gallery or your files.';
 }

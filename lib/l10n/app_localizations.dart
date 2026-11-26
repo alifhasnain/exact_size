@@ -449,10 +449,10 @@ abstract class AppLocalizations {
   /// **'Choose from files'**
   String get pickChooseFiles;
 
-  /// Pick screen privacy line (Should, FEAT-001 FR-22). Final copy is owned by FEAT-016; keep it short and plain.
+  /// Pick screen privacy line (FEAT-016 FR-1, Register: C1). Scoped to ExactSize: never an absolute claim such as 'never leaves your phone'. Keep it short and plain.
   ///
   /// In en, this message translates to:
-  /// **'Your photos stay on your phone and are never uploaded.'**
+  /// **'Your photos are resized on your phone. ExactSize never uploads them.'**
   String get pickPrivacyNote;
 
   /// Progress text shown when opening a picked photo takes over 500 ms (FEAT-001 FR-13).
@@ -813,6 +813,90 @@ abstract class AppLocalizations {
     String measured,
     String status,
   );
+
+  /// FEAT-016 FR-2: labelled control on the pick screen that opens the privacy explainer.
+  ///
+  /// In en, this message translates to:
+  /// **'How your photos are handled'**
+  String get privacyEntry;
+
+  /// FEAT-016 FR-3: title of the privacy explainer screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photos and privacy'**
+  String get privacyTitle;
+
+  /// FEAT-016 FR-3 part (a) heading. Register: C1, C3.
+  ///
+  /// In en, this message translates to:
+  /// **'On your phone'**
+  String get privacyOnPhoneTitle;
+
+  /// FEAT-016 FR-3 part (a). Register: C1, C3. Scoped to ExactSize; no absolute claim.
+  ///
+  /// In en, this message translates to:
+  /// **'ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.'**
+  String get privacyOnPhone;
+
+  /// FEAT-016 FR-3 part (b) heading. Register: C2.
+  ///
+  /// In en, this message translates to:
+  /// **'Works offline'**
+  String get privacyOfflineTitle;
+
+  /// FEAT-016 FR-3 part (b). Register: C2. The second sentence is the online-album exception (AC-3.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.'**
+  String get privacyOffline;
+
+  /// FEAT-016 FR-3 part (c) heading. Register: C4, C5.
+  ///
+  /// In en, this message translates to:
+  /// **'What ExactSize keeps'**
+  String get privacyKeptTitle;
+
+  /// FEAT-016 FR-3 part (c). Register: C4, C5.
+  ///
+  /// In en, this message translates to:
+  /// **'ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.'**
+  String get privacyKept;
+
+  /// FEAT-016 FR-3 part (d) heading. Register: C8.
+  ///
+  /// In en, this message translates to:
+  /// **'When you save or share'**
+  String get privacyCopiesTitle;
+
+  /// FEAT-016 FR-3 part (d). Register: C8. Must agree with exportPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.'**
+  String get privacyCopies;
+
+  /// FEAT-016 FR-3 part (e) heading. Register: C9.
+  ///
+  /// In en, this message translates to:
+  /// **'Other apps on your phone'**
+  String get privacyOutsideTitle;
+
+  /// FEAT-016 FR-3 part (e). Register: C9. Names what ExactSize cannot control.
+  ///
+  /// In en, this message translates to:
+  /// **'Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.'**
+  String get privacyOutside;
+
+  /// FEAT-016 FR-3 part (f) heading. Register: C10.
+  ///
+  /// In en, this message translates to:
+  /// **'What ExactSize reads'**
+  String get privacyReadsTitle;
+
+  /// FEAT-016 FR-3 part (f). Register: C10.
+  ///
+  /// In en, this message translates to:
+  /// **'ExactSize opens only the photo you choose. It does not browse your gallery or your files.'**
+  String get privacyReads;
 }
 
 class _AppLocalizationsDelegate

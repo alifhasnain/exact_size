@@ -13,7 +13,7 @@ import 'package:material_ui/material_ui.dart';
 /// (NFR-4, NFR-5, AC-7.1, AC-7.2, AC-7.4, AC-3.4).
 void main() {
   const en = 'Take a photo';
-  const privacy = 'Your photos stay on your phone and are never uploaded.';
+  const privacy = 'Your photos are resized on your phone. ExactSize never uploads them.'; // FEAT-016 FR-1
 
   Future<void> pump(WidgetTester tester, PickState state,
       {Locale locale = const Locale('en'), double scale = 1, Size size = const Size(360, 800)}) async {

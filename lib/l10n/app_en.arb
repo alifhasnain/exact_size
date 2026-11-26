@@ -350,9 +350,9 @@
   "@pickChooseFiles": {
     "description": "Pick screen button (Should): opens the system file picker for images (FEAT-001 FR-21)."
   },
-  "pickPrivacyNote": "Your photos stay on your phone and are never uploaded.",
+  "pickPrivacyNote": "Your photos are resized on your phone. ExactSize never uploads them.",
   "@pickPrivacyNote": {
-    "description": "Pick screen privacy line (Should, FEAT-001 FR-22). Final copy is owned by FEAT-016; keep it short and plain."
+    "description": "Pick screen privacy line (FEAT-016 FR-1, Register: C1). Scoped to ExactSize: never an absolute claim such as 'never leaves your phone'. Keep it short and plain."
   },
   "pickOpening": "Opening your photo…",
   "@pickOpening": {
@@ -517,5 +517,33 @@
   "previewUnavailable": "Preview isn't available. The check below is still correct.",
   "@previewUnavailable": {"description": "FEAT-006 FR-14: shown instead of the preview when the phone ran out of memory for it."},
   "checkRowSentence": "{label}: target {target}, this file {measured}, {status}.",
-  "@checkRowSentence": {"description": "FEAT-006 AC-8.2: one row read as a sentence by TalkBack. label is a row label, target and measured are formatted values, status is 'Meets' or 'Doesn't meet'.", "placeholders": {"label": {"type": "String", "example": "File size"}, "target": {"type": "String", "example": "20–50 KB"}, "measured": {"type": "String", "example": "48.2 KB"}, "status": {"type": "String", "example": "Meets"}}}
+  "@checkRowSentence": {"description": "FEAT-006 AC-8.2: one row read as a sentence by TalkBack. label is a row label, target and measured are formatted values, status is 'Meets' or 'Doesn't meet'.", "placeholders": {"label": {"type": "String", "example": "File size"}, "target": {"type": "String", "example": "20–50 KB"}, "measured": {"type": "String", "example": "48.2 KB"}, "status": {"type": "String", "example": "Meets"}}},
+  "privacyEntry": "How your photos are handled",
+  "@privacyEntry": {"description": "FEAT-016 FR-2: labelled control on the pick screen that opens the privacy explainer."},
+  "privacyTitle": "Your photos and privacy",
+  "@privacyTitle": {"description": "FEAT-016 FR-3: title of the privacy explainer screen."},
+  "privacyOnPhoneTitle": "On your phone",
+  "@privacyOnPhoneTitle": {"description": "FEAT-016 FR-3 part (a) heading. Register: C1, C3."},
+  "privacyOnPhone": "ExactSize resizes your photo on your phone. ExactSize never uploads your photos. You do not need an account.",
+  "@privacyOnPhone": {"description": "FEAT-016 FR-3 part (a). Register: C1, C3. Scoped to ExactSize; no absolute claim."},
+  "privacyOfflineTitle": "Works offline",
+  "@privacyOfflineTitle": {"description": "FEAT-016 FR-3 part (b) heading. Register: C2."},
+  "privacyOffline": "Every step works without an internet connection. A photo stored only online must first be downloaded by your gallery app.",
+  "@privacyOffline": {"description": "FEAT-016 FR-3 part (b). Register: C2. The second sentence is the online-album exception (AC-3.2)."},
+  "privacyKeptTitle": "What ExactSize keeps",
+  "@privacyKeptTitle": {"description": "FEAT-016 FR-3 part (c) heading. Register: C4, C5."},
+  "privacyKept": "ExactSize keeps temporary copies only while you work. They are deleted when you finish, or the next time the app starts. Logs hold only short status codes, never your photo.",
+  "@privacyKept": {"description": "FEAT-016 FR-3 part (c). Register: C4, C5."},
+  "privacyCopiesTitle": "When you save or share",
+  "@privacyCopiesTitle": {"description": "FEAT-016 FR-3 part (d) heading. Register: C8."},
+  "privacyCopies": "Save puts a copy in your gallery or a folder you pick. Share gives a copy to the app you choose. From then on, that copy is yours, and ExactSize does not control it.",
+  "@privacyCopies": {"description": "FEAT-016 FR-3 part (d). Register: C8. Must agree with exportPrivacy."},
+  "privacyOutsideTitle": "Other apps on your phone",
+  "@privacyOutsideTitle": {"description": "FEAT-016 FR-3 part (e) heading. Register: C9."},
+  "privacyOutside": "Your gallery, keyboard and the apps you share with follow their own privacy rules. Some of them may back up or send files.",
+  "@privacyOutside": {"description": "FEAT-016 FR-3 part (e). Register: C9. Names what ExactSize cannot control."},
+  "privacyReadsTitle": "What ExactSize reads",
+  "@privacyReadsTitle": {"description": "FEAT-016 FR-3 part (f) heading. Register: C10."},
+  "privacyReads": "ExactSize opens only the photo you choose. It does not browse your gallery or your files.",
+  "@privacyReads": {"description": "FEAT-016 FR-3 part (f). Register: C10."}
 }

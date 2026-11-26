@@ -1,1 +1,103 @@
-{}
+{
+  "ar": [
+    "privacyEntry",
+    "privacyTitle",
+    "privacyOnPhoneTitle",
+    "privacyOnPhone",
+    "privacyOfflineTitle",
+    "privacyOffline",
+    "privacyKeptTitle",
+    "privacyKept",
+    "privacyCopiesTitle",
+    "privacyCopies",
+    "privacyOutsideTitle",
+    "privacyOutside",
+    "privacyReadsTitle",
+    "privacyReads"
+  ],
+
+  "es": [
+    "privacyEntry",
+    "privacyTitle",
+    "privacyOnPhoneTitle",
+    "privacyOnPhone",
+    "privacyOfflineTitle",
+    "privacyOffline",
+    "privacyKeptTitle",
+    "privacyKept",
+    "privacyCopiesTitle",
+    "privacyCopies",
+    "privacyOutsideTitle",
+    "privacyOutside",
+    "privacyReadsTitle",
+    "privacyReads"
+  ],
+
+  "hi": [
+    "privacyEntry",
+    "privacyTitle",
+    "privacyOnPhoneTitle",
+    "privacyOnPhone",
+    "privacyOfflineTitle",
+    "privacyOffline",
+    "privacyKeptTitle",
+    "privacyKept",
+    "privacyCopiesTitle",
+    "privacyCopies",
+    "privacyOutsideTitle",
+    "privacyOutside",
+    "privacyReadsTitle",
+    "privacyReads"
+  ],
+
+  "id": [
+    "privacyEntry",
+    "privacyTitle",
+    "privacyOnPhoneTitle",
+    "privacyOnPhone",
+    "privacyOfflineTitle",
+    "privacyOffline",
+    "privacyKeptTitle",
+    "privacyKept",
+    "privacyCopiesTitle",
+    "privacyCopies",
+    "privacyOutsideTitle",
+    "privacyOutside",
+    "privacyReadsTitle",
+    "privacyReads"
+  ],
+
+  "pt": [
+    "privacyEntry",
+    "privacyTitle",
+    "privacyOnPhoneTitle",
+    "privacyOnPhone",
+    "privacyOfflineTitle",
+    "privacyOffline",
+    "privacyKeptTitle",
+    "privacyKept",
+    "privacyCopiesTitle",
+    "privacyCopies",
+    "privacyOutsideTitle",
+    "privacyOutside",
+    "privacyReadsTitle",
+    "privacyReads"
+  ],
+
+  "pt_BR": [
+    "privacyEntry",
+    "privacyTitle",
+    "privacyOnPhoneTitle",
+    "privacyOnPhone",
+    "privacyOfflineTitle",
+    "privacyOffline",
+    "privacyKeptTitle",
+    "privacyKept",
+    "privacyCopiesTitle",
+    "privacyCopies",
+    "privacyOutsideTitle",
+    "privacyOutside",
+    "privacyReadsTitle",
+    "privacyReads"
+  ]
+}

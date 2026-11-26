@@ -91,7 +91,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `test/privacy/whole_tree_scan_test.dart` per tech 8.1: roots `lib/`, `packages/es_codec/{lib,hook}`, `android/app/src/main/kotlin` and `java` if present; generated files scanned; `exempt` map empty, entries must exist; file-count floors from T01; Dart tokens (`networkUses` imported, plus `webview_flutter`, `url_launcher`, `connectivity_plus`, `ConnectivityResult`, `WebView`, the analytics/ads/crash import list, `\bClipboard\b`); Kotlin/Java tokens (tech 8.1, `android.net.Uri` allowed); `//` and KDoc `*` lines skipped; `print`/`debugPrint` banned under `lib/features/privacy/` except `uncaught_error_log.dart`. Existing per-feature privacy tests untouched.
 - **Done when:** passes on the current tree; the temp-dir self-test (`features/new_feature/x.dart` with `HttpClient()`, `kotlin/X.kt` with `java.net.URL(...)`) gives exactly one hit each as `file:line: text` and none once removed (AC-4.2, AC-4.4); a root below its floor fails; a stale exempt path fails; nothing is written into `lib/`.
 
-### - [ ] FEAT-016-T07 — English privacy strings (15 keys)
+### - [x] FEAT-016-T07 — English privacy strings (15 keys)
 - **Implements:** FR-1, FR-3, FR-6 (English), FR-7, NFR-4, NFR-7 · **ADRs:** —
 - **Depends on:** —
 - **Size:** S
