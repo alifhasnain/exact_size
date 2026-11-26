@@ -1,8 +1,8 @@
 ---
 id: FEAT-016-TECH
 title: On-device-only, offline-capable processing with in-app privacy explainer — Technical Plan
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-26
 links: [FEAT-016, ADR-001, ADR-006, ADR-007, FEAT-001, FEAT-006, FEAT-007, FEAT-019, FEAT-025, FEAT-013, FEAT-027, FEAT-012]
 ---
@@ -264,3 +264,4 @@ Translations are counted in FEAT-019. Dropping FR-10 saves about 0.9 d.
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-26 | First draft |
+| 1.0 | 2026-11-26 | Approved by the Product Owner with OQ-T1 to OQ-T4 at their defaults |
