@@ -119,7 +119,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** `integration_test/offline_test.dart` (`testWidgets` only): crop-to-compression and preview-check cases with one synthetic fixture each, behind the existing networking-off first check; `tool/run_offline_test.sh` unchanged. Local run on the Realme 2 Pro with Wi-Fi and mobile data off (state noted and restored, build uninstalled). Push **P1** after `flutter analyze` and `flutter test` pass locally. One slim throwaway CI run (emulator job only, `timeout-minutes`, bounded waits, not merged into `ci.yml`) installs the release build on API 28 and runs `bmgr backupnow <applicationId>`.
 - **Done when:** the new cases pass on the Realme 2 Pro offline; P1 CI is green with both marker assertions true and the offline step passing on API 28; the API 28 `bmgr` result is recorded; the extra CI time of the `build` and `emulator` jobs against the last green run is recorded (NFR-1 target ≤ 1 min; see Open items 4d).
 
-### - [ ] FEAT-016-T11 — `claims.md`: register, inventory, procedure, checklist, carried items
+### - [x] FEAT-016-T11 — `claims.md`: register, inventory, procedure, checklist, carried items
 - **Implements:** FR-12, FR-13, FR-14 (matrix table), FR-19 (record), FR-3 (register map), NFR-7 · **ADRs:** —
 - **Depends on:** T02, T03, T07
 - **Size:** S
