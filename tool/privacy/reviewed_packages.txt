@@ -1,0 +1,73 @@
+# FEAT-016 FR-10: reviewed Dart packages of the runtime closure (`dart pub deps --json`, from the
+# root's direct, non-dev dependencies). One entry per line: name  # network: ...; data: ...; permissions: ...; purpose
+# Notes come from each package's documented purpose (reviewed 2026-11-27, FEAT-016-T05). The app has
+# no INTERNET permission and the FEAT-016 scan bans network use in app code. A new package fails
+# `flutter test` until it is reviewed and added here (FEAT-016 FR-12).
+
+archive                           # network: none; data: none; permissions: none; decompression used by image (in memory)
+args                              # network: none; data: none; permissions: none; command-line parsing, used by jni tooling; not used by app code
+async                             # network: none; data: none; permissions: none; async utilities
+boolean_selector                  # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+characters                        # network: none; data: none; permissions: none; Unicode text segments
+clock                             # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+code_assets                       # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+collection                        # network: none; data: none; permissions: none; collection utilities
+crypto                            # network: none; data: none; permissions: none; hashing in memory (es_codec checks, uuid)
+cupertino_ui                      # network: none; data: none; permissions: none; Flutter widgets
+es_codec                          # network: none; data: none; permissions: none; our image codec package (FEAT-004): on device, enforced by the FEAT-016 scan
+fake_async                        # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+ffi                               # network: none; data: none; permissions: none; native interop (es_codec)
+file                              # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+fixnum                            # network: none; data: none; permissions: none; fixed-width integers (uuid)
+flutter                           # network: none; data: none; permissions: none; Flutter framework
+flutter_localizations             # network: none; data: none; permissions: none; localized framework strings
+flutter_riverpod                  # network: none; data: none; permissions: none; state management
+flutter_test                      # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+get_it                            # network: none; data: none; permissions: none; dependency injection
+glob                              # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+hooks                             # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+image                             # network: none; data: none; permissions: none; image decode/encode in memory (FEAT-004)
+injectable                        # network: none; data: none; permissions: none; dependency injection annotations
+intl                              # network: none; data: none; permissions: none; number and message formatting
+jni                               # network: none; data: none; permissions: none; Java interop (export and picker bridges)
+jni_flutter                       # network: none; data: none; permissions: none; Java interop for Flutter
+jni_util                          # network: none; data: none; permissions: none; Java interop helpers
+leak_tracker                      # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+leak_tracker_flutter_testing      # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+leak_tracker_testing              # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+listen                            # network: none; data: none; permissions: none; listener utilities (flutter, riverpod)
+logging                           # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+matcher                           # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+material_color_utilities          # network: none; data: none; permissions: none; colour maths
+material_ui                       # network: none; data: none; permissions: none; Flutter Material widgets
+meta                              # network: none; data: none; permissions: none; annotations
+native_toolchain_c                # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+objective_c                       # network: none; data: none; permissions: none; implementation for another platform; not used on Android
+package_config                    # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+path                              # network: none; data: none; permissions: none; path string utilities
+path_provider                     # network: none; data: none; permissions: none; app cache and support directory paths
+path_provider_android             # network: none; data: none; permissions: none; Android path provider (no network)
+path_provider_foundation          # network: none; data: none; permissions: none; implementation for another platform; not used on Android
+path_provider_linux               # network: none; data: none; permissions: none; implementation for another platform; not used on Android
+path_provider_platform_interface  # network: none; data: none; permissions: none; plugin interface
+path_provider_windows             # network: none; data: none; permissions: none; implementation for another platform; not used on Android
+platform                          # network: none; data: none; permissions: none; platform detection
+plugin_platform_interface         # network: none; data: none; permissions: none; plugin interface
+posix                             # network: none; data: none; permissions: none; POSIX helpers used by archive; no network use
+process                           # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+pub_semver                        # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK
+record_use                        # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK (native tree shaking)
+riverpod                          # network: none; data: none; permissions: none; state management
+sky_engine                        # network: none; data: none; permissions: none; Flutter engine Dart library
+source_span                       # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+stack_trace                       # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+state_notifier                    # network: none; data: none; permissions: none; state management
+stream_channel                    # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+string_scanner                    # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+term_glyph                        # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+test_api                          # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan)
+uuid                              # network: none; data: none; permissions: none; random IDs used by riverpod; generated on device
+vector_math                       # network: none; data: none; permissions: none; vector maths
+vm_service                        # network: none; data: none; permissions: none; pulled in by flutter_riverpod's flutter_test dependency; test-only API, never imported by app code (FEAT-016 scan); contains a VM-service client that release builds cannot use (no VM service, no INTERNET permission)
+xdg_directories                   # network: none; data: none; permissions: none; implementation for another platform; not used on Android
+yaml                              # network: none; data: none; permissions: none; build hook tooling (es_codec native build); runs on the build machine, not in the APK

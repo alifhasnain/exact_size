@@ -77,7 +77,7 @@ Module paths follow tech section 2: new `lib/features/privacy/{presentation,data
 - **Scope:** inline task `CheckReviewedDependencies` per tech 8.2: `releaseRuntimeClasspath` resolved artifacts mapped to `group:module` of `ModuleComponentIdentifier` (provider inputs, configuration-cache safe), plugin subprojects skipped; runs before `assembleRelease` and `bundleRelease`; writes `checkReviewedDependencies.ok`. Bootstrap `android/app/reviewed_dependencies.txt` from the task's first output, one note per entry (`# network: …; data: …; permissions: …`). `.github/workflows/ci.yml` `build` job: one line after the release build asserting both marker files.
 - **Done when:** a local release build passes and writes the marker; the self-test with `[PLACEHOLDER_GROUP]:planted` fails naming it, with the FR-12 pointer; an entry with an empty note fails; a version bump of a listed module passes; the CI line is in place (verified at P1).
 
-### - [ ] FEAT-016-T05 — Dart reviewed-packages test and list
+### - [x] FEAT-016-T05 — Dart reviewed-packages test and list
 - **Implements:** FR-10 (Dart half), FR-11, FR-12 (message), NFR-5, NFR-10 · **ADRs:** ADR-001
 - **Depends on:** T01 (G0)
 - **Size:** M
