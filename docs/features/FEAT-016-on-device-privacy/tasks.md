@@ -1,0 +1,260 @@
+---
+id: FEAT-016-TASKS
+title: On-device-only, offline-capable processing with in-app privacy explainer — Implementation Tasks
+status: Proposed
+version: 0.1
+updated: 2026-11-26
+links: [FEAT-016, FEAT-016-TECH, ADR-001, ADR-006, ADR-007, FEAT-001, FEAT-007, FEAT-019, FEAT-025, FEAT-013, FEAT-027, FEAT-012]
+---
+
+# FEAT-016 — Implementation Tasks
+
+Milestone: R1 Phase A (MVP, Must). Work top to bottom, one task at a time.
+
+Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day, **L** ≈ 1 day; each task is one PR.
+Module paths follow tech section 2: new `lib/features/privacy/{presentation,data}`, `test/privacy/`, `test/features/privacy/`, `tool/privacy/reviewed_packages.txt`, `android/app/reviewed_dependencies.txt`, `android/app/src/main/res/xml/data_extraction_rules.xml`, `docs/features/FEAT-016-on-device-privacy/claims.md`; changed `android/app/build.gradle.kts`, `android/app/src/main/AndroidManifest.xml`, `lib/main.dart`, `lib/features/pick/presentation/{pick_view,pick_screen}.dart`, `integration_test/offline_test.dart`, `.github/workflows/ci.yml` (one assertion line), `lib/l10n/app_*.arb`.
+
+**Already built, reused, not planned again:** `checkMergedManifest` and its self-test pattern, the FileProvider `@xml/...` check (FEAT-007); `networkUses` in `no_network_imports_test.dart`; the per-feature `*_privacy_test.dart` files (kept as they are, FR-9); `OutcomeLog` and the `LogSink` typedef pattern; `TempFiles` and the start-up sweeps (C4); `tool/run_offline_test.sh` and its "networking is off" first check; the CI `build` and API 28 `emulator` jobs; `Navigator.push(MaterialPageRoute)` (`lib/app_flow.dart`); `popUntil(route.isFirst)` on share-in (`pick_screen.dart`); gen-l10n with 6 languages; the synthetic fixture generator.
+
+**Decisions used (tech.md v1.0, OQ-T1 to OQ-T4 at defaults; PRD 1.0, open questions at defaults):**
+- OQ-T1: the Gradle half of FR-10 fails in the release build, not in `flutter test`; AC-4.3 is clarified in a PRD minor version (T12).
+- OQ-T2: one heading key and one body key per part (14 new keys); headings do not count toward the 150 words.
+- OQ-T3: FR-19 is recorded in `claims.md` only; no edit to the roadmap or other PRDs.
+- OQ-T4 / PRD OQ-10: effort is re-estimated below; the Product Owner updates the roadmap row (Open items 2).
+- PRD OQ-1 app-scoped wording (FR-1); OQ-3 labelled control beside the plaque (final placement in T13); OQ-4 no in-app policy link; OQ-5 backup off; OQ-6 all three gates; OQ-8 `claims.md` is the living register; OQ-11 C6 stays out of user-facing text; OQ-12 FR-18 built.
+
+**Test devices:**
+- **Local device runs and screenshots use the connected real phone, Realme 2 Pro, API 36.** Run `adb devices` first. The local emulator (Medium_Phone_API_36.1) is used only if `adb devices` already shows it; never start a second one, never kill it.
+- **API 28 runs only in CI.** CI costs about 80 min per push to `main`: commit after each task, push only at milestones. Planned pushes: **P1** after T10 (gate markers, offline cases, API 28 backup check), **P2** after T16 before G-final. Run `flutter analyze` and `flutter test` locally before each push. Throwaway CI runs are slim (one job, one step), have `timeout-minutes`, and every wait loop is bounded.
+- Files run under `flutter drive` use `testWidgets` only.
+
+**Real-phone rules:**
+- Synthetic images only (generated gradients, flat colours, checker patterns), pushed to `Download` and deleted with their MediaStore rows after the run. Never a real face, signature, document or card.
+- Before every screenshot, check the foreground app (`adb shell dumpsys window | grep mCurrentFocus`) and capture only ExactSize's own screens. Never screenshot the system photo picker, file chooser, camera, gallery or share sheet: they show the owner's photos, files and contacts.
+- Never record personal data seen on the phone (names, contacts, photo content, file names, paths, URIs, account names) in the Test record, PR text, captions or logs; use `[PLACEHOLDER]`.
+- Note every setting before changing it (airplane mode, Wi-Fi, mobile data, font scale, locale, rotation, backup) and restore it after. Uninstall the test build after each run.
+- Credentials, keys and URLs in docs and code: `[PLACEHOLDER]` only.
+
+## Decision gates
+| Gate | Task | Passes when | If it fails |
+|---|---|---|---|
+| G0 Hypothesis check | T01 | `dart pub deps --json` shape on Windows is known (or the fallback is chosen); a local `flutter build apk --release` is shown to execute `checkMergedManifest` (task graph); the release APK permission set is printed; file-count floors are measured. All in the Test record | Stop. Propose a tech.md change before T02 (manifest) or T05 (Dart deps). T06–T09 may continue |
+| G1 Explainer design | T13 | The Product Owner was told before any visual work; one lean impeccable pass on Material 3 and the existing theme (no image comps, no reviewer subagents, one round); entry placement (OQ-3) and the English copy (T07) accepted or fixes named; reference and date recorded | No visible UI work (T14, T15). Non-visual tasks T01–T12 may run |
+| G2 Screenshot review | T15 | The Product Owner has seen one Realme 2 Pro screenshot per key state named in T13 and accepts them or names fixes. One look | Fixes go into T15 before T16. A scope change means a PRD change |
+| G-final Device and CI | T17 | Every FR-14 offline row passes on the Realme 2 Pro (release build, airplane mode); release APK permissions equal `claims.md`; register and explainer agree; CI is green at P2 (gate markers and API 28 offline cases); PRD 1.1 re-approved by the Product Owner (or the deviation accepted); the Product Owner accepts the recorded gaps | A false claim, a network use, a privacy leak, a crash or an accessibility miss means stop and report. Otherwise the Product Owner may type `/approve FEAT-016 implemented` |
+
+## Tasks
+
+### - [ ] FEAT-016-T01 — Verify tech hypotheses (pub deps, release gate, permissions) — gate G0
+- **Implements:** verification for FR-8, FR-10, FR-11, NFR-5 · **ADRs:** ADR-001
+- **Depends on:** —
+- **Size:** S
+- **Scope:** local only, no code merged. Observe and record:
+  - H1: `dart pub deps --json` (with `runInShell: true` on Windows, as the test will call it): field names `packages[].dependencies`, root `directDependencies` / `devDependencies`. If they differ, use the fallback `dart pub deps --no-dev --style=list` and note it for T05.
+  - H2: `flutter build apk --release -v` runs `checkMergedManifest` before `assembleRelease` (look for the task in the Gradle task list of the verbose log). This also shows whether non-verbose output hides it (tech risk 2, the reason for marker files).
+  - H3: merged release permissions with `aapt2 dump permissions` on the release APK. This settles the FEAT-007 T23 "profile build" ambiguity and fixes the T02 allow-list.
+  - H4: counts of `.dart` files under `lib/` and `.kt`/`.java` files under `android/app/src/main` for the NFR-5 floors (real count minus a margin).
+- **Done when:** one Test record row per H item (result, no paths beyond repo-relative ones); G0 recorded; if any H fails, a tech.md change is proposed to the Product Owner and T02/T05 wait.
+
+### - [ ] FEAT-016-T02 — Manifest permission allow-list and gate marker
+- **Implements:** FR-8, FR-11, FR-12 (message), NFR-5 · **ADRs:** ADR-007
+- **Depends on:** T01 (G0)
+- **Size:** M
+- **Scope:** `android/app/build.gradle.kts` `CheckMergedManifest`: every `uses-permission` and `uses-permission-sdk-23` checked against the allow-list constant (tech section 5, from T01 H3); named messages for INTERNET, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE and `com.google.android.gms.permission.AD_ID`; existing banned messages and the no-`tools:node="remove"` rule kept; new self-test mutations: INTERNET added, ACCESS_NETWORK_STATE as `uses-permission-sdk-23`, AD_ID, an unknown permission. Writes `build/app/outputs/privacy/checkMergedManifest.ok` on success. Every message ends with "Follow FEAT-016 FR-12 (docs/features/FEAT-016-on-device-privacy/claims.md)." A comment notes that a flavor change must rename the task per variant.
+- **Done when:** a local release build passes and writes the marker; each mutation makes the self-test fail with the permission name and the FR-12 pointer, and passes once removed (AC-4.1, AC-4.4, AC-4.5); the existing mutations still pass.
+
+### - [ ] FEAT-016-T03 — Backup off: manifest, extraction rules, gate
+- **Implements:** FR-17, NFR-5, NFR-9 · **ADRs:** ADR-007
+- **Depends on:** T02
+- **Size:** M
+- **Scope:** `<application android:allowBackup="false" android:dataExtractionRules="@xml/data_extraction_rules">`; new `res/xml/data_extraction_rules.xml` excluding `root`, `file`, `database`, `sharedpref` and `external` in both `<cloud-backup>` and `<device-transfer>`; no `fullBackupContent` (tech section 11). `CheckMergedManifest` requires both attributes and all five excludes in both sections; mutations: allowBackup removed, allowBackup true, dataExtractionRules missing, `device-transfer` loses one exclude. Message per PRD section 8.
+- **Done when:** Android lint reports no error on the rules file; the four mutations fail and pass when removed; real-phone check on the Realme 2 Pro (API 36): note the backup state, `adb shell bmgr backupnow <applicationId>` reports the package as not eligible or not allowed, state restored, build uninstalled (rows in the Test record). The API 28 `bmgr` check runs in the P1 slim throwaway step (T10). Device-to-device transfer has no adb test: recorded as covered by lint and the gate only [Hypothesis stays].
+
+### - [ ] FEAT-016-T04 — Gradle reviewed-dependencies task and list
+- **Implements:** FR-10 (Gradle half), FR-11, FR-12 (message), NFR-5, NFR-10 · **ADRs:** ADR-001
+- **Depends on:** T02
+- **Size:** M
+- **Scope:** inline task `CheckReviewedDependencies` per tech 8.2: `releaseRuntimeClasspath` resolved artifacts mapped to `group:module` of `ModuleComponentIdentifier` (provider inputs, configuration-cache safe), plugin subprojects skipped; runs before `assembleRelease` and `bundleRelease`; writes `checkReviewedDependencies.ok`. Bootstrap `android/app/reviewed_dependencies.txt` from the task's first output, one note per entry (`# network: …; data: …; permissions: …`). `.github/workflows/ci.yml` `build` job: one line after the release build asserting both marker files.
+- **Done when:** a local release build passes and writes the marker; the self-test with `[PLACEHOLDER_GROUP]:planted` fails naming it, with the FR-12 pointer; an entry with an empty note fails; a version bump of a listed module passes; the CI line is in place (verified at P1).
+
+### - [ ] FEAT-016-T05 — Dart reviewed-packages test and list
+- **Implements:** FR-10 (Dart half), FR-11, FR-12 (message), NFR-5, NFR-10 · **ADRs:** ADR-001
+- **Depends on:** T01 (G0)
+- **Size:** M
+- **Scope:** `test/privacy/reviewed_packages_test.dart` with `runtimePackages(pubDepsJson)` (tech section 4; or the T01 fallback); `tool/privacy/reviewed_packages.txt` with a note per package; build-hook packages noted "build-time hook, not in APK".
+- **Done when:** `flutter test test/privacy/reviewed_packages_test.dart` passes on the tree; a fixture graph with one unlisted runtime name fails with "New dependency [NAME]. Review network, data and permissions, then add it with a note." and the FR-12 pointer; a missing note fails; a dev-only transitive package (for example `http` via `build_runner`) does not appear in the closure; a version bump passes.
+
+### - [ ] FEAT-016-T06 — Whole-tree deny-by-default source scan
+- **Implements:** FR-9, FR-4 (WebView, `url_launcher` ban), FR-15 (connectivity tokens), FR-12 (message), NFR-5, NFR-6 · **ADRs:** ADR-006, ADR-007
+- **Depends on:** T01 (floors)
+- **Size:** M
+- **Scope:** `test/privacy/whole_tree_scan_test.dart` per tech 8.1: roots `lib/`, `packages/es_codec/{lib,hook}`, `android/app/src/main/kotlin` and `java` if present; generated files scanned; `exempt` map empty, entries must exist; file-count floors from T01; Dart tokens (`networkUses` imported, plus `webview_flutter`, `url_launcher`, `connectivity_plus`, `ConnectivityResult`, `WebView`, the analytics/ads/crash import list, `\bClipboard\b`); Kotlin/Java tokens (tech 8.1, `android.net.Uri` allowed); `//` and KDoc `*` lines skipped; `print`/`debugPrint` banned under `lib/features/privacy/` except `uncaught_error_log.dart`. Existing per-feature privacy tests untouched.
+- **Done when:** passes on the current tree; the temp-dir self-test (`features/new_feature/x.dart` with `HttpClient()`, `kotlin/X.kt` with `java.net.URL(...)`) gives exactly one hit each as `file:line: text` and none once removed (AC-4.2, AC-4.4); a root below its floor fails; a stale exempt path fails; nothing is written into `lib/`.
+
+### - [ ] FEAT-016-T07 — English privacy strings (15 keys)
+- **Implements:** FR-1, FR-3, FR-6 (English), FR-7, NFR-4, NFR-7 · **ADRs:** —
+- **Depends on:** —
+- **Size:** S
+- **Scope:** `lib/l10n/app_en.arb` only: `pickPrivacyNote` = "Your photos are resized on your phone. ExactSize never uploads them."; new `privacyEntry` (proposed "How your photos are handled"), `privacyTitle`, and `privacy{OnPhone,Offline,Kept,Copies,Outside,Reads}` plus each `…Title`. Parts (a)–(f) per FR-3 and AC-2.3; part (b) names the online-album exception; part (d) agrees with the unchanged `exportPrivacy`; part (e) names gallery, keyboard and receiving apps; no internal-gate fact (C6, C7); `@` descriptions name register IDs (`Register: C1, C3`); no placeholders; short plain sentences, no idioms. The five other ARBs are not touched (T16); until then they still carry the old `pickPrivacyNote` (not shippable, closed by T16).
+- **Done when:** `flutter gen-l10n` passes; body text ≤ 150 English words and no sentence > 20 words (checked by T08); the PR lists each key with its C-IDs. The Product Owner reviews the copy at G1.
+
+### - [ ] FEAT-016-T08 — Privacy copy tests (banned claims, key rules, connectivity words)
+- **Implements:** FR-5, FR-6, FR-7, FR-15, FR-3 (length), NFR-7 · **ADRs:** —
+- **Depends on:** T07
+- **Size:** M
+- **Scope:** `test/privacy/privacy_copy_test.dart` per tech section 8: FR-5 banned list, case-insensitive, over `privacy*`, `pickPrivacyNote`, `exportPrivacy` in `app_en.arb`, PRD section 8 message; Latin tokens (`100%`, `GPS`, `GDPR`, `PCI`) in all 6 ARBs; every `privacy*` key except `privacyEntry`/`privacyTitle` has an `@` description matching `C\d+` and no `{placeholder}`; English values matching `internet|connect|network|offline|online` fail outside `pickSourceUnavailable`, `privacyOffline`, `privacyOfflineTitle`; word and sentence counts for FR-3. The presence-in-6-locales check is added in T16 (it cannot pass before translation).
+- **Done when:** passes on the tree; a planted "never leaves" in a scratch copy of the English map fails with the PRD message; a missing C-ID and a placeholder each fail; a "no internet" phrase in a non-allow-listed key fails. If an existing non-privacy key trips the connectivity rule, stop and report; do not widen the allow-list silently.
+
+### - [ ] FEAT-016-T09 — Global uncaught-error log (enum only)
+- **Implements:** FR-18, NFR-6, NFR-8 · **ADRs:** ADR-001
+- **Depends on:** T06
+- **Size:** M
+- **Scope:** `lib/features/privacy/data/uncaught_error_log.dart` with `installUncaughtErrorLog({LogSink sink, bool debug})` per tech 8.3; one call in `lib/main.dart` after `ensureInitialized()`. Line: `exactsize.app outcome=UNCAUGHT source=FRAMEWORK|PLATFORM`; handlers never read the error object; debug keeps the previous handler and returns `false`.
+- **Done when:** `test/features/privacy/uncaught_error_log_test.dart` passes: an error whose message holds `[PLACEHOLDER_PATH]`, thrown through both handlers with `debug: false`, gives exactly one matching line each and the line lacks the message; with `debug: true` the previous handler is called once and the platform handler returns `false`. Release logcat check on the Realme 2 Pro: a throwaway branch (never merged) throws an error holding `[PLACEHOLDER_PATH]` once after start; `adb logcat --pid` shows the text before the handler and only the enum line after; build uninstalled; result recorded (PRD gap 7 becomes a [Fact]).
+
+### - [ ] FEAT-016-T10 — Offline integration cases and CI push P1
+- **Implements:** FR-16, FR-11 (CI), FR-17 (API 28), NFR-1 (CI time), NFR-3, NFR-8, NFR-9 · **ADRs:** ADR-006, ADR-007
+- **Depends on:** T03, T04, T05, T09
+- **Size:** M
+- **Scope:** `integration_test/offline_test.dart` (`testWidgets` only): crop-to-compression and preview-check cases with one synthetic fixture each, behind the existing networking-off first check; `tool/run_offline_test.sh` unchanged. Local run on the Realme 2 Pro with Wi-Fi and mobile data off (state noted and restored, build uninstalled). Push **P1** after `flutter analyze` and `flutter test` pass locally. One slim throwaway CI run (emulator job only, `timeout-minutes`, bounded waits, not merged into `ci.yml`) installs the release build on API 28 and runs `bmgr backupnow <applicationId>`.
+- **Done when:** the new cases pass on the Realme 2 Pro offline; P1 CI is green with both marker assertions true and the offline step passing on API 28; the API 28 `bmgr` result is recorded; the extra CI time of the `build` and `emulator` jobs against the last green run is recorded (NFR-1 target ≤ 1 min; see Open items 4d).
+
+### - [ ] FEAT-016-T11 — `claims.md`: register, inventory, procedure, checklist, carried items
+- **Implements:** FR-12, FR-13, FR-14 (matrix table), FR-19 (record), FR-3 (register map), NFR-7 · **ADRs:** —
+- **Depends on:** T02, T03, T07
+- **Size:** S
+- **Scope:** new `docs/features/FEAT-016-on-device-privacy/claims.md` (frontmatter, status `Proposed`): claims register C1–C10 from PRD section 10 with check type; data inventory; permission list mirroring the T02 allow-list; "Change procedure" copying FR-12 as a checklist; "Release checklist" (FR-13 plus tech rows: `aapt2 dump permissions` compare, offline matrix, register vs explainer vs listing vs Data safety, privacy policy URL `[PLACEHOLDER]`, 6 languages `AI-reviewed only`, OQ-7 review result or waiver, release signing key in place of the debug key); FR-14 matrix table (empty result columns); "Carried requirements" FR-19 (a)–(c) verbatim with owner and status "to copy into owning PRD at /draft-prd".
+- **Done when:** every explainer key's C-IDs from T07 exist in the register; every C-ID has a check type; the path in the gate messages resolves; no real credential, URL or personal data (`[PLACEHOLDER]` only).
+
+### - [ ] FEAT-016-T12 — PRD 1.1 minor clarification (AC-4.3, FR-11) for re-approval
+- **Implements:** FR-10, FR-11 (wording) · **ADRs:** —
+- **Depends on:** T04, T10
+- **Size:** S
+- **Scope:** `prd.md` only: version 1.1, status `Under Discussion` (CLAUDE.md rule for changing an Approved doc), Change log line. AC-4.3: the Dart package list fails in `flutter test`; the Gradle coordinate list fails in the release build (OQ-T1). FR-11: "its log line appears in CI" becomes "a marker file it writes is asserted in CI" (tech FR-11). No scope change. Tell the Product Owner; only the Product Owner's `/approve` sets it back to Approved.
+- **Done when:** the PRD diff touches only AC-4.3, FR-11, the version, status and Change log; the Product Owner has been told; the re-approval (or the decision to keep 1.0 and accept the deviation) is recorded before G-final.
+
+### - [ ] FEAT-016-T13 — Explainer design pass with the Product Owner (impeccable, lean) — gate G1
+- **Implements:** prerequisite for FR-2, FR-3, FR-4, NFR-2, NFR-4 (visual) · **ADRs:** —
+- **Depends on:** T07, T08
+- **Size:** S (developer side; the Product Owner's time is not counted)
+- **Scope:** **Stop and tell the Product Owner before any visual work.** One short impeccable pass on Material 3 and the existing theme; no image comps, no reviewer subagents, no multi-round critique. Inputs: the T07 English copy, the pick screen plaque, OQ-3 default (labelled control beside or under the plaque, ≥ 48 dp, plaque unchanged). Constraints: AppBar title, scrollable column, 6 parts as heading (`Semantics(header: true)`) then body, no link, no image, no icon that suggests a certification; 200% font at 360×640 with no clipping; RTL mirrored. Define the G2 screenshots: pick screen with entry control (en), explainer top and bottom (en), ar RTL, 200% font.
+- **Done when:** the design reference (synthetic content only) and its date are in the PR and `docs/CHANGELOG.md`; the Product Owner's acceptance of the placement and the English copy, or named fixes, is recorded; G1 recorded in the Test record.
+
+### - [ ] FEAT-016-T14 — `PrivacyScreen` and pick-screen entry control
+- **Implements:** FR-2, FR-3, FR-4, NFR-2, NFR-6, NFR-10 · **ADRs:** ADR-001
+- **Depends on:** T13 (G1)
+- **Size:** M
+- **Scope:** `lib/features/privacy/presentation/privacy_screen.dart` (stateless, ARB text only, no provider, no log); `PickView` gets `onPrivacy` and the entry control per G1; `PickScreen` pushes `PrivacyScreen` with `MaterialPageRoute<void>`. No `PopScope`. No `pubspec.yaml` or Gradle change.
+- **Done when:** `test/features/privacy/privacy_screen_test.dart` passes: tap the entry control on a pumped `PickScreen` → title shown (1 tap, AC-2.1); Back → pick screen with the same `PickController` state; the 6 headings are header semantics in order (a)–(f) followed by their bodies; no `InkWell`, `GestureDetector` on text, link semantics, `Image` or progress indicator in the tree (FR-4, AC-2.2); a share-in while open returns to the first route (`popUntil`); the entry control is ≥ 48 dp. T06 scan still green (NFR-6); `git diff --quiet pubspec.yaml pubspec.lock android/app/build.gradle.kts` apart from T02–T04 (NFR-10).
+
+### - [ ] FEAT-016-T15 — Accessibility, 200% font, RTL, screenshots — gate G2
+- **Implements:** NFR-2, NFR-4, FR-1 (on screen), FR-2, NFR-1 (informational) · **ADRs:** —
+- **Depends on:** T14
+- **Size:** M
+- **Scope:** widget tests: `androidTapTargetGuideline`, `labeledTapTargetGuideline`, `textContrastGuideline` on the pick screen and explainer; text scale 2.0 at 360×640 in en and ar with no overflow and all parts reachable by scrolling; ar `TextDirection.rtl`, digits 0-9 only. Screenshots on the Realme 2 Pro (profile build), foreground app checked before each, only ExactSize screens, states from T13. Explainer open time read from a profile trace on the Realme (and on the emulator only if already running), informational.
+- **Done when:** tests pass; the screenshots are in the PR (not committed unless the Product Owner asks); phone settings restored (font scale, locale) and build uninstalled; the Product Owner accepted them or named fixes, which are done here; G2 recorded. Until T16 the ar shot shows English privacy text; that is expected.
+
+### - [ ] FEAT-016-T16 — Translate privacy strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
+- **Implements:** FR-1, FR-5 (reviewer brief), FR-6, NFR-4 · **ADRs:** —
+- **Depends on:** T15 (G2; strings final)
+- **Size:** M (not counted: FEAT-019 work)
+- **Scope:** the Product Owner types `/l10n-translate <lang>` for es (es-419), pt (pt-BR), hi, id and ar (MSA, Western digits 0-9), one language at a time, vendored `localize-*` skills only. Keys: `pickPrivacyNote` and the 14 `privacy*` keys. **The reviewer brief names the FR-5 banned list** ("never leaves", "no data collected", "100%", "secure", "encrypted", "anonymous", "GPS", "location removed", "compliant", "certified", "GDPR", "PCI", "Bangladesh Bank") **and the rule "claims stay scoped to ExactSize"**; a back-translation that turns a scoped claim into an absolute one holds the string back. Only app strings go to the model, never user data. Keys and descriptions identical to `app_en.arb`; no placeholders; short plain sentences. Status `AI-reviewed only`; never "native-quality" or "native-reviewed". Then add the FR-6 presence-in-6-locales check to `privacy_copy_test.dart`.
+- **Done when:** all five ARBs contain the 15 keys; `flutter gen-l10n` reports no untranslated FEAT-016 key; `docs/l10n/ai-review-log.md` has one entry per language with status `AI-reviewed only` and the banned-list check noted; T08 tests (including Latin tokens and the new presence check) pass in all locales; the T15 200% and RTL tests pass in every locale.
+
+### - [ ] FEAT-016-T17 — Real-phone offline matrix, release checklist dry run, P2 — gate G-final
+- **Implements:** FR-13, FR-14, FR-2, FR-8 (release APK), NFR-2, NFR-3, NFR-8, NFR-9 (evidence) · **ADRs:** —
+- **Depends on:** T11, T12, T16
+- **Size:** M
+- **Scope:** push **P2** after local `flutter analyze` and `flutter test`. On the Realme 2 Pro, release build (debug-signed; Open items 3), airplane mode on with Wi-Fi and mobile data off (state noted, restored after). FR-14 rows in `claims.md`, each with command, expected result, pass/fail: cold start; system picker with a synthetic photo in Download; camera (lens covered, black frame only, the capture deleted at once, never screenshotted); Choose from files; share-in with `am start`; target entry; crop; compress; check; Save; Share (chooser opens, then cancel; no screenshot of the sheet); open explainer (no spinner, no error, AC-2.2). Plus: `aapt2 dump permissions` on the release APK equals the `claims.md` list (FR-8, FR-13); `adb logcat --pid` during the run has only enum lines (no path, URI, name or size; nothing personal copied into the record); register vs explainer (en) compared line by line; AC-3.2 noted as covered by FEAT-001's existing message (no online-only photo is created on the owner's account). TalkBack speech only if the Product Owner installs it (Open items 1).
+- **Done when:** every runnable row passes and is recorded with date and device; P2 CI is green (markers, API 28 offline step); synthetic files and any saved outputs deleted with their MediaStore rows; settings restored; test build uninstalled; T12 re-approval (or accepted deviation) recorded; G-final recorded with the Product Owner's acceptance of the Open items. The feature may then go to Implemented through the Product Owner's `/approve`.
+
+## Effort reconciliation
+| Tech section 12 line | Tech days | Tasks | Task days |
+|---|---|---|---|
+| Manifest allow-list, backup, mutations, CI marker | 0.75 | T02 M, T03 M | 1.0 |
+| Gradle dependency task and list bootstrap | 0.5 | T04 M | 0.5 |
+| Dart package test and list | 0.4 | T05 M | 0.5 |
+| Whole-tree scan and self-test | 0.5 | T06 M | 0.5 |
+| Copy tests (FR-5, FR-6, FR-15) | 0.3 | T08 M | 0.5 |
+| FR-18 handler, test, logcat check | 0.5 | T09 M | 0.5 |
+| English copy (15 strings) | 0.3 | T07 S | 0.25 |
+| Explainer screen and entry (impeccable, widget tests, screenshots) | 1.0 | T13 S, T14 M, T15 M | 1.25 |
+| FR-16 offline cases (one CI run) | 0.5 | T10 M | 0.5 |
+| `claims.md`, checklist, FR-19 record | 0.3 | T11 S | 0.25 |
+| Real-phone offline matrix | 0.3 | T17 M | 0.5 |
+| Not in tech | — | T01 S, T12 S | 0.5 |
+| **Total** | **5.4 d ≈ 1.1 pw** | 16 counted tasks | **6.75 d ≈ 1.35 pw** |
+
+The task total is 1.35 d above tech (range 1.0–1.3 pw) and 0.85 pw above the roadmap's 0.5 pw: G0, the PRD clarification, separate backup and manifest PRs, the design gate split and the release-build matrix. Not counted: T16 (FEAT-019) and the Product Owner's design and review time. Cut candidate (PRD OQ-6 alternative, a PRD change for the Product Owner): drop FR-10 (T04, T05), saving about 1.0 d.
+
+## Traceability
+| Requirement | Tasks | Notes |
+|---|---|---|
+| FR-1 | T07, T15, T16 | Scoped wording; five retranslations |
+| FR-2 | T13, T14, T15, T17 | 1 tap; Back unchanged |
+| FR-3 | T07, T08, T11, T14 | Word and sentence counts; C-ID map |
+| FR-4 | T06, T14 | WebView/`url_launcher` banned; no link widget |
+| FR-5 | T08, T16 | English test; reviewer brief carries the list |
+| FR-6 | T07, T08, T16 | Presence in 6 locales added in T16 |
+| FR-7 | T07, T08 | `exportPrivacy` unchanged, now checked |
+| FR-8 | T01, T02, T17 | Release APK permissions |
+| FR-9 | T06 | Deny by default, empty exempt map |
+| FR-10 | T04, T05, T12 | Should; Gradle half in release build (OQ-T1) |
+| FR-11 | T01, T02, T04, T05, T06, T10, T12 | Marker files asserted in CI |
+| FR-12 | T02, T04, T05, T06, T11 | Messages point to `claims.md` |
+| FR-13 | T11, T17 | Includes debug-signing row |
+| FR-14 | T11, T17 | Manual, real phone, release build |
+| FR-15 | T06, T08 | Tokens and copy words |
+| FR-16 | T10 | Should |
+| FR-17 | T03, T10 | Should; API 36 phone and API 28 CI |
+| FR-18 | T09 | Should; gap confirmed in tech 8.3 |
+| FR-19 | T11 | Recorded only; built by FEAT-025, 013, 027 |
+| NFR-1 | T10, T15 | CI time and open time, informational |
+| NFR-2 | T13, T14, T15, T17 | TalkBack speech: Open items 1 |
+| NFR-3 | T10, T17 | |
+| NFR-4 | T07, T15, T16 | `AI-reviewed only` |
+| NFR-5 | T02, T03, T04, T05, T06 | Self-tests, floors, no skip flag |
+| NFR-6 | T06, T09, T14 | No log or counter for opens |
+| NFR-7 | T07, T08, T11 | C-IDs in `@` descriptions |
+| NFR-8 | T09, T10, T17 | Synthetic fixtures, `[PLACEHOLDER]` |
+| NFR-9 | T03, T10, T17 | API 28 in CI, API 36 phone |
+| NFR-10 | T04, T05, T14 | No new dependency |
+
+**Not covered by a task:** PRD OQ-7 combined compliance review (Data safety reading, PCI "opaque image" reading, local data-protection law, platform crash data) is release work for the Product Owner; filling the store listing and Data safety form, and the privacy policy text and URL `[PLACEHOLDER]` (OQ-4), are store-release work using `claims.md`; copying FR-19 into FEAT-025, FEAT-013 and FEAT-027 PRDs happens at their `/draft-prd`; the stale "no-ads MVP" roadmap text (PRD OQ-2) is the Product Owner's edit.
+
+## Open items
+1. **TalkBack** is not installed on the Realme 2 Pro. AC-2.5 reading order is covered by semantics tests (T14, T15); speech is checked only if the Product Owner installs TalkBack.
+2. **Roadmap effort row.** 1.35 pw here against tech 1.1 pw and roadmap 0.5 pw; the Product Owner decides whether the row changes (PRD OQ-10, OQ-T4).
+3. **Debug-signed release.** The release build uses the debug key (tech section 7). T17 tests that build; fixing signing is a `claims.md` release-checklist row only, not a task here.
+4. **Inconsistencies found:**
+   a. AC-4.3 says the dependency check fails in `flutter test`; the Gradle half fails in the release build (OQ-T1). T12.
+   b. FR-11 asks for a CI log line; tech uses marker files because non-verbose builds hide it. T12.
+   c. Tech risk table plans the `bmgr` check on "the local API 36 emulator"; this plan uses the Realme 2 Pro (device rule) and API 28 in CI.
+   d. PRD goal "0 extra CI minutes" and NFR-1 "≤ 1 min added" versus tech FR-16 "about 1 min extra" plus the new tests and Gradle tasks: the sum may pass 1 min. T10 measures it; if over, the Product Owner accepts or clarifies NFR-1.
+   e. FR-6 "present in all six locales" cannot hold between T07 and T16; the check lands in T16, and the five locales keep the old absolute `pickPrivacyNote` until then (do not release in between).
+   f. FR-14 camera, picker and share rows on a real phone touch the owner's data; T17 uses a covered lens and no screenshots of system UI.
+   g. NFR-1 names the 2 GB emulator profile; local runs use the Realme 2 Pro, the emulator only if already running.
+5. **Backup device-to-device transfer** (API 31+) has no adb check; it rests on lint and the gate [Hypothesis].
+
+## Test record
+_Filled in by T01, T03, T09, T10, T13, T15, T16 and T17 (one row per check and device: date, device or CI run, result). Synthetic images only. No file names, URIs, paths of real files, image content or anything personal seen on the phone; use `[PLACEHOLDER]` for anything sensitive._
+
+| Date | Task | Check | Device / run | Result |
+|---|---|---|---|---|
+
+## Instructions for Claude Code
+- Read `prd.md`, `tech.md`, ADR-001, ADR-006 and ADR-007 before starting a task.
+- Implement only the current task, in order; tick its checkbox, commit, and add a line to `docs/CHANGELOG.md` when done. Push only at P1 (T10) and P2 (T17), or for a slim throwaway run a task names; run `flutter analyze` and `flutter test` locally first.
+- Gates: no manifest or Dart-dependency work (T02, T05) before G0; no visible UI work (T14, T15) before G1; T16 only after G2; stop at every failing gate and report to the Product Owner.
+- UI rule: before designing or building any real UI screen, stop and tell the Product Owner (impeccable, decision 2026-11-20). T13 is that stop. impeccable runs lean: no image comps, no reviewer subagents, one round, one screenshot per key state.
+- Never loosen a gate (allow-list, exempt map, reviewed lists, banned phrases, floors) or use `tools:node="remove"` or a skip flag without the FR-12 procedure and a Product Owner decision.
+- Never set a PRD or tech status to Approved, Rejected or Implemented; T12 sets `Under Discussion` only, and the Product Owner re-approves with `/approve`.
+- Translations only through `/l10n-translate <lang>` typed by the Product Owner, status `AI-reviewed only`, reviewer brief with the FR-5 list.
+- Device: check `adb devices` first; Realme 2 Pro for local runs; API 28 only in CI; check the foreground app before every screenshot; never record personal data seen on the phone; restore every changed setting; uninstall the test build after.
+- Privacy: synthetic test images only; `[PLACEHOLDER]` for every credential, key, URL or sensitive value. No network call, clipboard use, persistence or explainer-open logging.
+- If a requirement is unclear or wrong, stop and propose a PRD change.
+
+## Change log
+| Version | Date | Change |
+|---|---|---|
+| 0.1 | 2026-11-26 | First draft |
