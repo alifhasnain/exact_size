@@ -1,8 +1,8 @@
 ---
 id: FEAT-011-TECH
 title: Built-in preset library — Technical Plan
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-27
 links: [FEAT-011, FEAT-005, FEAT-002, FEAT-004, FEAT-014, FEAT-016, FEAT-019, FEAT-013, ADR-001]
 ---
@@ -217,3 +217,4 @@ The example is synthetic (country `ZZ` is an ISO user-assigned code); it is not 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft |
+| 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TECH); OQ-T1..T3 defaults stand |
