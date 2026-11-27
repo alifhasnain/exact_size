@@ -1,7 +1,7 @@
 ---
 id: FEAT-011-TECH
 title: Built-in preset library — Technical Plan
-status: Under Discussion
+status: Approved
 version: 2.0
 updated: 2026-11-27
 links: [FEAT-011, FEAT-005, FEAT-002, FEAT-004, FEAT-014, FEAT-016, FEAT-019, FEAT-013, ADR-001]
@@ -285,3 +285,4 @@ No notes, so note-count assertions stay; `lastChecked` 2026-11-20 keeps the fres
 | 0.1 | 2026-11-27 | First draft |
 | 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TECH); OQ-T1..T3 defaults stand |
 | 2.0 | 2026-11-27 | Scope change for PRD 2.0 (KB-only specs): Revision 2.0 note; nullable width/height, `applyTo` / `matches` replace `input` / `target`; parser and CI both-or-neither; `presetAnyPixelSize`, `presetKbOnlyNote`; FR-26 line in `PresetRow`; Test Form C fixture; FR-20 KB-only size 600 × 600; coverage for FR-1, FR-3, FR-6, FR-11, FR-13, FR-19, FR-20, FR-26, AC-4.7..4.9; risks, OQ-T5, effort delta; no ADR. Status Under Discussion |
+| 2.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TECH); OQ-T5 default stands (keep Width and Height) |
