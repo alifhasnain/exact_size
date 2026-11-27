@@ -1,8 +1,8 @@
 ---
 id: FEAT-011
 title: Built-in preset library
-status: Approved
-version: 1.0
+status: Under Discussion
+version: 2.0
 updated: 2026-11-27
 links: [ROADMAP, BRIEF, RESEARCH, FEAT-005, FEAT-006, FEAT-009, FEAT-010, FEAT-012, FEAT-013, FEAT-014, FEAT-016, FEAT-019, FEAT-027]
 ---
@@ -103,6 +103,9 @@ Test data in acceptance criteria uses synthetic forms ("Test Form A") with made-
   - **AC-4.4** Given a spec was picked, when I edit any of the five values, then the row goes back to "Choose a form", and when I set the values back to the preset's, then the row shows the form again (state derived from the five values).
   - **AC-4.5** Given picked values, when I tap Continue, then validation and hand-over are identical to manual entry (FEAT-005 AC-9.2).
   - **AC-4.6** Given a picked spec is larger than my photo, then the FEAT-005 upscale notice appears as for manual entry.
+  - **AC-4.7** Given I typed Width 300 and Height 400 and then pick Test Form C photo (KB-only: 10–200 KB, JPEG), when I return, then Width 300 and Height 400 stay, Minimum 10, Maximum 200 and JPEG are shown, the row reads "Test Form C · Photo", and the line from FR-26 is shown.
+  - **AC-4.8** Given a KB-only spec was picked, when I change Width or Height, then the row still reads "Test Form C · Photo"; when I change Minimum, Maximum or the format, then the row goes back to "Choose a form".
+  - **AC-4.9** Given a KB-only spec was picked with Width and Height empty, when I tap Continue, then FEAT-005 shows its width and height errors exactly as for manual entry and nothing is filled in for me.
 - **US-5** As an applicant whose form has rules ExactSize cannot meet, I want to be told plainly, so that I do not assume the file is form-ready.
   - **AC-5.1** Given a spec lists DPI 200 as not covered, when its row shows in the list and again while it is applied on the target step, then a short line says the form also asks for 200 DPI and ExactSize does not set it.
   - **AC-5.2** Given a spec lists a background rule or a content rule, then a short fixed line says ExactSize does not change or check it.
@@ -150,31 +153,32 @@ Test data in acceptance criteria uses synthetic forms ("Test Form A") with made-
 ## 6. Functional requirements
 | ID | Requirement | Story | Priority |
 |---|---|---|---|
-| FR-1 | The system shall ship a library of about 15–20 forms bundled with the app. The list of forms and every value are supplied and verified by the Product Owner; the developer enters them only as given. | US-1, US-7 | Must |
+| FR-1 | The system shall ship a library of about 15–20 forms bundled with the app. The list of forms and every value are supplied and verified by the Product Owner; the developer enters them only as given. Claude may draft a researched candidate list (each value quoted from a cited notice, marked unverified); only rows the Product Owner has confirmed against their source enter the shipped data (decision 2026-11-27). | US-1, US-7 | Must |
 | FR-2 | Each form shall have: `id` (lowercase slug, unique, never reused), `name` and `issuer` (as published, not translated), `country` (ISO 3166-1 alpha-2), `category` (job, exam_admission, visa_passport, other [Assumption: from vision segments]), optional `aliases` (search terms), `source` (title as published, optional URL as text), `lastChecked` (date YYYY-MM-DD), and 1–2 specs. | US-1, US-7 | Must |
-| FR-3 | Each spec shall have: `kind` (photo or signature, at most one of each per form), `width`, `height`, `minKb` (null = none), `maxKb`, `format` (jpeg or png), and optional `notCovered` entries from a fixed set: `dpi` (with a whole number), `background`, `content`. A preset shall always carry width and height; forms that state only a KB limit are not presets in R1 (OQ-3). | US-1, US-5 | Must |
+| FR-3 | Each spec shall have: `kind` (photo or signature, at most one of each per form), `width`, `height`, `minKb` (null = none), `maxKb`, `format` (jpeg or png), and optional `notCovered` entries from a fixed set: `dpi` (with a whole number), `background`, `content`. `width` and `height` shall be both present or both null. A spec with both null is a **KB-only spec**: it is for a form that states a KB limit and format but no pixel size, and it still needs `maxKb` and `format` (OQ-3, decided 2026-11-27). | US-1, US-5 | Must |
 | FR-4 | A form shall have exactly one source and one last-checked date, each required. FEAT-011 shall expose both to FEAT-014 through the data model; FEAT-011 shall not build the source-note UI, the date display or the "check your notice" prompt. | US-7 | Must |
 | FR-5 | The target step shall show a "Choose a form" row that opens the list (FEAT-005 OQ-10: the FEAT-005 screen works alone with room for a preset row) [Fact](docs/features/FEAT-005-manual-target/prd.md, OQ-10). Manual fields shall stay visible and usable at all times. | US-1 | Must |
-| FR-6 | The list shall group forms into sections by country, with a heading per section, sorted alphabetically by localized country name; within a section, forms sorted by name. Each form shall show its name and one tappable row per spec: kind, "W × H px", KB range or "up to N KB", and format. | US-1, US-3 | Must |
+| FR-6 | The list shall group forms into sections by country, with a heading per section, sorted alphabetically by localized country name; within a section, forms sorted by name. Each form shall show its name and one tappable row per spec: kind, "W × H px" (or "Any pixel size" for a KB-only spec), KB range or "up to N KB", and format. | US-1, US-3 | Must |
 | FR-7 | A form with one spec shall be picked with one tap on that row. A form with two specs shall show both rows without an extra step. | US-1, US-3 | Must |
 | FR-8 | The list shall have a search field that matches name, issuer, aliases, localized country name and localized category label, ignoring case, diacritics, whitespace, bidi marks and Arabic-Indic, Extended Arabic-Indic and Devanagari digits (reusing the FEAT-005 FR-4 cleaning). No network. | US-2 | Should |
 | FR-9 | The search field shall turn autocorrect, suggestions and personalised keyboard learning off, and its text shall not be stored beyond the open list. | US-2, US-8 | Must |
 | FR-10 | When nothing matches, the system shall show an empty state with an action that returns to the target step with values unchanged. | US-2, US-6 | Should |
-| FR-11 | Picking a spec shall set width, height, minKb (empty when null), maxKb and format on the FEAT-005 fields, replacing every current value without a confirmation step (OQ-8), close the keyboard, and return to the target step. | US-4 | Must |
+| FR-11 | Picking a spec shall set width, height, minKb (empty when null), maxKb and format on the FEAT-005 fields, replacing every current value without a confirmation step (OQ-8); picking a KB-only spec shall set minKb, maxKb and format only and leave width and height exactly as they were (typed values or empty); close the keyboard, and return to the target step. | US-4 | Must |
 | FR-12 | All picked values shall remain editable and go through FEAT-005 validation on Continue unchanged. `TargetSpec` shall not gain preset-specific fields; the applied-preset reference shall be kept beside it in session state (OQ-11). | US-4 | Must |
-| FR-13 | The preset row shall show "<form name> · <kind>" only while the five values equal the picked spec, and "Choose a form" otherwise (derived from current values). | US-4 | Must |
+| FR-13 | The preset row shall show "<form name> · <kind>" only while the five values equal the picked spec (for a KB-only spec: while minKb, maxKb and format equal it, whatever width and height hold), and "Choose a form" otherwise (derived from current values). | US-4 | Must |
 | FR-14 | Specs with `notCovered` entries shall show one fixed line per entry on their list row and on the target step while applied, as plain text with an icon, non-blocking, with no automatic fix. Strings are keyed by code (`dpi` takes a number placeholder); data never carries free-form note text. | US-5 | Must |
 | FR-15 | The list shall end with one fixed line stating that ExactSize is not affiliated with the organisations listed. The list shall not use logos, official-looking styling or the words "official", "approved" or "guaranteed" in any preset string. A string test shall enforce the banned words (added to the FEAT-016 banned-claim check or run on its own, Stage 6). | US-5 | Should |
 | FR-16 | If the library fails to load, the system shall replace the row with a short non-tappable message (section 8, "Load failure"), keep FEAT-005 fully working, never crash, never retry over a network, and log one enum code only. A spec that fails runtime validation shall be skipped. | US-6 | Must |
 | FR-17 | The system shall write preset selections and search text nowhere: not to disk, logs, crash reports, analytics, counters (FEAT-027) or clipboard; and shall keep no recents, favourites or last-used list. | US-8 | Must |
 | FR-18 | The feature shall make no network call, add no permission, and add no package or Gradle dependency that is not on the reviewed list [Fact](docs/features/FEAT-016-on-device-privacy/prd.md, FR-10, FR-12). Adding any of these follows the FEAT-016 change procedure. | US-8 | Must |
-| FR-19 | A CI test (pure Dart) shall load the shipped data and fail on: unknown or missing fields; duplicate form ids; more than one spec of a kind per form; a spec failing FEAT-005 `checkTarget` or `validateTarget`; width or height below 16 px (a likely unit typo; the Product Owner may lower it with a change-log line); `dpi` outside 1–1200 [Assumption]; missing source title, issuer or `lastChecked`; `lastChecked` malformed or in the future; a country, category or note code with no string key in `app_en.arb`. This is the check FEAT-005 AC-9.3 assigns to this feature. | US-7 | Must |
-| FR-20 | A CI integration test shall run every spec through the FEAT-002 and FEAT-004 pipeline on synthetic fixture images (no real person's photo) and report any spec that ends outside W×H or the KB range or returns "can't reach this size". A report fails CI until the Product Owner marks the spec as reviewed in the data (reason field). It reuses the existing integration job pattern [Fact](docs/features/FEAT-016-on-device-privacy/prd.md, FR-16). | US-7 | Should |
+| FR-19 | A CI test (pure Dart) shall load the shipped data and fail on: unknown or missing fields; duplicate form ids; more than one spec of a kind per form; a spec failing FEAT-005 `checkTarget` or `validateTarget`; only one of width and height present; width or height below 16 px (a likely unit typo; the Product Owner may lower it with a change-log line); `dpi` outside 1–1200 [Assumption]; missing source title, issuer or `lastChecked`; `lastChecked` malformed or in the future; a country, category or note code with no string key in `app_en.arb`. This is the check FEAT-005 AC-9.3 assigns to this feature. | US-7 | Must |
+| FR-20 | A CI integration test shall run every spec through the FEAT-002 and FEAT-004 pipeline on synthetic fixture images (no real person's photo) and report any spec that ends outside W×H or the KB range or returns "can't reach this size". A KB-only spec runs at a fixed synthetic test size chosen in the tech plan and recorded in the test. A report fails CI until the Product Owner marks the spec as reviewed in the data (reason field). It reuses the existing integration job pattern [Fact](docs/features/FEAT-016-on-device-privacy/prd.md, FR-16). | US-7 | Should |
 | FR-21 | The release checklist shall print the form count and every form whose `lastChecked` is older than 90 days [Assumption], for the Product Owner to accept or fix, as an item inside FEAT-016's release checklist [Fact](docs/features/FEAT-016-on-device-privacy/prd.md, FR-13). | US-7 | Should |
 | FR-22 | Every library change shall be recorded in `docs/CHANGELOG.md` with form id, source and date. | US-7 | Should |
 | FR-23 | All UI strings (row label, list title, search hint, empty state, kind labels, summary patterns, notes, footer, load-failure message, country and category names) shall be in `app_en.arb` with descriptions and placeholders, and in the 5 other languages through FEAT-019 and `/l10n-translate`. Form names, issuers and source titles are data, shown as published. | US-9 | Must |
 | FR-24 | Form names and issuers shall render with automatic text direction isolation so a Latin or Devanagari name inside an Arabic layout (and the reverse) does not reorder; digits shall be 0–9. | US-9 | Must |
 | FR-25 | The list and the target-step row shall be designed with impeccable before building, jointly with the FEAT-005 preset row (Product Owner decision 2026-11-20): the Product Owner is told first [Fact](CLAUDE.md, Implementation). Data, loader and tests may proceed before that. | US-1 | Must |
+| FR-26 | While a KB-only spec is applied, the target step shall show one fixed, non-blocking line under the row saying the form sets no pixel size and asking the user to enter a width and height or use the photo's size (FEAT-005 FR-12). Width and height then go through FEAT-005 validation as for manual entry; the app shall not propose, guess or "correct" a pixel size. | US-4, US-5 | Must |
 
 ## 7. Non-functional requirements
 | ID | Category | Requirement |
@@ -201,7 +205,7 @@ Test data in acceptance criteria uses synthetic forms ("Test Form A") with made-
 | `category` | One of the fixed values, with a label string | "Form [ID]: unknown category." |
 | `source.title`, `lastChecked` | Title non-empty; date valid, not in the future | "Form [ID]: source title and a valid last-checked date are required." |
 | specs per form | 1–2, one per kind | "Form [ID]: 1–2 specs, one per kind." |
-| width, height | Whole numbers 16–10,000 each, W×H at most 24,000,000 | "Form [ID] [KIND]: size outside engine limits." |
+| width, height | Both present (whole numbers 16–10,000 each, W×H at most 24,000,000) or both null (KB-only spec) | "Form [ID] [KIND]: size outside engine limits." or "Form [ID] [KIND]: give both width and height, or neither." |
 | `maxKb` / `minKb` | max 2–10,240; min null or 1 up to max minus 1 | "Form [ID] [KIND]: KB range invalid." |
 | `format` | jpeg or png | "Form [ID] [KIND]: format must be jpeg or png." |
 | `notCovered` | Known code, no repeats; `dpi` whole 1–1200 | "Form [ID] [KIND]: unknown or repeated note." |
@@ -220,13 +224,15 @@ Test data in acceptance criteria uses synthetic forms ("Test Form A") with made-
 | Row (applied) | "{form} · {kind}" |
 | Kind labels | "Photo", "Signature" |
 | Spec summary | "{width} × {height} px · {min}–{max} KB · {format}"; without minimum: "{width} × {height} px · up to {max} KB · {format}" |
+| Spec summary, KB-only spec | "Any pixel size · {min}–{max} KB · {format}"; without minimum: "Any pixel size · up to {max} KB · {format}" |
+| Note while a KB-only spec is applied | "This form sets no pixel size. Enter a width and height, or use your photo's size." |
 | Search hint | "Search forms" |
 | Empty state and action | "No form matches." and "Enter sizes yourself" |
 | Note `dpi` | "This form also asks for {dpi} DPI. ExactSize does not set DPI." |
 | Note `background` | "This form also has a background rule. ExactSize does not change backgrounds." |
-| Note `content` | "This form also has other photo rules. ExactSize does not check them." |
+| Note `content` | "This form also has other rules for this image. ExactSize does not check them." (wording after the G1 copy review) |
 | Footer | "ExactSize is not affiliated with the organisations listed." |
-| Load failure | "Forms could not be loaded. You can enter the sizes yourself." |
+| Load failure | "The form list could not be opened. You can enter sizes yourself." (wording after the es review, 2026-11-27) |
 
 ## 9. Edge cases & error states
 | Case | Expected behaviour |
@@ -236,7 +242,8 @@ Test data in acceptance criteria uses synthetic forms ("Test Form A") with made-
 | Spec has face-position or photo-age rules | Same fixed `content` note. FEAT-029 is Later. |
 | FEAT-006 shows "meets spec" for a preset with a note | It means size, KB and format only. Wording risk on the preview is flagged in OQ-9; this PRD does not change FEAT-006. |
 | Form states pixel size as a range, or in cm or mm at a DPI | The Product Owner picks one exact pixel value, and the source note (FEAT-014) records the choice. The engine outputs exact pixels only. |
-| Form states only a KB limit | Not a preset in R1 (FR-3, OQ-3). User enters it manually and uses "Use photo size" (FEAT-005 FR-12). |
+| Form states only a KB limit | A KB-only spec (FR-3, OQ-3 decided). Picking it fills Minimum, Maximum and format; Width and Height keep what the user typed, and the FR-26 line asks for them. "Use photo size" (FEAT-005 FR-12) still works. |
+| KB-only spec picked, then "Use photo size" on a large photo | Width and Height become the photo's size; if that size cannot reach the maximum KB, FEAT-004 shows its normal "can't reach this size" message. No preset-specific handling. |
 | Form accepts JPEG or PNG | Preset uses one format: JPEG unless the form requires PNG (OQ-10). The user can switch format after picking. |
 | Pick while manual values were typed | Values replaced (FR-11, OQ-8). |
 | Pick, then edit one value | Row returns to "Choose a form" (FR-13). |
@@ -285,9 +292,9 @@ Test data in acceptance criteria uses synthetic forms ("Test Form A") with made-
 
 ## 12. Open questions
 Each has a recommended default; the default applies if the Product Owner does not answer.
-- [ ] **OQ-1 (blocking for release, not for PRD approval) The list of 15–20 forms.** The Product Owner supplies forms, pixel and KB values, source titles, issuers and check dates. Research names candidate families only: Indian recruitment portals such as the MSTC careers page (photo 20–50 KB, signature 10–20 KB, no pixel size in our sources), Bangladesh and Indian exam presets seen on competitor pages, and visa/passport photos [Fact](docs/research/competitors.md); these are [Assumption] candidates, with no values copied here. Default: choose forms by (a) a citable public notice, (b) expected applicant volume, and (c) at least one or two per launch-language market where a notice exists, because research found no evidence for es, pt, id or ar markets [Hypothesis].
+- [ ] **OQ-1 (blocking for release, not for PRD approval) The list of 15–20 forms.** The Product Owner supplies forms, pixel and KB values, source titles, issuers and check dates. Research names candidate families only: Indian recruitment portals such as the MSTC careers page (photo 20–50 KB, signature 10–20 KB, no pixel size in our sources), Bangladesh and Indian exam presets seen on competitor pages, and visa/passport photos [Fact](docs/research/competitors.md); these are [Assumption] candidates, with no values copied here. Default: choose forms by (a) a citable public notice, (b) expected applicant volume, and (c) at least one or two per launch-language market where a notice exists, because research found no evidence for es, pt, id or ar markets [Hypothesis]. Update 2026-11-27: Claude drafts the candidates with cited sources and an independent AI check (`t15/draft_forms.md`, `t15/verification.md`); the Product Owner confirms each row.
 - [ ] **OQ-2 (before design) One form with two specs, or flat presets.** Default: one form with 1–2 specs shown as separate tappable rows, so FEAT-009 later needs no data change. Alternative: a flat list of "Form photo" and "Form signature" rows, which doubles the rows (up to about 40).
-- [ ] **OQ-3 Forms with a KB limit but no pixel size.** Default: excluded in R1 (manual entry plus "Use photo size"), which keeps the model and CI simple. Alternative: allow empty width and height and fill only KB and format; a small extension if the Product Owner's list needs it.
+- [x] **OQ-3 Forms with a KB limit but no pixel size.** Decided by the Product Owner on 2026-11-27: allowed as KB-only specs (FR-3, FR-11, FR-13, FR-26). Research found that many high-volume forms state only a KB limit and format (round 1 draft, `t15/draft_forms.md`), so excluding them would leave the list well short of 15–20.
 - [ ] **OQ-4 Pixel ranges, cm or mm forms.** Default: the Product Owner picks one pixel value and records the choice in the source note (FEAT-014).
 - [ ] **OQ-5 (before release) Legal check of naming and of source titles.** Default: nominative use only, no logos, not-affiliated line, no "official" wording; legal advice [PLACEHOLDER: counsel] before the store release.
 - [ ] **OQ-6 Search in R1.** Default: Should; first cut if the budget slips, since about 40 rows can be scrolled. Not proposed: device-region-first ordering (the language region is unreliable, for example en-US in India [Hypothesis]); revisit if the closed test shows scrolling pain.
@@ -308,3 +315,4 @@ Each has a recommended default; the default applies if the Product Owner does no
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft; review fixes: one load-failure behaviour (message replaces the row), offline AC states Wi-Fi off |
 | 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011); open-question defaults stand |
+| 2.0 | 2026-11-27 | Scope change: KB-only specs allowed (OQ-3 decided; FR-3, FR-6, FR-11, FR-13, FR-19, FR-20 changed; FR-26, AC-4.7 to AC-4.9, two strings, two edge cases added); FR-1 and OQ-1 record the draft-then-confirm sourcing decision; section 8 strings updated to the wording now in the app. Under Discussion until re-approved |
