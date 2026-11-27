@@ -61,7 +61,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 - **Scope:** `lib/l10n/app_en.arb`: the five keys of tech section 6 with "FEAT-014 ..." descriptions and placeholders (the `presetCheckNoticeOld` description says `days` is always 90); `flutter gen-l10n`; `preset_strings.dart`: `sourceLine`, `websiteLine`, `checkedLine`, `prompt`, `cardSource`, `block` (tech section 4); `test/features/presets/preset_strings_test.dart`. The five other ARBs are filled in T06; until then the six-locale presence check in `preset_copy_test.dart` is expected red locally. Do not push between T04 and T06.
 - **Done when:** `flutter gen-l10n` passes; `preset_strings_test.dart` passes: Test Form A lines with title and issuer in U+2068…U+2069 and host and date in U+2066…U+2069; Form C has no Website line; prompt switches at 90/91 days via `prompt(form, now)`; empty title, empty issuer and null date each leave out only their line, `block` still ends with the prompt and nothing contains "()" (AC-6.3); FR-10: the shipped asset parses with no form dropped (count equals the raw count) and for each of the 17 forms in each of the 6 locales `sourceLine`, `checkedLine`, `block` and `cardSource` are non-empty and contain the title and date (AC-6.1); English banned-word check from T02 passes on the new keys; FEAT-016 `privacy_copy_test.dart` passes.
 
-### - [ ] FEAT-014-T05 — Lean impeccable design pass with the Product Owner — gate G1
+### - [x] FEAT-014-T05 — Lean impeccable design pass with the Product Owner — gate G1
 - **Implements:** FR-13, FR-1 / FR-2 (design), PRD OQ-4, OQ-9 · **ADRs:** —
 - **Depends on:** T04 (English copy to review)
 - **Size:** S (0.25 d)
@@ -187,6 +187,7 @@ _Filled in by T05, T06, T09 and T10 (date, device or CI run, result). Synthetic 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-27 | T05 | G1 design and copy: `t05/source_design.md` 0.1 accepted as proposed (Product Owner delegated: "do what you think is right"): `history` icon on the block, prompt in the same weight as the lines, card lines `bodySmall` at 80% (9.8:1 on the plate), the five English strings unchanged | — | Passed |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-001 before starting a task.

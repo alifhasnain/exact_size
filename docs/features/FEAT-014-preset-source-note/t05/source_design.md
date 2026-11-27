@@ -1,7 +1,7 @@
 ---
 id: FEAT-014-T05-DESIGN
 title: Preset source note — lean design (impeccable, gate G1)
-status: Proposed
+status: Accepted (G1)
 version: 0.1
 updated: 2026-11-27
 links: [FEAT-014, FEAT-014-TECH, FEAT-014-TASKS, FEAT-011-T09-DESIGN, PRODUCT.md]
