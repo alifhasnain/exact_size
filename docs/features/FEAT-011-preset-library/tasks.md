@@ -60,7 +60,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `lib/l10n/app_en.arb` only: the `preset*` keys of tech section 6 with "FEAT-011 ..." `@` descriptions and placeholders (`presetCountry` with only `other{{code}}` until T15, never a `ZZ` case; `presetCategory` with the four cases). `lib/features/presets/presentation/preset_strings.dart`: code → getter mapping, FSI/PDI around data names, LRI/PDI around numbers with units, digits 0–9. The five other ARBs are untouched until T13 (Open items 5).
 - **Done when:** `flutter gen-l10n` passes; `flutter test test/features/presets/preset_strings_test.dart` passes (summary with and without minimum, DPI note with 200, form name wrapped in U+2068/U+2069, "px"/"KB" in an LTR isolate, four category labels, unknown country shows its code); `flutter test test/privacy/privacy_copy_test.dart` still passes (no connectivity word in a new key). Final wording may change at G1.
 
-### - [ ] FEAT-011-T04 — CI data rules and self-tests (FR-19)
+### - [x] FEAT-011-T04 — CI data rules and self-tests (FR-19)
 - **Implements:** FR-19, FR-1 (no test entries shipped), FR-2, FR-3, FR-4, NFR-6, NFR-10 · **ADRs:** —
 - **Depends on:** T01, T03
 - **Size:** M (0.5 d)
