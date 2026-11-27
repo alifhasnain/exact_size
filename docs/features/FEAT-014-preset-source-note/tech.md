@@ -1,8 +1,8 @@
 ---
 id: FEAT-014-TECH
 title: Preset source note and "check your notice" prompt — Technical Plan
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-27
 links: [FEAT-014, FEAT-011, FEAT-011-TECH, FEAT-005, FEAT-016, FEAT-019, ADR-001]
 ---
@@ -229,3 +229,4 @@ No change: the same schema and fields, nothing persisted, no migration. The FR-1
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft |
+| 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-014-TECH); open-question defaults stand |
