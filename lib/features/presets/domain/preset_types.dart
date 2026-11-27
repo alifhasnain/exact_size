@@ -100,7 +100,7 @@ final class PresetSource {
   const PresetSource({required this.title, this.url});
   final String title;
 
-  /// Stored as text, never opened or shown (OQ-13).
+  /// Stored as text and never opened; FEAT-014 shows its host only (FR-4).
   final String? url;
 }
 

@@ -5,6 +5,7 @@ Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: wha
 Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review).
 
 ## [Unreleased]
+- FEAT-014-T01: lib/features/presets/domain/source_note.dart, pure helpers shared by the app and the CI data rules: staleAfterDays (90, test-checked equal to freshness.dart maxAgeDays), sourceHost (host of an http/https URL with no user info, else null; a URL with a fragment still gives its host), isoDate (YYYY-MM-DD from the date fields), isStale (calendar days, more than 90) and hasControlChars (C0/C1 and bidi controls; ZWJ and ZWNJ allowed). source_note_test.dart covers the host table, the PRD stale table and the control characters.
 - FEAT-011-T15: 17 forms confirmed by the Product Owner (10 with exact pixel sizes, 7 KB-only) entered in assets/presets/presets.json with country names in six languages (AI-reviewed only); pk-fpsc photo carries an engineReview reason (KB-only, under 30 KB, too blurry at the 600 × 600 test size).
 - FEAT-011-T15 preset data: bd-bpsc-bcs, source "Photo/Sign Validator", checked 2026-11-27.
 - FEAT-011-T15 preset data: bd-teletalk-govt-jobs, source "Help", checked 2026-11-27.

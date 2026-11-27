@@ -33,7 +33,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 
 ## Tasks
 
-### - [ ] FEAT-014-T01 — `source_note.dart` pure helpers and table tests
+### - [x] FEAT-014-T01 — `source_note.dart` pure helpers and table tests
 - **Implements:** FR-3, FR-4, FR-6 (logic), FR-11 (shared helper), NFR-6, NFR-7 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** M (0.5 d)

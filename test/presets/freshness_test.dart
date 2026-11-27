@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:exact_size/features/presets/domain/source_note.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../tool/presets/freshness.dart';
@@ -11,6 +12,10 @@ void main() {
     final text = File('assets/presets/presets.json').readAsStringSync();
     final count = ((jsonDecode(text) as Map)['forms'] as List).length;
     expect(freshnessReport(text, DateTime.now()).first, 'forms: $count');
+  });
+
+  test('FEAT-014 old-check prompt uses the same 90 days (FR-6)', () {
+    expect(staleAfterDays, maxAgeDays);
   });
 
   test('the fixture on 2027-02-01 lists Test Form A only', () {
