@@ -88,7 +88,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `lib/features/presets/domain/preset_search.dart` (`searchKey`: cut to 100, `cleanNumberText`, lowercase, small diacritic fold for Latin and Arabic harakat; `filterForms`: substring over name, issuer, aliases, localized country and category; sections by localized country name, forms by name).
 - **Done when:** `flutter test test/features/presets/preset_search_test.dart` passes: "TEST form a", extra spaces, U+200F marks and Arabic-Indic digits all match Test Form A (AC-2.2); alias, issuer, country name and category label each match (AC-2.1); section and form order stable; empty query returns all; a 101-character query is cut; 1,000 seeded random strings (lone surrogates, controls, mixed scripts) and a 10,000-character paste never throw; filtering the fixture 1,000 times takes under 100 ms per call on the host (informational).
 
-### - [ ] FEAT-011-T08 — FR-20 fixture engine run in CI and push P1
+### - [x] FEAT-011-T08 — FR-20 fixture engine run in CI and push P1
 - **Implements:** FR-20, NFR-1 (load time), NFR-9 · **ADRs:** ADR-001
 - **Depends on:** T02, T04, T05, T06, T07
 - **Size:** L (1.0 d)
@@ -219,6 +219,8 @@ _Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: dat
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-27 | T08 | FR-20 fixture run, local | Realme 2 Pro, API 36, debug | Pass: shipped library 0 forms (loaded in 24 ms); Test Form A photo and signature and Test Form B photo READY; planted 4000×4000 px, max 2 KB spec reported (ABOVE_MAX) and passes with an engineReview. Synthetic images in the app support dir, deleted in tearDownAll; build uninstalled. |
+| 2026-11-27 | T08 | P1 CI | run 45946777092 | Green: all three jobs; same FR-20 lines on API 28 (load 2 ms). Emulator job 11 min 38 s against 20 min 59 s on the last green run (45886183791), so the added time is below run-to-run noise and could not be measured (tech hypothesis 1–3 min). |
 | 2026-11-27 | T06 | Freshness test date | host | The fixture dates are 2026-10-01 (Form A) and 2026-11-20 (Form B), so the CI rule "lastChecked not after today" passes on the fixture. With --today 2027-03-01 both forms would be over 90 days, so the test uses --today 2027-02-01 (A 123 days, listed; B 73 days, not listed). Same check, different date. |
 
 ## Instructions for Claude Code
