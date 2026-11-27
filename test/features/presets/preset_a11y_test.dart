@@ -7,6 +7,9 @@ import 'package:exact_size/features/presets/data/preset_asset_source.dart';
 import 'package:exact_size/features/presets/domain/parse_library.dart';
 import 'package:exact_size/features/presets/presentation/preset_list_screen.dart';
 import 'package:exact_size/features/presets/presentation/preset_providers.dart';
+import 'package:exact_size/features/presets/domain/preset_types.dart';
+import 'package:exact_size/features/target/domain/target_input.dart';
+import 'package:exact_size/features/target/presentation/target_form_controller.dart';
 import 'package:exact_size/features/target/presentation/target_screen.dart';
 import 'package:exact_size/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +47,7 @@ void main() {
     Widget home, {
     ValueNotifier<Locale>? locale,
     ValueNotifier<double>? scale,
+    void Function(ProviderContainer c)? setup,
   }) async {
     tester.view
       ..physicalSize = const Size(360, 640)
@@ -55,6 +59,7 @@ void main() {
       overrides: [presetSourceProvider.overrideWithValue(PresetAssetSource(bundle: _Bundle(fixture), sink: (_) {}))],
     );
     addTearDown(c.dispose);
+    setup?.call(c);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: c,
@@ -77,6 +82,14 @@ void main() {
 
   Widget target() => TargetScreen(info: _info, onContinue: (_) {});
   Widget list() => PresetListScreen(forms: forms);
+
+  /// Test Form C (KB-only) applied with Width 300 and Height 400 typed.
+  void applyC(ProviderContainer c) {
+    final specC = forms.singleWhere((f) => f.id == 'test-form-c').specs.single;
+    c.read(targetFormProvider.notifier).fill(specC.applyTo(const TargetInput(width: '300', height: '400')));
+    c.read(appliedPresetProvider.notifier).apply(const AppliedPreset(formId: 'test-form-c', kind: SpecKind.photo));
+  }
+
   Finder specKeys() => find.descendant(of: find.byType(PresetListScreen), matching: find.byType(InkWell));
 
   for (final (name, home) in [('target row', target), ('form list', list)]) {
@@ -106,6 +119,7 @@ void main() {
         find.textContaining('DPI'),
         find.text(l.presetKindSignature),
         find.text(l.presetNoteContent),
+        find.textContaining(l.presetAnyPixelSize), // Test Form C, KB-only (2.0)
       ]) {
         final key = find.ancestor(of: unique, matching: find.byType(InkWell));
         await tester.scrollUntilVisible(key, 80, scrollable: scrollable);
@@ -121,8 +135,48 @@ void main() {
       final row = find.ancestor(of: find.byIcon(Icons.list_alt), matching: find.byType(InkWell));
       expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
       expect(tester.getRect(row).right, lessThanOrEqualTo(360));
+
+      // Test Form C applied with Width/Height typed: the FR-26 line shows and fits (2.0).
+      await pump(tester, target(), locale: ValueNotifier(locale), scale: ValueNotifier(2), setup: applyC);
+      expect(tester.takeException(), isNull);
+      final note = find.text(l.presetKbOnlyNote);
+      expect(note, findsOneWidget);
+      expect(tester.getRect(note).right, lessThanOrEqualTo(360));
+      expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
     });
   }
+
+  testWidgets('ar: Test Form C summary keeps the KB part in an LTR isolate, digits 0-9 (AC-9.1, 2.0)', (tester) async {
+    await pump(tester, list(), locale: ValueNotifier(const Locale('ar')));
+    final l = lookupAppLocalizations(const Locale('ar'));
+    final summary = find.textContaining(l.presetAnyPixelSize);
+    await tester.scrollUntilVisible(
+      summary,
+      80,
+      scrollable: find.descendant(of: find.byType(CustomScrollView), matching: find.byType(Scrollable)).first,
+    );
+    final text = tester.widget<Text>(summary).data!;
+    expect(text, contains('\u206610–200 KB\u2069'));
+    expect(RegExp('[٠-٩۰-۹]').hasMatch(text), isFalse);
+  });
+
+  testWidgets('Test Form C row is one button node that says no pixel size is stated (AC-9.3, 2.0)', (tester) async {
+    final handle = tester.ensureSemantics();
+    await pump(tester, list());
+    final key = find.ancestor(of: find.textContaining('Pixel size not stated'), matching: find.byType(InkWell));
+    await tester.scrollUntilVisible(
+      key,
+      80,
+      scrollable: find.descendant(of: find.byType(CustomScrollView), matching: find.byType(Scrollable)).first,
+    );
+    final node = tester.getSemantics(key);
+    final label = node.label.replaceAll(isolates, '');
+    for (final part in ['Test Form C', 'Photo', 'Pixel size not stated', '10–200 KB', 'JPEG']) {
+      expect(label, contains(part));
+    }
+    expect(node.flagsCollection.isButton, isTrue);
+    handle.dispose();
+  });
 
   testWidgets('ar: mirrored, data names isolated, digits 0-9 only (AC-9.1)', (tester) async {
     await pump(tester, list(), locale: ValueNotifier(const Locale('ar')));
