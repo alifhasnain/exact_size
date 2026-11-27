@@ -922,13 +922,13 @@ abstract class AppLocalizations {
   /// **'Signature'**
   String get presetKindSignature;
 
-  /// FEAT-011 FR-6: summary of a spec row with a minimum and maximum file size. pixels is checkPixels, size is kbRange, format is JPEG or PNG; each arrives already in a bidi isolate.
+  /// FEAT-011 FR-6: summary of a spec row with a minimum and maximum file size. pixels is checkPixels, or presetAnyPixelSize for a form with no pixel size, size is kbRange, format is JPEG or PNG; each arrives already in a bidi isolate.
   ///
   /// In en, this message translates to:
   /// **'{pixels} · {size} · {format}'**
   String presetSpecRange(String pixels, String size, String format);
 
-  /// FEAT-011 FR-6: summary of a spec row with only a maximum file size. pixels is checkPixels, max is kbAmount, format is JPEG or PNG; each arrives already in a bidi isolate.
+  /// FEAT-011 FR-6: summary of a spec row with only a maximum file size. pixels is checkPixels, or presetAnyPixelSize for a form with no pixel size, max is kbAmount, format is JPEG or PNG; each arrives already in a bidi isolate.
   ///
   /// In en, this message translates to:
   /// **'{pixels} · up to {max} · {format}'**
@@ -999,6 +999,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{category, select, job{Jobs} exam_admission{Exams and admissions} visa_passport{Visa and passport} other{Other}}'**
   String presetCategory(String category);
+
+  /// FEAT-011 FR-6: shown in place of the pixel size in a spec summary when the form states only a KB limit and a format, for example 'Any pixel size · 10–200 KB · JPEG'. It means the form does not say which pixel size to use; it must not read as 'every size is accepted'.
+  ///
+  /// In en, this message translates to:
+  /// **'Any pixel size'**
+  String get presetAnyPixelSize;
+
+  /// FEAT-011 FR-26: note on the target step while a preset that states only a KB limit is applied. Name the button the way your targetUsePhotoSize translation does. Never suggest a size.
+  ///
+  /// In en, this message translates to:
+  /// **'This form sets no pixel size. Enter a width and height, or use your photo\'s size.'**
+  String get presetKbOnlyNote;
 }
 
 class _AppLocalizationsDelegate

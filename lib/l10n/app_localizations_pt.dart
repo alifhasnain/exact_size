@@ -604,6 +604,13 @@ class AppLocalizationsPt extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get presetAnyPixelSize => 'Dimensões não indicadas';
+
+  @override
+  String get presetKbOnlyNote =>
+      'Este formulário não indica dimensões em pixels. Insira a largura e a altura ou use as dimensões da foto.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

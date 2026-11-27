@@ -147,5 +147,7 @@
   "presetNotAffiliated": "ExactSize tidak berafiliasi dengan organisasi dalam daftar ini.",
   "presetLoadFailed": "Daftar formulir tidak dapat ditampilkan. Anda dapat memasukkan sendiri lebar, tinggi, dan ukuran file.",
   "presetCountry": "{code, select, other{{code}}}",
-  "presetCategory": "{category, select, job{Pekerjaan} exam_admission{Ujian dan penerimaan siswa} visa_passport{Visa dan paspor} other{Lainnya}}"
+  "presetCategory": "{category, select, job{Pekerjaan} exam_admission{Ujian dan penerimaan siswa} visa_passport{Visa dan paspor} other{Lainnya}}",
+  "presetAnyPixelSize": "Dimensi tidak dicantumkan",
+  "presetKbOnlyNote": "Formulir ini tidak mencantumkan dimensi piksel. Masukkan lebar dan tinggi, atau gunakan dimensi foto."
 }

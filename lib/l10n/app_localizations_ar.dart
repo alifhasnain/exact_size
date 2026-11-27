@@ -601,4 +601,11 @@ class AppLocalizationsAr extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get presetAnyPixelSize => 'الأبعاد غير مذكورة';
+
+  @override
+  String get presetKbOnlyNote =>
+      'لا يذكر هذا النموذج الأبعاد بالبكسل. أدخل العرض والارتفاع، أو استخدم أبعاد الصورة.';
 }

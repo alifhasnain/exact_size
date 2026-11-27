@@ -605,4 +605,11 @@ class AppLocalizationsId extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get presetAnyPixelSize => 'Dimensi tidak dicantumkan';
+
+  @override
+  String get presetKbOnlyNote =>
+      'Formulir ini tidak mencantumkan dimensi piksel. Masukkan lebar dan tinggi, atau gunakan dimensi foto.';
 }

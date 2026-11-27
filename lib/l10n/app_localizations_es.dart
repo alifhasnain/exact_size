@@ -600,4 +600,11 @@ class AppLocalizationsEs extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get presetAnyPixelSize => 'Dimensiones no indicadas';
+
+  @override
+  String get presetKbOnlyNote =>
+      'Este formulario no indica dimensiones en píxeles. Ingresa un ancho y un alto, o usa las dimensiones de la foto.';
 }

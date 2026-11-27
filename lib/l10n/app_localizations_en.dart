@@ -601,4 +601,11 @@ class AppLocalizationsEn extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get presetAnyPixelSize => 'Any pixel size';
+
+  @override
+  String get presetKbOnlyNote =>
+      'This form sets no pixel size. Enter a width and height, or use your photo\'s size.';
 }

@@ -147,5 +147,7 @@
   "presetNotAffiliated": "لا يتبع ExactSize أيًّا من الجهات المدرجة في هذه القائمة.",
   "presetLoadFailed": "تعذّر فتح قائمة النماذج. يمكنك إدخال العرض والارتفاع وحجم الملف يدويًا.",
   "presetCountry": "{code, select, other{{code}}}",
-  "presetCategory": "{category, select, job{التوظيف} exam_admission{الامتحانات والقبول} visa_passport{التأشيرات وجوازات السفر} other{أخرى}}"
+  "presetCategory": "{category, select, job{التوظيف} exam_admission{الامتحانات والقبول} visa_passport{التأشيرات وجوازات السفر} other{أخرى}}",
+  "presetAnyPixelSize": "الأبعاد غير مذكورة",
+  "presetKbOnlyNote": "لا يذكر هذا النموذج الأبعاد بالبكسل. أدخل العرض والارتفاع، أو استخدم أبعاد الصورة."
 }

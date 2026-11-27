@@ -606,4 +606,11 @@ class AppLocalizationsHi extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get presetAnyPixelSize => 'पिक्सेल माप नहीं बताया गया';
+
+  @override
+  String get presetKbOnlyNote =>
+      'यह फ़ॉर्म पिक्सेल माप नहीं बताता। चौड़ाई और ऊँचाई डालें या फ़ोटो का माप इस्तेमाल करें।';
 }

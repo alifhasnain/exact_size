@@ -147,5 +147,7 @@
   "presetNotAffiliated": "ExactSize का इस सूची की संस्थाओं से कोई संबंध नहीं है।",
   "presetLoadFailed": "फ़ॉर्म की सूची नहीं खुल सकी। आप चौड़ाई, ऊँचाई और फ़ाइल साइज़ ख़ुद डाल सकते हैं।",
   "presetCountry": "{code, select, other{{code}}}",
-  "presetCategory": "{category, select, job{नौकरी} exam_admission{परीक्षा और दाख़िला} visa_passport{वीज़ा और पासपोर्ट} other{अन्य}}"
+  "presetCategory": "{category, select, job{नौकरी} exam_admission{परीक्षा और दाख़िला} visa_passport{वीज़ा और पासपोर्ट} other{अन्य}}",
+  "presetAnyPixelSize": "पिक्सेल माप नहीं बताया गया",
+  "presetKbOnlyNote": "यह फ़ॉर्म पिक्सेल माप नहीं बताता। चौड़ाई और ऊँचाई डालें या फ़ोटो का माप इस्तेमाल करें।"
 }

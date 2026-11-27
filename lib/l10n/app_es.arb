@@ -147,5 +147,7 @@
   "presetNotAffiliated": "ExactSize no tiene ninguna afiliación con las organizaciones de esta lista.",
   "presetLoadFailed": "No se pudo abrir la lista de formularios. Puedes ingresar los valores manualmente.",
   "presetCountry": "{code, select, other{{code}}}",
-  "presetCategory": "{category, select, job{Empleo} exam_admission{Exámenes y admisiones} visa_passport{Visa y pasaporte} other{Otros}}"
+  "presetCategory": "{category, select, job{Empleo} exam_admission{Exámenes y admisiones} visa_passport{Visa y pasaporte} other{Otros}}",
+  "presetAnyPixelSize": "Dimensiones no indicadas",
+  "presetKbOnlyNote": "Este formulario no indica dimensiones en píxeles. Ingresa un ancho y un alto, o usa las dimensiones de la foto."
 }

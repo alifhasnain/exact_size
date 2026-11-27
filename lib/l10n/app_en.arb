@@ -555,9 +555,9 @@
   "presetKindSignature": "Signature",
   "@presetKindSignature": {"description": "FEAT-011 FR-3: kind of upload a spec row is for: the applicant's signature image."},
   "presetSpecRange": "{pixels} · {size} · {format}",
-  "@presetSpecRange": {"description": "FEAT-011 FR-6: summary of a spec row with a minimum and maximum file size. pixels is checkPixels, size is kbRange, format is JPEG or PNG; each arrives already in a bidi isolate.", "placeholders": {"pixels": {"type": "String", "example": "200 × 230 px"}, "size": {"type": "String", "example": "20–50 KB"}, "format": {"type": "String", "example": "JPEG"}}},
+  "@presetSpecRange": {"description": "FEAT-011 FR-6: summary of a spec row with a minimum and maximum file size. pixels is checkPixels, or presetAnyPixelSize for a form with no pixel size, size is kbRange, format is JPEG or PNG; each arrives already in a bidi isolate.", "placeholders": {"pixels": {"type": "String", "example": "200 × 230 px"}, "size": {"type": "String", "example": "20–50 KB"}, "format": {"type": "String", "example": "JPEG"}}},
   "presetSpecUpTo": "{pixels} · up to {max} · {format}",
-  "@presetSpecUpTo": {"description": "FEAT-011 FR-6: summary of a spec row with only a maximum file size. pixels is checkPixels, max is kbAmount, format is JPEG or PNG; each arrives already in a bidi isolate.", "placeholders": {"pixels": {"type": "String", "example": "140 × 60 px"}, "max": {"type": "String", "example": "20 KB"}, "format": {"type": "String", "example": "JPEG"}}},
+  "@presetSpecUpTo": {"description": "FEAT-011 FR-6: summary of a spec row with only a maximum file size. pixels is checkPixels, or presetAnyPixelSize for a form with no pixel size, max is kbAmount, format is JPEG or PNG; each arrives already in a bidi isolate.", "placeholders": {"pixels": {"type": "String", "example": "140 × 60 px"}, "max": {"type": "String", "example": "20 KB"}, "format": {"type": "String", "example": "JPEG"}}},
   "presetListTitle": "Forms",
   "@presetListTitle": {"description": "FEAT-011 FR-6: title of the form list screen."},
   "presetSearchHint": "Search forms",
@@ -579,5 +579,9 @@
   "presetCountry": "{code, select, other{{code}}}",
   "@presetCountry": {"description": "FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.", "placeholders": {"code": {"type": "String", "example": "IN"}}},
   "presetCategory": "{category, select, job{Jobs} exam_admission{Exams and admissions} visa_passport{Visa and passport} other{Other}}",
-  "@presetCategory": {"description": "FEAT-011 FR-2: category of a form, shown in the form list and searched. Translate each case; keep the case names.", "placeholders": {"category": {"type": "String", "example": "job"}}}
+  "@presetCategory": {"description": "FEAT-011 FR-2: category of a form, shown in the form list and searched. Translate each case; keep the case names.", "placeholders": {"category": {"type": "String", "example": "job"}}},
+  "presetAnyPixelSize": "Any pixel size",
+  "@presetAnyPixelSize": {"description": "FEAT-011 FR-6: shown in place of the pixel size in a spec summary when the form states only a KB limit and a format, for example 'Any pixel size · 10–200 KB · JPEG'. It means the form does not say which pixel size to use; it must not read as 'every size is accepted'."},
+  "presetKbOnlyNote": "This form sets no pixel size. Enter a width and height, or use your photo's size.",
+  "@presetKbOnlyNote": {"description": "FEAT-011 FR-26: note on the target step while a preset that states only a KB limit is applied. Name the button the way your targetUsePhotoSize translation does. Never suggest a size."}
 }

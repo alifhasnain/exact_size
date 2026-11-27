@@ -5,6 +5,7 @@ Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: wha
 Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review).
 
 ## [Unreleased]
+- FEAT-011-T16: presetAnyPixelSize and presetKbOnlyNote in en, es, pt, hi, id and ar (FR-6, FR-26); presetSpecRange/presetSpecUpTo descriptions mention the new pixels value; blind Sonnet review per language, hi and id fixes, ar aligned; status AI-reviewed only (no native speaker).
 - FEAT-011-T13: preset strings in hi, id and ar (es and pt earlier): blind Sonnet review and second Haiku review of the high-risk keys per language; fixes hi 5, id 5, ar 7; open lists none; status AI-reviewed only (no native speaker). preset_copy_test.dart checks every preset key is present and translated in all six languages and none is left in untranslated_messages.json; the 200% accessibility test runs in all 7 supported locales.
 - FEAT-011-T13 (pt): Brazilian Portuguese preset strings in app_pt.arb, blind Sonnet review and second Haiku review of the high-risk keys, 1 fix (exam category); open list none; status AI-reviewed only (no native speaker).
 - FEAT-011-T13 (es): Spanish (es-419) preset strings, blind Sonnet review and second Haiku review of the high-risk keys, 5 fixes; status AI-reviewed only (no native speaker). presetLoadFailed reworded in English after the review ("The form list could not be opened. You can enter sizes yourself.") so it no longer hints at a download; design note 0.2.
