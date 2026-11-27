@@ -39,7 +39,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 
 ## Tasks
 
-### - [ ] FEAT-011-T01 — Domain types, `parseLibrary`, synthetic fixture library
+### - [x] FEAT-011-T01 — Domain types, `parseLibrary`, synthetic fixture library
 - **Implements:** FR-2, FR-3, FR-4, FR-12 (types), FR-16 (spec skip), NFR-6, NFR-7 · **ADRs:** ADR-001
 - **Depends on:** —
 - **Size:** M (0.5 d)
