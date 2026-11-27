@@ -66,7 +66,10 @@ void _spec(List<String> p, String id, Map s) {
   _unknown(p, at, s, const {'kind', 'width', 'height', 'minKb', 'maxKb', 'format', 'notCovered', 'engineReview'});
   _missing(p, at, s, const ['kind', 'width', 'height', 'minKb', 'maxKb', 'format']);
   final w = s['width'], h = s['height'];
-  if (w is! int || h is! int || w < 16 || h < 16 || checkTarget(Target(w, h)) != null) {
+  // 2.0: both null is a KB-only spec (no size check); exactly one null is an error; both present: 1.0 rule.
+  if ((w == null) != (h == null)) {
+    p.add('$at: give both width and height, or neither.');
+  } else if (w != null && (w is! int || h is! int || w < 16 || h < 16 || checkTarget(Target(w, h)) != null)) {
     p.add('$at: size outside engine limits.');
   }
   final min = s['minKb'], max = s['maxKb'];

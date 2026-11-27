@@ -101,6 +101,38 @@ void main() {
       });
     }
 
+    test('a KB-only spec (width and height null) passes (FR-3, 2.0)', () {
+      final json = fixture();
+      photoA(json)
+        ..['width'] = null
+        ..['height'] = null
+        ..['minKb'] = 10
+        ..['maxKb'] = 200;
+      expect(check(json), isEmpty);
+    });
+
+    test('only one of width and height null fails naming id and kind', () {
+      final json = fixture();
+      photoA(json)['height'] = null;
+      expect(check(json), contains('Form test-form-a photo: give both width and height, or neither.'));
+      expect(check(json), isNot(contains('Form test-form-a photo: size outside engine limits.')));
+    });
+
+    test('a KB-only spec with maxKb null fails "KB range invalid."', () {
+      final json = fixture();
+      photoA(json)
+        ..['width'] = null
+        ..['height'] = null
+        ..['maxKb'] = null;
+      expect(check(json), contains('Form test-form-a photo: KB range invalid.'));
+    });
+
+    test('a missing width key still fails as a missing field', () {
+      final json = fixture();
+      photoA(json).remove('width');
+      expect(check(json), contains('Form test-form-a photo: missing field width.'));
+    });
+
     test('a test- id in the shipped file', () {
       expect(check(fixture(), shipped: true), contains('Form test-form-a: test entries must not ship (FR-1).'));
     });
