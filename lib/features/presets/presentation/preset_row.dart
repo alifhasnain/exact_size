@@ -77,8 +77,10 @@ class PresetRow extends ConsumerWidget {
               ),
             ),
           ),
-          if (spec != null && spec.notCovered.isNotEmpty) ...[
+          if (spec != null && (spec.kbOnly || spec.notCovered.isNotEmpty)) ...[
             const SizedBox(height: 12),
+            // FR-26: a KB-only form states no pixel size; ask for one first. Never propose a size.
+            if (spec.kbOnly) BoothNotice(icon: Icons.info_outline, text: l.presetKbOnlyNote),
             for (final note in spec.notCovered) BoothNotice(icon: Icons.info_outline, text: s.note(note)),
           ],
         ],
@@ -110,7 +112,13 @@ class PresetRow extends ConsumerWidget {
     onFilled();
     FocusManager.instance.primaryFocus?.unfocus(); // AC-4.1: keyboard closed
     unawaited(
-      SemanticsService.sendAnnouncement(View.of(context), s.applied(form, spec.kind), Directionality.of(context)),
+      SemanticsService.sendAnnouncement(
+        View.of(context),
+        spec.kbOnly
+            ? '${s.applied(form, spec.kind)}\n${AppLocalizations.of(context).presetKbOnlyNote}'
+            : s.applied(form, spec.kind),
+        Directionality.of(context),
+      ),
     );
   }
 }

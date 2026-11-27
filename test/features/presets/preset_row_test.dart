@@ -232,4 +232,128 @@ void main() {
     );
     expect(tester.widget<Text>(applied).data!, contains('Signature'));
   });
+
+  // FEAT-011-T20 (PRD 2.0): KB-only presets on the target step (FR-26, AC-4.7 to AC-4.9).
+  const kbNote = "This form sets no pixel size. Enter a width and height, or use your photo's size.";
+  final appliedC = find.textContaining('Test Form C');
+
+  Future<void> pickC(WidgetTester tester) async {
+    await tester.tap(row);
+    await tester.pumpAndSettle();
+    // The list builds rows lazily: scroll Test Form C's row into view first.
+    final summary = find.textContaining('Pixel size not stated');
+    await tester.scrollUntilVisible(
+      summary,
+      200,
+      scrollable: find.descendant(of: find.byType(PresetListScreen), matching: find.byType(Scrollable)).last,
+    );
+    final key = find.ancestor(of: summary, matching: find.byType(InkWell));
+    await tester.ensureVisible(key);
+    await tester.pumpAndSettle();
+    await tester.tap(key);
+    await tester.pumpAndSettle();
+  }
+
+  List<String> values(WidgetTester tester) => [
+    for (final l in ['Width', 'Height', 'Minimum size', 'Maximum size']) text(tester, l),
+  ];
+
+  testWidgets('AC-4.7: a KB-only pick keeps Width and Height, fills KB and format, shows the FR-26 line first', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.enterText(field('Width'), '300');
+    await tester.enterText(field('Height'), '400');
+    await tester.enterText(field('Maximum size'), '9');
+    await pickC(tester);
+    expect(values(tester), ['300', '400', '10', '200']);
+    expect(tester.widget<SegmentedButton<OutputFormat>>(find.byType(SegmentedButton<OutputFormat>)).selected, {
+      OutputFormat.jpeg,
+    });
+    expect(tester.widget<Text>(appliedC).data!.replaceAll(RegExp('[\u2066-\u2069]'), ''), 'Test Form C · Photo');
+    expect(notices(tester).first, kbNote);
+    expect(tester.testTextInput.isVisible, isFalse);
+  });
+
+  testWidgets('AC-4.8: editing Width or Height keeps the label; Min, Max or format drops it until restored', (
+    tester,
+  ) async {
+    await pump(tester);
+    await pickC(tester);
+    await tester.enterText(field('Width'), '500');
+    await tester.enterText(field('Height'), '');
+    await tester.pump();
+    expect(appliedC, findsOneWidget);
+    expect(notices(tester), contains(kbNote));
+    for (final (label, changed, restored) in [('Minimum size', '11', '10'), ('Maximum size', '199', '200')]) {
+      await tester.enterText(field(label), changed);
+      await tester.pump();
+      expect(choose, findsOneWidget, reason: label);
+      expect(notices(tester), isNot(contains(kbNote)), reason: label);
+      await tester.enterText(field(label), restored);
+      await tester.pump();
+      expect(appliedC, findsOneWidget, reason: label);
+    }
+    await tester.ensureVisible(find.text('PNG'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('PNG'));
+    await tester.pump();
+    expect(choose, findsOneWidget);
+    await tester.tap(find.text('JPEG'));
+    await tester.pump();
+    expect(appliedC, findsOneWidget);
+  });
+
+  testWidgets('AC-4.9: with Width and Height empty, Continue shows FEAT-005 errors and fills nothing in', (
+    tester,
+  ) async {
+    await pump(tester);
+    await pickC(tester);
+    expect(values(tester), ['', '', '10', '200']);
+    await tapContinue(tester);
+    expect(specs, isEmpty);
+    expect(find.byIcon(Icons.error_outline), findsWidgets);
+    expect(values(tester), ['', '', '10', '200']);
+    expect(appliedC, findsOneWidget);
+  });
+
+  testWidgets('"Use photo size" after a KB-only pick fills the photo size and keeps the label', (tester) async {
+    await pump(tester);
+    await pickC(tester);
+    await tester.tap(find.text('Use photo size'));
+    await tester.pump();
+    expect(values(tester), ['4000', '3000', '10', '200']);
+    expect(appliedC, findsOneWidget);
+    await tapContinue(tester);
+    expect(specs.single, const TargetSpec(width: 4000, height: 3000, minKb: 10, maxKb: 200, format: OutputFormat.jpeg));
+  });
+
+  testWidgets('the FR-26 line is absent for a full spec', (tester) async {
+    await pump(tester);
+    await pick(tester, 'Photo');
+    expect(applied, findsOneWidget);
+    expect(notices(tester), isNot(contains(kbNote)));
+  });
+
+  testWidgets('the KB-only pick announcement is the label followed by the FR-26 line', (tester) async {
+    final announced = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, (
+      msg,
+    ) async {
+      final m = msg as Map;
+      if (m['type'] == 'announce') {
+        announced.add(((m['data'] as Map)['message'] as String).replaceAll(RegExp('[\u2066-\u2069]'), ''));
+      }
+      return null;
+    });
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+        SystemChannels.accessibility,
+        null,
+      ),
+    );
+    await pump(tester);
+    await pickC(tester);
+    expect(announced.last, 'Test Form C · Photo\n$kbNote');
+  });
 }
