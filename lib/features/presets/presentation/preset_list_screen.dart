@@ -178,17 +178,18 @@ class _FormCard extends StatelessWidget {
   }
 }
 
+/// The outlined key of the preset row and the spec rows (G1 design: the BoothSpecCell outline).
+final presetKeyShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(12),
+  side: BorderSide(color: Booth.text.withValues(alpha: 0.6), width: 1.5),
+);
+
 /// The tappable spec: kind, summary and notes, read by TalkBack as one button (AC-9.3).
 class _SpecKey extends StatelessWidget {
   const _SpecKey(this.form, this.spec, this.s);
   final PresetForm form;
   final PresetSpec spec;
   final PresetStrings s;
-
-  static final shape = RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(12),
-    side: BorderSide(color: Booth.text.withValues(alpha: 0.6), width: 1.5),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -198,9 +199,9 @@ class _SpecKey extends StatelessWidget {
         button: true,
         child: Material(
           type: MaterialType.transparency,
-          shape: shape,
+          shape: presetKeyShape,
           child: InkWell(
-            customBorder: shape,
+            customBorder: presetKeyShape,
             onTap: () => Navigator.of(context).pop(PresetPick(formId: form.id, kind: spec.kind)),
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 56),

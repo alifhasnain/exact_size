@@ -109,7 +109,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `lib/features/presets/presentation/preset_list_screen.dart`: search field (`autocorrect: false`, `enableSuggestions: false`, `enableIMEPersonalizedLearning: false`, no autofill, `LengthLimitingTextInputFormatter(100)`, controller in State, disposed on pop, no `PageStorageKey`); lazy sectioned list; one tappable row per spec popping `PresetPick`; notes as icon plus text; empty state popping `null`; footer. Pushed with `Navigator.push(MaterialPageRoute)`.
 - **Done when:** `flutter test test/features/presets/preset_list_screen_test.dart` passes with the fixture: sections with headings and spec rows (AC-1.2); single-spec tap pops its `PresetPick` (AC-1.3); two rows for Test Form A (AC-3.1) and no invented row for Test Form B (AC-3.3); filtering per keystroke (AC-2.1); empty state and "Enter sizes yourself" pops `null` (AC-2.3); the three keyboard flags asserted on the `TextField` (AC-2.4); DPI, background and content notes show with an icon (AC-5.1, AC-5.2); a skipped spec is absent and nothing throws (AC-6.2); a 10,000-character paste is cut to 100 with no exception; footer present. `flutter test test/privacy/` and T05 pass.
 
-### - [ ] FEAT-011-T11 — Target-step row and wiring
+### - [x] FEAT-011-T11 — Target-step row and wiring
 - **Implements:** FR-5, FR-11, FR-12, FR-13, FR-14 (while applied), FR-16 (message), FR-17, NFR-5 · **ADRs:** ADR-001
 - **Depends on:** T10, T02
 - **Size:** M (0.5 d)

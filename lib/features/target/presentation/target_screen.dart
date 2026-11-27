@@ -9,6 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../ui/booth.dart';
 import '../../compression/domain/compression_result.dart';
 import '../../crop/domain/crop_types.dart';
+import '../../presets/presentation/preset_row.dart';
 import '../domain/number_text.dart';
 import '../domain/target_hints.dart';
 import '../domain/target_input.dart';
@@ -72,7 +73,10 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
     final c = _text[f]!;
     final cleaned = cleanNumberText(c.text);
     if (cleaned != c.text) {
-      c.value = TextEditingValue(text: cleaned, selection: TextSelection.collapsed(offset: cleaned.length));
+      c.value = TextEditingValue(
+        text: cleaned,
+        selection: TextSelection.collapsed(offset: cleaned.length),
+      );
     }
     _form.setText(f, cleaned);
   }
@@ -89,6 +93,14 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
       _focus[TargetScreen.fields[i + 1]]!.requestFocus();
     } else {
       _focus[f]!.unfocus();
+    }
+  }
+
+  /// A preset filled every field (FEAT-011 FR-11): show the values in the text fields.
+  void _copyFromForm() {
+    final input = ref.read(targetFormProvider).input;
+    for (final f in TargetScreen.fields) {
+      _text[f]!.text = input.text(f);
     }
   }
 
@@ -127,7 +139,9 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
     final hints = targetHints(widget.info, width: w, height: h);
     final booth = Booth.theme(Theme.of(context));
     // The base text theme is the light app's; on the booth every text is light (WCAG AA pairs).
-    final theme = booth.copyWith(textTheme: booth.textTheme.apply(bodyColor: Booth.text, displayColor: Booth.text));
+    final theme = booth.copyWith(
+      textTheme: booth.textTheme.apply(bodyColor: Booth.text, displayColor: Booth.text),
+    );
 
     Widget textField(TargetField f, String label, String unit, {String? helper}) => TextField(
       controller: _text[f],
@@ -190,13 +204,20 @@ class _TargetScreenState extends ConsumerState<TargetScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 16,
               children: [
-                // Photo line (FR-12); a FEAT-011 preset row would go just below it (OQ-10).
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 8,
+                // Photo line (FR-12), then the FEAT-011 preset row (OQ-10), which brings its own gap.
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(m.photoSize(hints), style: theme.textTheme.bodyLarge),
-                    if (hints.canUsePhotoSize) TextButton(onPressed: _usePhotoSize, child: Text(l.targetUsePhotoSize)),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      children: [
+                        Text(m.photoSize(hints), style: theme.textTheme.bodyLarge),
+                        if (hints.canUsePhotoSize)
+                          TextButton(onPressed: _usePhotoSize, child: Text(l.targetUsePhotoSize)),
+                      ],
+                    ),
+                    PresetRow(onFilled: _copyFromForm),
                   ],
                 ),
                 Container(
