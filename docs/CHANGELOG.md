@@ -5,6 +5,7 @@ Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: wha
 Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review).
 
 ## [Unreleased]
+- FEAT-011-T21: preset_a11y_test.dart covers KB-only presets (Test Form C row and the applied FR-26 line at 200% in all 7 locales, ar isolate and digits, one button node). Gate G3 passed: the Product Owner accepted the five Realme 2 Pro screenshots (list row, applied with width/height typed, applied empty, ar, 200%).
 - FEAT-011-T20: FR-26 line on the target step: while a KB-only preset is applied, "This form sets no pixel size. Enter a width and height, or use your photo's size." is the first notice under the row and follows the label in the pick announcement; no pixel size is ever proposed. preset_row_test.dart covers AC-4.7 to AC-4.9, "Use photo size" and the announcement.
 - FEAT-011-T19: synthetic Test Form C (one KB-only photo spec, 10–200 KB, JPEG) in test_library.json and preset_fixture_data.dart; test counts updated; FR-20 run on the Realme 2 Pro reaches READY for it at 600 × 600 px.
 - FEAT-011-T18: CI rule both-or-neither (FR-19 2.0): exactly one of width/height null fails "give both width and height, or neither."; both null skips only the size check; self-tests for a passing KB-only spec, one null, a KB-only spec without maxKb and a missing width key; 1.0 self-tests unchanged.
