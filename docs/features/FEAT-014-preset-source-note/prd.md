@@ -1,8 +1,8 @@
 ---
 id: FEAT-014
 title: Preset source note and "check your notice" prompt
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-27
 links: [ROADMAP, BRIEF, RESEARCH, FEAT-005, FEAT-006, FEAT-011, FEAT-013, FEAT-016, FEAT-019, FEAT-025, FEAT-027]
 ---
@@ -247,3 +247,4 @@ Each has a recommended default; the default applies if the Product Owner does no
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft |
+| 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-014); open-question defaults stand |
