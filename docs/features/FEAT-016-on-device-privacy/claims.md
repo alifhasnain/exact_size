@@ -2,9 +2,9 @@
 id: FEAT-016-CLAIMS
 title: ExactSize privacy claims register, data inventory and release checklist
 status: Proposed
-version: 0.1
+version: 0.2
 updated: 2026-11-27
-links: [FEAT-016, FEAT-016-TECH, FEAT-016-TASKS, FEAT-007, FEAT-013, FEAT-025, FEAT-027]
+links: [FEAT-016, FEAT-016-TECH, FEAT-016-TASKS, FEAT-007, FEAT-011, FEAT-013, FEAT-025, FEAT-027]
 ---
 
 # Privacy claims register and release checklist (FEAT-016)
@@ -101,6 +101,7 @@ Offline means **airplane mode on, Wi-Fi off and mobile data off**. Check it firs
 | Pick: Choose from files | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (synthetic file chosen by its name only) |
 | Pick: share-in | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Target entry | Values accepted | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
+| Pick a preset | Open the form list, search, pick a spec, Continue: works with no delay and no network message (FEAT-011) | | | Filled by FEAT-011-T14 |
 | Crop | Continue works | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Compress | Result reached | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Check | Verdict shown | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (Matches your target) |
@@ -120,6 +121,7 @@ Before each store submission:
 - [ ] All six languages are `AI-reviewed only` in `docs/l10n/ai-review-log.md`, and none is described as native-reviewed.
 - [ ] The combined compliance review (PRD OQ-7) is done, or the Product Owner's waiver is recorded. Until then, there is no "no data collected" claim.
 - [ ] A release signing key is configured. Today `android/app/build.gradle.kts` signs release builds with the debug key.
+- [ ] Preset library: `dart run tool/presets/freshness.dart`; 15–20 forms; each form older than 90 days accepted or fixed in the release record; no test entries; FEAT-014 display shipped (FEAT-011 FR-1, FR-21, release rule).
 
 ## 7. Carried requirements (FR-19)
 
@@ -135,3 +137,4 @@ These are copied verbatim from the FEAT-016 PRD. Each owner copies its part into
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | First version, from PRD 1.0 section 10 (FEAT-016-T11) |
+| 0.2 | 2026-11-27 | Offline row "Pick a preset" and the preset library release check (FEAT-011-T06) |

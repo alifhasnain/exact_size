@@ -74,7 +74,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `test/presets/preset_copy_test.dart`: "official", "approved", "guaranteed" (case-insensitive) banned in every `preset*` value in `app_en.arb`, as Latin tokens in all 6 ARBs, and in `aliases` of the shipped file; every `preset*` key has an `@` description starting "FEAT-011"; scan of `lib/features/presets/` for `dart:io`, `path_provider`, `shared_preferences`, `restorationId`, `PageStorageKey`, `Clipboard`. The presence-in-6-locales check is added in T13.
 - **Done when:** passes on the tree; a planted "official" in a scratch copy of the English map, a planted alias, a missing description and a scratch file with `PageStorageKey` each fail with a message naming the key or `file:line`.
 
-### - [ ] FEAT-011-T06 — Freshness tool, FEAT-016 `claims.md` lines, CHANGELOG convention
+### - [x] FEAT-011-T06 — Freshness tool, FEAT-016 `claims.md` lines, CHANGELOG convention
 - **Implements:** FR-21, FR-22 (convention note), FR-1 (count at release), NFR-3 · **ADRs:** —
 - **Depends on:** T01
 - **Size:** S (0.25 d)
@@ -219,6 +219,7 @@ _Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: dat
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-27 | T06 | Freshness test date | host | The fixture dates are 2026-10-01 (Form A) and 2026-11-20 (Form B), so the CI rule "lastChecked not after today" passes on the fixture. With --today 2027-03-01 both forms would be over 90 days, so the test uses --today 2027-02-01 (A 123 days, listed; B 73 days, not listed). Same check, different date. |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-001 before starting a task.
