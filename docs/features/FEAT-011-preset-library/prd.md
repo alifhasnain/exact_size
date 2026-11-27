@@ -1,7 +1,7 @@
 ---
 id: FEAT-011
 title: Built-in preset library
-status: Under Discussion
+status: Approved
 version: 2.0
 updated: 2026-11-27
 links: [ROADMAP, BRIEF, RESEARCH, FEAT-005, FEAT-006, FEAT-009, FEAT-010, FEAT-012, FEAT-013, FEAT-014, FEAT-016, FEAT-019, FEAT-027]
@@ -315,4 +315,5 @@ Each has a recommended default; the default applies if the Product Owner does no
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft; review fixes: one load-failure behaviour (message replaces the row), offline AC states Wi-Fi off |
 | 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011); open-question defaults stand |
-| 2.0 | 2026-11-27 | Scope change: KB-only specs allowed (OQ-3 decided; FR-3, FR-6, FR-11, FR-13, FR-19, FR-20 changed; FR-26, AC-4.7 to AC-4.9, two strings, two edge cases added); FR-1 and OQ-1 record the draft-then-confirm sourcing decision; section 8 strings updated to the wording now in the app. Under Discussion until re-approved |
+| 2.0 | 2026-11-27 | Scope change: KB-only specs allowed (OQ-3 decided; FR-3, FR-6, FR-11, FR-13, FR-19, FR-20 changed; FR-26, AC-4.7 to AC-4.9, two strings, two edge cases added); FR-1 and OQ-1 record the draft-then-confirm sourcing decision; section 8 strings updated to the wording now in the app |
+| 2.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011) |
