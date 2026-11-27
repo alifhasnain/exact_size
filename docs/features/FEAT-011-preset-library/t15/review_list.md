@@ -11,7 +11,7 @@ links: [FEAT-011, FEAT-011-TASKS]
 
 Draft only. Nothing here is in the app. Every value comes from `draft_forms.md` (round 1) or `draft_forms_round2.md` (round 2) and was re-checked by an independent AI agent (`verification.md`, `verification_round2.md`). AI checks are not a substitute for your confirmation: open each source, compare the numbers, then tick the row or write the fix.
 
-"KB-only" rows need PRD 2.0 (Under Discussion) to be approved. "Choose px" rows need you to pick one exact pixel size, which the PRD allows (OQ-4).
+"KB-only" rows are allowed by PRD 2.0 (Approved 2026-11-27) and are built in tasks T16–T21. "Choose px" rows need you to pick one exact pixel size, which the PRD allows (OQ-4).
 
 ## Proposed for the list (19 forms)
 

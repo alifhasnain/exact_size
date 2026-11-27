@@ -1,8 +1,8 @@
 ---
 id: FEAT-011-TASKS
 title: Built-in preset library — Implementation Tasks
-status: Approved
-version: 1.0
+status: Under Discussion
+version: 2.0
 updated: 2026-11-27
 links: [FEAT-011, FEAT-011-TECH, ADR-001, FEAT-005, FEAT-002, FEAT-004, FEAT-014, FEAT-016, FEAT-019]
 ---
@@ -13,6 +13,7 @@ Milestone: R1 Phase A (MVP, Must). Work top to bottom, one task at a time.
 
 Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day, **L** ≈ 1 day; each task is one PR.
 Module paths follow tech section 3: new `lib/features/presets/{domain,data,presentation}`, `assets/presets/presets.json`, `test/features/presets/`, `test/presets/` (CI rules and fixtures), `integration_test/preset_fixture_run.dart`, `tool/presets/freshness.dart`; changed `lib/features/target/presentation/target_screen.dart`, `pubspec.yaml` (one asset line), `lib/l10n/app_*.arb`, `integration_test/bundle.dart` (one import), `docs/features/FEAT-016-on-device-privacy/claims.md` (sections 5 and 6), `docs/CHANGELOG.md` (one convention note).
+**Revision 2.0 (PRD 2.0, tech 2.0: KB-only specs):** T01–T14 stay as built; T15 is rescoped; T16–T21 are new. Files from tech 2.0 "Changes in the built code": `preset_types.dart`, `parse_library.dart`, `preset_row.dart`, `preset_strings.dart`, `lib/l10n/app_*.arb` (two keys), `test/presets/library_rules.dart`, `test/presets/fixtures/test_library.json`, `integration_test/preset_fixture_data.dart`, `integration_test/preset_fixture_run.dart`, `integration_test/preset_demo.dart` (one line), and the count-ripple tests. `TargetSpec`, `TargetInput`, `TargetFormController`, `target_screen.dart`, `PresetListScreen`, search, providers and loader have no diff.
 
 **Already built, reused, not planned again:** `TargetFormController.fill`, `targetFormProvider`, `validateTargetInput`, `cleanNumberText` (FEAT-005); `checkTarget`, `validateTarget`, `CropRenderer`, `SourceProbe`, `CompressionRunner` and the `crop_to_compression.dart` call sequence (FEAT-002, FEAT-004); the `LogSink` typedef and enum-only log pattern; the `_iso` / `_ltr` isolate helpers; `BoothNotice` note style; FEAT-016 whole-tree scan, `privacy_copy_test.dart`, reviewed package and dependency lists, `claims.md`; the CI `build` and API 28 `emulator` jobs running `integration_test/bundle.dart`; gen-l10n with 6 languages.
 
@@ -22,10 +23,11 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - OQ-T2: fixture images are generated at test time with `dart:ui`; no binary committed.
 - OQ-T3: banned words are checked in UI strings and `aliases`, not in published names, issuers or source titles.
 - PRD OQ-2 form with 1–2 spec rows; OQ-3 no KB-only presets; OQ-6 search Should (first cut if the budget slips: T07 and the search part of T10, about 0.75 d); OQ-7 label back to "Choose a form" after an edit; OQ-8 pick replaces silently; OQ-9 no FEAT-006 change; OQ-11 applied preset beside `TargetSpec`; OQ-13 URL stored as text, not shown; OQ-14 90 days.
+- **2.0:** PRD OQ-3 decided: KB-only specs allowed (FR-3, FR-11, FR-13, FR-26); the "OQ-3 no KB-only presets" default above no longer applies. PRD FR-1: Claude may draft researched candidates (`t15/`), only rows the Product Owner confirmed enter the asset. Tech OQ-T5 default: Width and Height are kept on a KB-only pick. No new ADR.
 
 **Test devices:**
 - **Local device runs and screenshots use the connected real phone, Realme 2 Pro, API 36.** Run `adb devices` first. The local emulator (Medium_Phone_API_36.1) is used only if `adb devices` already shows it; never start a second one, never kill it.
-- **API 28 runs only in CI.** CI costs about 80 min per push to `main`: commit after each task, push only at milestones. Planned pushes: **P1** after T08 (CI data rules, copy test, first FR-20 fixture run on API 28), **P2** in T14 after T13, before G-final. **P3** in T15 when the Product Owner's real forms land (FR-20 on real specs). Run `flutter analyze` and `flutter test` locally before each push.
+- **API 28 runs only in CI.** CI costs about 80 min per push to `main`: commit after each task, push only at milestones. Planned pushes: **P1** after T08 (CI data rules, copy test, first FR-20 fixture run on API 28), **P2** in T14 after T13, before G-final. **P2b** (2.0) in T21 after gate G3: KB-only code, both-or-neither CI rule and the FR-20 run of Test Form C on API 28; the only push for T16–T21. **P3** in T15 when the Product Owner's real forms land (FR-20 on real specs). Run `flutter analyze` and `flutter test` locally before each push.
 - Device runs that need forms in the list use a **local, uncommitted** copy of the fixture library over `assets/presets/presets.json`; `git diff --exit-code assets/presets/presets.json` must pass before every commit.
 - Files run under `flutter drive` use `testWidgets` only.
 
@@ -34,8 +36,9 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 |---|---|---|---|
 | G1 Design (FR-25) | T09 | The Product Owner was told before any visual work; one lean impeccable pass on Material 3 and the existing theme (no image comps, no reviewer subagents, one round) covers the target-step row (choose, applied with notes, load failure, hidden when empty) and the list (search, sections, spec rows, notes, empty state, footer); the T03 English copy accepted or fixes named; reference and date recorded | **Blocks T10, T11, T12** (all list and row UI). T01–T08 (data, loader, strings, CI rules, copy test, freshness, search, fixture run) do not wait on it |
 | G2 Accessibility, RTL, 200% | T12 | Guideline, 200% and RTL tests pass in en, ar and hi; the Product Owner has seen one Realme 2 Pro screenshot per key state and accepts them or names fixes. One look | **Blocks T13** (strings final before translation) **and T14**. Fixes go into T10/T11 code inside T12; a scope change means a PRD change |
-| G-final Build (device and CI) | T14 | Real-phone offline run passes (release build, airplane mode plus Wi-Fi and mobile data off); no preset survives a restart; logcat holds enum lines only; release APK permissions and reviewed lists unchanged; FEAT-016 `claims.md` row recorded; P2 CI green; the Product Owner accepts the Open items | A network use, a privacy leak, a crash or an accessibility miss means stop and report. Otherwise the build is done. **G-final does not depend on T15** |
-| Release (not a build gate) | T15 + others | T15 done with 15–20 verified forms and P3 green; FEAT-014 display shipped; OQ-5 legal advice taken; the FEAT-016 release checklist preset line passes | The preset list is not released. Whether `/approve FEAT-011 implemented` waits for T15 is the Product Owner's call (Open items 1) |
+| G3 KB-only UI (2.0, FR-25, FR-26) | notice before T17; acceptance in T21 | **Before T17 starts** the Product Owner is told that two small visual changes on existing components follow ("Any pixel size" in the list-row summary, the FR-26 line under the target-step row) and that a lean check replaces a new impeccable pass (both reuse the G1 summary line and `BoothNotice`). **In T21:** the 200% and RTL tests pass with Test Form C; the Product Owner has seen one Realme 2 Pro screenshot per KB-only state and accepts them or names fixes. One look | **Blocks the P2b push and T15.** Fixes go into T20 code inside T21; a wording change re-runs `/l10n-translate` for that key. If the Product Owner wants a full impeccable pass instead, it replaces T21's look (about +0.5 d) |
+| G-final Build (device and CI) | T14 (+ T21 for 2.0) | Real-phone offline run passes (release build, airplane mode plus Wi-Fi and mobile data off); no preset survives a restart; logcat holds enum lines only; release APK permissions and reviewed lists unchanged; FEAT-016 `claims.md` row recorded; P2 CI green; **2.0: G3 accepted and P2b CI green**; the Product Owner accepts the Open items. The T14 offline evidence stands for 2.0, which adds no network, storage, log, permission or dependency code [Assumption]; the Product Owner may ask for a re-run | A network use, a privacy leak, a crash or an accessibility miss means stop and report. Otherwise the build is done. **G-final does not depend on T15**; T14 stays unticked until it passes |
+| Release (not a build gate) | T15 + others | T15 done with 15–20 Product Owner-confirmed forms and P3 green; FEAT-014 display shipped; OQ-5 legal advice taken; the FEAT-016 release checklist preset line passes | The preset list is not released. Whether `/approve FEAT-011 implemented` waits for T15 is the Product Owner's call (Open items 1) |
 
 ## Tasks
 
@@ -137,12 +140,54 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** push **P2** after local `flutter analyze` and `flutter test`. On the Realme 2 Pro, release build with the local uncommitted fixture asset: airplane mode on, Wi-Fi off and mobile data off (state noted; `ping 1.1.1.1` "Network is unreachable" first): open target step, open list, search, pick, Continue through compression (AC-1.5); force-stop and reopen: no preset applied, no recent list (AC-8.1); `adb logcat --pid` holds enum lines only, no form id, name or search text (AC-8.2); `aapt2 dump permissions` on the release APK equals `claims.md` section 3; reviewed lists unchanged. Result written into the `claims.md` "Pick a preset" row.
 - **Done when:** every row passes and is recorded with date and device; P2 CI is green; synthetic files deleted with their MediaStore rows; settings restored; build uninstalled; `assets/presets/presets.json` back to `"forms": []` (`git status` clean); G-final recorded with the Product Owner's acceptance of the Open items.
 
-### - [ ] FEAT-011-T15 — Enter the Product Owner's verified forms (waits on PRD OQ-1 data; not done by Claude alone)
-- **Implements:** FR-1, FR-20 (real specs), FR-21, FR-22, NFR-6, NFR-10 · **ADRs:** —
-- **Depends on:** the Product Owner's verified list (PRD OQ-1): per form the name and issuer as published, country, category, source title, check date and each spec value; T04, T06, T08. May run before or after T14; not part of G-final. **Release depends on it.**
-- **Size:** not counted (data entry about 0.5 d [Assumption]; Product Owner sourcing time extra)
-- **Scope:** enter values exactly as given; Claude never looks up, guesses or "corrects" a value (a doubt goes back to the Product Owner). One `docs/CHANGELOG.md` line per form (id, source title, date). One `presetCountry` `select` case per new country in `app_en.arb`, translated by the Product Owner through `/l10n-translate`. Run `library_data_test.dart`, `freshness.dart` and the fixture run; any FR-20 report goes to the Product Owner, who fixes the spec or writes the `engineReview` reason. Push **P3**.
-- **Done when:** 15–20 forms in the shipped file; `library_data_test.dart` and T05 pass; `freshness.dart` output recorded; P3 CI green including the fixture run on every real spec; each CHANGELOG line present. Release also needs FEAT-014 and OQ-5 (Open items 2, 3).
+### - [ ] FEAT-011-T15 — Enter the Product Owner's confirmed forms, exact-pixel and KB-only (waits on the Product Owner's confirmation; not done by Claude alone)
+- **Implements:** FR-1, FR-3 (KB-only rows in real data), FR-20 (real specs), FR-21, FR-22, NFR-6, NFR-10 · **ADRs:** —
+- **Depends on:** the Product Owner's confirmation of rows in `t15/review_list.md` (PRD OQ-1, FR-1 2.0): per row ticked or fixed against its source, with the decisions the list asks for (format where not stated; one exact W×H for "Choose px" rows per OQ-4, or KB-only; 1 MB / 8 MB as 1000 or 1024 KB; country for the embassy row; merge or keep forms with equal numbers); T04, T06, T08, **T17, T18, T19** (KB-only parse, CI rule, FR-20 size), **G3** (T21). May run before or after G-final; not part of it. **Release depends on it.**
+- **Size:** not counted (data entry about 0.5 d [Assumption]; Product Owner confirmation time extra)
+- **Scope:** start from `t15/review_list.md` (sources and quotes in `draft_forms.md`, `draft_forms_round2.md`, `verification.md`, `verification_round2.md`). Enter only confirmed rows, exactly as confirmed; a KB-only spec as `"width": null, "height": null` (tech section 5). Claude does not change a confirmed value or pick a pixel size, unit or format for the Product Owner; a doubt goes back to the Product Owner. The PR description lists every confirmed form id (FR-1 2.0, checked at review). One `docs/CHANGELOG.md` line per form (id, source title, date). One `presetCountry` `select` case per new country in `app_en.arb` (the review list names BD, IN, PK, MX, US, SG, and FR if chosen), translated by the Product Owner through `/l10n-translate`. Run `library_data_test.dart`, `freshness.dart` and the fixture run; any FR-20 report goes to the Product Owner, who fixes the spec or writes the `engineReview` reason. Push **P3**.
+- **Done when:** 15–20 confirmed forms in the shipped file, each id listed as confirmed in the PR; `library_data_test.dart` and T05 pass; `freshness.dart` output recorded; P3 CI green including the fixture run on every real spec (KB-only ones at 600 × 600 px); each CHANGELOG line present; the new `presetCountry` cases in all six ARBs with `ai-review-log.md` entries. Release also needs FEAT-014 and OQ-5 (Open items 2, 3).
+
+### - [ ] FEAT-011-T16 — Two new strings in English and five languages — Product Owner runs `/l10n-translate`
+- **Implements:** FR-6 (summary string), FR-26 (string), FR-23, NFR-4, AC-9.5 · **ADRs:** ADR-001
+- **Depends on:** T13 (six-locale check in place)
+- **Size:** S (0.25 d; Product Owner translation runs extra)
+- **Scope:** `lib/l10n/app_en.arb`: `presetAnyPixelSize` "Any pixel size" and `presetKbOnlyNote` "This form sets no pixel size. Enter a width and height, or use your photo's size." (PRD section 8 text), no placeholders, "FEAT-011 ..." descriptions (the note's tells translators to name the button as their `targetUsePhotoSize` does); `@presetSpecRange` / `@presetSpecUpTo` descriptions gain "pixels is checkPixels, or presetAnyPixelSize for a form with no pixel size". Then the Product Owner types `/l10n-translate <lang>` for es (es-419), pt (pt-BR), hi, id and ar (MSA, digits 0-9), one at a time; reviewer brief as in T13 plus "Any pixel size must not read as 'any size is accepted'" (tech risk). One commit with all six ARBs, because T13's six-locale check fails on English-only keys. No Dart change.
+- **Done when:** `flutter gen-l10n` passes; both keys in all six ARBs; `untranslated_messages.json` has no FEAT-011 key; one `ai-review-log.md` entry per language with `AI-reviewed only`; `preset_copy_test.dart` (banned words, six-locale presence) and FEAT-016 `privacy_copy_test.dart` pass.
+
+### - [ ] FEAT-011-T17 — KB-only `PresetSpec`, `matches`, `applyTo`, parser, summary; callers migrated
+- **Implements:** FR-3, FR-11 (`applyTo`), FR-12, FR-13 (`matches`), FR-6 (summary), FR-16 (skip), FR-24, AC-4.8 (logic), NFR-7 · **ADRs:** ADR-001
+- **Depends on:** T16 (`presetAnyPixelSize` getter); G3 notice given to the Product Owner first
+- **Size:** M (0.5 d)
+- **Scope:** `lib/features/presets/domain/preset_types.dart`: `int? width/height` with the both-or-neither `assert`, `kbOnly`, `matches(TargetInput)` and `applyTo(TargetInput)` per tech section 5; the 1.0 `target` / `input` getters removed. `parse_library.dart`: both null → KB-only; one null or a non-int → spec skipped and counted; `checkTarget` only when both are present. `preset_strings.dart`: KB-only summary passes `presetAnyPixelSize` as `{pixels}`. Call sites moved with no behaviour change for full specs: `preset_row.dart` `_applied` → `spec.matches(state.input)`, `_choose` → `fill(spec.applyTo(current input))` (no FR-26 line yet); `integration_test/preset_demo.dart` → `spec.applyTo(const TargetInput())`; `integration_test/preset_fixture_run.dart` size from `kbOnlyTestSize = Target(600, 600)` (named constant, FR-20 comment) for a KB-only spec. `parse_library_test`'s `target` test becomes a `matches` / `applyTo` table test.
+- **Done when:** `flutter analyze` is clean; `flutter test test/features/presets/` passes with new cases: both null parses as KB-only, one null and a string width each skip and count; `applyTo` keeps typed and empty Width/Height for KB-only and replaces all five for a full spec (`minKb` null → `''`); `matches` table: leading zeros, Arabic-Indic digits, empty Min, each field changed and changed back, for both kinds, and KB-only true with Width/Height edited, empty or invalid; for every fixture full spec `matches` agrees with `validateTargetInput(...) == TargetSpec` (1.0 equivalence); summary "Any pixel size · 10–200 KB · JPEG" and "Any pixel size · up to 200 KB · JPEG" with the KB part in an LRI isolate. All 1.0 row tests (AC-4.1–4.6) and list, a11y tests pass unchanged. `TargetSpec`, `TargetInput`, `TargetFormController`, `target_screen.dart` have no diff.
+
+### - [ ] FEAT-011-T18 — CI both-or-neither rule and self-tests (FR-19 2.0)
+- **Implements:** FR-19, FR-3, NFR-6 · **ADRs:** —
+- **Depends on:** T17
+- **Size:** S (0.25 d)
+- **Scope:** `test/presets/library_rules.dart`: `width` and `height` keys stay required; exactly one `null` gives "Form [ID] [KIND]: give both width and height, or neither." and skips the size check; both `null` skips the size check only (`maxKb`, `format`, notes rules still run); both present keeps the 1.0 size rule. Self-tests in `library_data_test.dart`.
+- **Done when:** `flutter test test/presets/library_data_test.dart` passes on the shipped file; self-tests: a Test Form C-like spec passes; photo A with `height: null` fails with the both-or-neither message naming id and kind; a KB-only spec with `maxKb: null` fails "KB range invalid."; a spec with the `width` key missing still fails as a missing field; all 1.0 self-tests (AC-7.1–7.3) unchanged.
+
+### - [ ] FEAT-011-T19 — Test Form C fixture, count ripples, FR-20 KB-only run on the phone
+- **Implements:** FR-20, FR-6 (list row), FR-3, NFR-9 · **ADRs:** ADR-001
+- **Depends on:** T17, T18
+- **Size:** S (0.25 d)
+- **Scope:** Test Form C (tech section 5, synthetic, country `ZZ`, `source.url` `[PLACEHOLDER]`) added identically to `test/presets/fixtures/test_library.json` and `integration_test/preset_fixture_data.dart`. Counts updated: `preset_asset_source_test` (forms 3), `preset_list_screen_test` ("Photo" rows 3, plus Test Form C's row reads "Any pixel size · 10–200 KB · JPEG" with no note), `freshness_test` (`forms: 3`, stale list unchanged), fixture run (`hasLength(3)`).
+- **Done when:** `flutter test` passes (incl. `fixture_data_test.dart`); `preset_fixture_run.dart` passes on the Realme 2 Pro (`adb devices` first; debug build, uninstalled after) with Test Form C photo READY at 600 × 600 px inside 10–200 KB, recorded in the Test record; `git diff --exit-code assets/presets/presets.json` passes.
+
+### - [ ] FEAT-011-T20 — FR-26 line and announcement on the target-step row
+- **Implements:** FR-26, FR-11, FR-13, FR-14 (note order), AC-4.7, AC-4.8, AC-4.9, NFR-2 · **ADRs:** ADR-001
+- **Depends on:** T19; G3 notice given
+- **Size:** M (0.5 d)
+- **Scope:** `lib/features/presets/presentation/preset_row.dart` only: while the applied spec is KB-only and `matches`, `presetKbOnlyNote` is the first `BoothNotice` under the row (before any `notCovered` note), icon plus text, non-blocking, whatever Width and Height hold; the pick announcement for a KB-only spec is the applied label followed by the note. No code proposes or changes a pixel size. Widget tests in `test/features/presets/preset_row_test.dart`.
+- **Done when:** `flutter test test/features/presets/preset_row_test.dart` passes with: AC-4.7 (Width 300, Height 400 typed, pick Test Form C photo → 300/400/10/200/JPEG, row "Test Form C · Photo", FR-26 line shown, keyboard closed); AC-4.8 (edit Width then Height → label and line stay; edit Min, Max, format, each restored in between → "Choose a form" and no line); AC-4.9 (Width and Height empty, pick, Continue → FEAT-005 width and height errors as for manual entry, fields stay empty, `onContinue` not called); "Use photo size" after a KB-only pick fills the photo's size and keeps the label; FR-26 line absent for Test Form A; announcement text checked. All 1.0 row tests and FEAT-005 target tests pass unchanged; `flutter test test/privacy/` passes.
+
+### - [ ] FEAT-011-T21 — Lean check of the KB-only states, P2b — gate G3
+- **Implements:** FR-25 (2.0 changes), FR-26, FR-6, FR-24, NFR-2, AC-9.1, AC-9.2, AC-9.3 · **ADRs:** —
+- **Depends on:** T20
+- **Size:** S (0.25 d)
+- **Scope:** `test/features/presets/preset_a11y_test.dart` extended: Test Form C's list row and the applied row with the FR-26 line at 200% on 360×640 dp in all 7 supported locales (no overflow, row reachable, 48 dp); ar mirrored with the KB part in an LRI isolate and digits 0–9; the merged semantics node of Test Form C's row holds "Any pixel size". Real phone, profile build with the **local uncommitted** fixture asset (A/B/C), real flow, no impeccable pass: one screenshot each of the list row with "Any pixel size", applied with Width/Height typed (FR-26 line), applied with Width/Height empty, then ar and 200% of the applied state. Locale and font scale noted and restored; build uninstalled; asset diff clean. After the Product Owner accepts: local `flutter analyze` and `flutter test`, then push **P2b**.
+- **Done when:** the a11y test passes; screenshots recorded under the real-phone rules (no personal data); the Product Owner accepts them or names fixes (G3 in the Test record); P2b CI green with the Test Form C line in the API 28 fixture run.
 
 ## Effort reconciliation
 | Tech Effort line | Tech days | Tasks | Task days |
@@ -160,46 +205,63 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 
 The task total is 0.75 d above tech: the separate `claims.md`/CHANGELOG/freshness PR (+0.25) and the release-build offline run on the real phone (+0.5). It stays inside PRD OQ-17's 1.2–1.8 pw. Not counted: T15 (needs OQ-1 data) and the Product Owner's design, review and sourcing time. Cut candidate (PRD OQ-6, a Product Owner decision): drop search (T07 and the search part of T10), saving about 0.75 d.
 
+**2.0 delta (KB-only specs)**
+| Tech 2.0 delta line | Tech days | Tasks | Task days |
+|---|---|---|---|
+| `PresetSpec` nullable size, `kbOnly`, `applyTo`, `matches`, parser, unit and table tests | 0.5 | T17 M (with the summary and the call-site moves) | 0.5 |
+| CI both-or-neither rule + self-tests | 0.25 | T18 S | 0.25 |
+| `PresetStrings` summary, `PresetRow` FR-26 line and announcement, widget tests AC-4.7..4.9 | 0.5 | T20 M (summary moved to T17, because the nullable size does not compile without it) | 0.5 |
+| 2 ARB keys (en) + `/l10n-translate` | 0.25 | T16 S | 0.25 |
+| Test Form C, count ripples, FR-20 KB-only size, `preset_demo` | 0.25 | T19 S (size constant and demo line in T17) | 0.25 |
+| Emulator check of the KB-only state (en, ar, 200%) | 0.25 | T21 S (Realme 2 Pro, plus P2b) | 0.25 |
+| **Delta** | **2.0 d ≈ 0.4 pw** | 6 counted tasks | **2.0 d ≈ 0.4 pw** |
+
+New task total 10.0 d ≈ 2.0 pw (tech 9.25 d ≈ 1.85 pw), above PRD OQ-17's 1.2–1.8 pw; the 0.75 d gap is the 1.0 one above. Not in tech, not counted: the `kbonly` demo state (left out, Open items 11). A full impeccable pass instead of T21's look would add about 0.5 d (G3).
+
 ## Traceability
 | Requirement | Tasks | Notes |
 |---|---|---|
-| FR-1 | T02, T04, T06, T15 | Shipped empty until T15; count checked by the release checklist, not CI |
+| FR-1 | T02, T04, T06, T15 | Shipped empty until T15; count checked by the release checklist, not CI. 2.0: only Product Owner-confirmed rows from `t15/review_list.md`; confirmed ids listed in the T15 PR (process, not testable) |
 | FR-2 | T01, T04 | |
-| FR-3 | T01, T04 | KB-only forms excluded (OQ-3) |
+| FR-3 | T01, T04, T17, T18, T19, T15 | 2.0: KB-only spec (both null) in types, parser, CI rule, fixture, real data |
 | FR-4 | T01, T04 | Data exposed for FEAT-014; no UI here |
 | FR-5 | T09, T11 | |
-| FR-6 | T03, T07, T09, T10 | |
+| FR-6 | T03, T07, T09, T10, T16, T17, T19, T21 | 2.0: "Any pixel size" string (T16), summary (T17), list-row test (T19), screenshot (T21) |
 | FR-7 | T10 | |
 | FR-8 | T07, T10 | Should |
 | FR-9 | T10 | Keyboard honouring the flag is a [Hypothesis] (Open items 6) |
 | FR-10 | T10 | Should |
-| FR-11 | T11 | |
-| FR-12 | T01, T02, T11 | `TargetSpec` unchanged |
-| FR-13 | T11 | |
-| FR-14 | T03, T09, T10, T11, T12 | |
+| FR-11 | T11, T17, T20 | 2.0: `applyTo` unit tests (T17), AC-4.7 widget test (T20) |
+| FR-12 | T01, T02, T11, T17 | `TargetSpec` unchanged (T17 checks no diff) |
+| FR-13 | T11, T17, T20 | 2.0: `matches` table test (T17), AC-4.8 widget test (T20) |
+| FR-14 | T03, T09, T10, T11, T12, T20 | 2.0: FR-26 line first, then notes |
 | FR-15 | T03, T05, T10 | Should |
 | FR-16 | T01, T02, T10, T11 | |
 | FR-17 | T02, T05, T11, T14 | |
 | FR-18 | T02, T14 | |
-| FR-19 | T04 | |
-| FR-20 | T08, T15 | Should |
+| FR-19 | T04, T18 | 2.0: both-or-neither rule (T18) |
+| FR-20 | T08, T17, T19, T21, T15 | Should. 2.0: KB-only at `kbOnlyTestSize` 600 × 600 px (T17), Test Form C on the phone (T19) and API 28 (P2b, T21) |
 | FR-21 | T06, T15 | Should |
 | FR-22 | T06, T15 | Should; process item, checked at PR review (convention note in T06) |
-| FR-23 | T03, T13 | |
-| FR-24 | T03, T12 | |
-| FR-25 | T09 | Gate G1 |
+| FR-23 | T03, T13, T16 | |
+| FR-24 | T03, T12, T17, T21 | |
+| FR-25 | T09, T21 | Gate G1; 2.0 changes: lean check, gate G3 (no new impeccable pass unless the Product Owner asks) |
+| FR-26 | T16, T20, T21 | String (T16), line and announcement (T20), screenshots and 200%/RTL (T21) |
+| AC-4.7 | T20 | Widget test |
+| AC-4.8 | T17, T20 | `matches` table (T17), widget test (T20) |
+| AC-4.9 | T20 | Widget test; FEAT-005 validation unchanged |
 | NFR-1 | T07, T08, T12 | Informational timings |
-| NFR-2 | T12 | TalkBack speech: Open items 4 |
+| NFR-2 | T12, T20, T21 | TalkBack speech: Open items 4 |
 | NFR-3 | T06, T14 | |
-| NFR-4 | T03, T13 | `AI-reviewed only` |
+| NFR-4 | T03, T13, T16 | `AI-reviewed only` |
 | NFR-5 | T02, T05, T11, T14 | |
-| NFR-6 | T01, T04, T15 | |
-| NFR-7 | T01, T07, T12 | |
+| NFR-6 | T01, T04, T15, T18 | |
+| NFR-7 | T01, T07, T12, T17 | |
 | NFR-8 | T07, T10, T12 | |
-| NFR-9 | T08, T14 | API 28 in CI, API 36 phone |
+| NFR-9 | T08, T14, T19, T21 | API 28 in CI, API 36 phone |
 | NFR-10 | T04, T15 | |
 
-**Not covered by a task:** real-world accuracy of specs (BRIEF 1.3, Product Owner); OQ-5 legal advice; FEAT-014 screens; the stale FEAT-011 roadmap row wording (Product Owner's edit, PRD section 1).
+**Not covered by a task:** real-world accuracy of specs (BRIEF 1.3, Product Owner); OQ-5 legal advice; FEAT-014 screens; the stale FEAT-011 roadmap row wording (Product Owner's edit, PRD section 1). 2.0: the Product Owner's confirmation of each `review_list.md` row (FR-1, process); a KB-only pick at a size whose maximum cannot be reached gets FEAT-004's normal message (PRD section 9, no preset code, no task); no offline re-run for the 2.0 code (G-final, [Assumption]).
 
 ## Open items
 1. **OQ-1 data and "Implemented".** The build can pass G-final with an empty shipped library. The Product Owner decides whether `/approve FEAT-011 implemented` waits for T15. The release waits for T15 in any case.
@@ -212,10 +274,16 @@ The task total is 0.75 d above tech: the separate `claims.md`/CHANGELOG/freshnes
    a. AC-1.1 says the row is always shown; tech OQ-T1 hides it for an empty library (development only; release requires 15–20 forms).
    b. NFR-1 names the 2 GB emulator profile; local runs use the Realme 2 Pro and timings are informational; API 28 timing only in CI (T08).
    c. FR-20 on the device cannot read `test/presets/fixtures/`; T08 uses an inline synthetic library with the same values.
-   d. Device checks need forms in the list; they use an uncommitted local fixture asset, never committed (T12, T14).
+   d. Device checks need forms in the list; they use an uncommitted local fixture asset, never committed (T12, T14, T21).
+   e. (2.0) Tech section 9's risk row "Row label flicker ... compare validated `TargetSpec`" still names the 1.0 mitigation; 2.0 uses `matches` with the same cleaning (tech section 5). Tasks follow section 5.
+   f. (2.0) `t15/review_list.md` says KB-only rows need PRD 2.0 "(Under Discussion)"; PRD 2.0 is now Approved. Its header is stale, its rows are not affected.
+8. **(2.0) Translation before the look.** T16 translates the two new strings before G3, unlike 1.0 (T13 after G2), because T13's six-locale check fails on English-only keys and the wording is the approved PRD section 8 text. A wording fix at G3 re-runs `/l10n-translate` for that key only.
+9. **(2.0) G-final scope.** G-final now also waits for G3 and P2b. The T14 offline run is not repeated for 2.0 [Assumption: 2.0 adds no network, storage, log or permission code]; the Product Owner may ask for one (about 0.25 d).
+10. **(2.0) OQ-T5 residual risk.** A KB-only pick keeps Width and Height left over from earlier, and the row then reads "<form> · Photo" at a size the form never stated. Mitigated only by the FR-26 line (T20) and the closed test.
+11. **(2.0) Left out:** the `kbonly` state in `integration_test/preset_demo.dart` (tech 2.0). T21 uses the real flow with the local fixture asset instead; add the demo state only if the real flow cannot reach a state.
 
 ## Test record
-_Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: date, device or CI run, result). Synthetic images and synthetic forms only. No file names, URIs, paths of real files, image content or anything personal seen on the phone; use `[PLACEHOLDER]` for anything sensitive._
+_Filled in by T08, T09, T12, T13, T14, T15, T16, T19 and T21 (one row per check and device: date, device or CI run, result). Synthetic images and synthetic forms only. No file names, URIs, paths of real files, image content or anything personal seen on the phone; use `[PLACEHOLDER]` for anything sensitive._
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
@@ -232,10 +300,11 @@ _Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: dat
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-001 before starting a task.
-- Implement only the current task, in order; tick its checkbox, commit, and add a line to `docs/CHANGELOG.md` when done. Push only at P1 (T08), P2 (T14) and P3 (T15); run `flutter analyze` and `flutter test` locally first.
-- Gates: no list or row UI (T10, T11, T12) before G1; T13 and T14 only after G2; stop at every failing gate and report to the Product Owner.
+- Implement only the current task, in order; tick its checkbox, commit, and add a line to `docs/CHANGELOG.md` when done. Push only at P1 (T08), P2 (T14), P2b (T21) and P3 (T15); run `flutter analyze` and `flutter test` locally first.
+- Order for 2.0: T16 → T17 → T18 → T19 → T20 → T21, then T15 when the Product Owner has confirmed rows. T15 never starts before T17–T19 and G3.
+- Gates: no list or row UI (T10, T11, T12) before G1; T13 and T14 only after G2; tell the Product Owner before T17 (G3 notice); P2b only after G3; stop at every failing gate and report to the Product Owner.
 - UI rule: before designing or building any real UI screen, stop and tell the Product Owner (impeccable, decision 2026-11-20). T09 is that stop. impeccable runs lean: no image comps, no reviewer subagents, one round, one screenshot per key state.
-- Data rule: never enter a real form, value, name, issuer or source title unless the Product Owner supplied it for T15; never look one up on the web. Tests use only synthetic "Test Form" entries in country `ZZ`. Never commit fixture data into `assets/presets/presets.json`.
+- Data rule: never enter a real form, value, name, issuer or source title into the asset unless the Product Owner confirmed that row for T15 (PRD FR-1 2.0; researched drafts stay in `t15/`); in T15 never look one up again or change a confirmed value. Tests use only synthetic "Test Form" entries in country `ZZ`. Never commit fixture data into `assets/presets/presets.json`.
 - Never loosen a gate (CI data rules, 16 px floor, banned words, storage scan, reviewed lists, whole-tree scan) without a PRD change approved by the Product Owner.
 - Never set a PRD, tech or tasks status to Approved, Rejected or Implemented.
 - Translations only through `/l10n-translate <lang>` typed by the Product Owner, status `AI-reviewed only`.
@@ -248,3 +317,4 @@ _Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: dat
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft |
 | 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TASKS) |
+| 2.0 | 2026-11-27 | Scope change for PRD 2.0 / tech 2.0 (KB-only specs): new T16–T21 (strings and translation, domain and parser, CI rule, Test Form C and FR-20 run, FR-26 line, lean check with gate G3 and push P2b); T15 rescoped to confirmed rows from `t15/review_list.md` incl. KB-only, now after T17–T19 and G3; G-final also waits for G3 and P2b; traceability for FR-1, FR-3, FR-6, FR-11, FR-13, FR-19, FR-20, FR-26, AC-4.7–4.9; 2.0 effort delta; Open items 7e–11. Status Under Discussion |
