@@ -101,7 +101,7 @@ Offline means **airplane mode on, Wi-Fi off and mobile data off**. Check it firs
 | Pick: Choose from files | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (synthetic file chosen by its name only) |
 | Pick: share-in | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Target entry | Values accepted | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
-| Pick a preset | Open the form list, search, pick a spec, Continue: works with no delay and no network message (FEAT-011) | | | Filled by FEAT-011-T14 |
+| Pick a preset | Open the form list, search, pick a spec, Continue: works with no delay and no network message (FEAT-011) | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed), synthetic Test Form A/B library (local, uncommitted) | Pass: list opened at once, search filtered, pick filled the fields with the keyboard closed, crop and compression reached "Matches your target" |
 | Crop | Continue works | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Compress | Result reached | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Check | Verdict shown | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (Matches your target) |
