@@ -580,8 +580,8 @@
   "@presetCountry": {"description": "FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.", "placeholders": {"code": {"type": "String", "example": "IN"}}},
   "presetCategory": "{category, select, job{Jobs} exam_admission{Exams and admissions} visa_passport{Visa and passport} other{Other}}",
   "@presetCategory": {"description": "FEAT-011 FR-2: category of a form, shown in the form list and searched. Translate each case; keep the case names.", "placeholders": {"category": {"type": "String", "example": "job"}}},
-  "presetAnyPixelSize": "Any pixel size",
-  "@presetAnyPixelSize": {"description": "FEAT-011 FR-6: shown in place of the pixel size in a spec summary when the form states only a KB limit and a format, for example 'Any pixel size · 10–200 KB · JPEG'. It means the form does not say which pixel size to use; it must not read as 'every size is accepted'."},
+  "presetAnyPixelSize": "Pixel size not stated",
+  "@presetAnyPixelSize": {"description": "FEAT-011 FR-6: shown in place of the pixel size in a spec summary when the form states only a KB limit and a format, for example 'Pixel size not stated · 10–200 KB · JPEG'. It means the form does not say which pixel size to use; it must not read as 'every size is accepted' or 'no limit'."},
   "presetKbOnlyNote": "This form sets no pixel size. Enter a width and height, or use your photo's size.",
   "@presetKbOnlyNote": {"description": "FEAT-011 FR-26: note on the target step while a preset that states only a KB limit is applied. Name the button the way your targetUsePhotoSize translation does. Never suggest a size."}
 }

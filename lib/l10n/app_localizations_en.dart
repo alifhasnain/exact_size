@@ -603,7 +603,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get presetAnyPixelSize => 'Any pixel size';
+  String get presetAnyPixelSize => 'Pixel size not stated';
 
   @override
   String get presetKbOnlyNote =>

@@ -1000,10 +1000,10 @@ abstract class AppLocalizations {
   /// **'{category, select, job{Jobs} exam_admission{Exams and admissions} visa_passport{Visa and passport} other{Other}}'**
   String presetCategory(String category);
 
-  /// FEAT-011 FR-6: shown in place of the pixel size in a spec summary when the form states only a KB limit and a format, for example 'Any pixel size · 10–200 KB · JPEG'. It means the form does not say which pixel size to use; it must not read as 'every size is accepted'.
+  /// FEAT-011 FR-6: shown in place of the pixel size in a spec summary when the form states only a KB limit and a format, for example 'Pixel size not stated · 10–200 KB · JPEG'. It means the form does not say which pixel size to use; it must not read as 'every size is accepted' or 'no limit'.
   ///
   /// In en, this message translates to:
-  /// **'Any pixel size'**
+  /// **'Pixel size not stated'**
   String get presetAnyPixelSize;
 
   /// FEAT-011 FR-26: note on the target step while a preset that states only a KB limit is applied. Name the button the way your targetUsePhotoSize translation does. Never suggest a size.
