@@ -81,7 +81,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `tool/presets/freshness.dart` (`--today YYYY-MM-DD` optional, default today; prints `forms: N` and one `<id> <lastChecked>` line per form older than 90 days) with `test/presets/freshness_test.dart`. FEAT-016 `claims.md` (plus one line in its Change log): section 5 offline matrix, new row "Pick a preset" right after "Target entry" (open list, search, pick, Continue; expected: works with no delay or network message; result filled by T14); section 6 release checklist line "Preset library: `dart run tool/presets/freshness.dart`; 15–20 forms; each form older than 90 days accepted or fixed in the release record; no test entries; FEAT-014 display shipped (FEAT-011 FR-1, FR-21, release rule)". `docs/CHANGELOG.md`: one convention note "Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review)".
 - **Done when:** `dart run tool/presets/freshness.dart` prints `forms: 0` on the shipped file; the test with the fixture and `--today 2027-03-01` lists Test Form A only; both `claims.md` lines and the CHANGELOG note are in the PR; `flutter test test/privacy/` still passes.
 
-### - [ ] FEAT-011-T07 — Search key, filter, grouping and fuzz test
+### - [x] FEAT-011-T07 — Search key, filter, grouping and fuzz test
 - **Implements:** FR-8, FR-6 (grouping and sort), NFR-1 (search), NFR-7, NFR-8 · **ADRs:** ADR-001
 - **Depends on:** T01
 - **Size:** M (0.5 d)
