@@ -22,6 +22,9 @@ import 'preset_fixture_data.dart';
 /// Realme 2 Pro screenshot each. Build with `-t integration_test/preset_demo.dart`; pick the state by
 /// writing its name to `files/demo_state` with `adb shell run-as`, then restart the activity.
 /// States: choose, applied, loadfail, list, nomatch, arabic (list in ar), font200 (list at 200%).
+/// FEAT-014-T09 (gate G2): source (Test Form A applied, fresh), stale (same, 91+ days later),
+/// source-ar, source-hi, source200 (Test Form C applied, KB-only, at 200%), list200 (list at 200%).
+/// The device date is fixed by `presetClockProvider`, so the prompt does not depend on the phone.
 /// The synthetic Test Form A/B library is served in place of the shipped asset, which stays as it
 /// is; no photo is opened (synthetic 4000×3000 size only).
 Future<void> main() async {
@@ -34,23 +37,36 @@ Future<void> main() async {
       presetSourceProvider.overrideWithValue(
         PresetAssetSource(bundle: _Bundle(name == 'loadfail' ? '{"schema": 1, "forms": [' : library)),
       ),
+      // Test Form A was checked 2026-10-01: 15 days later is fresh, 2027-01-15 is past 90 days.
+      presetClockProvider.overrideWithValue(() => name == 'stale' ? DateTime(2027, 1, 15) : DateTime(2026, 10, 16)),
     ],
   );
-  if (name == 'applied') {
-    final spec = parseLibrary(presetFixtureLibrary).forms.first.specs.first;
+  final forms = parseLibrary(presetFixtureLibrary).forms;
+  if ({'applied', 'source', 'stale', 'source-ar', 'source-hi'}.contains(name)) {
+    final spec = forms.first.specs.first;
     c.read(targetFormProvider.notifier).fill(spec.applyTo(const TargetInput()));
     c.read(appliedPresetProvider.notifier).apply(const AppliedPreset(formId: 'test-form-a', kind: SpecKind.photo));
   }
-  final forms = parseLibrary(presetFixtureLibrary).forms;
-  final onList = {'list', 'nomatch', 'arabic', 'font200'}.contains(name);
+  if (name == 'source200') {
+    final spec = forms.singleWhere((f) => f.id == 'test-form-c').specs.single;
+    c.read(targetFormProvider.notifier).fill(spec.applyTo(const TargetInput(width: '300', height: '400')));
+    c.read(appliedPresetProvider.notifier).apply(const AppliedPreset(formId: 'test-form-c', kind: SpecKind.photo));
+  }
+  final onList = {'list', 'nomatch', 'arabic', 'font200', 'list200'}.contains(name);
+  final locale = switch (name) {
+    'arabic' || 'source-ar' => const Locale('ar'),
+    'source-hi' => const Locale('hi'),
+    _ => const Locale('en'),
+  };
+  final scale = {'font200', 'list200', 'source200'}.contains(name) ? 2.0 : 1.0;
   runApp(
     UncontrolledProviderScope(
       container: c,
       child: ExactSizeApp(
-        locale: name == 'arabic' ? const Locale('ar') : const Locale('en'),
+        locale: locale,
         home: Builder(
           builder: (context) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(name == 'font200' ? 2 : 1)),
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
             child: onList
                 ? _Typing(
                     query: name == 'nomatch' ? 'zzzz' : null,

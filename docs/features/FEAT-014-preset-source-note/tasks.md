@@ -189,6 +189,7 @@ _Filled in by T05, T06, T09 and T10 (date, device or CI run, result). Synthetic 
 |---|---|---|---|---|
 | 2026-11-27 | T05 | G1 design and copy: `t05/source_design.md` 0.1 accepted as proposed (Product Owner delegated: "do what you think is right"): `history` icon on the block, prompt in the same weight as the lines, card lines `bodySmall` at 80% (9.8:1 on the plate), the five English strings unchanged | — | Passed |
 | 2026-11-28 | T06 | /l10n-translate es, pt, hi, id, ar (Product Owner run): 5 keys each, one blind Sonnet review per language, 13 fixes, open list empty, AI-reviewed only | local | Passed: gen-l10n no untranslated keys; preset, copy and privacy tests 220/220 |
+| 2026-11-28 | T09 | Demo states (`integration_test/preset_demo.dart`, synthetic Test Forms, fixed clock): list, source, stale, source-ar, source-hi, source200 (scrolled to the block), list200; ExactSize checked in front before each capture; status bar cropped; screenshots in `build/feat014_g2/` (not committed). Checked: stale shows the old-check prompt; ar mirrored with title, host and date in reading order, digits 0-9 (AC-5.1); nothing clipped at 200% (AC-5.2). Rotation and screen timeout noted, locked for the run and restored; build uninstalled. G2 decision pending | Realme 2 Pro (API 36), debug demo build; emulator not running | Screens OK; G2 pending |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-001 before starting a task.
