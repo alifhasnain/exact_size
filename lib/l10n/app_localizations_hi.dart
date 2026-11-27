@@ -580,7 +580,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get presetNoteContent =>
-      'This form also has other photo rules. ExactSize does not check them.';
+      'This form also has other rules for this image. ExactSize does not check them.';
 
   @override
   String get presetNotAffiliated =>
@@ -588,7 +588,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get presetLoadFailed =>
-      'Forms could not be loaded. You can enter the sizes yourself.';
+      'Forms could not be loaded. You can enter sizes yourself.';
 
   @override
   String presetCountry(String code) {
