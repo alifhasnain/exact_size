@@ -67,7 +67,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `test/presets/library_rules.dart` (CI-only rules of tech section 5: unknown fields, slug and duplicate ids, 16 px floor, `dpi` 1–1200, issuer and source title, `lastChecked` `YYYY-MM-DD` not after today, country and category present as `select` cases, no `test-` id or "Test Form" name in the shipped file); `test/presets/library_data_test.dart` runs them on `assets/presets/presets.json`. Messages are the PRD section 8 texts with id and kind filled in. Rule self-tests pass their own key set (so `ZZ` never needs an ARB case).
 - **Done when:** `flutter test test/presets/library_data_test.dart` passes on the shipped file; self-tests fail as expected and name form id, kind and rule for: width 0, min 10 with max 5, width 15 px (AC-7.1); missing source title, missing `lastChecked`, a future date (AC-7.2); duplicate id (AC-7.3); unknown field; non-slug id; `dpi` 0 and 1201; repeated note; country without a key; a `test-` id in the shipped file.
 
-### - [ ] FEAT-011-T05 — Copy and storage test (banned words, AC-8.2)
+### - [x] FEAT-011-T05 — Copy and storage test (banned words, AC-8.2)
 - **Implements:** FR-15 (test), FR-17, NFR-5, AC-8.2 · **ADRs:** —
 - **Depends on:** T03
 - **Size:** M (0.5 d)
