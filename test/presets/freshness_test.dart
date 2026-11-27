@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -6,8 +7,10 @@ import '../../tool/presets/freshness.dart';
 
 /// FEAT-011-T06 (FR-21, AC-7.4): forms checked more than 90 days ago are listed with their date.
 void main() {
-  test('the shipped file has 0 forms', () {
-    expect(freshnessReport(File('assets/presets/presets.json').readAsStringSync(), DateTime.now()), ['forms: 0']);
+  test('the shipped file reports its form count first', () {
+    final text = File('assets/presets/presets.json').readAsStringSync();
+    final count = ((jsonDecode(text) as Map)['forms'] as List).length;
+    expect(freshnessReport(text, DateTime.now()).first, 'forms: $count');
   });
 
   test('the fixture on 2027-02-01 lists Test Form A only', () {

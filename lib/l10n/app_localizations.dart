@@ -991,7 +991,7 @@ abstract class AppLocalizations {
   /// FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.
   ///
   /// In en, this message translates to:
-  /// **'{code, select, other{{code}}}'**
+  /// **'{code, select, BD{Bangladesh} FR{France} IN{India} MX{Mexico} PK{Pakistan} SG{Singapore} US{United States} other{{code}}}'**
   String presetCountry(String code);
 
   /// FEAT-011 FR-2: category of a form, shown in the form list and searched. Translate each case; keep the case names.

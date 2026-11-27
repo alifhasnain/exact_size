@@ -576,7 +576,7 @@
   "@presetNotAffiliated": {"description": "FEAT-011 FR-15: fixed footer line at the end of the form list. Never use words like official, approved or guaranteed."},
   "presetLoadFailed": "The form list could not be opened. You can enter sizes yourself.",
   "@presetLoadFailed": {"description": "FEAT-011 FR-16, AC-6.1: shown instead of the Choose a form row when the bundled form list cannot be read. Do not mention the internet or a connection: nothing is downloaded."},
-  "presetCountry": "{code, select, other{{code}}}",
+  "presetCountry": "{code, select, BD{Bangladesh} FR{France} IN{India} MX{Mexico} PK{Pakistan} SG{Singapore} US{United States} other{{code}}}",
   "@presetCountry": {"description": "FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.", "placeholders": {"code": {"type": "String", "example": "IN"}}},
   "presetCategory": "{category, select, job{Jobs} exam_admission{Exams and admissions} visa_passport{Visa and passport} other{Other}}",
   "@presetCategory": {"description": "FEAT-011 FR-2: category of a form, shown in the form list and searched. Translate each case; keep the case names.", "placeholders": {"category": {"type": "String", "example": "job"}}},

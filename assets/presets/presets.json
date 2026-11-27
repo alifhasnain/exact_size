@@ -1,1 +1,570 @@
-{"schema": 1, "forms": []}
+{
+  "schema": 1,
+  "forms": [
+    {
+      "id": "bd-bpsc-bcs",
+      "name": "BCS and BPSC online application",
+      "issuer": "Bangladesh Public Service Commission",
+      "country": "BD",
+      "category": "job",
+      "aliases": [
+        "BCS",
+        "BPSC",
+        "PSC"
+      ],
+      "source": {
+        "title": "Photo/Sign Validator",
+        "url": "http://dept.bpsc.gov.bd/node/photo"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 300,
+          "height": 300,
+          "minKb": null,
+          "maxKb": 100,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": 300,
+          "height": 80,
+          "minKb": null,
+          "maxKb": 60,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "bd-teletalk-govt-jobs",
+      "name": "Government job application (Teletalk portals)",
+      "issuer": "Teletalk Bangladesh (portal for government recruiters)",
+      "country": "BD",
+      "category": "job",
+      "aliases": [
+        "Teletalk",
+        "DSHE",
+        "Police"
+      ],
+      "source": {
+        "title": "Help",
+        "url": "http://dshe.teletalk.com.bd/options/help.php"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 300,
+          "height": 300,
+          "minKb": null,
+          "maxKb": 100,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": 300,
+          "height": 80,
+          "minKb": null,
+          "maxKb": 60,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "bd-ntrca-registration",
+      "name": "NTRCA Teachers' Registration Exam",
+      "issuer": "Non-Government Teachers' Registration & Certification Authority",
+      "country": "BD",
+      "category": "exam_admission",
+      "aliases": [
+        "NTRCA",
+        "teacher registration"
+      ],
+      "source": {
+        "title": "Help",
+        "url": "http://ntrca.teletalk.com.bd/options/help.php"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 300,
+          "height": 300,
+          "minKb": null,
+          "maxKb": 100,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": 300,
+          "height": 80,
+          "minKb": null,
+          "maxKb": 60,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "bd-ru-admission",
+      "name": "University of Rajshahi Undergraduate Admission",
+      "issuer": "University of Rajshahi",
+      "country": "BD",
+      "category": "exam_admission",
+      "aliases": [
+        "RU",
+        "Rajshahi"
+      ],
+      "source": {
+        "title": "Photo/Selfie Guideline",
+        "url": "https://admission.ru.ac.bd/student/photo-selfie-instructions"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 300,
+          "height": 400,
+          "minKb": null,
+          "maxKb": 100,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-ibps-crp-clerk",
+      "name": "IBPS Common Recruitment Process (Clerks)",
+      "issuer": "Institute of Banking Personnel Selection",
+      "country": "IN",
+      "category": "job",
+      "aliases": [
+        "IBPS",
+        "CRP",
+        "Clerk",
+        "bank"
+      ],
+      "source": {
+        "title": "Guidelines for scanning and Upload of Documents",
+        "url": "https://www.ibps.in"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 200,
+          "height": 230,
+          "minKb": 20,
+          "maxKb": 50,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": 140,
+          "height": 60,
+          "minKb": 10,
+          "maxKb": 20,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-sbi-recruitment",
+      "name": "SBI recruitment (Specialist Cadre Officers and PO)",
+      "issuer": "State Bank of India",
+      "country": "IN",
+      "category": "job",
+      "aliases": [
+        "SBI",
+        "PO",
+        "SCO",
+        "bank"
+      ],
+      "source": {
+        "title": "Engagement of Specialist Cadre Officers on Contract Basis (Advertisement No: CRPD/SCO/2026-27/13)",
+        "url": "https://sbi.co.in/web/careers"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 200,
+          "height": 230,
+          "minKb": 20,
+          "maxKb": 50,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": 140,
+          "height": 60,
+          "minKb": 10,
+          "maxKb": 20,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-kerala-psc-otr",
+      "name": "Kerala PSC One Time Registration",
+      "issuer": "Kerala Public Service Commission",
+      "country": "IN",
+      "category": "job",
+      "aliases": [
+        "Kerala PSC",
+        "OTR",
+        "Thulasi"
+      ],
+      "source": {
+        "title": "One Time Registration instructions",
+        "url": "https://keralapsc.gov.in/index.php/otr-instructions-candidates"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 150,
+          "height": 200,
+          "minKb": null,
+          "maxKb": 30,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": 150,
+          "height": 100,
+          "minKb": null,
+          "maxKb": 30,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-upsc-caf",
+      "name": "UPSC Common Application Form",
+      "issuer": "Union Public Service Commission",
+      "country": "IN",
+      "category": "exam_admission",
+      "aliases": [
+        "UPSC",
+        "CAF",
+        "civil services"
+      ],
+      "source": {
+        "title": "Instructions for Uploading the Photo & Signature",
+        "url": "https://upsconline.nic.in/caf/assets/PDF/instruction-photo-signature-upload-upsc.pdf"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": null,
+          "height": null,
+          "minKb": 20,
+          "maxKb": 200,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": null,
+          "height": null,
+          "minKb": 20,
+          "maxKb": 100,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-ssc-cgl",
+      "name": "Combined Graduate Level Examination",
+      "issuer": "Staff Selection Commission",
+      "country": "IN",
+      "category": "job",
+      "aliases": [
+        "SSC",
+        "CGL"
+      ],
+      "source": {
+        "title": "Notice: Combined Graduate Level Examination, 2026",
+        "url": "https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_adv_cgl_2025.pdf"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "signature",
+          "width": null,
+          "height": null,
+          "minKb": 10,
+          "maxKb": 20,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-nta-neet-ug",
+      "name": "NEET (UG)",
+      "issuer": "National Testing Agency",
+      "country": "IN",
+      "category": "exam_admission",
+      "aliases": [
+        "NEET",
+        "NTA",
+        "medical entrance"
+      ],
+      "source": {
+        "title": "Information Bulletin for NEET(UG)-2026",
+        "url": "https://neet.nta.nic.in/documents/"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": null,
+          "height": null,
+          "minKb": 10,
+          "maxKb": 200,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": null,
+          "height": null,
+          "minKb": 10,
+          "maxKb": 100,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-nta-jee-main",
+      "name": "JEE (Main)",
+      "issuer": "National Testing Agency",
+      "country": "IN",
+      "category": "exam_admission",
+      "aliases": [
+        "JEE",
+        "NTA",
+        "engineering entrance"
+      ],
+      "source": {
+        "title": "Information Bulletin-Joint Entrance Examination (Main) – 2027",
+        "url": "https://jeemain.nta.nic.in/documents/"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": null,
+          "height": null,
+          "minKb": 10,
+          "maxKb": 200,
+          "format": "jpeg"
+        },
+        {
+          "kind": "signature",
+          "width": null,
+          "height": null,
+          "minKb": 10,
+          "maxKb": 100,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-evisa",
+      "name": "Indian e-Visa",
+      "issuer": "Government of India (Indian Visa Online)",
+      "country": "IN",
+      "category": "visa_passport",
+      "aliases": [
+        "India visa",
+        "eVisa"
+      ],
+      "source": {
+        "title": "e-Visa",
+        "url": "https://indianvisaonline.gov.in/evisa/tvoa.html"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": null,
+          "height": null,
+          "minKb": 10,
+          "maxKb": 1000,
+          "format": "jpeg",
+          "notCovered": [
+            {
+              "code": "background"
+            },
+            {
+              "code": "content"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "in-embassy-consular-photo",
+      "name": "Embassy of India Paris: photo and signature upload",
+      "issuer": "Embassy of India, Paris",
+      "country": "FR",
+      "category": "visa_passport",
+      "aliases": [
+        "Indian embassy",
+        "consular",
+        "passport"
+      ],
+      "source": {
+        "title": "Practical guidelines for uploading photo and signature",
+        "url": "https://www.eoiparis.gov.in/content/Practical_Guidelines_Uploading_Photo_Signature_29_April_26.pdf"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 630,
+          "height": 810,
+          "minKb": null,
+          "maxKb": 200,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "pk-fpsc",
+      "name": "FPSC online application",
+      "issuer": "Federal Public Service Commission",
+      "country": "PK",
+      "category": "job",
+      "aliases": [
+        "FPSC",
+        "CSS"
+      ],
+      "source": {
+        "title": "Guidelines for Online Application Submission at FPSC",
+        "url": "https://cp.fpsc.gov.pk/gr_one/Guidelines_for_Online_Application_Submission_FPSC_updated_09-09-2025.pdf"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": null,
+          "height": null,
+          "minKb": null,
+          "maxKb": 30,
+          "format": "jpeg",
+          "notCovered": [
+            {
+              "code": "content"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx-unam-suayed",
+      "name": "UNAM SUAyED admission (licenciatura)",
+      "issuer": "Universidad Nacional Autónoma de México",
+      "country": "MX",
+      "category": "exam_admission",
+      "aliases": [
+        "UNAM",
+        "SUAyED",
+        "licenciatura"
+      ],
+      "source": {
+        "title": "Instructivo, Concurso de Selección Noviembre 2026",
+        "url": "https://case.unam.mx/assets/docs/ingreso/instructivo-suayed-noviembre-2026.pdf"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": null,
+          "height": null,
+          "minKb": null,
+          "maxKb": 200,
+          "format": "jpeg",
+          "notCovered": [
+            {
+              "code": "background"
+            },
+            {
+              "code": "content"
+            }
+          ]
+        },
+        {
+          "kind": "signature",
+          "width": null,
+          "height": null,
+          "minKb": null,
+          "maxKb": 200,
+          "format": "jpeg"
+        }
+      ]
+    },
+    {
+      "id": "us-dv-lottery",
+      "name": "Diversity Immigrant Visa Program entry",
+      "issuer": "U.S. Department of State",
+      "country": "US",
+      "category": "visa_passport",
+      "aliases": [
+        "DV lottery",
+        "green card lottery",
+        "DV"
+      ],
+      "source": {
+        "title": "Instructions For The 2026 Diversity Immigrant Visa Program (DV-2026)",
+        "url": "https://travel.state.gov"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 600,
+          "height": 600,
+          "minKb": null,
+          "maxKb": 240,
+          "format": "jpeg",
+          "notCovered": [
+            {
+              "code": "background"
+            },
+            {
+              "code": "content"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sg-ica-photo",
+      "name": "ICA e-Services photo",
+      "issuer": "Immigration & Checkpoints Authority",
+      "country": "SG",
+      "category": "visa_passport",
+      "aliases": [
+        "ICA",
+        "Singapore passport",
+        "IC"
+      ],
+      "source": {
+        "title": "Photo guidelines",
+        "url": "https://ica.gov.sg/photo-guidelines"
+      },
+      "lastChecked": "2026-11-27",
+      "specs": [
+        {
+          "kind": "photo",
+          "width": 400,
+          "height": 514,
+          "minKb": null,
+          "maxKb": 8000,
+          "format": "jpeg"
+        }
+      ]
+    }
+  ]
+}

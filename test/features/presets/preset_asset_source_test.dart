@@ -71,9 +71,11 @@ void main() {
     }
   });
 
-  test('the shipped asset loads with 0 forms', () async {
-    final (lib, lines) = await load(File(PresetAssetSource.path).readAsStringSync());
-    expect((lib! as PresetLibrary).forms, isEmpty);
+  test('the shipped asset loads every form with no skipped spec and no log line', () async {
+    final text = File(PresetAssetSource.path).readAsStringSync();
+    final (lib, lines) = await load(text);
+    expect((lib! as PresetLibrary).forms, hasLength(((jsonDecode(text) as Map)['forms'] as List).length));
+    expect((lib as PresetLibrary).skipped, 0);
     expect(lines, isEmpty);
   });
 
