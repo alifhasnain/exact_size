@@ -149,7 +149,8 @@ class _PresetListScreenState extends State<PresetListScreen> {
   );
 }
 
-/// One form: name, issuer and category, then one key per spec (the card itself is not tappable).
+/// One form: name, issuer and category, the source lines (FEAT-014), then one key per spec (the
+/// card itself is not tappable).
 class _FormCard extends StatelessWidget {
   const _FormCard(this.form, this.s);
   final PresetForm form;
@@ -158,6 +159,7 @@ class _FormCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final source = s.cardSource(form);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -171,6 +173,11 @@ class _FormCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(s.issuerLine(form), style: text.bodyMedium),
+          // FEAT-014 FR-2: where the sizes come from; plain text, no prompt here (t05/source_design.md).
+          if (source.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(source, style: text.bodySmall?.copyWith(color: Booth.text.withValues(alpha: 0.8))),
+          ],
           for (final spec in form.specs) ...[const SizedBox(height: 12), _SpecKey(form, spec, s)],
         ],
       ),

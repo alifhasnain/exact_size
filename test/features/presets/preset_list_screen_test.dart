@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// FEAT-011-T10: the form list on the synthetic fixture (FR-6..FR-10, FR-14, FR-15, NFR-8).
+/// FEAT-014-T08: source lines on each card (FR-2, FR-3, FR-4, FR-8, AC-2.1..2.4).
 void main() {
   Map<String, Object?> fixtureJson() =>
       jsonDecode(File('test/presets/fixtures/test_library.json').readAsStringSync()) as Map<String, Object?>;
@@ -17,6 +18,11 @@ void main() {
   ({Object? value, bool popped}) result = (value: null, popped: false);
   Future<void> pump(WidgetTester tester, [List<PresetForm>? list]) async {
     result = (value: null, popped: false);
+    // FEAT-014 made each card three lines taller; a tall view keeps all three fixture cards built.
+    tester.view
+      ..physicalSize = const Size(800, 2000)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(
       ExactSizeApp(
         locale: const Locale('en'),
@@ -42,7 +48,7 @@ void main() {
     expect(find.textContaining('Test Form A'), findsOneWidget);
     expect(find.textContaining('Test Form B'), findsOneWidget);
     expect(find.textContaining('Exams and admissions'), findsOneWidget);
-    expect(find.text('Photo'), findsNWidgets(2)); // A and B
+    expect(find.text('Photo'), findsNWidgets(3)); // A, B and C (all built in the tall view)
     expect(find.text('Signature'), findsOneWidget); // A only: no invented row for B
     expect(find.textContaining('200 × 230'), findsOneWidget);
     // Test Form C (KB-only): its row says no pixel size is stated, with no note (FR-6, 2.0).
@@ -116,7 +122,7 @@ void main() {
     expect(library.skipped, 1);
     await pump(tester, library.forms);
     expect(tester.takeException(), isNull);
-    expect(find.text('Photo'), findsNWidgets(2));
+    expect(find.text('Photo'), findsNWidgets(3)); // A, B and C; the skipped second photo of A is absent
   });
 
   testWidgets('a 10,000-character paste is cut to 100 with no exception (NFR-8)', (tester) async {
@@ -136,5 +142,66 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(result, (value: null, popped: true));
+  });
+
+  group('FEAT-014 card source lines', () {
+    String plain(String t) => t.replaceAll(RegExp('[\u2066-\u2069]'), '');
+    Finder lines(String title) => find.textContaining('Source: \u2068$title\u2069');
+    const linesA = 'Source: Test notice 1 (Test Issuer)\nWebsite: notice.example.test\nLast checked: 2026-10-01';
+
+    testWidgets('AC-2.1: each card shows its lines once, Website left out for Test Form C', (tester) async {
+      await pump(tester);
+      expect(lines('Test notice 1'), findsOneWidget); // Test Form A has two specs, still one text
+      expect(plain(tester.widget<Text>(lines('Test notice 1')).data!), linesA);
+      expect(
+        plain(tester.widget<Text>(lines('Test notice 2')).data!),
+        'Source: Test notice 2 (Test Board)\nWebsite: notice.example.test\nLast checked: 2026-11-20',
+      );
+      expect(
+        plain(tester.widget<Text>(lines('Test notice 3')).data!),
+        'Source: Test notice 3 (Test Office)\nLast checked: 2026-11-20',
+      );
+    });
+
+    testWidgets('AC-2.2: after a search the remaining card keeps the same lines', (tester) async {
+      await pump(tester);
+      await tester.enterText(find.byType(TextField), 'tfa');
+      await tester.pump();
+      expect(lines('Test notice 2'), findsNothing);
+      expect(plain(tester.widget<Text>(lines('Test notice 1')).data!), linesA);
+    });
+
+    testWidgets('AC-2.3: lines sit between the issuer line and the first spec key', (tester) async {
+      await pump(tester);
+      final issuer = find.textContaining('Exams and admissions');
+      final source = lines('Test notice 1');
+      final firstKey = find.ancestor(of: find.textContaining('200 × 230'), matching: find.byType(InkWell));
+      expect(tester.getRect(issuer).bottom, lessThanOrEqualTo(tester.getRect(source).top));
+      expect(tester.getRect(source).bottom, lessThanOrEqualTo(tester.getRect(firstKey).top));
+      expect(find.descendant(of: firstKey, matching: source), findsNothing);
+    });
+
+    testWidgets('AC-2.4: no prompt on the list; the footer stays last', (tester) async {
+      await pump(tester);
+      expect(find.textContaining('before you upload'), findsNothing);
+      expect(find.byIcon(Icons.history), findsNothing);
+      final footer = find.text('ExactSize is not affiliated with the organisations listed.');
+      await tester.scrollUntilVisible(footer, 100, scrollable: find.byType(Scrollable).last);
+      expect(tester.getRect(footer).top, greaterThan(tester.getRect(lines('Test notice 3')).bottom));
+    });
+
+    testWidgets('FR-8: tap and long-press on the lines do nothing', (tester) async {
+      await pump(tester);
+      final source = lines('Test notice 1');
+      await tester.tap(source, warnIfMissed: false);
+      await tester.pumpAndSettle();
+      await tester.longPress(source, warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(result.popped, isFalse);
+      expect(find.byType(PresetListScreen), findsOneWidget);
+      expect(find.byType(AdaptiveTextSelectionToolbar), findsNothing);
+      expect(find.ancestor(of: source, matching: find.byType(InkWell)), findsNothing);
+      expect(find.ancestor(of: source, matching: find.byType(GestureDetector)), findsNothing);
+    });
   });
 }

@@ -148,6 +148,25 @@ void main() {
       }
       expect(tester.takeException(), isNull);
 
+      // FEAT-014 (AC-5.2): the card lines with the longest shipped title and issuer fit, and the
+      // Test Form C key after them stays reachable and at least 48 dp.
+      await pump(
+        tester,
+        PresetListScreen(forms: parseLibrary(jsonDecode(longC)).forms),
+        locale: ValueNotifier(locale),
+        scale: ValueNotifier(2),
+      );
+      expect(tester.takeException(), isNull);
+      final longScroll = find.descendant(of: find.byType(CustomScrollView), matching: find.byType(Scrollable)).first;
+      final longLines = find.textContaining(longest.$1);
+      await tester.scrollUntilVisible(longLines.first, 80, scrollable: longScroll);
+      expect(tester.getRect(longLines.first).right, lessThanOrEqualTo(360));
+      final keyC = find.ancestor(of: find.textContaining(l.presetAnyPixelSize), matching: find.byType(InkWell));
+      await tester.scrollUntilVisible(keyC, 80, scrollable: longScroll);
+      expect(tester.getSize(keyC).height, greaterThanOrEqualTo(48));
+      expect(tester.getRect(keyC).right, lessThanOrEqualTo(360));
+      expect(tester.takeException(), isNull);
+
       await pump(tester, target(), locale: ValueNotifier(locale), scale: ValueNotifier(2));
       expect(tester.takeException(), isNull);
       final row = find.ancestor(of: find.byIcon(Icons.list_alt), matching: find.byType(InkWell));

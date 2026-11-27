@@ -97,6 +97,24 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// Opens the list and taps the spec key whose summary contains [summary]; the list builds rows
+  /// lazily, so it scrolls the row into view first.
+  Future<void> pickBy(WidgetTester tester, String summary) async {
+    await tester.tap(row);
+    await tester.pumpAndSettle();
+    final text = find.textContaining(summary);
+    await tester.scrollUntilVisible(
+      text,
+      200,
+      scrollable: find.descendant(of: find.byType(PresetListScreen), matching: find.byType(Scrollable)).last,
+    );
+    final key = find.ancestor(of: text, matching: find.byType(InkWell));
+    await tester.ensureVisible(key);
+    await tester.pumpAndSettle();
+    await tester.tap(key);
+    await tester.pumpAndSettle();
+  }
+
   Future<void> tapContinue(WidgetTester tester) async {
     final button = find.widgetWithText(FilledButton, 'Continue');
     await tester.ensureVisible(button);
@@ -203,7 +221,7 @@ void main() {
     expect(manual, isNotEmpty);
 
     await pump(tester, info: small, asset: fixture);
-    await pick(tester, 'Photo', 1); // Test Form B photo: 300 × 300, content note
+    await pickBy(tester, '300 × 300'); // Test Form B photo: 300 × 300, content note
     final withPreset = notices(tester);
     for (final n in manual) {
       expect(withPreset, contains(n));
