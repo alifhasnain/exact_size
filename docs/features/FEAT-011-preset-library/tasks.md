@@ -46,7 +46,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `lib/features/presets/domain/preset_types.dart` (`PresetForm`, `PresetSpec` with `target` and `input`, `PresetSource`, sealed `NotCovered` → `DpiNote`/`BackgroundNote`/`ContentNote`, `SpecKind`, `FormCategory`, `PresetLibrary`, `AppliedPreset` with redacted `toString`); `parse_library.dart` with the runtime rules of tech section 5; `test/presets/fixtures/test_library.json` (Test Form A: photo 200×230, 20–50 KB, JPEG, notes `dpi` 200 + `background`, signature with `minKb` null; Test Form B: one spec with a `content` note; `source.url` `[PLACEHOLDER]`; all values made up). No `package:flutter`, Riverpod or DI import under `domain/`.
 - **Done when:** `flutter test test/features/presets/parse_library_test.dart` passes with table cases: fixture parses to 2 forms; width 0, unknown kind, unknown format, unknown note code and a repeated kind each skip only that spec and count it; a form with no valid spec is dropped; a root without `schema: 1` or `forms` throws `FormatException`; an unknown field is ignored; `minKb: null` gives `input.minKb == ''`; `spec.target` equals the `TargetSpec` from manual entry of the same values; `AppliedPreset.toString()` holds no form id. `FEAT-005` `TargetSpec`/`TargetInput` files have no diff.
 
-### - [ ] FEAT-011-T02 — Asset source, empty shipped asset, providers, enum log
+### - [x] FEAT-011-T02 — Asset source, empty shipped asset, providers, enum log
 - **Implements:** FR-1 (shipped file), FR-12 (state), FR-16 (log, error path), FR-17, FR-18, NFR-5 · **ADRs:** ADR-001
 - **Depends on:** T01
 - **Size:** M (0.5 d)

@@ -43,6 +43,7 @@ flutter:
   generate: true
   assets:
     - assets/fonts/BarlowCondensed-OFL.txt
+    - assets/presets/presets.json
   fonts:
     # Spec numerals on the crop screen (OFL 1.1, google/fonts ofl/barlowcondensed).
     - family: BarlowCondensed
