@@ -102,7 +102,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** stop and tell the Product Owner first. One lean impeccable pass on Material 3 and the existing theme, jointly with the FEAT-005 preset slot: target-step row in its states (choose, applied with notes, load failure; hidden when empty), list screen (search, section headings, form with 1–2 spec rows, notes with icon, empty state with "Enter sizes yourself", not-affiliated footer). No image comps, no reviewer subagents, one round. Result in `docs/features/FEAT-011-preset-library/t09/preset_design.md`; accepted copy fixes go into `app_en.arb` in this task.
 - **Done when:** the design note exists with date and the Product Owner's acceptance (or named fixes) recorded in the Test record as G1.
 
-### - [ ] FEAT-011-T10 — Preset list screen
+### - [x] FEAT-011-T10 — Preset list screen
 - **Implements:** FR-6, FR-7, FR-8 (UI), FR-9, FR-10, FR-14 (list rows), FR-15 (footer), FR-16 (skipped spec), NFR-8 · **ADRs:** ADR-001
 - **Depends on:** T09 (G1), T07
 - **Size:** L (1.0 d)

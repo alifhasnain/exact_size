@@ -23,9 +23,9 @@ void main() {
 
   Future<(Object?, List<String>)> load(String text) async {
     final lines = <String>[];
-    final c = ProviderContainer(overrides: [
-      presetSourceProvider.overrideWithValue(PresetAssetSource(bundle: _Bundle(text), sink: lines.add)),
-    ]);
+    final c = ProviderContainer(
+      overrides: [presetSourceProvider.overrideWithValue(PresetAssetSource(bundle: _Bundle(text), sink: lines.add))],
+    );
     addTearDown(c.dispose);
     Object? result;
     try {

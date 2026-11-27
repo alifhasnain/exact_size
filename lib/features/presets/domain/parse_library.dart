@@ -37,23 +37,24 @@ PresetLibrary parseLibrary(Object? json) {
       continue;
     }
     final source = raw['source'];
-    forms.add(PresetForm(
-      id: id,
-      name: name,
-      issuer: _text(raw['issuer']) ?? '',
-      country: _text(raw['country']) ?? '',
-      category: FormCategory.values.where((c) => c.json == raw['category']).firstOrNull ?? FormCategory.other,
-      aliases: List.unmodifiable([
-        for (final a in raw['aliases'] is List ? raw['aliases'] as List : const [])
-          ?_text(a),
-      ]),
-      source: PresetSource(
-        title: source is Map ? _text(source['title']) ?? '' : '',
-        url: source is Map ? _text(source['url']) : null,
+    forms.add(
+      PresetForm(
+        id: id,
+        name: name,
+        issuer: _text(raw['issuer']) ?? '',
+        country: _text(raw['country']) ?? '',
+        category: FormCategory.values.where((c) => c.json == raw['category']).firstOrNull ?? FormCategory.other,
+        aliases: List.unmodifiable([
+          for (final a in raw['aliases'] is List ? raw['aliases'] as List : const []) ?_text(a),
+        ]),
+        source: PresetSource(
+          title: source is Map ? _text(source['title']) ?? '' : '',
+          url: source is Map ? _text(source['url']) : null,
+        ),
+        lastChecked: _date(raw['lastChecked']),
+        specs: List.unmodifiable(specs),
       ),
-      lastChecked: _date(raw['lastChecked']),
-      specs: List.unmodifiable(specs),
-    ));
+    );
   }
   return PresetLibrary(forms: List.unmodifiable(forms), skipped: skipped);
 }
@@ -74,7 +75,8 @@ PresetSpec? _spec(Object? s) {
   if (kind == null || format == null || w is! int || h is! int || max is! int) return null;
   if (min != null && min is! int) return null;
   if (checkTarget(Target(w, h)) != null) return null;
-  if (validateTarget(maxText: '$max', minText: min == null ? '' : '$min', format: format.name) is! ValidTarget) return null;
+  if (validateTarget(maxText: '$max', minText: min == null ? '' : '$min', format: format.name) is! ValidTarget)
+    return null;
   final notes = <NotCovered>[];
   for (final n in s['notCovered'] is List ? s['notCovered'] as List : const []) {
     final note = switch (n) {

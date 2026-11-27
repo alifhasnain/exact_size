@@ -20,7 +20,14 @@ void main() {
     source: PresetSource(title: 'Test notice 1'),
     specs: [],
   );
-  const photo = PresetSpec(kind: SpecKind.photo, width: 200, height: 230, minKb: 20, maxKb: 50, format: OutputFormat.jpeg);
+  const photo = PresetSpec(
+    kind: SpecKind.photo,
+    width: 200,
+    height: 230,
+    minKb: 20,
+    maxKb: 50,
+    format: OutputFormat.jpeg,
+  );
   const sig = PresetSpec(kind: SpecKind.signature, width: 1400, height: 600, maxKb: 2048, format: OutputFormat.png);
 
   test('summary with a minimum', () {
@@ -58,7 +65,9 @@ void main() {
 
   test('digits are 0-9 in every locale', () {
     for (final l in AppLocalizations.supportedLocales) {
-      final t = PresetStrings(lookupAppLocalizations(l)).summary(photo) + PresetStrings(lookupAppLocalizations(l)).note(const DpiNote(200));
+      final t =
+          PresetStrings(lookupAppLocalizations(l)).summary(photo) +
+          PresetStrings(lookupAppLocalizations(l)).note(const DpiNote(200));
       expect(RegExp('[٠-٩۰-۹०-९]').hasMatch(t), isFalse, reason: '$l');
     }
   });

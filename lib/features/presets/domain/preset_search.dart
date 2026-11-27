@@ -71,7 +71,9 @@ List<FormSection> filterForms(
       FormSection(
         country: code,
         name: countryName(code),
-        forms: List.unmodifiable(list..sort((a, b) => byText(a.name, b.name) != 0 ? byText(a.name, b.name) : a.id.compareTo(b.id))),
+        forms: List.unmodifiable(
+          list..sort((a, b) => byText(a.name, b.name) != 0 ? byText(a.name, b.name) : a.id.compareTo(b.id)),
+        ),
       ),
   ]..sort((a, b) => byText(a.name, b.name) != 0 ? byText(a.name, b.name) : a.country.compareTo(b.country));
 }

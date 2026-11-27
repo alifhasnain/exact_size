@@ -76,8 +76,13 @@ final class PresetSpec {
   TargetSpec get target => TargetSpec(width: width, height: height, minKb: minKb, maxKb: maxKb, format: format);
 
   /// Field texts for `TargetFormController.fill`; no minimum gives ''.
-  TargetInput get input =>
-      TargetInput(width: '$width', height: '$height', minKb: minKb == null ? '' : '$minKb', maxKb: '$maxKb', format: format);
+  TargetInput get input => TargetInput(
+    width: '$width',
+    height: '$height',
+    minKb: minKb == null ? '' : '$minKb',
+    maxKb: '$maxKb',
+    format: format,
+  );
 }
 
 /// Where the form's rules were read (FR-4); shown by FEAT-014, not here.

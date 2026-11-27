@@ -13,15 +13,22 @@ void main() {
   Map<String, Object?> fixture() =>
       jsonDecode(File('test/presets/fixtures/test_library.json').readAsStringSync()) as Map<String, Object?>;
 
-  Map<String, Object?> spec([Map<String, Object?> over = const {}]) =>
-      {'kind': 'photo', 'width': 200, 'height': 230, 'minKb': 20, 'maxKb': 50, 'format': 'jpeg', ...over};
+  Map<String, Object?> spec([Map<String, Object?> over = const {}]) => {
+    'kind': 'photo',
+    'width': 200,
+    'height': 230,
+    'minKb': 20,
+    'maxKb': 50,
+    'format': 'jpeg',
+    ...over,
+  };
 
   Map<String, Object?> lib(List<Map<String, Object?>> specs) => {
-        'schema': 1,
-        'forms': [
-          {'id': 'test-x', 'name': 'Test X', 'specs': specs},
-        ],
-      };
+    'schema': 1,
+    'forms': [
+      {'id': 'test-x', 'name': 'Test X', 'specs': specs},
+    ],
+  };
 
   test('fixture parses to 2 forms with every field', () {
     final l = parseLibrary(fixture());
@@ -57,14 +64,24 @@ void main() {
   };
   for (final MapEntry(:key, :value) in bad.entries) {
     test('$key skips only that spec and counts it', () {
-      final l = parseLibrary(lib([value, spec({'kind': 'signature', 'minKb': null, 'maxKb': 20})]));
+      final l = parseLibrary(
+        lib([
+          value,
+          spec({'kind': 'signature', 'minKb': null, 'maxKb': 20}),
+        ]),
+      );
       expect(l.skipped, 1);
       expect(l.forms.single.specs.single.kind, SpecKind.signature);
     });
   }
 
   test('a repeated kind skips the second spec', () {
-    final l = parseLibrary(lib([spec(), spec({'width': 300})]));
+    final l = parseLibrary(
+      lib([
+        spec(),
+        spec({'width': 300}),
+      ]),
+    );
     expect(l.skipped, 1);
     expect(l.forms.single.specs.single.width, 200);
   });
@@ -73,9 +90,21 @@ void main() {
     final l = parseLibrary({
       'schema': 1,
       'forms': [
-        {'id': 'test-x', 'name': 'Test X', 'specs': [spec({'width': 0})]},
-        {'name': 'No id', 'specs': [spec()]},
-        {'id': 'test-y', 'specs': [spec()]},
+        {
+          'id': 'test-x',
+          'name': 'Test X',
+          'specs': [
+            spec({'width': 0}),
+          ],
+        },
+        {
+          'name': 'No id',
+          'specs': [spec()],
+        },
+        {
+          'id': 'test-y',
+          'specs': [spec()],
+        },
         'not a form',
       ],
     });
@@ -101,7 +130,14 @@ void main() {
       'schema': 1,
       'future': true,
       'forms': [
-        {'id': 'test-x', 'name': 'Test X', 'colour': 'red', 'specs': [spec({'rotation': 90})]},
+        {
+          'id': 'test-x',
+          'name': 'Test X',
+          'colour': 'red',
+          'specs': [
+            spec({'rotation': 90}),
+          ],
+        },
       ],
     });
     expect(l.skipped, 0);
@@ -116,13 +152,15 @@ void main() {
 
   test('spec.target equals the TargetSpec manual entry of the same values gives', () {
     for (final s in parseLibrary(fixture()).forms.expand((f) => f.specs)) {
-      final manual = validateTargetInput(TargetInput(
-        width: '${s.width}',
-        height: '${s.height}',
-        minKb: s.minKb == null ? '' : '${s.minKb}',
-        maxKb: '${s.maxKb}',
-        format: s.format,
-      ));
+      final manual = validateTargetInput(
+        TargetInput(
+          width: '${s.width}',
+          height: '${s.height}',
+          minKb: s.minKb == null ? '' : '${s.minKb}',
+          maxKb: '${s.maxKb}',
+          format: s.format,
+        ),
+      );
       expect(manual, isA<TargetInputValid>());
       expect((manual as TargetInputValid).spec, s.target);
       expect(validateTargetInput(s.input), isA<TargetInputValid>());

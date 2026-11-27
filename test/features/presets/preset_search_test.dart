@@ -46,7 +46,12 @@ void main() {
   };
   List<String> ids(String q) => [for (final s in filterForms(forms, q, category, country)) ...s.forms.map((f) => f.id)];
 
-  for (final (i, q) in ['TEST form a', '  test   form  a ', '\u200Ftest\u200F form a', '\u2066Test Form A\u2069'].indexed) {
+  for (final (i, q) in [
+    'TEST form a',
+    '  test   form  a ',
+    '\u200Ftest\u200F form a',
+    '\u2066Test Form A\u2069',
+  ].indexed) {
     test('query $i matches Test Form A (AC-2.2)', () => expect(ids(q), contains('test-form-a')));
   }
 
