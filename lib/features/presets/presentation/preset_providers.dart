@@ -13,6 +13,10 @@ final presetLibraryProvider = FutureProvider<PresetLibrary>(
   retry: (_, _) => null,
 );
 
+/// FEAT-014: the only read of the device clock in the preset module (FR-6). Called once per
+/// build of the applied row; not cached and no timer (FR-7). Tests and demos override it.
+final presetClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+
 /// The preset picked this session (FR-12). Memory only: no persistence and no
 /// restoration, like `targetFormProvider` (FR-17, AC-8.1).
 final appliedPresetProvider = NotifierProvider<AppliedPresetController, AppliedPreset?>(AppliedPresetController.new);

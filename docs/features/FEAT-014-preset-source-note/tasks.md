@@ -47,7 +47,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 - **Scope:** `test/presets/library_rules.dart` and `library_data_test.dart` (tech section 5 rules, messages and self-tests); `test/presets/fixtures/test_library.json` and `integration_test/preset_fixture_data.dart` URLs per tech section 2 (A `https://notice.example.test/page`, B `http://notice.example.test/b`, C `url` removed), plus any test that asserted the old `[PLACEHOLDER]` URL; `test/presets/preset_copy_test.dart`: extra banned words in English `preset*` values with a planted self-test, descriptions may start `FEAT-011` or `FEAT-014`, module scan adds `SelectableText`, `SelectionArea`, `GestureRecognizer`, `launchUrl`.
 - **Done when:** `flutter test test/presets/` passes on the shipped file and the fixture (incl. `fixture_data_test.dart`); self-tests fail as expected naming form id and rule for: a title with U+202E, `https://[PLACEHOLDER]@notice.example.test`, `ftp://notice.example.test/x` (AC-6.2), a 101-character title, an issuer with a C1 control; a title with ZWJ and a form without `url` pass; a planted "verified" in a scratch English map and a scratch file with `SelectableText` each fail with key or `file:line`; `git diff --exit-code assets/presets/presets.json` passes.
 
-### - [ ] FEAT-014-T03 — Clock seam `presetClockProvider`
+### - [x] FEAT-014-T03 — Clock seam `presetClockProvider`
 - **Implements:** FR-6 (device clock only), FR-7 (no cache), NFR-6 · **ADRs:** ADR-001
 - **Depends on:** T01
 - **Size:** S (0.25 d)
