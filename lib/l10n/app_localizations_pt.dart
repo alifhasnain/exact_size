@@ -620,6 +620,30 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get presetKbOnlyNote =>
       'Este formulário não indica dimensões em pixels. Insira a largura e a altura ou use as dimensões da foto.';
+
+  @override
+  String presetSourceLine(String title, String issuer) {
+    return 'Source: $title ($issuer)';
+  }
+
+  @override
+  String presetWebsiteLine(String host) {
+    return 'Website: $host';
+  }
+
+  @override
+  String presetLastChecked(String date) {
+    return 'Last checked: $date';
+  }
+
+  @override
+  String get presetCheckNotice =>
+      'Check these sizes against your form\'s notice or instructions before you upload. They can change.';
+
+  @override
+  String presetCheckNoticeOld(String days) {
+    return 'These sizes were last checked more than $days days ago. Check your form\'s notice or instructions before you upload.';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

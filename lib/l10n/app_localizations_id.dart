@@ -621,4 +621,28 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get presetKbOnlyNote =>
       'Formulir ini tidak mencantumkan dimensi piksel. Masukkan lebar dan tinggi, atau gunakan dimensi foto.';
+
+  @override
+  String presetSourceLine(String title, String issuer) {
+    return 'Source: $title ($issuer)';
+  }
+
+  @override
+  String presetWebsiteLine(String host) {
+    return 'Website: $host';
+  }
+
+  @override
+  String presetLastChecked(String date) {
+    return 'Last checked: $date';
+  }
+
+  @override
+  String get presetCheckNotice =>
+      'Check these sizes against your form\'s notice or instructions before you upload. They can change.';
+
+  @override
+  String presetCheckNoticeOld(String days) {
+    return 'These sizes were last checked more than $days days ago. Check your form\'s notice or instructions before you upload.';
+  }
 }

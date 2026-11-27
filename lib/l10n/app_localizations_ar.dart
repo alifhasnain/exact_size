@@ -617,4 +617,28 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get presetKbOnlyNote =>
       'لا يذكر هذا النموذج الأبعاد بالبكسل. أدخل العرض والارتفاع، أو استخدم أبعاد الصورة.';
+
+  @override
+  String presetSourceLine(String title, String issuer) {
+    return 'Source: $title ($issuer)';
+  }
+
+  @override
+  String presetWebsiteLine(String host) {
+    return 'Website: $host';
+  }
+
+  @override
+  String presetLastChecked(String date) {
+    return 'Last checked: $date';
+  }
+
+  @override
+  String get presetCheckNotice =>
+      'Check these sizes against your form\'s notice or instructions before you upload. They can change.';
+
+  @override
+  String presetCheckNoticeOld(String days) {
+    return 'These sizes were last checked more than $days days ago. Check your form\'s notice or instructions before you upload.';
+  }
 }

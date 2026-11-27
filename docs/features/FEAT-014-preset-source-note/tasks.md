@@ -54,7 +54,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 - **Scope:** `lib/features/presets/presentation/preset_providers.dart`: `presetClockProvider` (tech section 4), not kept alive beyond the default, no timer. A provider test in the existing presets provider test file (or `preset_row_test.dart` setup helper shared by T07).
 - **Done when:** a test shows the default returns a time within a second of `DateTime.now()` and `overrideWithValue(() => DateTime(2026, 12, 31))` is returned as given; `grep -r "DateTime.now" lib/features/presets/` finds only this provider; `flutter test test/privacy/` passes.
 
-### - [ ] FEAT-014-T04 — Five English keys and `PresetStrings` lines
+### - [x] FEAT-014-T04 — Five English keys and `PresetStrings` lines
 - **Implements:** FR-3, FR-4 (line), FR-5, FR-6 (string choice), FR-9 (English), FR-10, AC-5.1 (isolates), AC-6.1, AC-6.3 · **ADRs:** ADR-001
 - **Depends on:** T01, T02
 - **Size:** M (0.5 d)

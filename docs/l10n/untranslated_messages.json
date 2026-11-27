@@ -1,1 +1,49 @@
-{}
+{
+  "ar": [
+    "presetSourceLine",
+    "presetWebsiteLine",
+    "presetLastChecked",
+    "presetCheckNotice",
+    "presetCheckNoticeOld"
+  ],
+
+  "es": [
+    "presetSourceLine",
+    "presetWebsiteLine",
+    "presetLastChecked",
+    "presetCheckNotice",
+    "presetCheckNoticeOld"
+  ],
+
+  "hi": [
+    "presetSourceLine",
+    "presetWebsiteLine",
+    "presetLastChecked",
+    "presetCheckNotice",
+    "presetCheckNoticeOld"
+  ],
+
+  "id": [
+    "presetSourceLine",
+    "presetWebsiteLine",
+    "presetLastChecked",
+    "presetCheckNotice",
+    "presetCheckNoticeOld"
+  ],
+
+  "pt": [
+    "presetSourceLine",
+    "presetWebsiteLine",
+    "presetLastChecked",
+    "presetCheckNotice",
+    "presetCheckNoticeOld"
+  ],
+
+  "pt_BR": [
+    "presetSourceLine",
+    "presetWebsiteLine",
+    "presetLastChecked",
+    "presetCheckNotice",
+    "presetCheckNoticeOld"
+  ]
+}

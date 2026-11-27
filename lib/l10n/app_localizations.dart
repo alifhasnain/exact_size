@@ -1011,6 +1011,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This form sets no pixel size. Enter a width and height, or use your photo\'s size.'**
   String get presetKbOnlyNote;
+
+  /// FEAT-014 FR-3: first line of the source note under an applied preset and on each form card in the list. title is the name of the notice or page the sizes come from; issuer is the organisation that publishes the form. Both are data in their original language: never translate or reorder them inside the brackets.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {title} ({issuer})'**
+  String presetSourceLine(String title, String issuer);
+
+  /// FEAT-014 FR-4: website the sizes come from, shown as plain text (not a link). host is a domain name such as notice.example.test; never translate it. Do not use words like online, internet or connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Website: {host}'**
+  String presetWebsiteLine(String host);
+
+  /// FEAT-014 FR-3: date the ExactSize team last compared these sizes with the source. date is always YYYY-MM-DD with digits 0-9. Must not suggest the sizes are verified, accurate, official or current.
+  ///
+  /// In en, this message translates to:
+  /// **'Last checked: {date}'**
+  String presetLastChecked(String date);
+
+  /// FEAT-014 FR-5: fixed prompt at the end of the source note on the target step. 'notice' means the official recruitment or admission notice, advertisement or instructions that state the photo rules; use the word people in your market use for that document. Do not promise the sizes are correct.
+  ///
+  /// In en, this message translates to:
+  /// **'Check these sizes against your form\'s notice or instructions before you upload. They can change.'**
+  String get presetCheckNotice;
+
+  /// FEAT-014 FR-6: replaces presetCheckNotice when the sizes were last checked more than 90 days ago. days is always 90 (an already formatted number in a bidi isolate): use the plural form your language needs for 90. Same meaning of notice as in presetCheckNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'These sizes were last checked more than {days} days ago. Check your form\'s notice or instructions before you upload.'**
+  String presetCheckNoticeOld(String days);
 }
 
 class _AppLocalizationsDelegate

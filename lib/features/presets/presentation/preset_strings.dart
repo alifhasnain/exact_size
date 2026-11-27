@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../compression/domain/compression_result.dart';
 import '../domain/preset_types.dart';
+import '../domain/source_note.dart';
 
 /// FEAT-011 texts (FR-6, FR-13, FR-14, tech section 6). Codes map to ARB getters here.
 /// Form names are data: wrapped in a first-strong isolate, never translated. Numbers use
@@ -58,6 +59,35 @@ class PresetStrings {
   String country(String code) => _l10n.presetCountry(code);
 
   String category(FormCategory c) => _l10n.presetCategory(c.json);
+
+  /// FEAT-014 source note (FR-3 to FR-6, tech section 4). Title and issuer are data in
+  /// first-strong isolates; host, date and the number in left-to-right isolates. A missing part
+  /// leaves its line out, never an empty "()" (AC-6.3).
+  String? sourceLine(PresetForm f) => f.source.title.trim().isEmpty || f.issuer.trim().isEmpty
+      ? null
+      : _l10n.presetSourceLine(_fsi(f.source.title), _fsi(f.issuer));
+
+  String? websiteLine(PresetForm f) => switch (sourceHost(f.source.url)) {
+    final host? => _l10n.presetWebsiteLine(_lri(host)),
+    null => null,
+  };
+
+  String? checkedLine(PresetForm f) => switch (f.lastChecked) {
+    final d? => _l10n.presetLastChecked(_lri(isoDate(d))),
+    null => null,
+  };
+
+  /// The fixed prompt; the old-check wording after [staleAfterDays] days (FR-5, FR-6).
+  String prompt(PresetForm f, DateTime now) => isStale(f.lastChecked, now)
+      ? _l10n.presetCheckNoticeOld(_lri(_number.format(staleAfterDays)))
+      : _l10n.presetCheckNotice;
+
+  /// The list card lines: no prompt there (FR-2). Empty when every part is missing.
+  String cardSource(PresetForm f) => [sourceLine(f), websiteLine(f), checkedLine(f)].nonNulls.join('\n');
+
+  /// The target-step block: the card lines, then the prompt (FR-1).
+  String block(PresetForm f, DateTime now) =>
+      [sourceLine(f), websiteLine(f), checkedLine(f), prompt(f, now)].nonNulls.join('\n');
 
   static String _fsi(String s) => '\u2068$s\u2069';
   static String _lri(String s) => '\u2066$s\u2069';
