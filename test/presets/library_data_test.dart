@@ -92,6 +92,35 @@ void main() {
       'format webp': ((j) => photoA(j)['format'] = 'webp', 'Form test-form-a photo: format must be jpeg or png.'),
       'missing issuer': ((j) => formA(j)['issuer'] = ' ', 'Form test-form-a: name and issuer are required.'),
       'unknown category': ((j) => formA(j)['category'] = 'sports', 'Form test-form-a: unknown category.'),
+      // FEAT-014 FR-11 (AC-6.2)
+      'title with a bidi override': (
+        (j) => (formA(j)['source']! as Map)['title'] = 'Test \u202Enotice',
+        'Form test-form-a: source title is empty, too long or has control characters.',
+      ),
+      'title of 101 characters': (
+        (j) => (formA(j)['source']! as Map)['title'] = 'T' * 101,
+        'Form test-form-a: source title is empty, too long or has control characters.',
+      ),
+      'issuer with a C1 control': (
+        (j) => formA(j)['issuer'] = 'Test \u0085Issuer',
+        'Form test-form-a: issuer is too long or has control characters.',
+      ),
+      'issuer of 101 characters': (
+        (j) => formA(j)['issuer'] = 'I' * 101,
+        'Form test-form-a: issuer is too long or has control characters.',
+      ),
+      'URL with user info': (
+        (j) => (formA(j)['source']! as Map)['url'] = 'https://[PLACEHOLDER]@notice.example.test',
+        'Form test-form-a: source URL must be http or https with a host and no user info.',
+      ),
+      'ftp URL': (
+        (j) => (formA(j)['source']! as Map)['url'] = 'ftp://notice.example.test/x',
+        'Form test-form-a: source URL must be http or https with a host and no user info.',
+      ),
+      'URL that is not text': (
+        (j) => (formA(j)['source']! as Map)['url'] = 42,
+        'Form test-form-a: source URL must be http or https with a host and no user info.',
+      ),
     };
     for (final MapEntry(key: name, value: (plant, message)) in cases.entries) {
       test(name, () {
@@ -100,6 +129,15 @@ void main() {
         expect(check(json), contains(message));
       });
     }
+
+    test('FEAT-014: a title with ZWJ, 100-character title and issuer, and a form without url pass', () {
+      final json = fixture();
+      (formA(json)['source']! as Map)['title'] = 'Test\u200Dnotice';
+      ((((json['forms']! as List)[1] as Map)['source']! as Map))['title'] = 'T' * 100;
+      ((json['forms']! as List)[1] as Map)['issuer'] = 'I' * 100;
+      expect(((json['forms']! as List)[2] as Map)['source'], isNot(contains('url')));
+      expect(check(json), isEmpty);
+    });
 
     test('a KB-only spec (width and height null) passes (FR-3, 2.0)', () {
       final json = fixture();

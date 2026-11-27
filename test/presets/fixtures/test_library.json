@@ -8,7 +8,7 @@
       "country": "ZZ",
       "category": "exam_admission",
       "aliases": ["TFA"],
-      "source": { "title": "Test notice 1", "url": "[PLACEHOLDER]" },
+      "source": { "title": "Test notice 1", "url": "https://notice.example.test/page" },
       "lastChecked": "2026-10-01",
       "specs": [
         { "kind": "photo", "width": 200, "height": 230, "minKb": 20, "maxKb": 50, "format": "jpeg",
@@ -23,7 +23,7 @@
       "country": "ZZ",
       "category": "job",
       "aliases": [],
-      "source": { "title": "Test notice 2", "url": "[PLACEHOLDER]" },
+      "source": { "title": "Test notice 2", "url": "http://notice.example.test/b" },
       "lastChecked": "2026-11-20",
       "specs": [
         { "kind": "photo", "width": 300, "height": 300, "minKb": 10, "maxKb": 100, "format": "jpeg",
@@ -37,7 +37,7 @@
       "country": "ZZ",
       "category": "visa_passport",
       "aliases": [],
-      "source": { "title": "Test notice 3", "url": "[PLACEHOLDER]" },
+      "source": { "title": "Test notice 3" },
       "lastChecked": "2026-11-20",
       "specs": [
         { "kind": "photo", "width": null, "height": null, "minKb": 10, "maxKb": 200, "format": "jpeg" }

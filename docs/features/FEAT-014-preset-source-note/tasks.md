@@ -40,7 +40,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 - **Scope:** `lib/features/presets/domain/source_note.dart` (`staleAfterDays`, `sourceHost`, `isoDate`, `isStale`, `hasControlChars`; tech section 4; pure Dart, no imports); `preset_types.dart` comment on `PresetSource.url` (tech section 2); `test/features/presets/source_note_test.dart`; one test in `test/presets/freshness_test.dart`.
 - **Done when:** `flutter test test/features/presets/source_note_test.dart test/presets/freshness_test.dart` passes with: host table of tech section 4 (http and https shipped examples, port, IP, upper case pinned, IDN decoded, user info, `ftp`, relative, `[PLACEHOLDER]`, blank, `https:///path`, a host with a control character all → expected value or null; nothing throws); `isoDate` gives `2026-03-05` from `DateTime.utc(2026, 3, 5)` and pads year 1 and month/day 1; the exact PRD section 8 stale table (lastChecked 2026-03-05: 03-01, 03-05, 06-03 normal; 06-04, 2099-01-01 old-check; 1970-01-01 normal) plus `null` → false; `hasControlChars` true for each bidi control and a C0/C1 sample, false for ZWJ and ZWNJ; `staleAfterDays == maxAgeDays`. `flutter analyze` clean.
 
-### - [ ] FEAT-014-T02 — CI data rules (FR-11), fixture URLs, copy-test bans (FR-8, FR-9)
+### - [x] FEAT-014-T02 — CI data rules (FR-11), fixture URLs, copy-test bans (FR-8, FR-9)
 - **Implements:** FR-11, FR-9 (banned-word test), FR-8 (token scan), AC-6.2, AC-5.5 · **ADRs:** —
 - **Depends on:** T01
 - **Size:** M (0.5 d)

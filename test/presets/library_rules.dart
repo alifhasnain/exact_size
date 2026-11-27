@@ -1,6 +1,7 @@
 import 'package:exact_size/features/compression/domain/target_validator.dart';
 import 'package:exact_size/features/crop/domain/crop_types.dart';
 import 'package:exact_size/features/crop/domain/target_check.dart';
+import 'package:exact_size/features/presets/domain/source_note.dart';
 
 /// FEAT-011 FR-19 CI rules (tech section 5), stricter than the runtime parser and never
 /// shipped. Messages are the PRD section 8 texts with id and kind filled in.
@@ -42,6 +43,17 @@ List<String> libraryProblems(
     final date = _date(f['lastChecked']);
     if (source is! Map || !_text(source['title']) || date == null || date.isAfter(day)) {
       p.add('Form $id: source title and a valid last-checked date are required.');
+    }
+    // FEAT-014 FR-11: the shared runtime helpers, so CI and the app cannot drift apart.
+    final title = source is Map ? source['title'] : null;
+    if (title is String && _text(title) && (title.length > 100 || hasControlChars(title))) {
+      p.add('Form $id: source title is empty, too long or has control characters.');
+    }
+    if (f['issuer'] case final String i when i.length > 100 || hasControlChars(i)) {
+      p.add('Form $id: issuer is too long or has control characters.');
+    }
+    if (source is Map && source.containsKey('url') && (source['url'] is! String || sourceHost(source['url'] as String) == null)) {
+      p.add('Form $id: source URL must be http or https with a host and no user info.');
     }
     if (shipped && (id.startsWith('test-') || '${f['name']}'.contains('Test Form'))) {
       p.add('Form $id: test entries must not ship (FR-1).');

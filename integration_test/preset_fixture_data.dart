@@ -11,7 +11,7 @@ const presetFixtureLibrary = <String, Object?>{
       'country': 'ZZ',
       'category': 'exam_admission',
       'aliases': ['TFA'],
-      'source': {'title': 'Test notice 1', 'url': '[PLACEHOLDER]'},
+      'source': {'title': 'Test notice 1', 'url': 'https://notice.example.test/page'},
       'lastChecked': '2026-10-01',
       'specs': [
         {
@@ -36,7 +36,7 @@ const presetFixtureLibrary = <String, Object?>{
       'country': 'ZZ',
       'category': 'job',
       'aliases': <String>[],
-      'source': {'title': 'Test notice 2', 'url': '[PLACEHOLDER]'},
+      'source': {'title': 'Test notice 2', 'url': 'http://notice.example.test/b'},
       'lastChecked': '2026-11-20',
       'specs': [
         {
@@ -59,7 +59,7 @@ const presetFixtureLibrary = <String, Object?>{
       'country': 'ZZ',
       'category': 'visa_passport',
       'aliases': <String>[],
-      'source': {'title': 'Test notice 3', 'url': '[PLACEHOLDER]'},
+      'source': {'title': 'Test notice 3'},
       'lastChecked': '2026-11-20',
       'specs': [
         {'kind': 'photo', 'width': null, 'height': null, 'minKb': 10, 'maxKb': 200, 'format': 'jpeg'},
