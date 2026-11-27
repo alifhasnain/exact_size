@@ -526,4 +526,78 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get privacyReads =>
       'ExactSize abre solo la foto que eliges. No explora tu galería ni tus archivos.';
+
+  @override
+  String get presetChooseForm => 'Choose a form';
+
+  @override
+  String presetApplied(String form, String kind) {
+    return '$form · $kind';
+  }
+
+  @override
+  String get presetKindPhoto => 'Photo';
+
+  @override
+  String get presetKindSignature => 'Signature';
+
+  @override
+  String presetSpecRange(String pixels, String size, String format) {
+    return '$pixels · $size · $format';
+  }
+
+  @override
+  String presetSpecUpTo(String pixels, String max, String format) {
+    return '$pixels · up to $max · $format';
+  }
+
+  @override
+  String get presetListTitle => 'Forms';
+
+  @override
+  String get presetSearchHint => 'Search forms';
+
+  @override
+  String get presetNoMatch => 'No form matches.';
+
+  @override
+  String get presetEnterYourself => 'Enter sizes yourself';
+
+  @override
+  String presetNoteDpi(String dpi) {
+    return 'This form also asks for $dpi DPI. ExactSize does not set DPI.';
+  }
+
+  @override
+  String get presetNoteBackground =>
+      'This form also has a background rule. ExactSize does not change backgrounds.';
+
+  @override
+  String get presetNoteContent =>
+      'This form also has other photo rules. ExactSize does not check them.';
+
+  @override
+  String get presetNotAffiliated =>
+      'ExactSize is not affiliated with the organisations listed.';
+
+  @override
+  String get presetLoadFailed =>
+      'Forms could not be loaded. You can enter the sizes yourself.';
+
+  @override
+  String presetCountry(String code) {
+    String _temp0 = intl.Intl.selectLogic(code, {'other': '$code'});
+    return '$_temp0';
+  }
+
+  @override
+  String presetCategory(String category) {
+    String _temp0 = intl.Intl.selectLogic(category, {
+      'job': 'Jobs',
+      'exam_admission': 'Exams and admissions',
+      'visa_passport': 'Visa and passport',
+      'other': 'Other',
+    });
+    return '$_temp0';
+  }
 }

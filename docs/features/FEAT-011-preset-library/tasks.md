@@ -53,7 +53,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `assets/presets/presets.json` = `{"schema": 1, "forms": []}`; `pubspec.yaml` one asset entry; `lib/features/presets/data/preset_asset_source.dart` (`loadPresets()`, `LogSink` constructor parameter with `debugPrint` default); `lib/features/presets/presentation/preset_providers.dart` (beside the screens, as `targetFormProvider` sits in `target/presentation/`) (`presetLibraryProvider` kept alive, `appliedPresetProvider` not auto-disposed, no restoration). Log lines exactly `exactsize.presets outcome=LOAD_FAILED` and `exactsize.presets outcome=SPEC_SKIPPED`.
 - **Done when:** `flutter test test/features/presets/preset_asset_source_test.dart` passes: corrupt JSON gives an `AsyncError` and exactly one `LOAD_FAILED` line; the fixture plus one bad spec gives exactly one `SPEC_SKIPPED` line; no line contains a form id, name, count or exception text; the shipped asset loads with 0 forms; a fresh `ProviderContainer` has `appliedPresetProvider == null` (AC-8.1). `flutter test test/privacy/` passes (whole-tree scan covers the new folder); `git diff --stat tool/privacy/reviewed_packages.txt android/app/reviewed_dependencies.txt` is empty.
 
-### - [ ] FEAT-011-T03 — English strings and `preset_strings.dart`
+### - [x] FEAT-011-T03 — English strings and `preset_strings.dart`
 - **Implements:** FR-23 (English), FR-6 (summary), FR-14 (keyed notes), FR-15 (footer), FR-24, NFR-4 · **ADRs:** ADR-001
 - **Depends on:** T01
 - **Size:** S (0.25 d)

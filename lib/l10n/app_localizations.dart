@@ -897,6 +897,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ExactSize opens only the photo you choose. It does not browse your gallery or your files.'**
   String get privacyReads;
+
+  /// FEAT-011 FR-5, FR-13: label of the target-step row that opens the form list, shown while no preset is applied.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a form'**
+  String get presetChooseForm;
+
+  /// FEAT-011 FR-13: target-step row while a preset is applied. form is the form name as published (data, already in a bidi isolate; never translate it); kind is presetKindPhoto or presetKindSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'{form} · {kind}'**
+  String presetApplied(String form, String kind);
+
+  /// FEAT-011 FR-3: kind of upload a spec row is for: the applicant's photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get presetKindPhoto;
+
+  /// FEAT-011 FR-3: kind of upload a spec row is for: the applicant's signature image.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature'**
+  String get presetKindSignature;
+
+  /// FEAT-011 FR-6: summary of a spec row with a minimum and maximum file size. pixels is checkPixels, size is kbRange, format is JPEG or PNG; each arrives already in a bidi isolate.
+  ///
+  /// In en, this message translates to:
+  /// **'{pixels} · {size} · {format}'**
+  String presetSpecRange(String pixels, String size, String format);
+
+  /// FEAT-011 FR-6: summary of a spec row with only a maximum file size. pixels is checkPixels, max is kbAmount, format is JPEG or PNG; each arrives already in a bidi isolate.
+  ///
+  /// In en, this message translates to:
+  /// **'{pixels} · up to {max} · {format}'**
+  String presetSpecUpTo(String pixels, String max, String format);
+
+  /// FEAT-011 FR-6: title of the form list screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Forms'**
+  String get presetListTitle;
+
+  /// FEAT-011 FR-8: hint in the search field of the form list.
+  ///
+  /// In en, this message translates to:
+  /// **'Search forms'**
+  String get presetSearchHint;
+
+  /// FEAT-011 FR-8: empty state when the search matches no form.
+  ///
+  /// In en, this message translates to:
+  /// **'No form matches.'**
+  String get presetNoMatch;
+
+  /// FEAT-011 FR-8: button under the empty state; it closes the list and returns to the manual size fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter sizes yourself'**
+  String get presetEnterYourself;
+
+  /// FEAT-011 FR-14: note on a spec whose form also states a DPI. dpi is an already formatted whole number in a bidi isolate. Keep DPI as is.
+  ///
+  /// In en, this message translates to:
+  /// **'This form also asks for {dpi} DPI. ExactSize does not set DPI.'**
+  String presetNoteDpi(String dpi);
+
+  /// FEAT-011 FR-14: note on a spec whose form also states a background rule. Never name a colour.
+  ///
+  /// In en, this message translates to:
+  /// **'This form also has a background rule. ExactSize does not change backgrounds.'**
+  String get presetNoteBackground;
+
+  /// FEAT-011 FR-14: note on a spec whose form also has content rules such as face position.
+  ///
+  /// In en, this message translates to:
+  /// **'This form also has other photo rules. ExactSize does not check them.'**
+  String get presetNoteContent;
+
+  /// FEAT-011 FR-15: fixed footer line at the end of the form list. Never use words like official, approved or guaranteed.
+  ///
+  /// In en, this message translates to:
+  /// **'ExactSize is not affiliated with the organisations listed.'**
+  String get presetNotAffiliated;
+
+  /// FEAT-011 FR-16, AC-6.1: shown instead of the Choose a form row when the bundled form list cannot be read. Do not mention the internet or a connection: nothing is downloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Forms could not be loaded. You can enter the sizes yourself.'**
+  String get presetLoadFailed;
+
+  /// FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.
+  ///
+  /// In en, this message translates to:
+  /// **'{code, select, other{{code}}}'**
+  String presetCountry(String code);
+
+  /// FEAT-011 FR-2: category of a form, shown in the form list and searched. Translate each case; keep the case names.
+  ///
+  /// In en, this message translates to:
+  /// **'{category, select, job{Jobs} exam_admission{Exams and admissions} visa_passport{Visa and passport} other{Other}}'**
+  String presetCategory(String category);
 }
 
 class _AppLocalizationsDelegate
