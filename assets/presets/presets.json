@@ -457,7 +457,8 @@
             {
               "code": "content"
             }
-          ]
+          ],
+          "engineReview": "KB-only, under 30 KB: the 600 x 600 FR-20 test size is larger than a passport photo; applicants enter the smaller size their photo needs, and a size that cannot reach 30 KB gets the normal cannot-reach message. Accepted 2026-11-27 (Product Owner left the choice to Claude)."
         }
       ]
     },

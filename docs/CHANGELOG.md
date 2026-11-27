@@ -5,6 +5,24 @@ Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: wha
 Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review).
 
 ## [Unreleased]
+- FEAT-011-T15: 17 forms confirmed by the Product Owner (10 with exact pixel sizes, 7 KB-only) entered in assets/presets/presets.json with country names in six languages (AI-reviewed only); pk-fpsc photo carries an engineReview reason (KB-only, under 30 KB, too blurry at the 600 × 600 test size).
+- FEAT-011-T15 preset data: bd-bpsc-bcs, source "Photo/Sign Validator", checked 2026-11-27.
+- FEAT-011-T15 preset data: bd-teletalk-govt-jobs, source "Help", checked 2026-11-27.
+- FEAT-011-T15 preset data: bd-ntrca-registration, source "Help", checked 2026-11-27.
+- FEAT-011-T15 preset data: bd-ru-admission, source "Photo/Selfie Guideline", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-ibps-crp-clerk, source "Guidelines for scanning and Upload of Documents", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-sbi-recruitment, source "Engagement of Specialist Cadre Officers on Contract Basis (Advertisement No: CRPD/SCO/2026-27/13)", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-kerala-psc-otr, source "One Time Registration instructions", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-upsc-caf, source "Instructions for Uploading the Photo & Signature", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-ssc-cgl, source "Notice: Combined Graduate Level Examination, 2026", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-nta-neet-ug, source "Information Bulletin for NEET(UG)-2026", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-nta-jee-main, source "Information Bulletin-Joint Entrance Examination (Main) – 2027", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-evisa, source "e-Visa", checked 2026-11-27.
+- FEAT-011-T15 preset data: in-embassy-consular-photo, source "Practical guidelines for uploading photo and signature", checked 2026-11-27.
+- FEAT-011-T15 preset data: pk-fpsc, source "Guidelines for Online Application Submission at FPSC", checked 2026-11-27.
+- FEAT-011-T15 preset data: mx-unam-suayed, source "Instructivo, Concurso de Selección Noviembre 2026", checked 2026-11-27.
+- FEAT-011-T15 preset data: us-dv-lottery, source "Instructions For The 2026 Diversity Immigrant Visa Program (DV-2026)", checked 2026-11-27.
+- FEAT-011-T15 preset data: sg-ica-photo, source "Photo guidelines", checked 2026-11-27.
 - FEAT-011-T14: gate G-final passed. Release-build offline run on the Realme 2 Pro (pick, search, compress, restart, enum-only logs, permissions) recorded in claims.md; P2 CI green (attempt 2) and P2b green; the Product Owner accepted the open items. Only T15 (the confirmed form list) remains before release, with FEAT-014.
 - FEAT-011-T21: preset_a11y_test.dart covers KB-only presets (Test Form C row and the applied FR-26 line at 200% in all 7 locales, ar isolate and digits, one button node). Gate G3 passed: the Product Owner accepted the five Realme 2 Pro screenshots (list row, applied with width/height typed, applied empty, ar, 200%).
 - FEAT-011-T20: FR-26 line on the target step: while a KB-only preset is applied, "This form sets no pixel size. Enter a width and height, or use your photo's size." is the first notice under the row and follows the label in the pick announcement; no pixel size is ever proposed. preset_row_test.dart covers AC-4.7 to AC-4.9, "Use photo size" and the announcement.
