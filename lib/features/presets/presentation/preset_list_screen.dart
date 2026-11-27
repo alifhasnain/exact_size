@@ -194,9 +194,11 @@ class _SpecKey extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    // One node: form name, kind, size, KB range, format and notes (AC-9.3).
     return MergeSemantics(
       child: Semantics(
         button: true,
+        label: s.name(form),
         child: Material(
           type: MaterialType.transparency,
           shape: presetKeyShape,
