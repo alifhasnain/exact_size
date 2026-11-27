@@ -8,6 +8,7 @@ import 'package:exact_size/features/presets/domain/parse_library.dart';
 import 'package:exact_size/features/presets/domain/preset_types.dart';
 import 'package:exact_size/features/presets/presentation/preset_list_screen.dart';
 import 'package:exact_size/features/presets/presentation/preset_providers.dart';
+import 'package:exact_size/features/target/domain/target_input.dart';
 import 'package:exact_size/features/target/presentation/target_form_controller.dart';
 import 'package:exact_size/features/target/presentation/target_screen.dart';
 import 'package:flutter/services.dart';
@@ -37,7 +38,7 @@ Future<void> main() async {
   );
   if (name == 'applied') {
     final spec = parseLibrary(presetFixtureLibrary).forms.first.specs.first;
-    c.read(targetFormProvider.notifier).fill(spec.input);
+    c.read(targetFormProvider.notifier).fill(spec.applyTo(const TargetInput()));
     c.read(appliedPresetProvider.notifier).apply(const AppliedPreset(formId: 'test-form-a', kind: SpecKind.photo));
   }
   final forms = parseLibrary(presetFixtureLibrary).forms;
@@ -51,7 +52,10 @@ Future<void> main() async {
           builder: (context) => MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(name == 'font200' ? 2 : 1)),
             child: onList
-                ? _Typing(query: name == 'nomatch' ? 'zzzz' : null, child: PresetListScreen(forms: forms))
+                ? _Typing(
+                    query: name == 'nomatch' ? 'zzzz' : null,
+                    child: PresetListScreen(forms: forms),
+                  )
                 : TargetScreen(
                     info: const SourceInfo(
                       rawWidth: 4000,

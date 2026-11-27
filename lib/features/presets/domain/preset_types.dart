@@ -1,6 +1,6 @@
 import '../../compression/domain/compression_result.dart';
+import '../../target/domain/number_text.dart';
 import '../../target/domain/target_input.dart';
-import '../../target/domain/target_spec.dart';
 
 /// Which upload a spec row is for (FEAT-011 FR-3).
 enum SpecKind { photo, signature }
@@ -52,18 +52,20 @@ final class ContentNote extends NotCovered {
 final class PresetSpec {
   const PresetSpec({
     required this.kind,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.minKb,
     required this.maxKb,
     required this.format,
     this.notCovered = const [],
     this.engineReview,
-  });
+  }) : assert((width == null) == (height == null), 'width and height: both or neither');
 
   final SpecKind kind;
-  final int width;
-  final int height;
+
+  /// Null together with [height] for a KB-only spec: the form states no pixel size (FR-3, 2.0).
+  final int? width;
+  final int? height;
   final int? minKb;
   final int maxKb;
   final OutputFormat format;
@@ -72,17 +74,25 @@ final class PresetSpec {
   /// Product Owner reason for an FR-20 exception; never rendered (AC-5.5).
   final String? engineReview;
 
-  /// The same target manual entry of these values gives (FEAT-005).
-  TargetSpec get target => TargetSpec(width: width, height: height, minKb: minKb, maxKb: maxKb, format: format);
+  /// The form states a KB range and format but no pixel size (FR-3, 2.0).
+  bool get kbOnly => width == null;
 
-  /// Field texts for `TargetFormController.fill`; no minimum gives ''.
-  TargetInput get input => TargetInput(
-    width: '$width',
-    height: '$height',
-    minKb: minKb == null ? '' : '$minKb',
-    maxKb: '$maxKb',
-    format: format,
-  );
+  /// What `TargetFormController.fill` gets on a pick (FR-11). A full spec replaces all five values
+  /// (no minimum gives ''); a KB-only spec keeps [current] width and height exactly as they are.
+  TargetInput applyTo(TargetInput current) {
+    final min = minKb == null ? '' : '$minKb';
+    if (kbOnly) return current.copyWith(minKb: min, maxKb: '$maxKb', format: format);
+    return TargetInput(width: '$width', height: '$height', minKb: min, maxKb: '$maxKb', format: format);
+  }
+
+  /// Whether [current] still holds this spec (FR-13): each field read with FEAT-005's own cleaning,
+  /// so leading zeros and native digits match. A KB-only spec ignores width and height.
+  bool matches(TargetInput current) {
+    bool whole(String text, int value) => readNumber(cleanNumberText(text)) == Whole(value);
+    final minOk = minKb == null ? readNumber(cleanNumberText(current.minKb)) is Empty : whole(current.minKb, minKb!);
+    if (current.format != format || !whole(current.maxKb, maxKb) || !minOk) return false;
+    return kbOnly || (whole(current.width, width!) && whole(current.height, height!));
+  }
 }
 
 /// Where the form's rules were read (FR-4); shown by FEAT-014, not here.

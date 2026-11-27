@@ -72,9 +72,11 @@ PresetSpec? _spec(Object? s) {
   final kind = SpecKind.values.asNameMap()[s['kind']];
   final format = OutputFormat.values.asNameMap()[s['format']];
   final w = s['width'], h = s['height'], min = s['minKb'], max = s['maxKb'];
-  if (kind == null || format == null || w is! int || h is! int || max is! int) return null;
+  if (kind == null || format == null || max is! int) return null;
   if (min != null && min is! int) return null;
-  if (checkTarget(Target(w, h)) != null) return null;
+  // Both null: a KB-only spec (2.0). Otherwise both must be whole numbers inside the engine limits.
+  final kbOnly = w == null && h == null;
+  if (!kbOnly && (w is! int || h is! int || checkTarget(Target(w, h)) != null)) return null;
   final kb = validateTarget(maxText: '$max', minText: min == null ? '' : '$min', format: format.name);
   if (kb is! ValidTarget) return null;
   final notes = <NotCovered>[];
@@ -92,8 +94,8 @@ PresetSpec? _spec(Object? s) {
   final review = s['engineReview'];
   return PresetSpec(
     kind: kind,
-    width: w,
-    height: h,
+    width: w as int?,
+    height: h as int?,
     minKb: min as int?,
     maxKb: max,
     format: format,

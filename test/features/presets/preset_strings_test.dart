@@ -44,6 +44,14 @@ void main() {
     expect(t, contains('${lri}2,048 KB$pdi'));
   });
 
+  test('KB-only summary shows "Pixel size not stated" with the KB part isolated (FR-6, 2.0)', () {
+    const range = PresetSpec(kind: SpecKind.photo, minKb: 10, maxKb: 200, format: OutputFormat.jpeg);
+    const upTo = PresetSpec(kind: SpecKind.photo, maxKb: 200, format: OutputFormat.jpeg);
+    expect(plain(s.summary(range)), 'Pixel size not stated · 10–200 KB · JPEG');
+    expect(plain(s.summary(upTo)), 'Pixel size not stated · up to 200 KB · JPEG');
+    expect(s.summary(range), contains('${lri}10–200 KB$pdi'));
+  });
+
   test('DPI note with 200, fixed notes', () {
     expect(s.note(const DpiNote(200)), 'This form also asks for ${lri}200$pdi DPI. ExactSize does not set DPI.');
     expect(s.note(const BackgroundNote()), contains('does not change backgrounds'));

@@ -6,7 +6,6 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../ui/booth.dart';
-import '../../target/domain/target_input.dart';
 import '../../target/presentation/target_form_controller.dart';
 import '../domain/preset_types.dart';
 import 'preset_list_screen.dart';
@@ -90,12 +89,12 @@ class PresetRow extends ConsumerWidget {
   /// The picked form and spec while the five values still equal it (FR-13), else (null, null).
   (PresetForm?, PresetSpec?) _applied(WidgetRef ref, List<PresetForm> forms) {
     final picked = ref.watch(appliedPresetProvider);
-    final result = ref.watch(targetFormProvider).result;
+    final input = ref.watch(targetFormProvider).input;
     if (picked == null) return (null, null);
     for (final f in forms) {
       if (f.id != picked.formId) continue;
       for (final spec in f.specs) {
-        if (spec.kind == picked.kind && result is TargetInputValid && result.spec == spec.target) return (f, spec);
+        if (spec.kind == picked.kind && spec.matches(input)) return (f, spec);
       }
     }
     return (null, null);
@@ -106,7 +105,7 @@ class PresetRow extends ConsumerWidget {
     if (pick == null || !context.mounted) return; // Back: values unchanged (AC-1.4)
     final form = forms.firstWhere((f) => f.id == pick.formId);
     final spec = form.specs.firstWhere((x) => x.kind == pick.kind);
-    ref.read(targetFormProvider.notifier).fill(spec.input);
+    ref.read(targetFormProvider.notifier).fill(spec.applyTo(ref.read(targetFormProvider).input));
     ref.read(appliedPresetProvider.notifier).apply(AppliedPreset(formId: form.id, kind: spec.kind));
     onFilled();
     FocusManager.instance.primaryFocus?.unfocus(); // AC-4.1: keyboard closed

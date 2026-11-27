@@ -21,6 +21,9 @@ import 'package:path_provider/path_provider.dart';
 
 import 'preset_fixture_data.dart';
 
+/// FR-20 (2.0): the size used for KB-only specs, the one crop_to_compression.dart already covers.
+const kbOnlyTestSize = Target(600, 600);
+
 /// FEAT-011-T08 (FR-20, NFR-1, NFR-9): every preset spec runs through the real engine on
 /// generated synthetic images (no binary committed, OQ-T2): probe, default crop at W x H, then
 /// compression to the KB range and format, the same calls as crop_to_compression.dart.
@@ -92,7 +95,8 @@ void main() {
       for (final spec in form.specs) {
         final at = '${form.id} ${spec.kind.name}';
         final src = sources[spec.kind]!;
-        final t = Target(spec.width, spec.height);
+        // A KB-only spec has no pixel size of its own; FR-20 runs it at one fixed test size.
+        final t = spec.kbOnly ? kbOnlyTestSize : Target(spec.width!, spec.height!);
         final info = (await const SourceProbe().probe(src) as ProbeOk).info;
         final r = await const CropRenderer().render(
           RenderRequest(
@@ -114,8 +118,7 @@ void main() {
             );
             final window = ByteWindow.fromKb(minKb: spec.minKb, maxKb: spec.maxKb);
             outcome = switch (result) {
-              ReadyToWrite(:final bytes) when size == (spec.width, spec.height) && window.contains(bytes.length) =>
-                'READY',
+              ReadyToWrite(:final bytes) when size == (t.width, t.height) && window.contains(bytes.length) => 'READY',
               ReadyToWrite() => 'SIZE_OR_KB_MISMATCH',
               PlanFailed(:final failure) => failure.reason.code,
             };

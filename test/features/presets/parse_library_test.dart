@@ -147,24 +147,102 @@ void main() {
   test('minKb null gives an empty minimum field', () {
     final sig = parseLibrary(fixture()).forms.first.specs.last;
     expect(sig.minKb, isNull);
-    expect(sig.input.minKb, '');
+    expect(sig.applyTo(const TargetInput(minKb: '7')).minKb, '');
   });
 
-  test('spec.target equals the TargetSpec manual entry of the same values gives', () {
-    for (final s in parseLibrary(fixture()).forms.expand((f) => f.specs)) {
-      final manual = validateTargetInput(
-        TargetInput(
-          width: '${s.width}',
-          height: '${s.height}',
-          minKb: s.minKb == null ? '' : '${s.minKb}',
-          maxKb: '${s.maxKb}',
-          format: s.format,
-        ),
+  test('both width and height null parse as a KB-only spec (FR-3, 2.0)', () {
+    final l = parseLibrary(
+      lib([
+        spec({'width': null, 'height': null, 'minKb': 10, 'maxKb': 200}),
+      ]),
+    );
+    expect(l.skipped, 0);
+    final s = l.forms.single.specs.single;
+    expect(s.kbOnly, isTrue);
+    expect((s.width, s.height), (null, null));
+  });
+
+  for (final (name, over) in [
+    ('width null, height set', {'width': null}),
+    ('height null, width set', {'height': null}),
+    ('width as letters', {'width': 'x'}),
+    ('width as a string', {'width': '200'}),
+  ]) {
+    test('$name skips the spec and counts it', () {
+      final l = parseLibrary(
+        lib([
+          spec(over),
+          spec({'kind': 'signature', 'minKb': null, 'maxKb': 20}),
+        ]),
       );
+      expect(l.skipped, 1);
+      expect(l.forms.single.specs.single.kind, SpecKind.signature);
+    });
+  }
+
+  const full = PresetSpec(
+    kind: SpecKind.photo,
+    width: 200,
+    height: 230,
+    minKb: 20,
+    maxKb: 50,
+    format: OutputFormat.jpeg,
+  );
+  const kbOnly = PresetSpec(kind: SpecKind.photo, minKb: 10, maxKb: 200, format: OutputFormat.jpeg);
+  const noMin = PresetSpec(kind: SpecKind.signature, width: 140, height: 60, maxKb: 20, format: OutputFormat.png);
+
+  test('applyTo: a full spec replaces all five values; a KB-only spec keeps width and height (FR-11, AC-4.7)', () {
+    const typed = TargetInput(width: '300', height: '400', minKb: '1', maxKb: '9', format: OutputFormat.png);
+    expect(full.applyTo(typed), const TargetInput(width: '200', height: '230', minKb: '20', maxKb: '50'));
+    expect(noMin.applyTo(typed), const TargetInput(width: '140', height: '60', maxKb: '20', format: OutputFormat.png));
+    expect(kbOnly.applyTo(typed), const TargetInput(width: '300', height: '400', minKb: '10', maxKb: '200'));
+    expect(kbOnly.applyTo(const TargetInput()), const TargetInput(minKb: '10', maxKb: '200'));
+  });
+
+  test(
+    'matches: native digits and leading zeros match; each changed field breaks it, changing back restores it (FR-13)',
+    () {
+      final base = full.applyTo(const TargetInput());
+      expect(full.matches(base), isTrue);
+      expect(full.matches(const TargetInput(width: '٢٠٠', height: '0230', minKb: '۲۰', maxKb: ' 50 ')), isTrue);
+      for (final changed in [
+        base.copyWith(width: '201'),
+        base.copyWith(height: ''),
+        base.copyWith(minKb: ''),
+        base.copyWith(maxKb: '51'),
+        base.copyWith(format: OutputFormat.png),
+      ]) {
+        expect(full.matches(changed), isFalse, reason: '$changed');
+      }
+      final nb = noMin.applyTo(const TargetInput());
+      expect(noMin.matches(nb), isTrue);
+      expect(noMin.matches(nb.copyWith(minKb: '5')), isFalse);
+    },
+  );
+
+  test('matches: a KB-only spec ignores width and height, even empty or invalid (AC-4.8, AC-4.9)', () {
+    for (final wh in [('', ''), ('300', '400'), ('1.5', 'x'), ('0', '99999')]) {
+      final input = TargetInput(width: wh.$1, height: wh.$2, minKb: '10', maxKb: '200');
+      expect(kbOnly.matches(input), isTrue, reason: '$wh');
+    }
+    const base = TargetInput(minKb: '10', maxKb: '200');
+    expect(kbOnly.matches(base.copyWith(minKb: '11')), isFalse);
+    expect(kbOnly.matches(base.copyWith(maxKb: '199')), isFalse);
+    expect(kbOnly.matches(base.copyWith(format: OutputFormat.png)), isFalse);
+  });
+
+  test('for every fixture full spec, matches agrees with manual-entry validation (1.0 equivalence)', () {
+    for (final s in parseLibrary(fixture()).forms.expand((f) => f.specs).where((s) => !s.kbOnly)) {
+      final input = s.applyTo(const TargetInput());
+      final manual = validateTargetInput(input);
       expect(manual, isA<TargetInputValid>());
-      expect((manual as TargetInputValid).spec, s.target);
-      expect(validateTargetInput(s.input), isA<TargetInputValid>());
-      expect(s.target.format, OutputFormat.jpeg);
+      final spec = (manual as TargetInputValid).spec;
+      expect(
+        (spec.width, spec.height, spec.minKb, spec.maxKb, spec.format),
+        (s.width, s.height, s.minKb, s.maxKb, s.format),
+      );
+      expect(s.matches(input), isTrue);
+      expect(s.matches(input.copyWith(width: '${s.width! + 1}')), isFalse);
     }
   });
 

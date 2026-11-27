@@ -28,10 +28,14 @@ class PresetStrings {
   /// "issuer · category" under the form name in the list (FR-6).
   String issuerLine(PresetForm form) => '${_fsi(form.issuer)} · ${category(form.category)}';
 
-  /// "200 × 230 px · 20–50 KB · JPEG", or "… · up to 20 KB · …" without a minimum (FR-6).
+  /// "200 × 230 px · 20–50 KB · JPEG", or "… · up to 20 KB · …" without a minimum (FR-6);
+  /// a KB-only spec shows "Pixel size not stated" in place of the pixel size.
   String summary(PresetSpec s) {
     // One LTR isolate opens in the width and closes in the height (as CheckMessages.pixels).
-    final pixels = _l10n.checkPixels('\u2066${_number.format(s.width)}', '${_number.format(s.height)}\u2069');
+    final pixels = switch ((s.width, s.height)) {
+      (final w?, final h?) => _l10n.checkPixels('\u2066${_number.format(w)}', '${_number.format(h)}\u2069'),
+      _ => _l10n.presetAnyPixelSize, // KB-only spec (FR-6, 2.0)
+    };
     final format = _lri(s.format == OutputFormat.jpeg ? 'JPEG' : 'PNG');
     return switch (s.minKb) {
       final min? => _l10n.presetSpecRange(
