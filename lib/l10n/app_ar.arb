@@ -149,5 +149,10 @@
   "presetCountry": "{code, select, BD{بنغلاديش} FR{فرنسا} IN{الهند} MX{المكسيك} PK{باكستان} SG{سنغافورة} US{الولايات المتحدة} other{{code}}}",
   "presetCategory": "{category, select, job{التوظيف} exam_admission{الامتحانات والقبول} visa_passport{التأشيرات وجوازات السفر} other{أخرى}}",
   "presetAnyPixelSize": "الأبعاد غير مذكورة",
-  "presetKbOnlyNote": "لا يذكر هذا النموذج الأبعاد بالبكسل. أدخل العرض والارتفاع، أو استخدم أبعاد الصورة."
+  "presetKbOnlyNote": "لا يذكر هذا النموذج الأبعاد بالبكسل. أدخل العرض والارتفاع، أو استخدم أبعاد الصورة.",
+  "presetSourceLine": "المصدر: {title} ({issuer})",
+  "presetWebsiteLine": "الموقع الإلكتروني: {host}",
+  "presetLastChecked": "آخر مراجعة: {date}",
+  "presetCheckNotice": "قارن هذه المواصفات بالإعلان الرسمي للجهة أو تعليمات التقديم قبل رفع الصورة. قد تتغير هذه المواصفات.",
+  "presetCheckNoticeOld": "لم تتم مراجعة هذه المواصفات منذ أكثر من {days} يومًا. قارنها بالإعلان الرسمي للجهة أو تعليمات التقديم قبل رفع الصورة."
 }

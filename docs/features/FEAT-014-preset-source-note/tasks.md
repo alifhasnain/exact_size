@@ -68,7 +68,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 - **Scope:** stop and tell the Product Owner first. One short impeccable pass on Material 3 and the FEAT-011 design note `t09/preset_design.md`: icon, spacing, whether the prompt looks different from the lines (tech section 10: a new widget only if it does), placement under the notes and between the issuer line and first spec key. No image comps, no reviewer subagents, one round. Result in `docs/features/FEAT-014-preset-source-note/t05/source_design.md`; accepted copy fixes go into `app_en.arb` in this task.
 - **Done when:** the design note exists with date; the Product Owner's acceptance (or named fixes) is recorded in the Test record as G1; `preset_strings_test.dart` still passes after any copy fix.
 
-### - [ ] FEAT-014-T06 — Translate the five strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
+### - [x] FEAT-014-T06 — Translate the five strings (es, pt, hi, id, ar) — Product Owner runs `/l10n-translate`
 - **Implements:** FR-9, NFR-4, AC-5.4 · **ADRs:** —
 - **Depends on:** T05 (G1; wording final)
 - **Size:** M (0.5 d; Product Owner run time extra)
@@ -188,6 +188,7 @@ _Filled in by T05, T06, T09 and T10 (date, device or CI run, result). Synthetic 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
 | 2026-11-27 | T05 | G1 design and copy: `t05/source_design.md` 0.1 accepted as proposed (Product Owner delegated: "do what you think is right"): `history` icon on the block, prompt in the same weight as the lines, card lines `bodySmall` at 80% (9.8:1 on the plate), the five English strings unchanged | — | Passed |
+| 2026-11-28 | T06 | /l10n-translate es, pt, hi, id, ar (Product Owner run): 5 keys each, one blind Sonnet review per language, 13 fixes, open list empty, AI-reviewed only | local | Passed: gen-l10n no untranslated keys; preset, copy and privacy tests 220/220 |
 
 ## Instructions for Claude Code
 - Read `prd.md`, `tech.md` and ADR-001 before starting a task.

@@ -149,5 +149,10 @@
   "presetCountry": "{code, select, BD{बांग्लादेश} FR{फ़्रांस} IN{भारत} MX{मेक्सिको} PK{पाकिस्तान} SG{सिंगापुर} US{अमेरिका} other{{code}}}",
   "presetCategory": "{category, select, job{नौकरी} exam_admission{परीक्षा और दाख़िला} visa_passport{वीज़ा और पासपोर्ट} other{अन्य}}",
   "presetAnyPixelSize": "पिक्सेल माप नहीं बताया गया",
-  "presetKbOnlyNote": "यह फ़ॉर्म पिक्सेल माप नहीं बताता। चौड़ाई और ऊँचाई डालें या फ़ोटो का माप इस्तेमाल करें।"
+  "presetKbOnlyNote": "यह फ़ॉर्म पिक्सेल माप नहीं बताता। चौड़ाई और ऊँचाई डालें या फ़ोटो का माप इस्तेमाल करें।",
+  "presetSourceLine": "स्रोत: {title} ({issuer})",
+  "presetWebsiteLine": "वेबसाइट: {host}",
+  "presetLastChecked": "आख़िरी जाँच: {date}",
+  "presetCheckNotice": "अपलोड करने से पहले इन साइज़ को अपने फ़ॉर्म की अधिसूचना या निर्देशों से मिला लें। ये साइज़ बदल सकते हैं।",
+  "presetCheckNoticeOld": "इन साइज़ की आख़िरी जाँच {days} दिन से ज़्यादा पहले हुई थी। अपलोड करने से पहले इन्हें अपने फ़ॉर्म की अधिसूचना या निर्देशों से मिला लें।"
 }

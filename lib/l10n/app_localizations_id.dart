@@ -624,25 +624,25 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String presetSourceLine(String title, String issuer) {
-    return 'Source: $title ($issuer)';
+    return 'Sumber: $title ($issuer)';
   }
 
   @override
   String presetWebsiteLine(String host) {
-    return 'Website: $host';
+    return 'Situs web: $host';
   }
 
   @override
   String presetLastChecked(String date) {
-    return 'Last checked: $date';
+    return 'Terakhir diperiksa: $date';
   }
 
   @override
   String get presetCheckNotice =>
-      'Check these sizes against your form\'s notice or instructions before you upload. They can change.';
+      'Bandingkan ukuran ini dengan pengumuman atau petunjuk pengisian formulir sebelum mengunggah. Ukuran ini dapat berubah sewaktu-waktu.';
 
   @override
   String presetCheckNoticeOld(String days) {
-    return 'These sizes were last checked more than $days days ago. Check your form\'s notice or instructions before you upload.';
+    return 'Ukuran ini terakhir diperiksa lebih dari $days hari yang lalu. Bandingkan dengan pengumuman atau petunjuk pengisian formulir sebelum mengunggah.';
   }
 }

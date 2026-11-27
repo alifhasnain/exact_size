@@ -149,5 +149,10 @@
   "presetCountry": "{code, select, BD{Bangladesh} FR{França} IN{Índia} MX{México} PK{Paquistão} SG{Singapura} US{Estados Unidos} other{{code}}}",
   "presetCategory": "{category, select, job{Emprego} exam_admission{Provas e ingresso em cursos} visa_passport{Visto e passaporte} other{Outros}}",
   "presetAnyPixelSize": "Dimensões não indicadas",
-  "presetKbOnlyNote": "Este formulário não indica dimensões em pixels. Insira a largura e a altura ou use as dimensões da foto."
+  "presetKbOnlyNote": "Este formulário não indica dimensões em pixels. Insira a largura e a altura ou use as dimensões da foto.",
+  "presetSourceLine": "Fonte: {title} ({issuer})",
+  "presetWebsiteLine": "Site: {host}",
+  "presetLastChecked": "Especificações revisadas em {date}",
+  "presetCheckNotice": "Confira estas especificações no edital ou nas instruções do formulário antes de enviar a imagem. Elas podem mudar.",
+  "presetCheckNoticeOld": "Estas especificações foram revisadas pela última vez há mais de {days} dias. Confira-as no edital ou nas instruções do formulário antes de enviar a imagem."
 }

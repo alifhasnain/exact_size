@@ -620,25 +620,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String presetSourceLine(String title, String issuer) {
-    return 'Source: $title ($issuer)';
+    return 'المصدر: $title ($issuer)';
   }
 
   @override
   String presetWebsiteLine(String host) {
-    return 'Website: $host';
+    return 'الموقع الإلكتروني: $host';
   }
 
   @override
   String presetLastChecked(String date) {
-    return 'Last checked: $date';
+    return 'آخر مراجعة: $date';
   }
 
   @override
   String get presetCheckNotice =>
-      'Check these sizes against your form\'s notice or instructions before you upload. They can change.';
+      'قارن هذه المواصفات بالإعلان الرسمي للجهة أو تعليمات التقديم قبل رفع الصورة. قد تتغير هذه المواصفات.';
 
   @override
   String presetCheckNoticeOld(String days) {
-    return 'These sizes were last checked more than $days days ago. Check your form\'s notice or instructions before you upload.';
+    return 'لم تتم مراجعة هذه المواصفات منذ أكثر من $days يومًا. قارنها بالإعلان الرسمي للجهة أو تعليمات التقديم قبل رفع الصورة.';
   }
 }

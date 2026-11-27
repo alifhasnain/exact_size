@@ -149,5 +149,10 @@
   "presetCountry": "{code, select, BD{Bangladesh} FR{Prancis} IN{India} MX{Meksiko} PK{Pakistan} SG{Singapura} US{Amerika Serikat} other{{code}}}",
   "presetCategory": "{category, select, job{Pekerjaan} exam_admission{Ujian dan penerimaan siswa} visa_passport{Visa dan paspor} other{Lainnya}}",
   "presetAnyPixelSize": "Dimensi tidak dicantumkan",
-  "presetKbOnlyNote": "Formulir ini tidak mencantumkan dimensi piksel. Masukkan lebar dan tinggi, atau gunakan dimensi foto."
+  "presetKbOnlyNote": "Formulir ini tidak mencantumkan dimensi piksel. Masukkan lebar dan tinggi, atau gunakan dimensi foto.",
+  "presetSourceLine": "Sumber: {title} ({issuer})",
+  "presetWebsiteLine": "Situs web: {host}",
+  "presetLastChecked": "Terakhir diperiksa: {date}",
+  "presetCheckNotice": "Bandingkan ukuran ini dengan pengumuman atau petunjuk pengisian formulir sebelum mengunggah. Ukuran ini dapat berubah sewaktu-waktu.",
+  "presetCheckNoticeOld": "Ukuran ini terakhir diperiksa lebih dari {days} hari yang lalu. Bandingkan dengan pengumuman atau petunjuk pengisian formulir sebelum mengunggah."
 }

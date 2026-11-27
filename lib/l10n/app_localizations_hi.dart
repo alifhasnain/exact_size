@@ -625,25 +625,25 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String presetSourceLine(String title, String issuer) {
-    return 'Source: $title ($issuer)';
+    return 'स्रोत: $title ($issuer)';
   }
 
   @override
   String presetWebsiteLine(String host) {
-    return 'Website: $host';
+    return 'वेबसाइट: $host';
   }
 
   @override
   String presetLastChecked(String date) {
-    return 'Last checked: $date';
+    return 'आख़िरी जाँच: $date';
   }
 
   @override
   String get presetCheckNotice =>
-      'Check these sizes against your form\'s notice or instructions before you upload. They can change.';
+      'अपलोड करने से पहले इन साइज़ को अपने फ़ॉर्म की अधिसूचना या निर्देशों से मिला लें। ये साइज़ बदल सकते हैं।';
 
   @override
   String presetCheckNoticeOld(String days) {
-    return 'These sizes were last checked more than $days days ago. Check your form\'s notice or instructions before you upload.';
+    return 'इन साइज़ की आख़िरी जाँच $days दिन से ज़्यादा पहले हुई थी। अपलोड करने से पहले इन्हें अपने फ़ॉर्म की अधिसूचना या निर्देशों से मिला लें।';
   }
 }
