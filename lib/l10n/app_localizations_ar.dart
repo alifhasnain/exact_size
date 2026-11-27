@@ -587,7 +587,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String presetCountry(String code) {
-    String _temp0 = intl.Intl.selectLogic(code, {'other': '$code'});
+    String _temp0 = intl.Intl.selectLogic(code, {
+      'BD': 'بنغلاديش',
+      'FR': 'فرنسا',
+      'IN': 'الهند',
+      'MX': 'المكسيك',
+      'PK': 'باكستان',
+      'SG': 'سنغافورة',
+      'US': 'الولايات المتحدة',
+      'other': '$code',
+    });
     return '$_temp0';
   }
 
