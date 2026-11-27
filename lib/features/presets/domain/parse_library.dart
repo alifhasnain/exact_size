@@ -75,8 +75,8 @@ PresetSpec? _spec(Object? s) {
   if (kind == null || format == null || w is! int || h is! int || max is! int) return null;
   if (min != null && min is! int) return null;
   if (checkTarget(Target(w, h)) != null) return null;
-  if (validateTarget(maxText: '$max', minText: min == null ? '' : '$min', format: format.name) is! ValidTarget)
-    return null;
+  final kb = validateTarget(maxText: '$max', minText: min == null ? '' : '$min', format: format.name);
+  if (kb is! ValidTarget) return null;
   final notes = <NotCovered>[];
   for (final n in s['notCovered'] is List ? s['notCovered'] as List : const []) {
     final note = switch (n) {
