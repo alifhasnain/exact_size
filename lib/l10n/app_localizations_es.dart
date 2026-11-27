@@ -582,7 +582,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get presetLoadFailed =>
-      'No se pudieron cargar los formularios. Puedes ingresar los valores manualmente.';
+      'No se pudo abrir la lista de formularios. Puedes ingresar los valores manualmente.';
 
   @override
   String presetCountry(String code) {

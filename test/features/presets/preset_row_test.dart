@@ -114,7 +114,7 @@ void main() {
   testWidgets('a load failure shows the message and manual entry works (AC-6.1)', (tester) async {
     await pump(tester, asset: '{"schema": 1, "forms": [');
     expect(choose, findsNothing);
-    expect(find.text('Forms could not be loaded. You can enter sizes yourself.'), findsOneWidget);
+    expect(find.text('The form list could not be opened. You can enter sizes yourself.'), findsOneWidget);
     await tester.enterText(field('Width'), '300');
     await tester.enterText(field('Height'), '400');
     await tester.enterText(field('Maximum size'), '100');

@@ -2,7 +2,7 @@
 id: FEAT-011-T09-DESIGN
 title: Preset row and form list — lean design (impeccable, gate G1)
 status: Proposed
-version: 0.1
+version: 0.2
 updated: 2026-11-27
 links: [FEAT-011, FEAT-011-TECH, FEAT-011-TASKS, FEAT-005, FEAT-016-T13-DESIGN, PRODUCT.md]
 ---
@@ -138,6 +138,7 @@ Folded in with the Product Owner's agreement (2026-11-27):
 |---|---|---|---|
 | `presetNoteContent` | "This form also has other photo rules. ExactSize does not check them." | "This form also has other rules for this image. ExactSize does not check them." | The note can sit on a signature spec, where "photo rules" reads wrong |
 | `presetLoadFailed` | "Forms could not be loaded. You can enter the sizes yourself." | "Forms could not be loaded. You can enter sizes yourself." | Matches the empty-state button "Enter sizes yourself" |
+| `presetLoadFailed` (after G2, 2026-11-27) | "Forms could not be loaded. You can enter sizes yourself." | "The form list could not be opened. You can enter sizes yourself." | The Spanish review read "loaded" as a possible download and "forms" as the user's own forms. The list is bundled and nothing is downloaded (FEAT-016 offline claim). The Product Owner left the choice to Claude |
 
 Kept as drafted (the Product Owner reviewed them): `presetListTitle` "Forms"; the category labels "Jobs", "Exams and admissions", "Visa and passport", "Other"; every other T03 string.
 
@@ -165,3 +166,4 @@ Before each screenshot, the foreground app is checked. Only ExactSize's own scre
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | Lean design pass (FEAT-011-T09) |
+| 0.2 | 2026-11-27 | presetLoadFailed reworded after the es review (T13) |

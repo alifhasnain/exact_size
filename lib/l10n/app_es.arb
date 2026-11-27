@@ -145,7 +145,7 @@
   "presetNoteBackground": "Este formulario también tiene una regla sobre el fondo. ExactSize no cambia el fondo.",
   "presetNoteContent": "Este formulario también tiene otras reglas para esta imagen. ExactSize no las verifica.",
   "presetNotAffiliated": "ExactSize no tiene ninguna afiliación con las organizaciones de esta lista.",
-  "presetLoadFailed": "No se pudieron cargar los formularios. Puedes ingresar los valores manualmente.",
+  "presetLoadFailed": "No se pudo abrir la lista de formularios. Puedes ingresar los valores manualmente.",
   "presetCountry": "{code, select, other{{code}}}",
   "presetCategory": "{category, select, job{Empleo} exam_admission{Exámenes y admisiones} visa_passport{Visa y pasaporte} other{Otros}}"
 }

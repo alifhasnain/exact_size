@@ -574,7 +574,7 @@
   "@presetNoteContent": {"description": "FEAT-011 FR-14: note on a spec whose form also has content rules such as face position."},
   "presetNotAffiliated": "ExactSize is not affiliated with the organisations listed.",
   "@presetNotAffiliated": {"description": "FEAT-011 FR-15: fixed footer line at the end of the form list. Never use words like official, approved or guaranteed."},
-  "presetLoadFailed": "Forms could not be loaded. You can enter sizes yourself.",
+  "presetLoadFailed": "The form list could not be opened. You can enter sizes yourself.",
   "@presetLoadFailed": {"description": "FEAT-011 FR-16, AC-6.1: shown instead of the Choose a form row when the bundled form list cannot be read. Do not mention the internet or a connection: nothing is downloaded."},
   "presetCountry": "{code, select, other{{code}}}",
   "@presetCountry": {"description": "FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.", "placeholders": {"code": {"type": "String", "example": "IN"}}},

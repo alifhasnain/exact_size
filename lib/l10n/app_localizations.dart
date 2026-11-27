@@ -985,7 +985,7 @@ abstract class AppLocalizations {
   /// FEAT-011 FR-16, AC-6.1: shown instead of the Choose a form row when the bundled form list cannot be read. Do not mention the internet or a connection: nothing is downloaded.
   ///
   /// In en, this message translates to:
-  /// **'Forms could not be loaded. You can enter sizes yourself.'**
+  /// **'The form list could not be opened. You can enter sizes yourself.'**
   String get presetLoadFailed;
 
   /// FEAT-011 FR-6: country section heading in the form list. code is an ISO 3166-1 country code; each case gives the country name. Cases are added with the form data; other shows the code.

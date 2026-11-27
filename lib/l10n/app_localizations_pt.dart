@@ -586,7 +586,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get presetLoadFailed =>
-      'Forms could not be loaded. You can enter sizes yourself.';
+      'The form list could not be opened. You can enter sizes yourself.';
 
   @override
   String presetCountry(String code) {
