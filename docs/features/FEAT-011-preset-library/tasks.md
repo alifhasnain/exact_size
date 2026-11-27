@@ -133,7 +133,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** the Product Owner types `/l10n-translate <lang>` for es (es-419), pt (pt-BR), hi, id and ar (MSA, Western digits 0-9), one language at a time, vendored `localize-*` skills only. Keys: every `preset*` key. The reviewer brief names the FR-15 banned words ("official", "approved", "guaranteed"), the FEAT-016 rule that no non-allow-listed key mentions the network ("offline", "online", "connect"), and that `select` case keys and placeholders stay identical. Only app strings go to the model, never user data. Status `AI-reviewed only`. Then add the presence-in-6-locales and `select`-cases-per-locale checks to `preset_copy_test.dart`.
 - **Done when:** all five ARBs hold every `preset*` key; `untranslated_messages.json` has no FEAT-011 key; `docs/l10n/ai-review-log.md` has one entry per language with `AI-reviewed only`; T05 (with the new checks), FEAT-016 `privacy_copy_test.dart` and the T12 200% and RTL tests pass in every supported locale.
 
-### - [ ] FEAT-011-T14 — Real-phone offline check, P2 — gate G-final
+### - [x] FEAT-011-T14 — Real-phone offline check, P2 — gate G-final
 - **Implements:** NFR-3, FR-17, FR-18, NFR-5, NFR-9 (evidence) · **ADRs:** —
 - **Depends on:** T06, T13
 - **Size:** M (0.5 d)
@@ -287,6 +287,7 @@ _Filled in by T08, T09, T12, T13, T14, T15, T16, T19 and T21 (one row per check 
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-27 | T14 | Gate G-final | P2 (45959410818), G3, P2b (45992551444) | Passed: the Product Owner accepted the Open items (release waits for T15 and FEAT-014; OQ-5 legal check before release; TalkBack speech covered by tests only; keyboard learning flag depends on the keyboard app; documented inconsistencies). Build done; T15 (confirmed forms) remains. |
 | 2026-11-27 | T21 | P2b CI | run 45992551444 | Green on the first attempt: all three jobs; the API 28 fixture run reports Test Form C photo READY with the other specs, and the planted unreachable spec still reported. |
 | 2026-11-27 | T21 | a11y test for KB-only | host | Pass: Test Form C row reachable and at least 48 dp at 200% in all 7 locales; the applied row with the FR-26 line fits at 200% in all 7; ar summary keeps "10–200 KB" in an LRI isolate with digits 0-9; Test Form C row is one button node holding name, kind, "Pixel size not stated", KB range and format. |
 | 2026-11-27 | T21 | G3 screenshots: list row, applied with 300×400 typed, applied with Width/Height empty, ar applied, 200% applied | Realme 2 Pro, API 36, profile build with the fixture (A/B/C) copied over the asset locally; real flow (synthetic photo chosen from files by its name only) | Taken, ExactSize in front before each capture, under build/preset_g3 (not committed). Settings noted and restored: rotation (1, 0) locked to portrait for the shots, font_scale 0.85 → 2.0 → 0.85, app locale set to ar then cleared. Synthetic file and its MediaStore row deleted; build uninstalled; asset back to `"forms": []`. Gate G3 passed: the Product Owner accepted the five screenshots on 2026-11-27. |

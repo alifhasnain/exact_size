@@ -5,6 +5,7 @@ Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: wha
 Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review).
 
 ## [Unreleased]
+- FEAT-011-T14: gate G-final passed. Release-build offline run on the Realme 2 Pro (pick, search, compress, restart, enum-only logs, permissions) recorded in claims.md; P2 CI green (attempt 2) and P2b green; the Product Owner accepted the open items. Only T15 (the confirmed form list) remains before release, with FEAT-014.
 - FEAT-011-T21: preset_a11y_test.dart covers KB-only presets (Test Form C row and the applied FR-26 line at 200% in all 7 locales, ar isolate and digits, one button node). Gate G3 passed: the Product Owner accepted the five Realme 2 Pro screenshots (list row, applied with width/height typed, applied empty, ar, 200%).
 - FEAT-011-T20: FR-26 line on the target step: while a KB-only preset is applied, "This form sets no pixel size. Enter a width and height, or use your photo's size." is the first notice under the row and follows the label in the pick announcement; no pixel size is ever proposed. preset_row_test.dart covers AC-4.7 to AC-4.9, "Use photo size" and the announcement.
 - FEAT-011-T19: synthetic Test Form C (one KB-only photo spec, 10–200 KB, JPEG) in test_library.json and preset_fixture_data.dart; test counts updated; FR-20 run on the Realme 2 Pro reaches READY for it at 600 × 600 px.
