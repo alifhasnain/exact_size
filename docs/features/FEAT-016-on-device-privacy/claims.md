@@ -2,9 +2,9 @@
 id: FEAT-016-CLAIMS
 title: ExactSize privacy claims register, data inventory and release checklist
 status: Proposed
-version: 0.2
-updated: 2026-11-27
-links: [FEAT-016, FEAT-016-TECH, FEAT-016-TASKS, FEAT-007, FEAT-011, FEAT-013, FEAT-025, FEAT-027]
+version: 0.3
+updated: 2026-11-28
+links: [FEAT-016, FEAT-016-TECH, FEAT-016-TASKS, FEAT-007, FEAT-011, FEAT-013, FEAT-014, FEAT-025, FEAT-027]
 ---
 
 # Privacy claims register and release checklist (FEAT-016)
@@ -102,6 +102,7 @@ Offline means **airplane mode on, Wi-Fi off and mobile data off**. Check it firs
 | Pick: share-in | Target screen | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Target entry | Values accepted | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Pick a preset | Open the form list, search, pick a spec, Continue: works with no delay and no network message (FEAT-011) | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed), synthetic Test Form A/B library (local, uncommitted) | Pass: list opened at once, search filtered, pick filled the fields with the keyboard closed, crop and compression reached "Matches your target" |
+| Pick a preset: source note (FEAT-014) | After the pick, the source block (source, website as plain text, last-checked date, check-notice prompt) shows under the row with no network wait, no link and no network message; see source note | 2026-11-28 | Realme 2 Pro, API 36, release (debug-signed) demo build, synthetic Test Form A/B/C library, fixed demo date | Pass: offline checked (ping "Network is unreachable"); list and card source lines opened at once; after picking Test Form A photo the label, source, website, last-checked line and prompt showed; Continue tapped; logcat for the app held no form id, title, host or date; after force-stop and reopen the row read "Choose a form" with no block |
 | Crop | Continue works | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Compress | Result reached | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass |
 | Check | Verdict shown | 2026-11-27 | Realme 2 Pro, API 36, release (debug-signed) | Pass (Matches your target) |
@@ -138,3 +139,4 @@ These are copied verbatim from the FEAT-016 PRD. Each owner copies its part into
 |---|---|---|
 | 0.1 | 2026-11-27 | First version, from PRD 1.0 section 10 (FEAT-016-T11) |
 | 0.2 | 2026-11-27 | Offline row "Pick a preset" and the preset library release check (FEAT-011-T06) |
+| 0.3 | 2026-11-28 | Offline row "Pick a preset: source note" (FEAT-014-T10, NFR-3); no new claim, permission or data item |
