@@ -75,7 +75,6 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  AppLocalizations lookup(String code) => lookupAppLocalizations(Locale(code));
   Widget target() => TargetScreen(info: _info, onContinue: (_) {});
   Widget list() => PresetListScreen(forms: forms);
   Finder specKeys() => find.descendant(of: find.byType(PresetListScreen), matching: find.byType(InkWell));
@@ -91,19 +90,22 @@ void main() {
     });
   }
 
-  for (final code in ['en', 'ar', 'hi']) {
+  // Every supported locale (T13); en, ar and hi were the G2 set.
+  for (final locale in AppLocalizations.supportedLocales) {
+    final code = locale.toLanguageTag();
+    final l = lookupAppLocalizations(locale);
     testWidgets('$code at 200% on 360×640: no overflow, every spec row reachable, at least 48 dp (AC-9.2, AC-9.4)', (
       tester,
     ) async {
-      await pump(tester, list(), locale: ValueNotifier(Locale(code)), scale: ValueNotifier(2));
+      await pump(tester, list(), locale: ValueNotifier(locale), scale: ValueNotifier(2));
       expect(tester.takeException(), isNull);
       final scrollable = find.descendant(of: find.byType(CustomScrollView), matching: find.byType(Scrollable)).first;
       expect(tester.widget<Scrollable>(scrollable).axisDirection, anyOf(AxisDirection.down, AxisDirection.up));
       // One unique text per spec row, so lazily built rows are found once scrolled to.
       for (final unique in [
         find.textContaining('DPI'),
-        find.text(lookup(code).presetKindSignature),
-        find.text(lookup(code).presetNoteContent),
+        find.text(l.presetKindSignature),
+        find.text(l.presetNoteContent),
       ]) {
         final key = find.ancestor(of: unique, matching: find.byType(InkWell));
         await tester.scrollUntilVisible(key, 80, scrollable: scrollable);
@@ -114,7 +116,7 @@ void main() {
       }
       expect(tester.takeException(), isNull);
 
-      await pump(tester, target(), locale: ValueNotifier(Locale(code)), scale: ValueNotifier(2));
+      await pump(tester, target(), locale: ValueNotifier(locale), scale: ValueNotifier(2));
       expect(tester.takeException(), isNull);
       final row = find.ancestor(of: find.byIcon(Icons.list_alt), matching: find.byType(InkWell));
       expect(tester.getSize(row).height, greaterThanOrEqualTo(48));

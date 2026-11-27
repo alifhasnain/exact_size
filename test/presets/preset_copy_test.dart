@@ -55,6 +55,22 @@ void main() {
     expect(missingDescriptions(en), isEmpty);
   });
 
+  test('every locale has every preset key, translated (FEAT-011-T13)', () {
+    // Keys made only of placeholders and separators read the same in every language.
+    const structural = {'presetApplied', 'presetSpecRange', 'presetCountry'};
+    final en = arb('en');
+    final keys = en.keys.where((k) => k.startsWith('preset')).toSet();
+    final untranslated = jsonDecode(File('docs/l10n/untranslated_messages.json').readAsStringSync()) as Map;
+    for (final l in locales.skip(1)) {
+      final t = arb(l);
+      expect(keys.difference(t.keys.toSet()), isEmpty, reason: '$l is missing preset keys');
+      for (final k in keys.difference(structural)) {
+        expect(t[k], isNot(en[k]), reason: '$l $k is still English');
+      }
+      expect(((untranslated[l] as List?) ?? const []).where((k) => '$k'.startsWith('preset')), isEmpty, reason: l);
+    }
+  });
+
   test('the preset module has no storage, restoration or clipboard code', () {
     final files = {
       for (final f in Directory('lib/features/presets').listSync(recursive: true).whereType<File>())

@@ -130,5 +130,22 @@
   "privacyOutsideTitle": "Aplikasi lain di ponsel Anda",
   "privacyOutside": "Galeri, keyboard, dan aplikasi tempat Anda berbagi mengikuti kebijakan privasinya masing-masing. Beberapa di antaranya dapat mencadangkan atau mengirim file.",
   "privacyReadsTitle": "Apa yang dibaca ExactSize",
-  "privacyReads": "ExactSize hanya membuka foto yang Anda pilih. ExactSize tidak menelusuri galeri atau file Anda."
+  "privacyReads": "ExactSize hanya membuka foto yang Anda pilih. ExactSize tidak menelusuri galeri atau file Anda.",
+  "presetChooseForm": "Pilih formulir",
+  "presetApplied": "{form} · {kind}",
+  "presetKindPhoto": "Foto",
+  "presetKindSignature": "Tanda tangan",
+  "presetSpecRange": "{pixels} · {size} · {format}",
+  "presetSpecUpTo": "{pixels} · hingga {max} · {format}",
+  "presetListTitle": "Formulir",
+  "presetSearchHint": "Cari formulir",
+  "presetNoMatch": "Tidak ada formulir yang cocok.",
+  "presetEnterYourself": "Masukkan sendiri lebar, tinggi, dan ukuran file",
+  "presetNoteDpi": "Formulir ini juga meminta {dpi} DPI. ExactSize tidak menetapkan DPI.",
+  "presetNoteBackground": "Formulir ini juga memiliki aturan tentang latar belakang. ExactSize tidak mengubah latar belakang.",
+  "presetNoteContent": "Formulir ini juga memiliki aturan lain untuk gambar ini. ExactSize tidak memeriksa aturan tersebut.",
+  "presetNotAffiliated": "ExactSize tidak berafiliasi dengan organisasi dalam daftar ini.",
+  "presetLoadFailed": "Daftar formulir tidak dapat ditampilkan. Anda dapat memasukkan sendiri lebar, tinggi, dan ukuran file.",
+  "presetCountry": "{code, select, other{{code}}}",
+  "presetCategory": "{category, select, job{Pekerjaan} exam_admission{Ujian dan penerimaan siswa} visa_passport{Visa dan paspor} other{Lainnya}}"
 }

@@ -130,5 +130,22 @@
   "privacyOutsideTitle": "التطبيقات الأخرى على هاتفك",
   "privacyOutside": "يتبع كلٌّ من معرضك ولوحة المفاتيح والتطبيقات التي تشارك الصور معها سياسة الخصوصية الخاصة به. وقد تنشئ بعضها نسخًا احتياطية أو ترسل ملفات.",
   "privacyReadsTitle": "ما يقرؤه ExactSize",
-  "privacyReads": "لا يفتح ExactSize إلا الصورة التي تختارها. ولا يستعرض معرضك أو ملفاتك."
+  "privacyReads": "لا يفتح ExactSize إلا الصورة التي تختارها. ولا يستعرض معرضك أو ملفاتك.",
+  "presetChooseForm": "اختيار نموذج تقديم",
+  "presetApplied": "{form} · {kind}",
+  "presetKindPhoto": "صورة",
+  "presetKindSignature": "توقيع",
+  "presetSpecRange": "{pixels} · {size} · {format}",
+  "presetSpecUpTo": "{pixels} · حتى {max} · {format}",
+  "presetListTitle": "نماذج التقديم",
+  "presetSearchHint": "البحث في نماذج التقديم",
+  "presetNoMatch": "لا توجد نماذج مطابقة.",
+  "presetEnterYourself": "إدخال العرض والارتفاع وحجم الملف يدويًا",
+  "presetNoteDpi": "يطلب هذا النموذج أيضًا {dpi} DPI. لا يضبط ExactSize قيمة DPI.",
+  "presetNoteBackground": "يتضمن هذا النموذج أيضًا شرطًا يخص الخلفية. لا يغيّر ExactSize الخلفية.",
+  "presetNoteContent": "يتضمن هذا النموذج أيضًا شروطًا أخرى لهذه الصورة. لا يتحقق ExactSize منها.",
+  "presetNotAffiliated": "لا يتبع ExactSize أيًّا من الجهات المدرجة في هذه القائمة.",
+  "presetLoadFailed": "تعذّر فتح قائمة النماذج. يمكنك إدخال العرض والارتفاع وحجم الملف يدويًا.",
+  "presetCountry": "{code, select, other{{code}}}",
+  "presetCategory": "{category, select, job{التوظيف} exam_admission{الامتحانات والقبول} visa_passport{التأشيرات وجوازات السفر} other{أخرى}}"
 }

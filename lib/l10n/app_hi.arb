@@ -130,5 +130,22 @@
   "privacyOutsideTitle": "आपके फ़ोन के दूसरे ऐप",
   "privacyOutside": "आपकी गैलरी, आपका कीबोर्ड और जिन ऐप के साथ आप शेयर करते हैं, वे अपनी निजता नीतियों के मुताबिक काम करते हैं। उनमें से कुछ फ़ाइलों का बैकअप ले सकते हैं या उन्हें कहीं भेज सकते हैं।",
   "privacyReadsTitle": "ExactSize क्या देखता है",
-  "privacyReads": "ExactSize सिर्फ़ वही फ़ोटो खोलता है, जो आप चुनते हैं। यह आपकी गैलरी या बाकी फ़ाइलें नहीं देखता।"
+  "privacyReads": "ExactSize सिर्फ़ वही फ़ोटो खोलता है, जो आप चुनते हैं। यह आपकी गैलरी या बाकी फ़ाइलें नहीं देखता।",
+  "presetChooseForm": "फ़ॉर्म चुनें",
+  "presetApplied": "{form} · {kind}",
+  "presetKindPhoto": "फ़ोटो",
+  "presetKindSignature": "हस्ताक्षर",
+  "presetSpecRange": "{pixels} · {size} · {format}",
+  "presetSpecUpTo": "{pixels} · {max} तक · {format}",
+  "presetListTitle": "फ़ॉर्म",
+  "presetSearchHint": "फ़ॉर्म खोजें",
+  "presetNoMatch": "कोई फ़ॉर्म नहीं मिला।",
+  "presetEnterYourself": "चौड़ाई, ऊँचाई और फ़ाइल साइज़ ख़ुद डालें",
+  "presetNoteDpi": "यह फ़ॉर्म {dpi} DPI भी माँगता है। ExactSize DPI सेट नहीं करता।",
+  "presetNoteBackground": "इस फ़ॉर्म में बैकग्राउंड के लिए भी एक नियम है। ExactSize बैकग्राउंड नहीं बदलता।",
+  "presetNoteContent": "इस फ़ॉर्म में इस इमेज के लिए अन्य नियम भी हैं। ExactSize उन्हें नहीं जाँचता।",
+  "presetNotAffiliated": "ExactSize का इस सूची की संस्थाओं से कोई संबंध नहीं है।",
+  "presetLoadFailed": "फ़ॉर्म की सूची नहीं खुल सकी। आप चौड़ाई, ऊँचाई और फ़ाइल साइज़ ख़ुद डाल सकते हैं।",
+  "presetCountry": "{code, select, other{{code}}}",
+  "presetCategory": "{category, select, job{नौकरी} exam_admission{परीक्षा और दाख़िला} visa_passport{वीज़ा और पासपोर्ट} other{अन्य}}"
 }
