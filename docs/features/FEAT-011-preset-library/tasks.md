@@ -95,7 +95,7 @@ Module paths follow tech section 3: new `lib/features/presets/{domain,data,prese
 - **Scope:** `integration_test/preset_fixture_run.dart` (`testWidgets` only), imported by `integration_test/bundle.dart`. Generates one textured photo-like and one stroke-on-white signature-like image with `dart:ui` into the app support dir; for every spec it probes, renders the default crop at W×H and compresses with the KB range and format (same calls as `crop_to_compression.dart`); a size, KB or "can't reach" outcome fails unless `engineReview` is non-empty. It runs the shipped asset via `loadPresets()` and an inline synthetic library with the same values as `test/presets/fixtures/test_library.json` (files under `test/` are not on the device), plus one planted unreachable spec (for example 4000×4000 px, max 2 KB) that must be reported, and must pass once given an `engineReview`. Records library load time (NFR-1, informational).
 - **Done when:** the module passes locally on the Realme 2 Pro (build uninstalled after); `flutter analyze` and `flutter test` pass locally; **P1** CI is green with the fixture run in the API 28 emulator job; the extra emulator-job time against the last green run is recorded in the Test record (tech hypothesis 1–3 min).
 
-### - [ ] FEAT-011-T09 — impeccable design pass with the Product Owner — gate G1
+### - [x] FEAT-011-T09 — impeccable design pass with the Product Owner — gate G1
 - **Implements:** FR-25, FR-5, FR-6, FR-14 (design) · **ADRs:** —
 - **Depends on:** T03 (English copy to review)
 - **Size:** M (0.5 d)
@@ -219,6 +219,7 @@ _Filled in by T08, T09, T12, T13, T14 and T15 (one row per check and device: dat
 
 | Date | Task | Check | Device / run | Result |
 |---|---|---|---|---|
+| 2026-11-27 | T09 | Gate G1 | design note t09/preset_design.md 0.1 | Passed: the Product Owner accepted the design and its three defaults (full-screen list, nothing drawn while loading, no summary on the applied row) and the English copy with two fixes (presetNoteContent "rules for this image", presetLoadFailed "enter sizes yourself"). |
 | 2026-11-27 | T08 | FR-20 fixture run, local | Realme 2 Pro, API 36, debug | Pass: shipped library 0 forms (loaded in 24 ms); Test Form A photo and signature and Test Form B photo READY; planted 4000×4000 px, max 2 KB spec reported (ABOVE_MAX) and passes with an engineReview. Synthetic images in the app support dir, deleted in tearDownAll; build uninstalled. |
 | 2026-11-27 | T08 | P1 CI | run 45946777092 | Green: all three jobs; same FR-20 lines on API 28 (load 2 ms). Emulator job 11 min 38 s against 20 min 59 s on the last green run (45886183791), so the added time is below run-to-run noise and could not be measured (tech hypothesis 1–3 min). |
 | 2026-11-27 | T06 | Freshness test date | host | The fixture dates are 2026-10-01 (Form A) and 2026-11-20 (Form B), so the CI rule "lastChecked not after today" passes on the fixture. With --today 2027-03-01 both forms would be over 90 days, so the test uses --today 2027-02-01 (A 123 days, listed; B 73 days, not listed). Same check, different date. |
