@@ -130,5 +130,22 @@
   "privacyOutsideTitle": "Otras apps de tu celular",
   "privacyOutside": "Tu galería, tu teclado y las apps con las que compartes siguen sus propias reglas de privacidad. Algunos pueden hacer copias de seguridad o enviar archivos.",
   "privacyReadsTitle": "Qué lee ExactSize",
-  "privacyReads": "ExactSize abre solo la foto que eliges. No explora tu galería ni tus archivos."
+  "privacyReads": "ExactSize abre solo la foto que eliges. No explora tu galería ni tus archivos.",
+  "presetChooseForm": "Elegir un formulario",
+  "presetApplied": "{form} · {kind}",
+  "presetKindPhoto": "Foto",
+  "presetKindSignature": "Firma",
+  "presetSpecRange": "{pixels} · {size} · {format}",
+  "presetSpecUpTo": "{pixels} · hasta {max} · {format}",
+  "presetListTitle": "Formularios",
+  "presetSearchHint": "Buscar formularios",
+  "presetNoMatch": "No se encontraron formularios.",
+  "presetEnterYourself": "Ingresar los valores manualmente",
+  "presetNoteDpi": "Este formulario también pide {dpi} DPI. ExactSize no ajusta los DPI.",
+  "presetNoteBackground": "Este formulario también tiene una regla sobre el fondo. ExactSize no cambia el fondo.",
+  "presetNoteContent": "Este formulario también tiene otras reglas para esta imagen. ExactSize no las verifica.",
+  "presetNotAffiliated": "ExactSize no tiene ninguna afiliación con las organizaciones de esta lista.",
+  "presetLoadFailed": "No se pudieron cargar los formularios. Puedes ingresar los valores manualmente.",
+  "presetCountry": "{code, select, other{{code}}}",
+  "presetCategory": "{category, select, job{Empleo} exam_admission{Exámenes y admisiones} visa_passport{Visa y pasaporte} other{Otros}}"
 }

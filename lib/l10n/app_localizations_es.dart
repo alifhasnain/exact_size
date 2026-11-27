@@ -528,7 +528,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'ExactSize abre solo la foto que eliges. No explora tu galería ni tus archivos.';
 
   @override
-  String get presetChooseForm => 'Choose a form';
+  String get presetChooseForm => 'Elegir un formulario';
 
   @override
   String presetApplied(String form, String kind) {
@@ -536,10 +536,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get presetKindPhoto => 'Photo';
+  String get presetKindPhoto => 'Foto';
 
   @override
-  String get presetKindSignature => 'Signature';
+  String get presetKindSignature => 'Firma';
 
   @override
   String presetSpecRange(String pixels, String size, String format) {
@@ -548,41 +548,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String presetSpecUpTo(String pixels, String max, String format) {
-    return '$pixels · up to $max · $format';
+    return '$pixels · hasta $max · $format';
   }
 
   @override
-  String get presetListTitle => 'Forms';
+  String get presetListTitle => 'Formularios';
 
   @override
-  String get presetSearchHint => 'Search forms';
+  String get presetSearchHint => 'Buscar formularios';
 
   @override
-  String get presetNoMatch => 'No form matches.';
+  String get presetNoMatch => 'No se encontraron formularios.';
 
   @override
-  String get presetEnterYourself => 'Enter sizes yourself';
+  String get presetEnterYourself => 'Ingresar los valores manualmente';
 
   @override
   String presetNoteDpi(String dpi) {
-    return 'This form also asks for $dpi DPI. ExactSize does not set DPI.';
+    return 'Este formulario también pide $dpi DPI. ExactSize no ajusta los DPI.';
   }
 
   @override
   String get presetNoteBackground =>
-      'This form also has a background rule. ExactSize does not change backgrounds.';
+      'Este formulario también tiene una regla sobre el fondo. ExactSize no cambia el fondo.';
 
   @override
   String get presetNoteContent =>
-      'This form also has other rules for this image. ExactSize does not check them.';
+      'Este formulario también tiene otras reglas para esta imagen. ExactSize no las verifica.';
 
   @override
   String get presetNotAffiliated =>
-      'ExactSize is not affiliated with the organisations listed.';
+      'ExactSize no tiene ninguna afiliación con las organizaciones de esta lista.';
 
   @override
   String get presetLoadFailed =>
-      'Forms could not be loaded. You can enter sizes yourself.';
+      'No se pudieron cargar los formularios. Puedes ingresar los valores manualmente.';
 
   @override
   String presetCountry(String code) {
@@ -593,10 +593,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String presetCategory(String category) {
     String _temp0 = intl.Intl.selectLogic(category, {
-      'job': 'Jobs',
-      'exam_admission': 'Exams and admissions',
-      'visa_passport': 'Visa and passport',
-      'other': 'Other',
+      'job': 'Empleo',
+      'exam_admission': 'Exámenes y admisiones',
+      'visa_passport': 'Visa y pasaporte',
+      'other': 'Otros',
     });
     return '$_temp0';
   }

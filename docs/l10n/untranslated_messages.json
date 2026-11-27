@@ -19,26 +19,6 @@
     "presetCategory"
   ],
 
-  "es": [
-    "presetChooseForm",
-    "presetApplied",
-    "presetKindPhoto",
-    "presetKindSignature",
-    "presetSpecRange",
-    "presetSpecUpTo",
-    "presetListTitle",
-    "presetSearchHint",
-    "presetNoMatch",
-    "presetEnterYourself",
-    "presetNoteDpi",
-    "presetNoteBackground",
-    "presetNoteContent",
-    "presetNotAffiliated",
-    "presetLoadFailed",
-    "presetCountry",
-    "presetCategory"
-  ],
-
   "hi": [
     "presetChooseForm",
     "presetApplied",
