@@ -36,6 +36,7 @@ const _info = SourceInfo(
 );
 
 /// FEAT-011-T12 (FR-24, NFR-2, NFR-7, NFR-8, AC-9.1..9.4): guidelines, 200% font, RTL, semantics.
+/// FEAT-014-T07 (AC-1.4, AC-5.2, NFR-2): the source block at 200% with the longest shipped title and issuer.
 void main() {
   final fixture = File('test/presets/fixtures/test_library.json').readAsStringSync();
   final forms = parseLibrary(jsonDecode(fixture)).forms;
@@ -48,6 +49,7 @@ void main() {
     ValueNotifier<Locale>? locale,
     ValueNotifier<double>? scale,
     void Function(ProviderContainer c)? setup,
+    String? asset,
   }) async {
     tester.view
       ..physicalSize = const Size(360, 640)
@@ -56,7 +58,10 @@ void main() {
     final l = locale ?? ValueNotifier(const Locale('en'));
     final s = scale ?? ValueNotifier(1.0);
     final c = ProviderContainer(
-      overrides: [presetSourceProvider.overrideWithValue(PresetAssetSource(bundle: _Bundle(fixture), sink: (_) {}))],
+      overrides: [
+        presetSourceProvider.overrideWithValue(PresetAssetSource(bundle: _Bundle(asset ?? fixture), sink: (_) {})),
+        presetClockProvider.overrideWithValue(() => DateTime(2026, 10, 16)),
+      ],
     );
     addTearDown(c.dispose);
     setup?.call(c);
@@ -89,6 +94,19 @@ void main() {
     c.read(targetFormProvider.notifier).fill(specC.applyTo(const TargetInput(width: '300', height: '400')));
     c.read(appliedPresetProvider.notifier).apply(const AppliedPreset(formId: 'test-form-c', kind: SpecKind.photo));
   }
+
+  /// The longest source title and issuer in the shipped file, put on Test Form C.
+  final shipped = (jsonDecode(File('assets/presets/presets.json').readAsStringSync()) as Map)['forms'] as List;
+  String longestOf(String Function(Map f) pick) =>
+      shipped.map((f) => pick(f as Map)).reduce((a, b) => a.length >= b.length ? a : b);
+  final longest = (longestOf((f) => (f['source'] as Map)['title'] as String), longestOf((f) => f['issuer'] as String));
+  final longC = () {
+    final json = jsonDecode(fixture) as Map<String, Object?>;
+    final c = (json['forms']! as List).last as Map<String, Object?>;
+    c['source'] = {'title': longest.$1};
+    c['issuer'] = longest.$2;
+    return jsonEncode(json);
+  }();
 
   Finder specKeys() => find.descendant(of: find.byType(PresetListScreen), matching: find.byType(InkWell));
 
@@ -143,6 +161,23 @@ void main() {
       expect(note, findsOneWidget);
       expect(tester.getRect(note).right, lessThanOrEqualTo(360));
       expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
+
+      // FEAT-014 (AC-1.4, AC-5.2): Test Form C with the longest shipped title and issuer; the
+      // block fits and Continue is still reachable by scrolling.
+      await pump(tester, target(), locale: ValueNotifier(locale), scale: ValueNotifier(2), setup: applyC, asset: longC);
+      expect(tester.takeException(), isNull);
+      final block = find.descendant(
+        of: find.ancestor(of: find.byIcon(Icons.history), matching: find.byType(Row)).first,
+        matching: find.byType(Text),
+      );
+      expect(block, findsOneWidget);
+      expect(tester.widget<Text>(block).data, contains(longest.$1));
+      expect(tester.getRect(block).right, lessThanOrEqualTo(360));
+      final next = find.byType(FilledButton);
+      await tester.ensureVisible(next);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(next).bottom, lessThanOrEqualTo(640));
+      expect(tester.takeException(), isNull);
     });
   }
 

@@ -75,7 +75,7 @@ Sizes: **S** ≈ 0.25 day, **M** ≈ 0.5 day; each task is one PR. Files, contra
 - **Scope:** the Product Owner types `/l10n-translate <lang>` for es (es-419), pt (pt-BR), hi, id and ar (MSA, Western digits 0-9), one language at a time, vendored `localize-*` skills only. Reviewer brief: all FR-9 banned words; no network words ("online", "offline", "connect", "internet"); placeholders `title`, `issuer`, `host`, `date`, `days` unchanged and untranslated, no bidi marks added; back-translation checks "notice" (PRD OQ-4) and the plural for the fixed 90. Only app strings go to the model, never user data. Status `AI-reviewed only`. One commit with all six ARBs (closes the red check left by T04).
 - **Done when:** the five keys are in all six ARBs; `untranslated_messages.json` has no FEAT-014 key; `docs/l10n/ai-review-log.md` has one entry per language with `AI-reviewed only`; `preset_copy_test.dart` (six-locale presence, banned words), `privacy_copy_test.dart` and `preset_strings_test.dart` (FR-10 in 6 locales) pass. **Gates T07–T09** (their 7-locale tests and ar/hi screenshots need real translations).
 
-### - [ ] FEAT-014-T07 — Source block on the target-step row
+### - [x] FEAT-014-T07 — Source block on the target-step row
 - **Implements:** FR-1, FR-5, FR-6, FR-7, FR-8, FR-12, NFR-2, NFR-5, NFR-7, AC-1.1–1.7, AC-3.1–3.5, AC-4.3, AC-4.4, AC-5.2, AC-5.3 · **ADRs:** ADR-001
 - **Depends on:** T03, T06 (and G1)
 - **Size:** M (0.5 d)

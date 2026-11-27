@@ -77,11 +77,14 @@ class PresetRow extends ConsumerWidget {
               ),
             ),
           ),
-          if (spec != null && (spec.kbOnly || spec.notCovered.isNotEmpty)) ...[
+          if (form != null && spec != null) ...[
             const SizedBox(height: 12),
             // FR-26: a KB-only form states no pixel size; ask for one first. Never propose a size.
             if (spec.kbOnly) BoothNotice(icon: Icons.info_outline, text: l.presetKbOnlyNote),
             for (final note in spec.notCovered) BoothNotice(icon: Icons.info_outline, text: s.note(note)),
+            // FEAT-014 FR-1: where the sizes come from, last, after the notes (t05/source_design.md).
+            // Plain text: no tap, link or selection (FR-8). The clock is read on every build (FR-7).
+            BoothNotice(icon: Icons.history, text: s.block(form, ref.watch(presetClockProvider)())),
           ],
         ],
       ),
