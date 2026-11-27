@@ -5,6 +5,7 @@ Implementation changes, one line per finished task. Format: `- FEAT-nnn-Tnn: wha
 Preset data changes: one line per form with form id, source title and check date (FEAT-011 FR-22, checked at PR review).
 
 ## [Unreleased]
+- FEAT-011-T19: synthetic Test Form C (one KB-only photo spec, 10–200 KB, JPEG) in test_library.json and preset_fixture_data.dart; test counts updated; FR-20 run on the Realme 2 Pro reaches READY for it at 600 × 600 px.
 - FEAT-011-T18: CI rule both-or-neither (FR-19 2.0): exactly one of width/height null fails "give both width and height, or neither."; both null skips only the size check; self-tests for a passing KB-only spec, one null, a KB-only spec without maxKb and a missing width key; 1.0 self-tests unchanged.
 - FEAT-011-T17: KB-only presets in the domain (FR-3, FR-11, FR-13): PresetSpec width/height nullable together with kbOnly, applyTo (a KB-only pick keeps the typed width and height) and matches (KB range and format only for KB-only; FEAT-005 cleaning for every field) replacing input/target; parser accepts both null and skips one null; summary "Pixel size not stated · … KB · JPEG"; callers moved with no behaviour change for full specs; FR-20 runs KB-only specs at 600×600.
 - FEAT-011-T16: presetAnyPixelSize and presetKbOnlyNote in en, es, pt, hi, id and ar (FR-6, FR-26); presetSpecRange/presetSpecUpTo descriptions mention the new pixels value; blind Sonnet review per language, hi and id fixes, ar aligned; status AI-reviewed only (no native speaker).

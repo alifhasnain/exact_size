@@ -13,7 +13,7 @@ void main() {
   test('the fixture on 2027-02-01 lists Test Form A only', () {
     // Test Form A was checked 2026-10-01 (123 days), Test Form B 2026-11-20 (73 days).
     final text = File('test/presets/fixtures/test_library.json').readAsStringSync();
-    expect(freshnessReport(text, DateTime(2027, 2, 1)), ['forms: 2', 'test-form-a 2026-10-01']);
+    expect(freshnessReport(text, DateTime(2027, 2, 1)), ['forms: 3', 'test-form-a 2026-10-01']);
   });
 
   test('exactly 90 days is not listed; 91 is', () {

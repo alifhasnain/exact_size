@@ -52,5 +52,18 @@ const presetFixtureLibrary = <String, Object?>{
         },
       ],
     },
+    {
+      'id': 'test-form-c',
+      'name': 'Test Form C',
+      'issuer': 'Test Office',
+      'country': 'ZZ',
+      'category': 'visa_passport',
+      'aliases': <String>[],
+      'source': {'title': 'Test notice 3', 'url': '[PLACEHOLDER]'},
+      'lastChecked': '2026-11-20',
+      'specs': [
+        {'kind': 'photo', 'width': null, 'height': null, 'minKb': 10, 'maxKb': 200, 'format': 'jpeg'},
+      ],
+    },
   ],
 };

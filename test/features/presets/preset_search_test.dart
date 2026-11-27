@@ -75,7 +75,7 @@ void main() {
   test('empty query returns all, sections by country name, forms by name', () {
     final sections = filterForms(forms, '', category, country);
     expect(sections.map((s) => s.name), ['Exland', 'Zedland']);
-    expect(sections.last.forms.map((f) => f.id), ['test-form-a', 'test-form-b', 'test-forme']);
+    expect(sections.last.forms.map((f) => f.id), ['test-form-a', 'test-form-b', 'test-form-c', 'test-forme']);
     expect(ids(''), hasLength(forms.length));
     expect(
       filterForms(

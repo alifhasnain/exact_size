@@ -142,7 +142,7 @@ void main() {
 
   testWidgets('the synthetic fixture library reaches every target', (_) async {
     final library = parseLibrary(presetFixtureLibrary);
-    expect(library.forms, hasLength(2));
+    expect(library.forms, hasLength(3));
     expect(await run(library), isEmpty);
   });
 

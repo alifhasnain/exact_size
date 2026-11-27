@@ -57,7 +57,7 @@ void main() {
 
   test('the fixture loads with no line; one bad spec gives exactly one SPEC_SKIPPED line', () async {
     final (ok, quiet) = await load(fixture);
-    expect((ok! as PresetLibrary).forms, hasLength(2));
+    expect((ok! as PresetLibrary).forms, hasLength(3));
     expect(quiet, isEmpty);
 
     final json = jsonDecode(fixture) as Map<String, dynamic>;

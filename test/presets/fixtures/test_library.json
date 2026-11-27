@@ -29,6 +29,19 @@
         { "kind": "photo", "width": 300, "height": 300, "minKb": 10, "maxKb": 100, "format": "jpeg",
           "notCovered": [ { "code": "content" } ] }
       ]
+    },
+    {
+      "id": "test-form-c",
+      "name": "Test Form C",
+      "issuer": "Test Office",
+      "country": "ZZ",
+      "category": "visa_passport",
+      "aliases": [],
+      "source": { "title": "Test notice 3", "url": "[PLACEHOLDER]" },
+      "lastChecked": "2026-11-20",
+      "specs": [
+        { "kind": "photo", "width": null, "height": null, "minKb": 10, "maxKb": 200, "format": "jpeg" }
+      ]
     }
   ]
 }

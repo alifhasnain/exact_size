@@ -14,8 +14,6 @@ void main() {
       jsonDecode(File('test/presets/fixtures/test_library.json').readAsStringSync()) as Map<String, Object?>;
   final forms = parseLibrary(fixtureJson()).forms;
 
-  Finder spec(String kind, int index) => find.ancestor(of: find.text(kind), matching: find.byType(InkWell)).at(index);
-
   ({Object? value, bool popped}) result = (value: null, popped: false);
   Future<void> pump(WidgetTester tester, [List<PresetForm>? list]) async {
     result = (value: null, popped: false);
@@ -47,13 +45,22 @@ void main() {
     expect(find.text('Photo'), findsNWidgets(2)); // A and B
     expect(find.text('Signature'), findsOneWidget); // A only: no invented row for B
     expect(find.textContaining('200 × 230'), findsOneWidget);
+    // Test Form C (KB-only): its row says no pixel size is stated, with no note (FR-6, 2.0).
+    final c = find.textContaining('Pixel size not stated');
+    await tester.scrollUntilVisible(c, 100, scrollable: find.byType(Scrollable).last);
+    expect(
+      tester.widget<Text>(c).data!.replaceAll(RegExp('[\u2066-\u2069]'), ''),
+      'Pixel size not stated · 10–200 KB · JPEG',
+    );
   });
 
   testWidgets('tapping a spec pops its PresetPick (AC-1.3)', (tester) async {
     await pump(tester);
-    await tester.ensureVisible(spec('Photo', 1));
+    // Test Form B's photo row, found by its own summary (the list builds rows lazily).
+    final b = find.ancestor(of: find.textContaining('300 × 300'), matching: find.byType(InkWell));
+    await tester.ensureVisible(b);
     await tester.pumpAndSettle();
-    await tester.tap(spec('Photo', 1));
+    await tester.tap(b);
     await tester.pumpAndSettle();
     expect(result, (value: const PresetPick(formId: 'test-form-b', kind: SpecKind.photo), popped: true));
     expect(find.byType(PresetListScreen), findsNothing);

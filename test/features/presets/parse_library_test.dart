@@ -30,10 +30,11 @@ void main() {
     ],
   };
 
-  test('fixture parses to 2 forms with every field', () {
+  test('fixture parses to 3 forms with every field', () {
     final l = parseLibrary(fixture());
     expect(l.skipped, 0);
-    expect(l.forms.map((f) => f.id), ['test-form-a', 'test-form-b']);
+    expect(l.forms.map((f) => f.id), ['test-form-a', 'test-form-b', 'test-form-c']);
+    expect(l.forms.last.specs.single.kbOnly, isTrue);
     final a = l.forms.first;
     expect(a.category, FormCategory.examAdmission);
     expect(a.aliases, ['TFA']);
@@ -41,7 +42,7 @@ void main() {
     expect(a.lastChecked, DateTime.utc(2026, 10, 1));
     expect(a.specs.map((s) => s.kind), [SpecKind.photo, SpecKind.signature]);
     expect(a.specs.first.notCovered, [const DpiNote(200), const BackgroundNote()]);
-    expect(l.forms.last.specs.single.notCovered, [const ContentNote()]);
+    expect(l.forms[1].specs.single.notCovered, [const ContentNote()]);
   });
 
   final bad = <String, Map<String, Object?>>{
