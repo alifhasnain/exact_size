@@ -25,6 +25,7 @@ import 'interop_test.dart' as interop;
 import 'jpeg_spike_test.dart' as jpeg_spike;
 import 'memory_preflight_test.dart' as memory_preflight;
 import 'pick_bridge_test.dart' as pick_bridge;
+import 'preset_fixture_run.dart' as preset_fixture_run;
 import 'preview_check_test.dart' as preview_check;
 import 'recents_guard_test.dart' as recents_guard;
 import 'temp_files_test.dart' as temp_files;
@@ -42,6 +43,7 @@ void main() {
   group('jpeg_spike', jpeg_spike.main);
   group('memory_preflight', memory_preflight.main);
   group('pick_bridge', pick_bridge.main);
+  group('preset_fixture_run', preset_fixture_run.main);
   group('preview_check', preview_check.main);
   group('recents_guard', recents_guard.main);
   group('temp_files', temp_files.main);
