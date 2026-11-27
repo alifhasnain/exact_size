@@ -1,7 +1,7 @@
 ---
 id: FEAT-011-TASKS
 title: Built-in preset library — Implementation Tasks
-status: Under Discussion
+status: Approved
 version: 2.0
 updated: 2026-11-27
 links: [FEAT-011, FEAT-011-TECH, ADR-001, FEAT-005, FEAT-002, FEAT-004, FEAT-014, FEAT-016, FEAT-019]
@@ -318,3 +318,4 @@ _Filled in by T08, T09, T12, T13, T14, T15, T16, T19 and T21 (one row per check 
 | 0.1 | 2026-11-27 | First draft |
 | 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TASKS) |
 | 2.0 | 2026-11-27 | Scope change for PRD 2.0 / tech 2.0 (KB-only specs): new T16–T21 (strings and translation, domain and parser, CI rule, Test Form C and FR-20 run, FR-26 line, lean check with gate G3 and push P2b); T15 rescoped to confirmed rows from `t15/review_list.md` incl. KB-only, now after T17–T19 and G3; G-final also waits for G3 and P2b; traceability for FR-1, FR-3, FR-6, FR-11, FR-13, FR-19, FR-20, FR-26, AC-4.7–4.9; 2.0 effort delta; Open items 7e–11. Status Under Discussion |
+| 2.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-011-TASKS) |
