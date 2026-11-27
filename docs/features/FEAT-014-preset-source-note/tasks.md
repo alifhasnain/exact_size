@@ -1,8 +1,8 @@
 ---
 id: FEAT-014-TASKS
 title: Preset source note and "check your notice" prompt — Implementation Tasks
-status: Proposed
-version: 0.1
+status: Approved
+version: 1.0
 updated: 2026-11-27
 links: [FEAT-014, FEAT-014-TECH, FEAT-011, ADR-001]
 ---
@@ -203,3 +203,4 @@ _Filled in by T05, T06, T09 and T10 (date, device or CI run, result). Synthetic 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-27 | First draft |
+| 1.0 | 2026-11-27 | Approved by the Product Owner (/approve FEAT-014-TASKS); open items stand as written |
